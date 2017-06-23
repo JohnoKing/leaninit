@@ -24,10 +24,12 @@ WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fstack-protector-strong -fstack-check -fPIC -flto
 LDFLAGS := -Wl,--sort-common,--as-needed,-O1,-z,relro,-z,now $(CFLAGS)
 
-all:
+all: init
+
+init:
 	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o init init.c $(LDFLAGS)
 
-install:
+install: all
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit
 	install -Dm0755 init $(DESTDIR)/sbin/l-init
 	install -Dm0755 halt $(DESTDIR)/sbin/l-halt

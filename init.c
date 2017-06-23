@@ -47,22 +47,16 @@ int main(int argc, char *argv[])
     // Execute the init script /etc/rc
     if(argc == 1) {
         rc("v");
-
-    // SysV-like shutdown and reboot
     } else {
-        // Synchronize the filesystems to prevent data corruption
-        sync();
-
         // Determine what to do
         switch(*argv[1]) {
             case '0':
+                sync();
                 reboot(RB_POWER_OFF);
-                return 0;
             case '6':
+                sync();
                 reboot(RB_AUTOBOOT);
-                return 0;
             case 'q': // For quiet boot
-                rc("q");
             case 's': // Defaults to quiet boot
                 rc("q");
             case 'v': // Verbose boot (default)
