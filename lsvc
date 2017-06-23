@@ -76,5 +76,5 @@ case "$1" in
 	-d)
 		disable ;;
 	*)
-		usage "Argument invalid!" 1 ;;
+		usage "Argument $1 is invalid!" 1 ;;
 esac
