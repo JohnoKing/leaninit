@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
             case 'v': // Verbose boot (default)
                 rc("v");
             default:
-                printf("Argument invalid!\n\nUsage: init [mode] ...");
+                printf("Argument invalid!\nUsage: init [mode] ...\n");
                 return 1;
         }
     }
