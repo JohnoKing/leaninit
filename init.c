@@ -21,7 +21,7 @@
  */
 
 /*
- * A lean replacement for init
+ * A minimal init system
  */
 
 #include <sys/reboot.h>
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
             case 'v': // Verbose boot (default)
                 rc("v");
             default:
-                printf("Argument invalid! The only accepted arguments are '0' and '6'\n");
+                printf("Argument invalid!\n\nUsage: init [mode] ...");
                 return 1;
         }
     }
