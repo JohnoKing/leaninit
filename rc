@@ -24,16 +24,22 @@
 # Load /etc/profile
 . /etc/profile
 
+# Fork function
+fork() {
+	setsid "$@" &
+}
+
 # Turn off echo if quiet boot is used, and turn it on if verbose boot is used.
 if [ "$1" = "v" ]; then
-	export OUT="/dev/null"
-	print() {
-		echo "$@"
-	}
-else
 	export OUT="/dev/stdout"
 	print() {
-		command
+		echo "$@"
+		echo "$@" >> /var/log/leaninit.log
+	}
+else
+	export OUT="/dev/null"
+	print() {
+		echo "$@" >> /var/log/leaninit.log
 	}
 fi
 
@@ -45,27 +51,33 @@ mount -o remount,rw /
 
 # Set up the drives and partitions as according to /etc/fstab
 mount -a
-swapon -a
+fork swapon -a
 
 # Load all sysctl settings
-sysctl -a > $OUT
+fork sysctl -a > $OUT
 
 # Set the hostname
 if [ -e /etc/hostname ] && [ "$(cat /etc/hostname)" != "" ]; then
 	print "Setting the hostname to $(cat /etc/hostname)..."
-	hostname $(cat /etc/hostname)
+	fork hostname $(cat /etc/hostname)
 fi
 
 # Set a keyboard layout, if needed (depends on kbd)
 if [ -e /etc/leaninit/kbd.conf ] && [ "$(cat /etc/leaninit/kbd.conf)" != "" ]; then
 	print "Setting the keyboard layout to $(cat /etc/leaninit/kbd.conf)..."
-	loadkeys $(cat /etc/leaninit/kbd.conf)
+	fork loadkeys $(cat /etc/leaninit/kbd.conf)
 fi
+
+# Load services
+for i in `ls /etc/leaninit/svce`; do
+	. /etc/leaninit/svc/$i
+	run
+done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
 print "Launching gettys..."
 for i in `cat /etc/ttys`; do
-	setsid agetty 38400 $i &
+	fork agetty 38400 $i
 done
 
 # Replace this process with a getty, to keep LeanInit from crashing

@@ -25,48 +25,43 @@ usage()
 {
 	echo $1
 	echo ""
-	echo "Usage: lsvc [-de] service level"
-	echo ""
+	echo "Usage: lsvc [-de] service"
 	echo "  -d            Disable a service"
 	echo "  -e            Enable a service"
 	exit $2
 }
 
-if [ "$2" = "" ] || [ "$3" = "" ]; then
-	usage 'This program requires three arguments!' 1
+if [ "$2" = "" ]; then
+	usage "This program requires two arguments!" 1
 fi
 
 enable()
 {
-	if [ ! -e /etc/leaninit/$3 ]; then
-		usage "The level $3 does not exist!" 1
-	elif [ ! -e /etc/leaninit/svc/$2 ]; then
+	if [ ! -e /etc/leaninit/svc/$2 ]; then
 		usage "The service $2 doesn't exist!" 1
-	elif [ -L /etc/leaninit/$3/$2 ]; then
-		echo "The service $2 is already enabled in level $3"
+	elif [ -L /etc/leaninit/svce/$2 ]; then
+		echo "The service $2 is already enabled"
 		exit 0
 	fi
 
-	ln -s /etc/leaninit/svc/$2 /etc/leaninit/$3
-	echo "The service $2 has been enabled in level $3"
+	ln -s /etc/leaninit/svc/$2 /etc/leaninit/svce
+	echo "The service $2 has been enabled"
 	exit 0
 }
 
 disable()
 {
-	if [ ! -e /etc/leaninit/$3 ]; then
-		usage "The level $3 does not exist!" 1
-	elif [ ! -L /etc/leaninit/$3/$2 ]; then
+	if [ ! -L /etc/leaninit/svce/$2 ]; then
 		if [ -e /etc/leaninit/svc/$2 ]; then
-			echo "The service $2 is not enabled in level $3"
+			echo "The service $2 is not enabled"
 			exit 0
 		else
 			usage "The service $2 doesn't exist!" 1
 		fi
 	fi
 
-	rm /etc/leaninit/$3/$2
-	echo "The service $2 has been disabled in level $3"
+	rm /etc/leaninit/svce/$2
+	echo "The service $2 has been disabled"
 	exit 0
 }
 
