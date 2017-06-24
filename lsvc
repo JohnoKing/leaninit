@@ -21,8 +21,7 @@
 # SOFTWARE.
 #
 
-usage()
-{
+usage() {
 	echo $1
 	echo ""
 	echo "Usage: lsvc [-de] service"
@@ -35,8 +34,7 @@ if [ "$2" = "" ]; then
 	usage "This program requires two arguments!" 1
 fi
 
-enable()
-{
+enable() {
 	if [ ! -e /etc/leaninit/svc/$1 ]; then
 		usage "The service $1 doesn't exist!" 1
 	elif [ -L /etc/leaninit/svce/$1 ]; then
@@ -49,8 +47,7 @@ enable()
 	exit 0
 }
 
-disable()
-{
+disable() {
 	if [ ! -L /etc/leaninit/svce/$1 ]; then
 		if [ -e /etc/leaninit/svc/$1 ]; then
 			echo "The service $1 is not enabled"

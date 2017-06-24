@@ -44,35 +44,40 @@ else
 fi
 
 # Echo to the console (if using verbose boot)
-print "LeanInit running on $(uname -srm)"
+print "LeanInit running on `uname -srm`"
 
-# Remount / as read-write
-mount -o remount,rw /
+# Check for damage to the root filesystem, and repair it if needed
+fsck /
 
 # Launch udev (requires eudev)
 udevd --daemon
+
+# Load all modules specified in the /etc/modules-load.d folder (currently broken)
+for i in `cat /etc/modules-load.d/* | sed /#/d`; do
+	modprobe $i
+done
 
 # Load all sysctl settings
 fork sysctl -a > $OUT
 
 # Set the hostname
-if [ -e /etc/hostname ] && [ "$(cat /etc/hostname)" != "" ]; then
-	print "Setting the hostname to $(cat /etc/hostname)..."
-	fork hostname $(cat /etc/hostname)
+if [ -e /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
+	print "Setting the hostname to `cat /etc/hostname`..."
+	fork hostname `cat /etc/hostname`
 fi
 
 # Set a keyboard layout, if needed (depends on kbd)
-if [ -e /etc/leaninit/kbd.conf ] && [ "$(cat /etc/leaninit/kbd.conf)" != "" ]; then
-	print "Setting the keyboard layout to $(cat /etc/leaninit/kbd.conf)..."
-	fork loadkeys $(cat /etc/leaninit/kbd.conf)
+if [ -e /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; then
+	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.conf`..."
+	fork loadkeys `cat /etc/leaninit/kbd.conf`
 fi
 
 # Load services
 for i in `ls /etc/leaninit/svce`; do
-	. /etc/leaninit/svc/${i}
-	print "Starting ${NAME}..."
+	. /etc/leaninit/svc/$i
+	print "Starting $NAME..."
 	run
-	echo "Started ${NAME}" >> /var/log/v7init.log
+	echo "Started $NAME" >> /var/log/v7init.log
 done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
