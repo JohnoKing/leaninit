@@ -19,9 +19,7 @@
 # SOFTWARE.
 #
 
-run()
-{
-	print "Launching DBus..."
-	mkdir /run/dbus
-	fork dbus-daemon --system
+export NAME=DBus
+run() {
+	dbus-launch
 }

@@ -70,8 +70,10 @@ fi
 
 # Load services
 for i in `ls /etc/leaninit/svce`; do
-	. /etc/leaninit/svc/$i
+	. /etc/leaninit/svc/${i}
+	print "Starting ${NAME}..."
 	run
+	echo "Started ${NAME}" >> /var/log/v7init.log
 done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
@@ -80,5 +82,5 @@ for i in `cat /etc/ttys`; do
 	fork agetty 38400 $i
 done
 
-# Replace this process with a getty, to keep LeanInit from crashing
-exec agetty 38400 tty1
+# Launch agetty
+agetty 38400 tty1
