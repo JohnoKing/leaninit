@@ -49,9 +49,8 @@ print "LeanInit running on $(uname -srm)"
 # Remount / as read-write
 mount -o remount,rw /
 
-# Set up the drives and partitions as according to /etc/fstab
-mount -a
-fork swapon -a
+# Launch udev (requires eudev)
+udevd --daemon
 
 # Load all sysctl settings
 fork sysctl -a > $OUT
