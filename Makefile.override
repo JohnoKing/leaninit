@@ -34,7 +34,7 @@ install: all
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
 	install -Dm0755 init halt reboot lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc
-	install -Ddm0755 svc $(DESTDIR)/etc/leaninit
+	cp -r svc $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc
 	ln -sfr $(DESTDIR)/sbin/halt $(DESTDIR)/sbin/poweroff
 

@@ -36,7 +36,7 @@ install: all
 	install -Dm0755 reboot $(DESTDIR)/sbin/l-reboot
 	install -Dm0755 lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
-	install -Ddm0755 svc $(DESTDIR)/etc/leaninit
+	cp -r svc $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
 	ln -sr $(DESTDIR)/sbin/l-halt $(DESTDIR)/sbin/l-poweroff
 	sed -i 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc

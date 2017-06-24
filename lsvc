@@ -37,39 +37,39 @@ fi
 
 enable()
 {
-	if [ ! -e /etc/leaninit/svc/$2 ]; then
-		usage "The service $2 doesn't exist!" 1
-	elif [ -L /etc/leaninit/svce/$2 ]; then
-		echo "The service $2 is already enabled"
+	if [ ! -e /etc/leaninit/svc/$1 ]; then
+		usage "The service $1 doesn't exist!" 1
+	elif [ -L /etc/leaninit/svce/$1 ]; then
+		echo "The service $1 is already enabled"
 		exit 0
 	fi
 
-	ln -s /etc/leaninit/svc/$2 /etc/leaninit/svce
-	echo "The service $2 has been enabled"
+	ln -s /etc/leaninit/svc/$1 /etc/leaninit/svce
+	echo "The service $1 has been enabled"
 	exit 0
 }
 
 disable()
 {
-	if [ ! -L /etc/leaninit/svce/$2 ]; then
-		if [ -e /etc/leaninit/svc/$2 ]; then
-			echo "The service $2 is not enabled"
+	if [ ! -L /etc/leaninit/svce/$1 ]; then
+		if [ -e /etc/leaninit/svc/$1 ]; then
+			echo "The service $1 is not enabled"
 			exit 0
 		else
-			usage "The service $2 doesn't exist!" 1
+			usage "The service $1 doesn't exist!" 1
 		fi
 	fi
 
-	rm /etc/leaninit/svce/$2
-	echo "The service $2 has been disabled"
+	rm /etc/leaninit/svce/$1
+	echo "The service $1 has been disabled"
 	exit 0
 }
 
 case "$1" in
 	-e)
-		enable ;;
+		enable $2 ;;
 	-d)
-		disable ;;
+		disable $2 ;;
 	*)
 		usage "Argument $1 is invalid!" 1 ;;
 esac
