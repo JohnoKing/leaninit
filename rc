@@ -52,6 +52,9 @@ fsck -A
 # Launch udev (requires eudev)
 udevd --daemon
 
+# Set the $GETTY variable
+export GETTY=`grep getty /etc/ttys | sed /#/d`
+
 # Load all modules specified in the /etc/modules-load.d folder (currently broken)
 for i in `cat /etc/modules-load.d/* | sed /#/d`; do
 	modprobe $i
@@ -66,7 +69,7 @@ if [ -e /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
 	fork hostname `cat /etc/hostname`
 fi
 
-# Set a keyboard layout, if needed (depends on kbd)
+# Set a keyboard layout, if needed (requires kbd)
 if [ -e /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; then
 	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.conf`..."
 	fork loadkeys `cat /etc/leaninit/kbd.conf`
@@ -82,9 +85,9 @@ done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
 print "Launching gettys..."
-for i in `cat /etc/ttys`; do
-	fork agetty 38400 $i
+for i in `cat /etc/ttys | sed /#/d | sed /getty/d`; do
+	fork $GETTY 38400 $i
 done
 
-# Launch agetty
-agetty 38400 tty1
+# Launch getty on tty1 without forking
+$GETTY 38400 tty1
