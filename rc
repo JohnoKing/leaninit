@@ -46,8 +46,8 @@ fi
 # Echo to the console (if using verbose boot)
 print "LeanInit running on `uname -srm`"
 
-# Check for damage to the root filesystem, and repair it if needed
-fsck /
+# Check all the filesystems in /etc/fstab for damage, and repair them if needed
+fsck -A
 
 # Launch udev (requires eudev)
 udevd --daemon
