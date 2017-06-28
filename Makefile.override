@@ -19,17 +19,21 @@
 # SOFTWARE.
 #
 
+# Variables (each one can be overridden)
 CC := cc
 WFLAGS   := -Wall -Wextra -Wpedantic
 CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fstack-protector-strong -fstack-check -fPIC -flto
 CPPFLAGS := -DOVERRIDE
 LDFLAGS  := -Wl,--sort-common,--as-needed,-O1,-z,relro,-z,now $(CFLAGS)
 
+# Make the leaninit binary
 all: init
 
+# Compile init.c
 init:
 	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o init init.c $(LDFLAGS)
 
+# Install leaninit (this will override other init systems)
 install: all
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
 	install -Dm0755 init halt reboot lsvc $(DESTDIR)/sbin
@@ -38,9 +42,11 @@ install: all
 	install -Dm0644 ttys $(DESTDIR)/etc
 	ln -sfr $(DESTDIR)/sbin/halt $(DESTDIR)/sbin/poweroff
 
+# Clean the directory
 clean:
 	rm -f init
 
+# 'clobber' and 'mrproper' just call 'clean'
 clobber: clean
 
 mrproper: clean

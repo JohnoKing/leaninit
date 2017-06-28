@@ -19,7 +19,10 @@
 # SOFTWARE.
 #
 
+# The name of the service
 export NAME=DBus
-run() {
+
+# The main function
+main() {
 	dbus-launch
 }

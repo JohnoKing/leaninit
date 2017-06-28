@@ -19,7 +19,10 @@
 # SOFTWARE.
 #
 
+# The name of the service
 export NAME="ACPI Daemon"
-run() {
+
+# The main function
+main() {
 	fork acpid
 }

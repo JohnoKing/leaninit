@@ -26,41 +26,57 @@
 
 #include <sys/reboot.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-// This function should never stop
-static inline void rc(const char *m)
-{
+// Execute the init script
+static inline void rc(const char *mode) {
+
+    // Set the $RUNLEVEL enviroment variable to three
+    setenv("RUNLEVEL", "3", 0);
+
+    // Execute either /etc/rc or /etc/leaninit/rc
 #ifdef OVERRIDE
-    execl("/bin/sh", "/bin/sh", "/etc/rc", m, NULL);
+    execl("/bin/sh", "/bin/sh", "/etc/rc", mode, NULL);
 #else
-    execl("/bin/sh", "/bin/sh", "/etc/leaninit/rc", m, NULL);
+    execl("/bin/sh", "/bin/sh", "/etc/leaninit/rc", mode, NULL);
 #endif
 
-    // In case the function stops
+    // This is done in case this function stops to prevent data corruption
     sync();
 }
 
 // The main function
 int main(int argc, char *argv[])
 {
-    // Execute the init script /etc/rc
+    // Defaults to verbose boot
     if(argc == 1) {
         rc("v");
+
+    // Determine what to do
     } else {
-        // Determine what to do
         switch(*argv[1]) {
+
+            // Poweroff
             case '0':
                 sync();
                 reboot(RB_POWER_OFF);
+
+            // Reboot
             case '6':
                 sync();
                 reboot(RB_AUTOBOOT);
-            case 'q': // For quiet boot
-            case 's': // Defaults to quiet boot
+
+            // Quiet boot, splash boot currently defaults to quiet boot
+            case 'q':
+            case 's':
                 rc("q");
-            case 'v': // Verbose boot (default)
+
+            // Verbose boot (default)
+            case 'v':
                 rc("v");
+
+            // Fallback
             default:
                 printf("Argument invalid!\nUsage: init [mode] ...\n");
                 return 1;

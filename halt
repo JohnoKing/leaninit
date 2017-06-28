@@ -23,13 +23,22 @@
 # halt(8)
 #
 
+# Determine what to do
 case "$1" in
+
+     # Halt and Poweroff both go to runlevel zero
     "")
-        export lvl=0 ;;
+        export RUNLEVEL=0 ;;
+
+     # Ignored
     "-p")
-        export lvl=0 ;;
+        export RUNLEVEL=0 ;;
+
+    # Reboot
     "-r")
-        export lvl=6 ;;
+        export RUNLEVEL=6 ;;
+
+    # Other arguments are invalid
     *)
         echo "Usage: $0 [-pr]"
         echo ""
@@ -38,9 +47,9 @@ case "$1" in
         exit 1 ;;
 esac
 
-# Unmount (or mount as read only) and synchronize all file systems
+# Unmount, or mount as read only, all filesystems
 umount -rat nodebugfs,nodevfs,noprocfs,nosysfs,notmpfs
 mount -fo remount,ro /
 
-# Tell init to restart or shutdown
-exec init $lvl
+# Send the new runlevel to init
+exec init $RUNLEVEL

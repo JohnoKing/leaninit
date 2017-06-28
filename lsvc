@@ -21,52 +21,74 @@
 # SOFTWARE.
 #
 
+# Print info on how to use lsvc
 usage() {
-	echo $1
+	echo $1 # Error message
 	echo ""
 	echo "Usage: lsvc [-de] service"
 	echo "  -d            Disable a service"
 	echo "  -e            Enable a service"
-	exit $2
+	exit $2 # Exit with a specified return status
 }
 
+# Exit if $2 is not set
 if [ "$2" = "" ]; then
 	usage "This program requires two arguments!" 1
 fi
 
+# Function to enable services
 enable() {
+
+	# If the service doesn't exist
 	if [ ! -e /etc/leaninit/svc/$1 ]; then
 		usage "The service $1 doesn't exist!" 1
+
+	# If the service is already enabled
 	elif [ -L /etc/leaninit/svce/$1 ]; then
 		echo "The service $1 is already enabled"
 		exit 0
 	fi
 
+	# Make a symlink in the /etc/leaninit/svce directory
 	ln -s /etc/leaninit/svc/$1 /etc/leaninit/svce
 	echo "The service $1 has been enabled"
 	exit 0
 }
 
 disable() {
+
+	# If a symlink to the service doesn't exist in /etc/leaninit/svce
 	if [ ! -L /etc/leaninit/svce/$1 ]; then
+
+		# If the service does exist, but is not enabled
 		if [ -e /etc/leaninit/svc/$1 ]; then
 			echo "The service $1 is not enabled"
 			exit 0
+
+		# If the service doesn't exist
 		else
 			usage "The service $1 doesn't exist!" 1
 		fi
 	fi
 
+	# Delete just the symlink to the service
 	rm /etc/leaninit/svce/$1
 	echo "The service $1 has been disabled"
 	exit 0
 }
 
+# Each function called here terminates the script once done, thus an extra exit is unnecessary
 case "$1" in
+
+	# Enable a service
 	-e)
 		enable $2 ;;
+
+	# Disable a service
 	-d)
 		disable $2 ;;
+
+	# Fallback
 	*)
 		usage "Argument $1 is invalid!" 1 ;;
 esac

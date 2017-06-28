@@ -21,6 +21,9 @@
 # SOFTWARE.
 #
 
+# Load /etc/profile
 . /etc/profile
+
+# Launch runit
 /etc/runit/1
 /etc/runit/2

@@ -24,18 +24,21 @@
 # Load /etc/profile
 . /etc/profile
 
-# Fork function
+# Function which forks processes (for parallel booting)
 fork() {
 	setsid "$@" &
 }
 
-# Turn off echo if quiet boot is used, and turn it on if verbose boot is used.
+# Echo to the console if verbose boot is on
 if [ "$1" = "v" ]; then
 	export OUT="/dev/stdout"
 	print() {
 		echo "$@"
 		echo "$@" >> /var/log/leaninit.log
 	}
+	echo "LeanInit running on `uname -srm`"
+
+# Don't echo to the console if quiet boot is on
 else
 	export OUT="/dev/null"
 	print() {
@@ -43,13 +46,10 @@ else
 	}
 fi
 
-# Echo to the console (if using verbose boot)
-print "LeanInit running on `uname -srm`"
-
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
-fsck -A
+fsck -A > $OUT
 
-# Launch udev (requires eudev)
+# Launch eudev
 udevd --daemon
 
 # Set the $GETTY variable
@@ -69,17 +69,17 @@ if [ -e /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
 	fork hostname `cat /etc/hostname`
 fi
 
-# Set a keyboard layout, if needed (requires kbd)
+# Set the keyboard layout when needed (this requires kbd to work)
 if [ -e /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; then
 	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.conf`..."
 	fork loadkeys `cat /etc/leaninit/kbd.conf`
 fi
 
-# Load services
+# Start the services
 for i in `ls /etc/leaninit/svce`; do
 	. /etc/leaninit/svc/$i
 	print "Starting $NAME..."
-	run
+	main
 	echo "Started $NAME" >> /var/log/v7init.log
 done
 
@@ -89,5 +89,5 @@ for i in `cat /etc/ttys | sed /#/d | sed /getty/d`; do
 	fork $GETTY 38400 $i
 done
 
-# Launch getty on tty1 without forking
+# Launch a getty on tty1 without forking
 $GETTY 38400 tty1

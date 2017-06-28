@@ -1,4 +1,10 @@
-# AGetty version of /etc/ttys for leaninit
+# /etc/ttys, AGetty version
+#
+# This file first has the name of the getty program to launch,
+# then lists the ttys to spawn.
+#
+# NOTE: Do NOT include tty1, doing so will cause issues
+#
 
 agetty
 tty2

@@ -19,16 +19,20 @@
 # SOFTWARE.
 #
 
+# Variables (each one can be overridden)
 CC := cc
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fstack-protector-strong -fstack-check -fPIC -flto
-LDFLAGS := -Wl,--sort-common,--as-needed,-O1,-z,relro,-z,now $(CFLAGS)
+LDFLAGS := -Wl,--sort-common,--as-needed,--hash-style=gnu,-O1,-z,relro,-z,now $(CFLAGS)
 
+# Make the leaninit binary
 all: init
 
+# Compile init.c
 init:
 	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o init init.c $(LDFLAGS)
 
+# Install leaninit (compatible with other init systems)
 install: all
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
 	install -Dm0755 init $(DESTDIR)/sbin/l-init
@@ -39,13 +43,15 @@ install: all
 	cp -r svc $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
 	ln -sr $(DESTDIR)/sbin/l-halt $(DESTDIR)/sbin/l-poweroff
-	sed -i 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc
+	sed -i 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc $(DESTDIR)/etc/leaninit/ttys
 	sed -i 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
 	sed -i 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
 
+# Clean the directory
 clean:
 	rm -f init
 
+# 'clobber' and 'mrproper' just call 'clean'
 clobber: clean
 
 mrproper: clean

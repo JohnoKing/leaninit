@@ -1,2 +1,5 @@
+# For Visual Studio Code
 .vscode
+
+# Ignore the leaninit binary
 init
