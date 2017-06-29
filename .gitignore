@@ -1,5 +1,5 @@
 # For Visual Studio Code
 .vscode
 
-# Ignore the leaninit binary
+# Ignore the LeanInit binary
 init

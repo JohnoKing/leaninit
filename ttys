@@ -3,10 +3,13 @@
 # This file first has the name of the getty program to launch,
 # then lists the ttys to spawn.
 #
-# NOTE: Do NOT include tty1, doing so will cause issues
+# NOTE: Do NOT include tty1, doing so will cause issues.
 #
 
+# Change this to agetty, if agetty is the getty program you use
 getty
+
+# List of ttys to launch
 tty2
 tty3
 tty4

@@ -20,7 +20,7 @@
 #
 
 # The name of the service
-export NAME=NetworkManager
+NAME=NetworkManager
 
 # The main function
 main() {

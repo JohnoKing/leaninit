@@ -20,7 +20,7 @@
 #
 
 # The name of the service
-export NAME=DBus
+NAME=DBus
 
 # The main function
 main() {

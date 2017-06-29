@@ -24,6 +24,6 @@
 # Load /etc/profile
 . /etc/profile
 
-# Launch runit
+# Launch runit scripts
 /etc/runit/1
 /etc/runit/2

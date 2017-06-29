@@ -21,6 +21,12 @@
 # SOFTWARE.
 #
 
+# Exit if not root
+if [ $(id -u) != 0 ]; then
+	echo "This must be run as root!"
+	exit 1
+fi
+
 # Print info on how to use lsvc
 usage() {
 	echo $1 # Error message
@@ -51,8 +57,13 @@ enable() {
 
 	# Make a symlink in the /etc/leaninit/svce directory
 	ln -s /etc/leaninit/svc/$1 /etc/leaninit/svce
-	echo "The service $1 has been enabled"
-	exit 0
+	if [ $? = 0 ]; then
+		echo "The service $1 has been enabled"
+		exit 0
+	else
+		echo "Failed to enable service $1"
+		exit 1
+	fi
 }
 
 disable() {
@@ -73,8 +84,13 @@ disable() {
 
 	# Delete just the symlink to the service
 	rm /etc/leaninit/svce/$1
-	echo "The service $1 has been disabled"
-	exit 0
+	if [ $? = 0 ]; then
+		echo "The service $1 has been disabled"
+		exit 0
+	else
+		echo "Failed to disable service $1"
+		exit 1
+	fi
 }
 
 # Each function called here terminates the script once done, thus an extra exit is unnecessary

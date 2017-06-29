@@ -20,7 +20,7 @@
 #
 
 # The name of the service
-export NAME="ACPI Daemon"
+NAME="ACPI Daemon"
 
 # The main function
 main() {

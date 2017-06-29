@@ -1,5 +1,3 @@
-#!/bin/sh
-#
 # Copyright (c) 2017 Johnothan King. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,42 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# halt(8)
-#
 
-# Exit if not root
-if [ $(id -u) != 0 ]; then
-	echo "This must be run as root!"
-	exit 1
-fi
+# Source the /etc/leaninit/xdm.conf file
+. /etc/leaninit/xdm.conf
+export DM
 
-# Determine what to do
-case "$1" in
-
-     # Halt and Poweroff both go to runlevel zero
-    "")
-        export RUNLEVEL=0 ;;
-
-     # Ignored
-    "-p")
-        export RUNLEVEL=0 ;;
-
-    # Reboot
-    "-r")
-        export RUNLEVEL=6 ;;
-
-    # Other arguments are invalid
-    *)
-        echo "Usage: $0 [-pr]"
-        echo ""
-        echo "  -r            Restart the system"
-        echo "  -p            Ignored for compatibility"
-        exit 1 ;;
-esac
-
-# Unmount, or mount as read only, all filesystems
-umount -rat nodebugfs,nodevfs,noprocfs,nosysfs,notmpfs
-mount -fo remount,ro /
-
-# Send the new runlevel to init
-exec init $RUNLEVEL
+# The main function
+main() {
+	fork $DM
+}

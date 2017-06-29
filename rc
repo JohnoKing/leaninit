@@ -93,9 +93,10 @@ fi
 # Start the services
 for i in `ls /etc/leaninit/svce`; do
 	. /etc/leaninit/svc/$i
+	export NAME
 	print "Starting $NAME..."
 	main > $OUT
-	echo "Started $NAME" >> /var/log/v7init.log
+	echo "Started $NAME" >> /var/log/leaninit.log
 done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
