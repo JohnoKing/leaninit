@@ -27,15 +27,14 @@ LDFLAGS := -Wl,--sort-common,--as-needed,--hash-style=gnu,-O1,-z,relro,-z,now $(
 
 # Make the LeanInit binary
 all:
-	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o init init.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o l-init init.c $(LDFLAGS)
 
 # Install LeanInit (compatible with other init systems)
 install: all
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
-	install -Dm0755 init $(DESTDIR)/sbin/l-init
 	install -Dm0755 halt $(DESTDIR)/sbin/l-halt
 	install -Dm0755 reboot $(DESTDIR)/sbin/l-reboot
-	install -Dm0755 lsvc $(DESTDIR)/sbin
+	install -Dm0755 l-init lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
@@ -44,11 +43,11 @@ install: all
 	sed -i 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
 	sed -i 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
 
-# Compile init.c without reguard for other init systems
+# Compile init.c without regard for other init systems
 override:
 	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
 
-# Install LeanInit without reguard for other init systems
+# Install LeanInit without regard for other init systems
 override_install: override
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
 	install -Dm0755 init halt reboot lsvc $(DESTDIR)/sbin
