@@ -71,7 +71,7 @@ print "Loading settings with sysctl..."
 fork sysctl --system > $OUT
 
 # Load all modules specified in the /etc/modules-load.d folder
-if [ -e /etc/modules-load.d ]; do
+if [ -e /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
 	for i in `cat /etc/modules-load.d/* | sed /#/d`; do
 		modprobe $i
