@@ -100,5 +100,5 @@ for i in `cat /etc/ttys | sed /#/d | sed /getty/d`; do
 done
 
 # Launch a getty on tty1 without forking
-echo "Launching the a getty on tty1..."
+echo "Launching a getty on tty1..."
 $GETTY 38400 tty1
