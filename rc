@@ -50,7 +50,7 @@ fi
 fsck -A > $OUT
 
 # Launch eudev
-udevd --daemon
+fork udevd
 
 # Set the $GETTY variable
 export GETTY=`grep getty /etc/ttys | sed /#/d`
@@ -79,7 +79,7 @@ fi
 for i in `ls /etc/leaninit/svce`; do
 	. /etc/leaninit/svc/$i
 	print "Starting $NAME..."
-	main
+	main > $OUT
 	echo "Started $NAME" >> /var/log/v7init.log
 done
 
