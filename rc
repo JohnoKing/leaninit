@@ -24,6 +24,9 @@
 # Load /etc/profile
 . /etc/profile
 
+# Set the $GETTY variable
+export GETTY=`grep getty /etc/ttys | sed /#/d`
+
 # Function which forks processes (for parallel booting)
 fork() {
 	setsid "$@" &
@@ -47,24 +50,28 @@ else
 fi
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
+echo "Checking all filesystems for data corruption..."
 fsck -A > $OUT
 
 # Mount root as read-write (this is NOT done by udev)
+echo "Remounting root as read-write..."
 mount -o remount,rw /
 
 # Launch udev (requires eudev)
+echo "Starting udev..."
 udevd --daemon
 
 # Load all sysctl settings
+echo "Loading settings with sysctl..."
 fork sysctl --system > $OUT
 
-# Set the $GETTY variable
-export GETTY=`grep getty /etc/ttys | sed /#/d`
-
-# Load all modules specified in the /etc/modules-load.d folder (currently broken)
-for i in `cat /etc/modules-load.d/* | sed /#/d`; do
-	modprobe $i
-done
+# Load all modules specified in the /etc/modules-load.d folder
+if [ -e /etc/modules-load.d ]; do
+	echo "Loading kernel modules..."
+	for i in `cat /etc/modules-load.d/* | sed /#/d`; do
+		modprobe $i
+	done
+fi
 
 # Set the hostname
 if [ -e /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
@@ -87,10 +94,11 @@ for i in `ls /etc/leaninit/svce`; do
 done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
-print "Launching gettys..."
+print "Launching gettys specified in /etc/ttys..."
 for i in `cat /etc/ttys | sed /#/d | sed /getty/d`; do
 	fork $GETTY 38400 $i
 done
 
 # Launch a getty on tty1 without forking
+echo "Launching the a getty on tty1..."
 $GETTY 38400 tty1
