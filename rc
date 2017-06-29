@@ -49,11 +49,14 @@ fi
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
 fsck -A > $OUT
 
-# Mount the drive read-write, as this is NOT done by udev
+# Mount root as read-write (this is NOT done by udev)
 mount -o remount,rw /
 
-# Launch eudev
+# Launch udev (requires eudev)
 udevd --daemon
+
+# Load all sysctl settings
+fork sysctl --system > $OUT
 
 # Set the $GETTY variable
 export GETTY=`grep getty /etc/ttys | sed /#/d`
@@ -62,9 +65,6 @@ export GETTY=`grep getty /etc/ttys | sed /#/d`
 for i in `cat /etc/modules-load.d/* | sed /#/d`; do
 	modprobe $i
 done
-
-# Load all sysctl settings
-fork sysctl -a > $OUT
 
 # Set the hostname
 if [ -e /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
