@@ -45,6 +45,12 @@ static inline void rc(const char *mode) {
 // The main function
 int main(int argc, char *argv[])
 {
+    // Prevent anyone but root from running this
+    if(getuid() != 0) {
+        printf("LeanInit must be run as root!\n");
+        return 1;
+    }
+
     // Defaults to verbose boot
     if(argc == 1) {
         rc("v");

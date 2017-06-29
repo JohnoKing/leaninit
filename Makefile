@@ -47,6 +47,19 @@ install: all
 	sed -i 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
 	sed -i 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
 
+# Compile init.c without reguard for other init systems
+override:
+	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
+
+# Install LeanInit without reguard for other init systems
+override_install: override
+	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
+	install -Dm0755 init halt reboot lsvc $(DESTDIR)/sbin
+	install -Dm0755 rc $(DESTDIR)/etc
+	cp -r svc $(DESTDIR)/etc/leaninit
+	install -Dm0644 ttys $(DESTDIR)/etc
+	ln -sfr $(DESTDIR)/sbin/halt $(DESTDIR)/sbin/poweroff
+
 # Clean the directory
 clean:
 	rm -f init
