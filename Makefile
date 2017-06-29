@@ -20,7 +20,7 @@
 #
 
 # Variables (each one can be overridden)
-CC := cc
+CC      := cc
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fstack-protector-strong -fstack-check -fPIC -flto
 LDFLAGS := -Wl,--sort-common,--as-needed,--hash-style=gnu,-O1,-z,relro,-z,now $(CFLAGS)
