@@ -25,14 +25,11 @@ WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fstack-protector-strong -fstack-check -fPIC -flto
 LDFLAGS := -Wl,--sort-common,--as-needed,--hash-style=gnu,-O1,-z,relro,-z,now $(CFLAGS)
 
-# Make the leaninit binary
-all: init
-
-# Compile init.c
-init:
+# Make the LeanInit binary
+all:
 	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o init init.c $(LDFLAGS)
 
-# Install leaninit (compatible with other init systems)
+# Install LeanInit (compatible with other init systems)
 install: all
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
 	install -Dm0755 init $(DESTDIR)/sbin/l-init
