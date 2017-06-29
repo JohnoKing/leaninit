@@ -49,8 +49,11 @@ fi
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
 fsck -A > $OUT
 
+# Mount the drive read-write, as this is NOT done by udev
+mount -o remount,rw /
+
 # Launch eudev
-fork udevd
+udevd --daemon
 
 # Set the $GETTY variable
 export GETTY=`grep getty /etc/ttys | sed /#/d`
