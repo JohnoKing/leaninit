@@ -32,9 +32,6 @@
 // Execute the init script
 static inline void rc(const char *mode) {
 
-    // Set the $RUNLEVEL enviroment variable to three
-    setenv("RUNLEVEL", "3", 0);
-
     // Execute either /etc/rc or /etc/leaninit/rc
 #ifdef OVERRIDE
     execl("/bin/sh", "/bin/sh", "/etc/rc", mode, NULL);
