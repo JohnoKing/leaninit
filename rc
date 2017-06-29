@@ -39,7 +39,9 @@ if [ "$1" = "v" ]; then
 		echo "$@"
 		echo "$@" >> /var/log/leaninit.log
 	}
+
 	echo "LeanInit running on `uname -srm`"
+	echo "Checking all filesystems for data corruption..." # fsck(8) is run outside of the if statement
 
 # Don't echo to the console if quiet boot is on
 else
@@ -50,24 +52,27 @@ else
 fi
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
-echo "Checking all filesystems for data corruption..."
 fsck -A > $OUT
 
 # Mount root as read-write (this is NOT done by udev)
-echo "Remounting root as read-write..."
+if [ "$1" = "v" ]; then
+	echo "Remounting root as read-write..."
+fi
 mount -o remount,rw /
+mv /var/log/leaninit.log /var/log/leaninit.log.old
+echo "LeanInit running on `uname -srm`" > /var/log/leaninit.log
 
 # Launch udev (requires eudev)
-echo "Starting udev..."
+print "Starting udev..."
 udevd --daemon
 
 # Load all sysctl settings
-echo "Loading settings with sysctl..."
+print "Loading settings with sysctl..."
 fork sysctl --system > $OUT
 
 # Load all modules specified in the /etc/modules-load.d folder
 if [ -e /etc/modules-load.d ]; do
-	echo "Loading kernel modules..."
+	print "Loading kernel modules..."
 	for i in `cat /etc/modules-load.d/* | sed /#/d`; do
 		modprobe $i
 	done
@@ -100,5 +105,5 @@ for i in `cat /etc/ttys | sed /#/d | sed /getty/d`; do
 done
 
 # Launch a getty on tty1 without forking
-echo "Launching a getty on tty1..."
+print "Launching a getty on tty1..."
 $GETTY 38400 tty1
