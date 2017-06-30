@@ -32,8 +32,8 @@
 #include <unistd.h>
 
 // Base paths
-char svc_dir[255] = "/etc/leaninit/svc/";
-char svce_dir[255] = "/etc/leaninit/svce/";
+char svc_path[255] = "/etc/leaninit/svc/";
+char svce_path[255] = "/etc/leaninit/svce/";
 
 // Usage info for lsvc
 static void usage(const char *msg, ...)
@@ -56,27 +56,26 @@ static void usage(const char *msg, ...)
 // Function which disables the specified service (svc)
 static void disable(char *svc)
 {
-    // Paths and file descriptors for the service (svc)
-    strncat(svce_dir, svc, 237);
-    int svce_read = open(svce_dir, O_RDONLY);
+    // Path and file descriptor for the service (svc)
+    strncat(svce_path, svc, 237);
+    int svce_read = open(svce_path, O_RDONLY);
 
     // Error checking
     if(svce_read == -1) {
         close(svce_read);
-        strncat(svc_dir, svc, 237);
-        int svc_read = open(svc_dir, O_RDONLY);
+        strncat(svc_path, svc, 237);
+        int svc_read = open(svc_path, O_RDONLY);
         if(svc_read != -1) {
             close(svc_read);
             printf("The service %s is not enabled.\n", svc);
             exit(0);
         } else
-            close(svc_read);
             usage("The service %s does not exist!\n", svc);
     }
 
     // Remove the symlink (which disables the service), then exit
     close(svce_read);
-    unlink(svce_dir);
+    unlink(svce_path);
     printf("The service %s has been disabled.\n", svc);
     exit(0);
 }
@@ -85,10 +84,10 @@ static void disable(char *svc)
 static void enable(char *svc)
 {
     // Paths and file descriptors for the service (svc)
-    strncat(svc_dir, svc, 237);
-    strncat(svce_dir, svc, 237);
-    int svc_read  = open(svc_dir, O_RDONLY);
-    int svce_read = open(svce_dir, O_RDONLY);
+    strncat(svc_path, svc, 237);
+    strncat(svce_path, svc, 237);
+    int svc_read  = open(svc_path, O_RDONLY);
+    int svce_read = open(svce_path, O_RDONLY);
 
     // Error checking
     if(svc_read == -1) {
@@ -101,7 +100,7 @@ static void enable(char *svc)
 
     // Make the symlink
     close(svce_read);
-    link(svc_dir, svce_dir);
+    link(svc_path, svce_path);
 
     // Cleanup
     close(svc_read);
