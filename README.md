@@ -5,7 +5,7 @@ _A minimal init system_
 ## What is this
 This is a small init system that I made for myself, written from scratch. 
 I was motivated to make this init system, because when I was cleaning up 
-the [v7init](https://github.com/JohnoKing/v7init) (my port of the UNIX V7 init system to Linux), I found there was so much useless 
+[v7init](https://github.com/JohnoKing/v7init) (my port of the UNIX V7 init system to Linux), I found there was so much useless 
 code I would be better off rewriting an init system from scratch, using a 
 whole new code base. In addition to allowing me to write a much faster init 
 system, I could put it under the much more permissive MIT license, rather 
@@ -33,7 +33,7 @@ to agetty.
 To shut down your system when booted into LeanInit, run `l-halt` (if you 
 installed LeanInit normally) or `halt` (if you installed LeanInit with 
 `make override`) and the system will either turn off or halt, depending 
-on whether or not your system supports power management (ACPI). The 
+on whether or not your system supports power management (ACPI). 
 `l-poweroff` is just a symlink to `l-halt` (normal install), while 
 `poweroff` is a symlink to `halt` (override install).
 
@@ -42,7 +42,7 @@ To restart your system, run either `l-reboot` or `reboot`, depending on
 how you installed LeanInit.
 
 ### Enabling and disabling services
-The command to use for enabling and disabling services is lsvc (on both 
+The command to use for enabling and disabling services is `lsvc` (on both 
 normal and override installs). To enable a service, use `lsvc -e yourservice`; 
 and to disable a service, use `lsvc -d yourservice`. A list of services 
 LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).

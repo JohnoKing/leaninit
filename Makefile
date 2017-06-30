@@ -28,6 +28,7 @@ LDFLAGS := -Wl,--sort-common,--as-needed,--hash-style=gnu,-O1,-z,relro,-z,now $(
 # Make the LeanInit binary
 all:
 	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o l-init init.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o lsvc lsvc.c $(LDFLAGS)
 
 # Install LeanInit (compatible with other init systems)
 install: all
@@ -43,9 +44,10 @@ install: all
 	sed -i 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
 	sed -i 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
 
-# Compile init.c without regard for other init systems
+# Compile LeanInit without regard for other init systems
 override:
 	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS)
 
 # Install LeanInit without regard for other init systems
 override_install: override
@@ -58,7 +60,7 @@ override_install: override
 
 # Clean the directory
 clean:
-	rm -f init
+	rm -f init lsvc
 
 # 'clobber' and 'mrproper' just call 'clean'
 clobber: clean

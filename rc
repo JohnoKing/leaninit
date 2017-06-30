@@ -92,7 +92,7 @@ fi
 
 # Start the services
 for i in `ls /etc/leaninit/svce`; do
-	. /etc/leaninit/svc/$i
+	. /etc/leaninit/svce/$i
 	export NAME
 	print "Starting $NAME..."
 	main > $OUT
