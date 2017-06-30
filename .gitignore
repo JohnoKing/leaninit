@@ -3,4 +3,5 @@
 
 # Ignore the built binaries
 init
+l-init
 lsvc

@@ -24,7 +24,6 @@
  * lsvc - A program which enables and disables LeanInit services
  */
 
-#include <fcntl.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +31,7 @@
 #include <unistd.h>
 
 // Base paths
-char svc_path[255] = "/etc/leaninit/svc/";
+char svc_path[255]  = "/etc/leaninit/svc/";
 char svce_path[255] = "/etc/leaninit/svce/";
 
 // Usage info for lsvc
@@ -58,15 +57,15 @@ static void disable(char *svc)
 {
     // Path and file descriptor for the service (svc)
     strncat(svce_path, svc, 237);
-    int svce_read = open(svce_path, O_RDONLY);
+    FILE *svce_read = fopen(svce_path, "r");
 
     // Error checking
-    if(svce_read == -1) {
-        close(svce_read);
+    if(svce_read == NULL) {
+        fclose(svce_read);
         strncat(svc_path, svc, 237);
-        int svc_read = open(svc_path, O_RDONLY);
-        if(svc_read != -1) {
-            close(svc_read);
+        FILE *svc_read = fopen(svc_path, "r");
+        if(svc_read != NULL) {
+            fclose(svc_read);
             printf("The service %s is not enabled.\n", svc);
             exit(0);
         } else
@@ -74,7 +73,7 @@ static void disable(char *svc)
     }
 
     // Remove the symlink (which disables the service), then exit
-    close(svce_read);
+    fclose(svce_read);
     unlink(svce_path);
     printf("The service %s has been disabled.\n", svc);
     exit(0);
@@ -86,24 +85,24 @@ static void enable(char *svc)
     // Paths and file descriptors for the service (svc)
     strncat(svc_path, svc, 237);
     strncat(svce_path, svc, 237);
-    int svc_read  = open(svc_path, O_RDONLY);
-    int svce_read = open(svce_path, O_RDONLY);
+    FILE *svc_read  = fopen(svc_path, "r");
+    FILE *svce_read = fopen(svce_path, "r");
 
     // Error checking
-    if(svc_read == -1) {
+    if(svc_read == NULL)
         usage("The service %s does not exist!\n", svc);
-    } else if(svce_read != -1) {
-        close(svce_read);
+    else if(svce_read != NULL) {
+        fclose(svce_read);
         printf("The service %s is already enabled.\n", svc);
         exit(0);
     }
 
     // Make the symlink
-    close(svce_read);
+    fclose(svce_read);
     link(svc_path, svce_path);
 
     // Cleanup
-    close(svc_read);
+    fclose(svc_read);
     printf("The service %s has been enabled.\n", svc);
     exit(0);
 }
