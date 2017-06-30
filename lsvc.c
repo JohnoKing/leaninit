@@ -61,7 +61,6 @@ static void disable(char *svc)
 
     // Error checking
     if(svce_read == NULL) {
-        fclose(svce_read);
         strncat(svc_path, svc, 237);
         FILE *svc_read = fopen(svc_path, "r");
         if(svc_read != NULL) {
@@ -98,7 +97,6 @@ static void enable(char *svc)
     }
 
     // Make the symlink
-    fclose(svce_read);
     link(svc_path, svce_path);
 
     // Cleanup
