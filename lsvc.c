@@ -71,7 +71,7 @@ static void disable(char *svc)
             usage("The service %s does not exist!\n", svc);
     }
 
-    // Remove the symlink (which disables the service), then exit
+    // Remove the hardlink (which disables the service), then exit
     fclose(svce_read);
     unlink(svce_path);
     printf("The service %s has been disabled.\n", svc);
@@ -96,7 +96,7 @@ static void enable(char *svc)
         exit(0);
     }
 
-    // Make the symlink
+    // Make the hardlink
     link(svc_path, svce_path);
 
     // Cleanup
