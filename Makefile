@@ -67,4 +67,4 @@ clobber: clean
 	git reset --hard
 
 # Alias for clobber
-mrproper: clean
+mrproper: clobber
