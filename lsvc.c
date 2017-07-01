@@ -31,8 +31,8 @@
 #include <unistd.h>
 
 // Base paths
-char svc_path[255]  = "/etc/leaninit/svc/";
-char svce_path[255] = "/etc/leaninit/svce/";
+char svc_path[273]  = "/etc/leaninit/svc/";
+char svce_path[274] = "/etc/leaninit/svce/";
 
 // Usage info for lsvc
 static void usage(const char *msg, ...)
@@ -56,12 +56,12 @@ static void usage(const char *msg, ...)
 static void disable(char *svc)
 {
     // Path and file descriptor for the service (svc)
-    strncat(svce_path, svc, 237);
+    strncat(svce_path, svc, 255);
     FILE *svce_read = fopen(svce_path, "r");
 
     // Error checking
     if(svce_read == NULL) {
-        strncat(svc_path, svc, 237);
+        strncat(svc_path, svc, 255);
         FILE *svc_read = fopen(svc_path, "r");
         if(svc_read != NULL) {
             fclose(svc_read);
@@ -82,8 +82,8 @@ static void disable(char *svc)
 static void enable(char *svc)
 {
     // Paths and file descriptors for the service (svc)
-    strncat(svc_path, svc, 237);
-    strncat(svce_path, svc, 237);
+    strncat(svc_path, svc, 255);
+    strncat(svce_path, svc, 255);
     FILE *svc_read  = fopen(svc_path, "r");
     FILE *svce_read = fopen(svce_path, "r");
 
@@ -114,6 +114,10 @@ int main(int argc, char *argv[])
     // Show usage info if given no arguments
     if(argc == 1)
         usage("Do you want to enable or disable a service?\n");
+
+    // Exit if the service name is too long
+    if(strlen(argv[2]) > 255)
+        usage("The service name '%s' is too long!\n", argv[2]);
 
     // Get the arguments
     int args;

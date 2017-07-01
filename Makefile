@@ -62,7 +62,9 @@ override_install: override
 clean:
 	rm -f init l-init lsvc
 
-# 'clobber' and 'mrproper' just call 'clean'
+# Calls clean, then resets the git repo
 clobber: clean
+	git reset --hard
 
+# Alias for clobber
 mrproper: clean
