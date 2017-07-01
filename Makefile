@@ -60,7 +60,7 @@ override_install: override
 
 # Clean the directory
 clean:
-	rm -f init lsvc
+	rm -f init l-init lsvc
 
 # 'clobber' and 'mrproper' just call 'clean'
 clobber: clean
