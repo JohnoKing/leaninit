@@ -29,8 +29,8 @@
 #include <unistd.h>
 
 // Execute the init script
-static inline void rc(const char *mode) {
-
+static inline void rc(const char *mode)
+{
     // Execute either /etc/rc or /etc/leaninit/rc
 #ifdef OVERRIDE
     execl("/bin/sh", "/bin/sh", "/etc/rc", mode, NULL);
