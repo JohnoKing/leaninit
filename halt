@@ -36,6 +36,14 @@ export RUNLEVEL=0
 while getopts "fpr" argv; do
     case "$argv" in
 
+        # Unsupported options are just ignored
+        d)
+            echo "WARNING: The option -d is not supported!" ;;
+        n)
+            echo "WARNING: The option -n is not supported!" ;;
+        w)
+            echo "WARNING: The option -w is not supported!" ;;
+
         # Both -f and -p are ignored
         f)
             command ;;
