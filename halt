@@ -29,28 +29,30 @@ if [ $(id -u) != 0 ]; then
 	exit 1
 fi
 
+# Default to runlevel 0
+export RUNLEVEL=0
+
 # Determine what to do
-case "$1" in
+while getopts "fpr" argv; do
+    case "$argv" in
 
-     # Halt and Poweroff both go to runlevel zero
-    "")
-        export RUNLEVEL=0 ;;
+        # Both -f and -p are ignored
+        f)
+            command ;;
+        p)
+            command ;;
 
-     # Ignored
-    "-p")
-        export RUNLEVEL=0 ;;
+        # Set the runlevel to six
+        r)
+            export RUNLEVEL=6 ;;
 
-    # Reboot
-    "-r")
-        export RUNLEVEL=6 ;;
-
-    # Other arguments are invalid
-    *)
-        echo "Usage: $0 [-pr]"
-        echo ""
-        echo "  -r            Restart the system"
-        echo "  -p            Ignored for compatibility"
-        exit 1 ;;
+        *)
+            echo "Usage: $0 [-pr]"
+            echo ""
+            echo "  -r            Restart the system"
+            echo "  -p            Ignored for compatibility"
+            exit 1
+            ;;
 esac
 
 # Unmount, or mount as read only, all filesystems
