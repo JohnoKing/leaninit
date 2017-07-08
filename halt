@@ -39,15 +39,22 @@ usage() {
 
 # Exit if not root
 if [ $(id -u) != 0 ]; then
-	echo "This must be run as root!"
-	exit 1
+    echo "This must be run as root!"
+    exit 1
+fi
+
+# Exit if the provided argument is just a dash
+if [ "$1" = "-" ]; then
+    echo "'-' is an invalid argument!"
+    echo ""
+    usage $0 1
 fi
 
 # Default to runlevel 0
 export RUNLEVEL=0
 
 # Determine what to do
-while getopts "fpr" argv; do
+while getopts "dfhnprw" argv; do
     case "$argv" in
 
         # Show usage info (with success)
@@ -74,6 +81,7 @@ while getopts "fpr" argv; do
 
         # Fallback
         *)
+            echo ""
             usage $0 1 ;;
 
     esac
