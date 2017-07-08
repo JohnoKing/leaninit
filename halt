@@ -72,9 +72,12 @@ while getopts "fpr" argv; do
         r)
             export RUNLEVEL=6 ;;
 
+        # Fallback
         *)
             usage $0 1 ;;
-esac
+
+    esac
+done
 
 # Unmount, or mount as read only, all filesystems
 umount -rat nodebugfs,nodevfs,noprocfs,nosysfs,notmpfs
