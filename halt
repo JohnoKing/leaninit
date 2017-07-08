@@ -23,6 +23,20 @@
 # halt(8)
 #
 
+# Usage info
+usage() {
+    echo "Usage: $1 [-dfhnprw]"
+    echo ""
+    echo "  -d            Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)"
+    echo "  -f            Ignored for compatibility"
+    echo "  -h            Show this usage information"
+    echo "  -n            Ignored for compatibility (LeanInit is hardcoded to synchronize the filesystems before poweroff or reboot)"
+    echo "  -r            Restart the system"
+    echo "  -p            Ignored for compatibility"
+    echo "  -w            Ignored for compatibility"
+    exit $2
+}
+
 # Exit if not root
 if [ $(id -u) != 0 ]; then
 	echo "This must be run as root!"
@@ -35,6 +49,10 @@ export RUNLEVEL=0
 # Determine what to do
 while getopts "fpr" argv; do
     case "$argv" in
+
+        # Show usage info (with success)
+        h)
+            usage $0 0 ;;
 
         # Unsupported options are just ignored
         n)
@@ -55,12 +73,7 @@ while getopts "fpr" argv; do
             export RUNLEVEL=6 ;;
 
         *)
-            echo "Usage: $0 [-pr]"
-            echo ""
-            echo "  -r            Restart the system"
-            echo "  -p            Ignored for compatibility"
-            exit 1
-            ;;
+            usage $0 1 ;;
 esac
 
 # Unmount, or mount as read only, all filesystems
