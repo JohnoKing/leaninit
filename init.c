@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 {
     // Prevent anyone but root from running this
     if(getuid() != 0) {
-        printf("LeanInit must be run as root!\n");
+        printf("LeanInit must be run as root!\n\nUsage: init [mode] ...\n");
         return 1;
     }
 
