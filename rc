@@ -40,7 +40,7 @@ if [ "$1" = "v" ]; then
 		echo "$@" >> /var/log/leaninit.log
 	}
 
-	echo "LeanInit running on `uname -srm`"
+	echo "LeanInit is running on `uname -srm`"
 	echo "Checking all filesystems for data corruption..." # fsck(8) is run outside of the if statement
 
 # Don't echo to the console if quiet boot is on
@@ -60,7 +60,7 @@ if [ "$1" = "v" ]; then
 fi
 mount -o remount,rw /
 mv /var/log/leaninit.log /var/log/leaninit.log.old
-echo "LeanInit running on `uname -srm`" > /var/log/leaninit.log
+echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
 # Launch udev (requires eudev)
 print "Starting udev..."
