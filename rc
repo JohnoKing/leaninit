@@ -66,6 +66,10 @@ echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 print "Starting udev..."
 udevd --daemon
 
+# Manually mount all drives, as udev may not do this
+mount -a
+swapon -a
+
 # Load all sysctl settings
 print "Loading settings with sysctl..."
 fork sysctl --system > $OUT
