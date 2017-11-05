@@ -24,5 +24,6 @@ NAME=DBus
 
 # The main function
 main() {
-	dbus-launch
+	mkdir -p /run/dbus
+	fork dbus-daemon --system
 }
