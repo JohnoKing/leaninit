@@ -37,7 +37,7 @@ install: all
 	install -Dm0755 reboot $(DESTDIR)/sbin/l-reboot
 	install -Dm0755 l-init lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
-	cp -r svc $(DESTDIR)/etc/leaninit
+	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
 	ln -sr $(DESTDIR)/sbin/l-halt $(DESTDIR)/sbin/l-poweroff
 	sed -i 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc $(DESTDIR)/etc/leaninit/ttys
@@ -54,7 +54,7 @@ override_install: override
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
 	install -Dm0755 init halt reboot lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc
-	cp -r svc $(DESTDIR)/etc/leaninit
+	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc
 	ln -sfr $(DESTDIR)/sbin/halt $(DESTDIR)/sbin/poweroff
 

@@ -19,11 +19,18 @@
 # SOFTWARE.
 #
 
-# Source the /etc/leaninit/xdm.conf file
-. /etc/leaninit/xdm.conf
-export DM
+export XDMCONF=/etc/leaninit/xdm.conf
 
 # The main function
 main() {
-	fork $DM
+	# Source the /etc/leaninit/xdm.conf file if it exists, error if it doesn't
+	if [ -e $XDMCONF ]; then
+		. $XDMCONF
+		export DM
+
+		# Start the display manager
+		fork $DM
+	else
+		echo "The X Server cannot be started because $XDMCONF doesn't exist!"
+	fi
 }
