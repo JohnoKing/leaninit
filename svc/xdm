@@ -31,6 +31,6 @@ main() {
 		# Start the display manager
 		fork $DM
 	else
-		echo "The X Server cannot be started because $XDMCONF doesn't exist!"
+		print "The X Server cannot be started because $XDMCONF doesn't exist!"
 	fi
 }
