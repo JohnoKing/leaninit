@@ -39,7 +39,7 @@ install: all
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
-	ln -sr $(DESTDIR)/sbin/l-halt $(DESTDIR)/sbin/l-poweroff
+	ln -sfr $(DESTDIR)/sbin/l-halt $(DESTDIR)/sbin/l-poweroff
 	sed -i 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc $(DESTDIR)/etc/leaninit/ttys
 	sed -i 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
 	sed -i 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
