@@ -21,6 +21,9 @@
 # SOFTWARE.
 #
 
+# Just in case, set a PATH variable in case /etc/profile does not contain one
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
 # Load /etc/profile
 . /etc/profile
 
