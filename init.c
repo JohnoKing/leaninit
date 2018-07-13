@@ -112,10 +112,6 @@ int main(int argc, char *argv[])
 		} else {
 			switch(*argv[1]) {
 
-				// Halt
-				case 'h':
-					halt(HALT, 1);
-
 				// Poweroff
 				case '0':
 					halt(POWEROFF, 1);
@@ -129,6 +125,10 @@ int main(int argc, char *argv[])
 				case '7':
 					halt(SLEEP, 1);
 #endif
+				// Halt
+				case '8':
+					halt(HALT, 1);
+
 
 				// Quiet boot, splash boot currently defaults to quiet boot
 				case 'q':
