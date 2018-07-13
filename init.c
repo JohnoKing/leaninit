@@ -62,7 +62,12 @@ int main(int argc, char *argv[])
             // Halt
             case 'h':
                 sync();
+#ifdef LINUX
                 reboot(RB_HALT_SYSTEM);
+#endif
+#ifdef FREEBSD
+		reboot(RB_HALT);
+#endif
 
             // Poweroff
             case '0':
@@ -79,10 +84,12 @@ int main(int argc, char *argv[])
                 sync();
                 reboot(RB_AUTOBOOT);
 
-            // Suspend (Hibernate)
+#ifdef LINUX
+            // Hibernate (Disabled for now on FreeBSD)
             case '7':
                 sync();
                 reboot(RB_SW_SUSPEND);
+#endif
 
             // Quiet boot, splash boot currently defaults to quiet boot
             case 'q':
