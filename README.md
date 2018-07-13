@@ -20,10 +20,7 @@ add `init=/sbin/l-init` to your kernel command line (on Linux).
 
 Alternatively, run `make override` to make a LeanInit binary without 
 regard for other init systems; and running `make override_install` will 
-install LeanInit, overriding any other init systems in the process. If 
-you are using agetty as your getty program, you can either replace the 
-`getty` line in /etc/ttys with `agetty`, or make /sbin/getty a symlink 
-to agetty.
+install LeanInit, overriding any other init systems in the process.
 
 LeanInit is not compatible with BSD Make. To compile LeanInit on FreeBSD,
 you must run `gmake` instead of `make`.
