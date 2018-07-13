@@ -65,7 +65,7 @@ static int usage_halt(int ret)
 	exit(ret);
 }
 
-// Halts, reboots or turns of the system
+// Halts, reboots or turns off the system
 static void halt(int level, int fs)
 {
 	if(fs != 0)
