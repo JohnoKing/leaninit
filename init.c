@@ -31,79 +31,79 @@
 // Execute the init script
 static inline void rc(const char *mode)
 {
-    // Execute either /etc/rc or /etc/leaninit/rc
+	// Execute either /etc/rc or /etc/leaninit/rc
 #ifdef OVERRIDE
-    execl("/bin/sh", "/bin/sh", "/etc/rc", mode, NULL);
+	execl("/bin/sh", "/bin/sh", "/etc/rc", mode, NULL);
 #else
-    execl("/bin/sh", "/bin/sh", "/etc/leaninit/rc", mode, NULL);
+	execl("/bin/sh", "/bin/sh", "/etc/leaninit/rc", mode, NULL);
 #endif
 
-    // This is done in case this function stops to prevent data corruption
-    sync();
+	// This is done in case this function stops to prevent data corruption
+	sync();
 }
 
 // The main function
 int main(int argc, char *argv[])
 {
-    // Prevent anyone but root from running this
-    if(getuid() != 0) {
-        printf("LeanInit must be run as root!\n\nUsage: init [mode] ...\n");
-        return 1;
-    }
+	// Prevent anyone but root from running this
+	if(getuid() != 0) {
+		printf("LeanInit must be run as root!\n\nUsage: init [mode] ...\n");
+		return 1;
+	}
 
-    // Defaults to verbose boot
-    if(argc == 1) {
-        rc("v");
+	// Defaults to verbose boot
+	if(argc == 1) {
+		rc("v");
 
-    // Determine what to do
-    } else {
-        switch(*argv[1]) {
+	// Determine what to do
+	} else {
+		switch(*argv[1]) {
 
-            // Halt
-            case 'h':
-                sync();
+			// Halt
+			case 'h':
+				sync();
 #ifdef LINUX
-                reboot(RB_HALT_SYSTEM);
+				reboot(RB_HALT_SYSTEM);
 #endif
 #ifdef FREEBSD
 		reboot(RB_HALT);
 #endif
 
-            // Poweroff
-            case '0':
-                sync();
+			// Poweroff
+			case '0':
+				sync();
 #ifdef LINUX
-                reboot(RB_POWER_OFF);
+				reboot(RB_POWER_OFF);
 #endif
 #ifdef FREEBSD
 		reboot(RB_POWEROFF);
 #endif
 
-            // Reboot
-            case '6':
-                sync();
-                reboot(RB_AUTOBOOT);
+			// Reboot
+			case '6':
+				sync();
+				reboot(RB_AUTOBOOT);
 
 #ifdef LINUX
-            // Hibernate (Disabled for now on FreeBSD)
-            case '7':
-                sync();
-                reboot(RB_SW_SUSPEND);
+			// Hibernate (Disabled for now on FreeBSD)
+			case '7':
+				sync();
+				reboot(RB_SW_SUSPEND);
 #endif
 
-            // Quiet boot, splash boot currently defaults to quiet boot
-            case 'q':
-            case 's':
-                rc("q");
+			// Quiet boot, splash boot currently defaults to quiet boot
+			case 'q':
+			case 's':
+				rc("q");
 
-            // Verbose boot (default)
-            case 'v':
-                rc("v");
+			// Verbose boot (default)
+			case 'v':
+				rc("v");
 
-            // Fallback
-            default:
-                printf("Argument invalid!\nUsage: init [mode] ...\n");
-                return 1;
-        }
-    }
+			// Fallback
+			default:
+				printf("Argument invalid!\nUsage: init [mode] ...\n");
+				return 1;
+		}
+	}
 }
