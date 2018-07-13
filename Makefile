@@ -32,7 +32,7 @@ KBD     := loadkeys
 ifeq ($(shell uname),FreeBSD)
 	OSFLAGS=-DFREEBSD
 	SED=sed -i ''
-	FORK=daemon	
+	FORK=daemon
 	KBD=setxkbmap
 endif
 
