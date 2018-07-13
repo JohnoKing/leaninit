@@ -38,7 +38,7 @@ usage() {
 }
 
 # Exit if not root
-if [ $(id -u) != 0 ]; then
+if [ `id -u` != 0 ]; then
     echo "This must be run as root!"
     exit 1
 fi
@@ -51,7 +51,7 @@ if [ "$1" = "-" ]; then
 fi
 
 # Default to runlevel 0
-export RUNLEVEL=0
+RUNLEVEL=0
 
 # Determine what to do
 while getopts "dfhnprw" argv; do
@@ -77,7 +77,7 @@ while getopts "dfhnprw" argv; do
 
         # Set the runlevel to six
         r)
-            export RUNLEVEL=6 ;;
+            RUNLEVEL=6 ;;
 
         # Fallback
         *)

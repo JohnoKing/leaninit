@@ -21,11 +21,14 @@
 # SOFTWARE.
 #
 
+# Just in case, set a PATH variable in case /etc/profile does not contain one
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
 # Load /etc/profile
 . /etc/profile
 
 # Set the $GETTY variable
-export GETTY=`grep getty /etc/ttys | sed /#/d`
+GETTY=`grep getty /etc/ttys | sed /#/d`
 
 # Function which forks processes (for parallel booting)
 fork() {
@@ -34,7 +37,7 @@ fork() {
 
 # Echo to the console if verbose boot is on
 if [ "$1" = "v" ]; then
-	export OUT="/dev/stdout"
+	OUT="/dev/stdout"
 	print() {
 		echo "$@"
 		echo "$@" >> /var/log/leaninit.log
@@ -45,7 +48,7 @@ if [ "$1" = "v" ]; then
 
 # Don't echo to the console if quiet boot is on
 else
-	export OUT="/dev/null"
+	OUT="/dev/null"
 	print() {
 		echo "$@" >> /var/log/leaninit.log
 	}
@@ -63,10 +66,12 @@ mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
 # Launch udev (requires eudev)
-print "Starting udev..."
-udevd --daemon
+if [ `uname` = Linux ]; then
+	print "Starting udev..."
+	udevd --daemon
+fi
 
-# Manually mount all drives, as udev may not do this
+# Manually mount all drives
 mount -a
 swapon -a
 
@@ -75,7 +80,7 @@ print "Loading settings with sysctl..."
 fork sysctl --system > $OUT
 
 # Load all modules specified in the /etc/modules-load.d folder
-if [ -e /etc/modules-load.d ]; then
+if [ `uname` = Linux ] &&  [ -r /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
 	for i in `cat /etc/modules-load.d/* | sed /#/d`; do
 		modprobe $i
@@ -83,15 +88,15 @@ if [ -e /etc/modules-load.d ]; then
 fi
 
 # Set the hostname
-if [ -e /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
+if [ -r /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
 	print "Setting the hostname to `cat /etc/hostname`..."
 	fork hostname `cat /etc/hostname`
 fi
 
 # Set the keyboard layout when needed (this requires kbd to work)
-if [ -e /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; then
+if [ -r /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; then
 	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.conf`..."
-	fork loadkeys `cat /etc/leaninit/kbd.conf`
+	fork KBD_PROG `cat /etc/leaninit/kbd.conf`
 fi
 
 # Start the services

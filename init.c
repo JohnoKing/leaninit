@@ -59,6 +59,11 @@ int main(int argc, char *argv[])
     } else {
         switch(*argv[1]) {
 
+            // Halt
+            case 'h':
+                sync();
+                reboot(RB_HALT_SYSTEM);
+
             // Poweroff
             case '0':
                 sync();
@@ -73,6 +78,11 @@ int main(int argc, char *argv[])
             case '6':
                 sync();
                 reboot(RB_AUTOBOOT);
+
+            // Suspend (Hibernate)
+            case '7':
+                sync();
+                reboot(RB_SW_SUSPEND);
 
             // Quiet boot, splash boot currently defaults to quiet boot
             case 'q':

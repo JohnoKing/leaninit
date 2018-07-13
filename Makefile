@@ -21,17 +21,19 @@
 
 # Variables (each one can be overridden)
 CC      := cc
+SED     := sed -i
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
 OSFLAGS := -DLINUX
 FORK    := setsid
-SED     := sed -i
+KBD     := loadkeys
 
 # FreeBSD Compatibility
 ifeq ($(shell uname),FreeBSD)
 	OSFLAGS=-DFREEBSD
-	FORK=daemon
 	SED=sed -i ''
+	FORK=daemon	
+	KBD=setxkbmap
 endif
 
 # Make the LeanInit binary
@@ -51,9 +53,10 @@ install: all
 	cd $(DESTDIR)/sbin && ln -sf l-halt l-poweroff
 	$(SED) 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc
 	$(SED) 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/ttys
-	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/leaninit/rc
 	$(SED) 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
 	$(SED) 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
+	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/leaninit/rc
+	$(SED) "s:KBD_PROG:$(KBD):g" $(DESTDIR)/etc/leaninit/rc
 
 # Compile LeanInit without regard for other init systems
 override:
@@ -69,6 +72,7 @@ override_install: override
 	install -Dm0644 ttys $(DESTDIR)/etc
 	cd $(DESTDIR)/sbin && ln -sf l-halt l-poweroff
 	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/rc
+	$(SED) "s:KBD_PROG:$(KBD):g" $(DESTDIR)/etc/rc
 
 # Clean the directory
 clean:

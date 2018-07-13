@@ -3,7 +3,7 @@ XDMCONF=/etc/leaninit/xdm.conf
 # The main function
 main() {
 	# Source the /etc/leaninit/xdm.conf file if it exists, error if it doesn't
-	if [ -e $XDMCONF ]; then
+	if [ -r $XDMCONF ]; then
 		. $XDMCONF
 		export DM
 		NAME=$DM
