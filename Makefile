@@ -1,4 +1,4 @@
-# Copyright (c) 2017 Johnothan King. All rights reserved.
+# Copyright (c) 2017-2018 Johnothan King. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,22 @@
 # Variables (each one can be overridden)
 CC      := cc
 WFLAGS  := -Wall -Wextra -Wpedantic
-CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fstack-protector-strong -fstack-check -fPIC -flto
-LDFLAGS := -Wl,--sort-common,--as-needed,--hash-style=gnu,-O1,-z,relro,-z,now $(CFLAGS)
+CFLAGS  := -O2 -fno-math-errno -pipe
+OSFLAGS := -DLINUX
+FORK    := setsid
+SED     := sed -i
+
+# FreeBSD Compatibility
+ifeq ($(shell uname),FreeBSD)
+	OSFLAGS=-DFREEBSD
+	FORK=daemon
+	SED=sed -i ''
+endif
 
 # Make the LeanInit binary
 all:
-	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o l-init init.c $(LDFLAGS)
-	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -o lsvc lsvc.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o l-init init.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o lsvc lsvc.c $(LDFLAGS)
 
 # Install LeanInit (compatible with other init systems)
 install: all
@@ -39,15 +48,17 @@ install: all
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
-	ln -sr $(DESTDIR)/sbin/l-halt $(DESTDIR)/sbin/l-poweroff | true
-	sed -i 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc $(DESTDIR)/etc/leaninit/ttys
-	sed -i 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
-	sed -i 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
+	cd $(DESTDIR)/sbin && ln -sf l-halt l-poweroff
+	$(SED) 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc
+	$(SED) 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/ttys
+	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/leaninit/rc
+	$(SED) 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
+	$(SED) 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
 
 # Compile LeanInit without regard for other init systems
 override:
-	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
-	$(CC) $(WFLAGS) $(CFLAGS) $(CPPFLAGS) -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS)
 
 # Install LeanInit without regard for other init systems
 override_install: override
@@ -56,7 +67,8 @@ override_install: override
 	install -Dm0755 rc $(DESTDIR)/etc
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc
-	ln -sfr $(DESTDIR)/sbin/halt $(DESTDIR)/sbin/poweroff
+	cd $(DESTDIR)/sbin && ln -sf l-halt l-poweroff
+	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/rc
 
 # Clean the directory
 clean:

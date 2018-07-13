@@ -27,6 +27,9 @@ you are using agetty as your getty program, you can either replace the
 `getty` line in /etc/ttys with `agetty`, or make /sbin/getty a symlink 
 to agetty.
 
+LeanInit is not compatible with BSD Make. To compile LeanInit on FreeBSD,
+you must run `gmake` instead of `make`.
+
 ## Usage
 
 ### Shutting down your system

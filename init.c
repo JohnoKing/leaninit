@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Johnothan King. All rights reserved.
+ * Copyright (c) 2017-2018 Johnothan King. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,12 @@ int main(int argc, char *argv[])
             // Poweroff
             case '0':
                 sync();
+#ifdef LINUX
                 reboot(RB_POWER_OFF);
+#endif
+#ifdef FREEBSD
+		reboot(RB_POWEROFF);
+#endif
 
             // Reboot
             case '6':
