@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 
 		// Default behavior
 		if(argc == 1) {
-			halt(POWEROFF, 1);
+			halt(POWEROFF, dosync);
 
 		} else {
 
