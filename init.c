@@ -54,7 +54,7 @@ static void rc(const char *mode)
 // Shows usage for halt(8) when executed as halt
 static int usage_halt(int ret)
 {
-	printf("Usage: %s [-dfhnprw]\n\n", __progname);
+	printf("Usage: %s [-dfhnprw]\n", __progname);
 	printf("  -d            Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
 	printf("  -f            Ignored for compatibility\n");
 	printf("  -h            Show this usage information\n");
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 
 				// Fallback
 				default:
-					printf("%s: Option not permitted\n\nUsage: %s [mode] ...\n", __progname, __progname);
+					printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
 					return 1;
 			}
 		}
@@ -183,7 +183,6 @@ int main(int argc, char *argv[])
 
 					// Show usage, but with a return status of 1
 					default:
-						printf("%s: invalid option -- %c\n", __progname, args);
 						usage_halt(1);
 				}
 			}
