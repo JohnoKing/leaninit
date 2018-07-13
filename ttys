@@ -7,7 +7,7 @@
 #
 
 # Change this to agetty, if agetty is the getty program you use
-getty
+/sbin/getty
 
 # List of ttys to launch
 tty2
