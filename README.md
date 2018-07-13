@@ -16,9 +16,7 @@ of the UNIX code at all.
 Run `make` and a LeanInit binary compatible with other init systems will 
 be built, named `l-init`. Running `make install` as root will install 
 LeanInit, without overriding other init systems. To boot from LeanInit, 
-add `init=/sbin/l-init` to your kernel command line. If you are using 
-agetty as your getty program, you can either replace the `getty` line in 
-/etc/leaninit/ttys with `agetty`, or make /sbin/getty a symlink to agetty.
+add `init=/sbin/l-init` to your kernel command line (on Linux). 
 
 Alternatively, run `make override` to make a LeanInit binary without 
 regard for other init systems; and running `make override_install` will 
