@@ -25,6 +25,7 @@
  */
 
 #include <sys/reboot.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,7 +52,7 @@ static void rc(const char *mode)
 	sync();
 }
 
-// Shows usage for halt(8) when executed as halt
+// Shows usage for halt(8)
 static int usage_halt(int ret)
 {
 	printf("Usage: %s [-dfhnprw]\n", __progname);
@@ -66,12 +67,13 @@ static int usage_halt(int ret)
 }
 
 // Halts, reboots or turns off the system
-static void halt(int level, int fs)
+static void halt(int runlevel, bool dosync)
 {
-	if(fs != 0)
+	if(dosync == true)
 		sync();
 
-	switch(level) {
+	// Act as per the runlevel
+	switch(runlevel) {
 #ifdef LINUX
 		case HALT:
 			reboot(RB_HALT_SYSTEM);
@@ -89,7 +91,7 @@ static void halt(int level, int fs)
 		case REBOOT:
 			reboot(RB_AUTOBOOT);
 		default:
-			printf("Something went wrong, received mode %c\n", level);
+			printf("Something went wrong, received mode %i\n", runlevel);
 			exit(2);
 	}
 }
@@ -102,32 +104,33 @@ int main(int argc, char *argv[])
 		printf("Permission denied\n");
 		exit(1);
 	}
- 
+
+	// When ran as init(8)
 	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "l-init", 6) == 0) {
+
 		// Defaults to verbose boot
 		if(argc == 1) {
 			rc("v");
 
-		// Determine what to do
 		} else {
 			switch(*argv[1]) {
 
 				// Poweroff
 				case '0':
-					halt(POWEROFF, 1);
+					halt(POWEROFF, true);
 
 				// Reboot
 				case '6':
-					halt(REBOOT, 1);
+					halt(REBOOT, true);
 
 #ifdef LINUX
 				// Hibernate (Disabled for now on FreeBSD)
 				case '7':
-					halt(SLEEP, 1);
+					halt(SLEEP, true);
 #endif
 				// Halt
 				case '8':
-					halt(HALT, 1);
+					halt(HALT, true);
 
 
 				// Quiet boot, splash boot currently defaults to quiet boot
@@ -147,14 +150,17 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// When ran as halt(8)
 	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "l-halt", 6) == 0) {
-		int dosync   = 1;        // Synchronize filesystems
-		int level    = POWEROFF; // Default runlevel for halt
+		bool dosync    = true;     // Synchronize filesystems by default
+		int  runlevel  = POWEROFF; // 0 is the default runlevel for halt
 
+		// Default behavior
 		if(argc == 1) {
-			halt(POWEROFF, 1); // Default behavior
+			halt(POWEROFF, 1);
 
 		} else {
+
 			int args;
 			while((args = getopt(argc, argv, "dfhnprw")) != -1) {
 				switch(args) {
@@ -165,7 +171,7 @@ int main(int argc, char *argv[])
 
 					// Disable filesystem sync
 					case 'n':
-						dosync = 0;
+						dosync = false;
 
 					// -w is not not supported
 					case 'w':
@@ -179,7 +185,7 @@ int main(int argc, char *argv[])
 
 					// Set the runlevel to 6 for reboot
 					case 'r':
-						level = REBOOT;
+						runlevel = REBOOT;
 
 					// Show usage, but with a return status of 1
 					default:
@@ -188,12 +194,14 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		halt(level, dosync);
+		halt(runlevel, dosync);
 	}
 
+	// When ran as poweroff
 	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "l-poweroff", 10) == 0)
-		halt(POWEROFF, 1);
+		halt(POWEROFF, true);
 
+	// When ran as reboot
 	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "l-reboot", 8) == 0)
-		halt(REBOOT, 1);
+		halt(REBOOT, true);
 }
