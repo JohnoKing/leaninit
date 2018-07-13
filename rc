@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/Bin/sh
 #
 # Copyright (c) 2017-2018 Johnothan King. All rights reserved.
 #
@@ -29,6 +29,13 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
 # Set the $GETTY variable
 GETTY=`grep getty /etc/ttys | sed /#/d`
+
+# Set $MODE for getty
+if [ `uname` = Linux ]; then
+	MODE=38400
+elif [ `uname` = FreeBSD ]; then
+	MODE=Pc
+fi
 
 # Function which forks processes (for parallel booting)
 fork() {
@@ -111,9 +118,9 @@ done
 # Open some gettys, reserving tty7 for the X server and Wayland
 print "Launching gettys specified in /etc/ttys..."
 for i in `cat /etc/ttys | sed /#/d | sed /getty/d`; do
-	fork $GETTY 38400 $i
+	fork $GETTY $MODE $i
 done
 
 # Launch a getty on tty1 without forking
 print "Launching a getty on tty1..."
-$GETTY 38400 tty1
+$GETTY $MODE tty1
