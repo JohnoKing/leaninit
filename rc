@@ -28,7 +28,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 . /etc/profile
 
 # Set the $GETTY variable
-GETTY=`grep getty /etc/ttys | sed /#/d`
+GETTY=`grep getty /etc/leaninit/ttys | sed /#/d`
 
 # Set $MODE for getty
 if [ `uname` = Linux ]; then
@@ -117,7 +117,7 @@ done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
 print "Launching gettys specified in /etc/ttys..."
-for i in `cat /etc/ttys | sed /#/d | sed /getty/d`; do
+for i in `cat /etc/leaninit/ttys | sed /#/d | sed /getty/d`; do
 	fork $GETTY $MODE $i
 done
 

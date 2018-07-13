@@ -46,17 +46,13 @@ all:
 # Install LeanInit (compatible with other init systems)
 install: all
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
-	install -Dm0755 halt $(DESTDIR)/sbin/l-halt
-	install -Dm0755 reboot $(DESTDIR)/sbin/l-reboot
 	install -Dm0755 l-init lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
-	cd $(DESTDIR)/sbin && ln -sf l-halt l-poweroff
-	$(SED) 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/rc
-	$(SED) 's:/etc/ttys:/etc/leaninit/ttys:g' $(DESTDIR)/etc/leaninit/ttys
-	$(SED) 's:exec init:exec l-init:g' $(DESTDIR)/sbin/l-halt
-	$(SED) 's:exec halt:exec l-halt:g' $(DESTDIR)/sbin/l-reboot
+	cd $(DESTDIR)/sbin && ln -sf l-init l-halt
+	cd $(DESTDIR)/sbin && ln -sf l-init l-poweroff
+	cd $(DESTDIR)/sbin && ln -sf l-init l-reboot
 	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/leaninit/rc
 	$(SED) "s:KBD_PROG:$(KBD):g" $(DESTDIR)/etc/leaninit/rc
 	$(SED) "s:GETTY_PROG:$(GETTY):g" $(DESTDIR)/etc/leaninit/ttys
@@ -69,14 +65,16 @@ override:
 # Install LeanInit without regard for other init systems
 override_install: override
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
-	install -Dm0755 init halt reboot lsvc $(DESTDIR)/sbin
+	install -Dm0755 init lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
-	install -Dm0644 ttys $(DESTDIR)/etc
-	cd $(DESTDIR)/sbin && ln -sf l-halt l-poweroff
+	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
+	cd $(DESTDIR)/sbin && ln -sf init halt
+	cd $(DESTDIR)/sbin && ln -sf init poweroff
+	cd $(DESTDIR)/sbin && ln -sf init reboot
 	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/rc
 	$(SED) "s:KBD_PROG:$(KBD):g" $(DESTDIR)/etc/rc
-	$(SED) "s:GETTY_PROG:$(GETTY):g" $(DESTDIR)/etc/ttys
+	$(SED) "s:GETTY_PROG:$(GETTY):g" $(DESTDIR)/etc/leaninit/ttys
 
 # Clean the directory
 clean:

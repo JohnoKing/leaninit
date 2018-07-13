@@ -26,12 +26,21 @@
 
 #include <sys/reboot.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
-// Execute the init script
-static inline void rc(const char *mode)
+#define POWEROFF 0
+#define REBOOT   6
+#define SLEEP    7
+#define HALT     8
+
+// argv[0] is not sufficent
+extern char *__progname;
+
+// Execute the init script, located at either /etc/rc or /etc/leaninit/rc depending on the type of installation
+static void rc(const char *mode)
 {
-	// Execute either /etc/rc or /etc/leaninit/rc
 #ifdef OVERRIDE
 	execl("/bin/sh", "/bin/sh", "/etc/rc", mode, NULL);
 #else
@@ -42,68 +51,150 @@ static inline void rc(const char *mode)
 	sync();
 }
 
+// Shows usage for halt(8) when executed as halt
+static int usage_halt(int ret)
+{
+	printf("Usage: %s [-dfhnprw]\n\n", __progname);
+	printf("  -d            Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
+	printf("  -f            Ignored for compatibility\n");
+	printf("  -h            Show this usage information\n");
+	printf("  -n            Disable filesystem synchronization before poweroff or reboot\n");
+	printf("  -r            Restart the system\n");
+	printf("  -p            Powers off the system (default behavior)\n");
+	printf("  -w            Ignored for compatibility\n");
+	exit(ret);
+}
+
+// Halts, reboots or turns of the system
+static void halt(int level, int fs)
+{
+	if(fs != 0)
+		sync();
+
+	switch(level) {
+#ifdef LINUX
+		case HALT:
+			reboot(RB_HALT_SYSTEM);
+		case POWEROFF:
+			reboot(RB_POWER_OFF);
+		case SLEEP:
+			reboot(RB_SW_SUSPEND); // Hibernate, currently disabled on FreeBSD
+#endif
+#ifdef FREEBSD
+		case HALT:
+			reboot(RB_HALT);
+		case POWEROFF:
+			reboot(RB_POWEROFF);
+#endif
+		case REBOOT:
+			reboot(RB_AUTOBOOT);
+		default:
+			printf("Something went wrong, received mode %c\n", level);
+			exit(2);
+	}
+}
+
 // The main function
 int main(int argc, char *argv[])
 {
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
-		printf("LeanInit must be run as root!\n\nUsage: init [mode] ...\n");
-		return 1;
+		printf("Permission denied\n");
+		exit(1);
 	}
+ 
+	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "l-init", 6) == 0) {
+		// Defaults to verbose boot
+		if(argc == 1) {
+			rc("v");
 
-	// Defaults to verbose boot
-	if(argc == 1) {
-		rc("v");
+		// Determine what to do
+		} else {
+			switch(*argv[1]) {
 
-	// Determine what to do
-	} else {
-		switch(*argv[1]) {
+				// Halt
+				case 'h':
+					halt(HALT, 1);
 
-			// Halt
-			case 'h':
-				sync();
-#ifdef LINUX
-				reboot(RB_HALT_SYSTEM);
-#endif
-#ifdef FREEBSD
-		reboot(RB_HALT);
-#endif
+				// Poweroff
+				case '0':
+					halt(POWEROFF, 1);
 
-			// Poweroff
-			case '0':
-				sync();
-#ifdef LINUX
-				reboot(RB_POWER_OFF);
-#endif
-#ifdef FREEBSD
-		reboot(RB_POWEROFF);
-#endif
-
-			// Reboot
-			case '6':
-				sync();
-				reboot(RB_AUTOBOOT);
+				// Reboot
+				case '6':
+					halt(REBOOT, 1);
 
 #ifdef LINUX
-			// Hibernate (Disabled for now on FreeBSD)
-			case '7':
-				sync();
-				reboot(RB_SW_SUSPEND);
+				// Hibernate (Disabled for now on FreeBSD)
+				case '7':
+					halt(SLEEP, 1);
 #endif
 
-			// Quiet boot, splash boot currently defaults to quiet boot
-			case 'q':
-			case 's':
-				rc("q");
+				// Quiet boot, splash boot currently defaults to quiet boot
+				case 'q':
+				case 's':
+					rc("q");
 
-			// Verbose boot (default)
-			case 'v':
-				rc("v");
+				// Verbose boot (default)
+				case 'v':
+					rc("v");
 
-			// Fallback
-			default:
-				printf("Argument invalid!\nUsage: init [mode] ...\n");
-				return 1;
+				// Fallback
+				default:
+					printf("%s: Option not permitted\n\nUsage: %s [mode] ...\n", __progname, __progname);
+					return 1;
+			}
 		}
 	}
+
+	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "l-halt", 6) == 0) {
+		int dosync   = 1;        // Synchronize filesystems
+		int level    = POWEROFF; // Default runlevel for halt
+
+		if(argc == 1) {
+			halt(POWEROFF, 1); // Default behavior
+
+		} else {
+			int args;
+			while((args = getopt(argc, argv, "dfhnprw")) != -1) {
+				switch(args) {
+
+					// Display usage with a return status of 0
+					case 'h':
+						usage_halt(0);
+
+					// Disable filesystem sync
+					case 'n':
+						dosync = 0;
+
+					// -w is not not supported
+					case 'w':
+						printf("WARNING: Option 'w' is not supported!\n");
+
+					// Ignore these options
+					case 'd':
+					case 'f':
+					case 'p':
+						printf("Option %s is being ignored\n", argv[1]);
+
+					// Set the runlevel to 6 for reboot
+					case 'r':
+						level = REBOOT;
+
+					// Show usage, but with a return status of 1
+					default:
+						printf("%s: invalid option -- %c\n", __progname, args);
+						usage_halt(1);
+				}
+			}
+		}
+
+		halt(level, dosync);
+	}
+
+	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "l-poweroff", 10) == 0)
+		halt(POWEROFF, 1);
+
+	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "l-reboot", 8) == 0)
+		halt(REBOOT, 1);
 }
