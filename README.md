@@ -15,17 +15,17 @@ of the UNIX code at all.
 ## Building and Installing
 ### Linux
 Run `make` and a LeanInit binary compatible with other init systems will 
-be built, named `l-init`. Running `make install` as root will install 
+be built, named `linit`. Running `make install` as root will install 
 LeanInit, without overriding other init systems.
 
-To boot into LeanInit, add `init=/sbin/l-init` to your kernel command
+To boot into LeanInit, add `init=/sbin/linit` to your kernel command
 line.
 
 ### FreeBSD
 Follow the Linux building steps, but use `gmake` instead of `make` (BSD 
 Make is not supported). 
 To boot into LeanInit, append the following line to `/boot/loader.conf`:
-`init_path="/sbin/l-init:/sbin/init:/rescue/init"`
+`init_path="/sbin/linit:/sbin/init:/rescue/init"`
 
 ### Override Build
 If you wish, running `make override` and `make override-install` will
@@ -36,11 +36,11 @@ installation
 ## Usage
 
 ### ACPI Support
-To shut down your system when booted into LeanInit, run `l-halt` or
-`halt` (depending on your method of installation). `l-poweroff` has
-the same function as `l-halt`, while `l-reboot` will restart your
+To shut down your system when booted into LeanInit, run `lhalt` or
+`halt` (depending on your method of installation). `lpoweroff` has
+the same function as `lhalt`, while `lreboot` will restart your
 system.
-On Linux, running `l-init 7` will cause your system to hibernate.
+On Linux, running `linit 7` will cause your system to hibernate.
 
 ### Enabling and disabling services
 The command to use for enabling and disabling services is `lsvc` (on both 

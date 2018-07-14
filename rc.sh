@@ -31,11 +31,13 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 GETTY=`grep getty /etc/leaninit/ttys | sed /#/d`
 
 # Set $MODE for getty
-if [ `uname` = Linux ]; then
-	MODE=38400
-elif [ `uname` = FreeBSD ]; then
-	MODE=Pc
-fi
+DEFLINUX
+MODE=38400
+ENDEF
+
+DEFBSD
+MODE=Pc
+ENDEF
 
 # Function which forks processes (for parallel booting)
 fork() {
@@ -62,11 +64,13 @@ else
 fi
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
-if [ `uname` = Linux ]; then
-	fsck -A > $OUT
-elif [ `uname` = FreeBSD ]; then
-	fsck -F > $OUT
-fi
+DEFLINUX
+fsck -A > $OUT
+ENDEF
+
+DEFBSD
+fsck -F > $OUT
+ENDEF
 
 # Mount root as read-write (this is NOT done by udev)
 if [ "$1" = "v" ]; then
@@ -77,13 +81,15 @@ mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
 # Launch eudev or devd, depending on platform
-if [ `uname` = Linux ]; then
-	print "Starting udev..."
-	udevd --daemon
-elif [ `uname` = FreeBSD ]; then
-	print "Starting devd..."
-	devd -q
-fi
+DEFLINUX
+print "Starting udev..."
+udevd --daemon
+ENDEF
+
+DEFBSD
+print "Starting devd..."
+devd -q
+ENDEF
 
 # Manually mount all drives
 mount -a
@@ -91,19 +97,23 @@ swapon -a
 
 # Load all sysctl settings
 print "Loading settings with sysctl..."
-if [ `uname` = Linux ]; then
-	fork sysctl --system > $OUT
-elif [ `uname` = FreeBSD ]; then
-	fork sysctl -f /etc/sysctl.conf > $OUT
-fi
+DEFLINUX
+fork sysctl --system > $OUT
+ENDEF
 
+DEFBSD
+fork sysctl -f /etc/sysctl.conf > $OUT
+ENDEF
+
+DEFLINUX
 # Load all modules specified in the /etc/modules-load.d folder (Linux only)
-if [ `uname` = Linux ] &&  [ -r /etc/modules-load.d ]; then
+if [ -r /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
 	for i in `cat /etc/modules-load.d/* | sed /#/d`; do
 		modprobe $i
 	done
 fi
+ENDEF
 
 # Set the hostname
 if [ -r /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then

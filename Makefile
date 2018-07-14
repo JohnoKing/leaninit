@@ -28,6 +28,8 @@ OSFLAGS := -DLINUX
 FORK    := setsid
 KBD     := loadkeys
 GETTY   := /sbin/agetty
+SHDEF   := DEFBSD
+NSHDEF   := DEFBSD
 
 # FreeBSD Compatibility
 ifeq ($(shell uname),FreeBSD)
@@ -36,51 +38,54 @@ ifeq ($(shell uname),FreeBSD)
 	FORK=daemon
 	KBD=setxkbmap
 	GETTY=/usr/libexec/getty
+	SHDEF=DEFLINUX
+	NSHDEF=DEFBSD
 endif
 
 # Make the LeanInit binary
 all:
-	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o l-init init.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o linit init.c $(LDFLAGS)
 	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o lsvc lsvc.c $(LDFLAGS)
-
-# Install LeanInit (compatible with other init systems)
-install: all
-	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
-	install -Dm0755 l-init lsvc $(DESTDIR)/sbin
-	install -Dm0755 rc $(DESTDIR)/etc/leaninit
-	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
-	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
-	cd $(DESTDIR)/sbin && ln -sf l-init l-halt
-	cd $(DESTDIR)/sbin && ln -sf l-init l-poweroff
-	cd $(DESTDIR)/sbin && ln -sf l-init l-reboot
-	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/leaninit/rc
-	$(SED) "s:KBD_PROG:$(KBD):g" $(DESTDIR)/etc/leaninit/rc
-	$(SED) "s:GETTY_PROG:$(GETTY):g" $(DESTDIR)/etc/leaninit/ttys
+	cp rc.sh rc
+	cp ttys.cfg ttys
+	$(SED) "/$(SHDEF)/,/ENDEF/d" rc
+	$(SED) "s/$(NSHDEF)//g" rc
+	$(SED) "s/ENDEF//g" rc
+	$(SED) "s:FORK_PROG:$(FORK):g" rc
+	$(SED) "s:KBD_PROG:$(KBD):g" rc
+	$(SED) "s:GETTY_PROG:$(GETTY):g" ttys
 
 # Compile LeanInit without regard for other init systems
 override:
 	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
 	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS)
 
-# Install LeanInit without regard for other init systems
-override_install: override
+# Used by both install and override-install
+install-base:
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
+	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
+	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
+	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
+
+# Install LeanInit (compatible with other init systems)
+install: all install-base
+	install -Dm0755 linit lsvc $(DESTDIR)/sbin
+	install -Dm0755 rc $(DESTDIR)/etc/leaninit
+	cd $(DESTDIR)/sbin && ln -sf linit lhalt
+	cd $(DESTDIR)/sbin && ln -sf linit lpoweroff
+	cd $(DESTDIR)/sbin && ln -sf linit lreboot
+
+# Install LeanInit without regard for other init systems
+override-install: override install-base
 	install -Dm0755 init lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc
-	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
-	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/sbin && ln -sf init halt
 	cd $(DESTDIR)/sbin && ln -sf init poweroff
 	cd $(DESTDIR)/sbin && ln -sf init reboot
-	$(SED) "s:FORK_PROG:$(FORK):g" $(DESTDIR)/etc/rc
-	$(SED) "s:KBD_PROG:$(KBD):g" $(DESTDIR)/etc/rc
-	$(SED) "s:GETTY_PROG:$(GETTY):g" $(DESTDIR)/etc/leaninit/ttys
 
 # Clean the directory
 clean:
-	rm -f init l-init lsvc
+	rm -f init linit lsvc rc ttys
 
 # Calls clean, then resets the git repo
 clobber: clean

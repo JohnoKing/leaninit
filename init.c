@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 	}
 
 	// When ran as init(8)
-	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "l-init", 6) == 0) {
+	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "linit", 5) == 0) {
 
 		// Defaults to verbose boot
 		if(argc == 1) {
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 	}
 
 	// When ran as halt(8)
-	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "l-halt", 6) == 0) {
+	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0) {
 		bool dosync    = true;     // Synchronize filesystems by default
 		int  runlevel  = POWEROFF; // 0 is the default runlevel for halt
 
@@ -203,13 +203,13 @@ int main(int argc, char *argv[])
 	}
 
 	// When ran as poweroff
-	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "l-poweroff", 10) == 0) {
+	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0) {
 		halt(POWEROFF, true);
 		return 0;
 	}
 
 	// When ran as reboot
-	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "l-reboot", 8) == 0) {
+	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0) {
 		halt(REBOOT, true);
 		return 0;
 	}

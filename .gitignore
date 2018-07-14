@@ -1,7 +1,12 @@
 # For Visual Studio Code
 .vscode
 
-# Ignore the built binaries
+# Plasma Dolphin
+*.directory
+
+# Ignore the built files
 init
-l-init
+linit
 lsvc
+rc
+ttys
