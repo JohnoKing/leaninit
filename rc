@@ -62,7 +62,11 @@ else
 fi
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
-fsck -A > $OUT
+if [ `uname` = Linux ]; then
+	fsck -A > $OUT
+elif [ `uname` = FreeBSD ]; then
+	fsck -F > $OUT
+fi
 
 # Mount root as read-write (this is NOT done by udev)
 if [ "$1" = "v" ]; then
@@ -72,10 +76,13 @@ mount -o remount,rw /
 mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
-# Launch udev (requires eudev)
+# Launch eudev or devd, depending on platform
 if [ `uname` = Linux ]; then
 	print "Starting udev..."
 	udevd --daemon
+elif [ `uname` = FreeBSD ]; then
+	print "Starting devd..."
+	devd -q
 fi
 
 # Manually mount all drives
@@ -90,7 +97,7 @@ elif [ `uname` = FreeBSD ]; then
 	fork sysctl -f /etc/sysctl.conf > $OUT
 fi
 
-# Load all modules specified in the /etc/modules-load.d folder
+# Load all modules specified in the /etc/modules-load.d folder (Linux only)
 if [ `uname` = Linux ] &&  [ -r /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
 	for i in `cat /etc/modules-load.d/* | sed /#/d`; do
