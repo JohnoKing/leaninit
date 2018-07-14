@@ -33,8 +33,10 @@
 
 #define POWEROFF 0
 #define REBOOT   6
-#define SLEEP    7
 #define HALT     8
+#ifdef LINUX
+#define SLEEP    7
+#endif
 
 // argv[0] is not sufficent
 extern char *__progname;
@@ -53,7 +55,7 @@ static void rc(const char *mode)
 }
 
 // Shows usage for halt(8)
-static int usage_halt(int ret)
+static void usage_halt(int ret)
 {
 	printf("Usage: %s [-dfhnprw]\n", __progname);
 	printf("  -d            Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
