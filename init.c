@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
 		printf("Permission denied\n");
-		exit(1);
+		return 1;
 	}
 
 	// When ran as init(8)
@@ -148,6 +148,8 @@ int main(int argc, char *argv[])
 					return 1;
 			}
 		}
+
+		return 0;
 	}
 
 	// When ran as halt(8)
@@ -195,13 +197,20 @@ int main(int argc, char *argv[])
 		}
 
 		halt(runlevel, dosync);
+		return 0;
 	}
 
 	// When ran as poweroff
 	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "l-poweroff", 10) == 0)
 		halt(POWEROFF, true);
+		return 0;
 
 	// When ran as reboot
 	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "l-reboot", 8) == 0)
 		halt(REBOOT, true);
+		return 0;
+
+	// This should not be reached, give an error and exit
+	printf("LeanInit cannot be executed as %s\n", __progname);
+	return 1;
 }
