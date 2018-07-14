@@ -42,12 +42,12 @@
 extern char *__progname;
 
 // Execute the init script, located at either /etc/rc or /etc/leaninit/rc depending on the type of installation
-static void rc(const char *mode)
+static void rc(void)
 {
 #ifdef OVERRIDE
-	execl("/bin/sh", "/bin/sh", "/etc/rc", mode, NULL);
+	execl("/bin/sh", "/bin/sh", "/etc/rc", NULL);
 #else
-	execl("/bin/sh", "/bin/sh", "/etc/leaninit/rc", mode, NULL);
+	execl("/bin/sh", "/bin/sh", "/etc/leaninit/rc", NULL);
 #endif
 
 	// This is done in case this function stops to prevent data corruption
@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
 	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "linit", 5) == 0) {
 
 		// Defaults to verbose boot
-		if(argc == 1) {
-			rc("v");
+		if(getpid() == 1) {
+			rc();
 
 		} else {
 			switch(*argv[1]) {
@@ -134,25 +134,16 @@ int main(int argc, char *argv[])
 				case '8':
 					halt(HALT, true);
 
-
-				// Quiet boot, splash boot currently defaults to quiet boot
-				case 'q':
-				case 's':
-					rc("q");
-
-				// Verbose boot (default)
-				case '-':
-				case 'v':
-					rc("v");
-
 				// Fallback
 				default:
 					printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
 					return 1;
 			}
+
+			return 0;
 		}
 
-		return 0;
+		return 1;
 	}
 
 	// When ran as halt(8)

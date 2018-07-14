@@ -44,24 +44,15 @@ fork() {
 	FORK_PROG "$@"
 }
 
-# Echo to the console if verbose boot is on
-if [ "$1" = "v" ]; then
-	OUT="/dev/stdout"
-	print() {
-		echo "$@"
-		echo "$@" >> /var/log/leaninit.log
-	}
+# Echo to the console
+OUT="/dev/stdout"
+print() {
+	echo "$@" > $OUT
+	echo "$@" >> /var/log/leaninit.log
+}
 
-	echo "LeanInit is running on `uname -srm`"
-	echo "Checking all filesystems for data corruption..." # fsck(8) is run outside of the if statement
-
-# Don't echo to the console if quiet boot is on
-else
-	OUT="/dev/null"
-	print() {
-		echo "$@" >> /var/log/leaninit.log
-	}
-fi
+echo "LeanInit is running on `uname -srm`" > $OUT
+echo "Checking all filesystems for data corruption..." > $OUT # fsck(8) is run outside of the if statement
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
 DEFLINUX
@@ -74,7 +65,7 @@ ENDEF
 
 # Mount root as read-write (this is NOT done by udev)
 if [ "$1" = "v" ]; then
-	echo "Remounting root as read-write..."
+	echo "Remounting root as read-write..." > $OUT
 fi
 mount -o remount,rw /
 mv /var/log/leaninit.log /var/log/leaninit.log.old
