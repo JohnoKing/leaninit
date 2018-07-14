@@ -30,6 +30,7 @@ KBD     := loadkeys
 GETTY   := /sbin/agetty
 SHDEF   := DEFBSD
 NSHDEF  := DEFLINUX
+TTY     := tty
 
 # FreeBSD Compatibility
 ifeq ($(shell uname),FreeBSD)
@@ -40,6 +41,7 @@ ifeq ($(shell uname),FreeBSD)
 	GETTY=/usr/libexec/getty
 	SHDEF=DEFLINUX
 	NSHDEF=DEFBSD
+	TTY=ttyv
 endif
 
 # Make the LeanInit binary
@@ -54,6 +56,7 @@ all:
 	$(SED) "s:FORK_PROG:$(FORK):g" rc
 	$(SED) "s:KBD_PROG:$(KBD):g" rc
 	$(SED) "s:GETTY_PROG:$(GETTY):g" ttys
+	$(SED) "s:TTY:$(TTY):g" ttys
 
 # Compile LeanInit without regard for other init systems
 override:

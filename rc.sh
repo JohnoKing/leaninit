@@ -144,4 +144,11 @@ done
 
 # Launch a getty on tty1 without forking
 print "Launching a getty on tty1..."
+
+DEFLINUX
 $GETTY $MODE tty1
+ENDEF
+
+DEFBSD
+$GETTY $MODE ttyv1
+ENDEF
