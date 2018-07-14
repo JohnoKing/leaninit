@@ -29,7 +29,7 @@ FORK    := setsid
 KBD     := loadkeys
 GETTY   := /sbin/agetty
 SHDEF   := DEFBSD
-NSHDEF   := DEFBSD
+NSHDEF  := DEFLINUX
 
 # FreeBSD Compatibility
 ifeq ($(shell uname),FreeBSD)
