@@ -141,16 +141,18 @@ done
 # Open some gettys, reserving tty7 for the X server and Wayland
 print "Launching gettys specified in /etc/leaninit/ttys..."
 for i in `cat /etc/leaninit/ttys | sed /#/d | sed /getty/d`; do
-	fork $GETTY $MODE $i
+	fork sh -c "while true; do $GETTY $MODE $i; done"
 done
 
 # Launch a getty on tty1 without forking
 print "Launching a getty on tty1..."
 
+while true; do
 DEFLINUX
-$GETTY $MODE tty1
+	$GETTY $MODE tty1
 ENDEF
 
 DEFBSD
-$GETTY $MODE ttyv1
+	$GETTY $MODE ttyv1
 ENDEF
+done
