@@ -38,19 +38,22 @@
 #define SLEEP    8
 #endif
 
+// Location of the init script
+#ifndef OVERRIDE
+static const char *rc_init = "/etc/leaninit/rc";
+#else
+static const char *rc_init = "/etc/rc";
+#endif
+
 // argv[0] is not sufficent
 extern char *__progname;
 
 // Execute the init script, located at either /etc/rc or /etc/leaninit/rc depending on the type of installation
 static void rc(void)
 {
-#ifdef OVERRIDE
-	execl("/bin/sh", "/bin/sh", "/etc/rc", NULL);
-#else
-	execl("/bin/sh", "/bin/sh", "/etc/leaninit/rc", NULL);
-#endif
+	execl("/bin/sh", "/bin/sh", rc_init, NULL);
 
-	// This is done in case this function stops to prevent data corruption
+	// This should never be reached
 	sync();
 }
 
