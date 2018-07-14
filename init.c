@@ -48,7 +48,7 @@ static const char *rc_init = "/etc/rc";
 // argv[0] is not sufficent
 extern char *__progname;
 
-// Execute the init script, located at either /etc/rc or /etc/leaninit/rc depending on the type of installation
+// Execute the init script
 static void rc(void)
 {
 	execl("/bin/sh", "/bin/sh", rc_init, NULL);
