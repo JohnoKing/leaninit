@@ -45,9 +45,10 @@ all:
 
 # Install LeanInit (compatible with other init systems)
 install: all
-	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
+	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	install -Dm0755 l-init lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
+	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/sbin && ln -sf l-init l-halt
@@ -64,9 +65,10 @@ override:
 
 # Install LeanInit without regard for other init systems
 override_install: override
-	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce
+	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	install -Dm0755 init lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc
+	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/sbin && ln -sf init halt
