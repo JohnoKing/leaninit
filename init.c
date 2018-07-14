@@ -201,14 +201,16 @@ int main(int argc, char *argv[])
 	}
 
 	// When ran as poweroff
-	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "l-poweroff", 10) == 0)
+	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "l-poweroff", 10) == 0) {
 		halt(POWEROFF, true);
 		return 0;
+	}
 
 	// When ran as reboot
-	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "l-reboot", 8) == 0)
+	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "l-reboot", 8) == 0) {
 		halt(REBOOT, true);
 		return 0;
+	}
 
 	// This should not be reached, give an error and exit
 	printf("LeanInit cannot be executed as %s\n", __progname);
