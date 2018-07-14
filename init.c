@@ -33,9 +33,9 @@
 
 #define POWEROFF 0
 #define REBOOT   6
-#define HALT     8
+#define HALT     7
 #ifdef LINUX
-#define SLEEP    7
+#define SLEEP    8
 #endif
 
 // argv[0] is not sufficent
@@ -60,10 +60,10 @@ static int usage_init(void)
 	printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
 	printf("  0            Poweroff\n");
 	printf("  6            Reboot\n");
+	printf("  7            Halt\n");
 #ifdef LINUX
-	printf("  7            Hibernate\n");
+	printf("  8            Hibernate\n");
 #endif
-	printf("  8            Halt\n");
 	return 1;
 }
 
@@ -92,19 +92,25 @@ static void halt(int runlevel, bool dosync)
 #ifdef LINUX
 		case HALT:
 			reboot(RB_HALT_SYSTEM);
+			break;
 		case POWEROFF:
 			reboot(RB_POWER_OFF);
+			break;
 		case SLEEP:
 			reboot(RB_SW_SUSPEND); // Hibernate, currently disabled on FreeBSD
+			break;
 #endif
 #ifdef FREEBSD
 		case HALT:
 			reboot(RB_HALT);
+			break;
 		case POWEROFF:
 			reboot(RB_POWEROFF);
+			break;
 #endif
 		case REBOOT:
 			reboot(RB_AUTOBOOT);
+			break;
 		default:
 			printf("Something went wrong, received mode %i\n", runlevel);
 			exit(2);
@@ -143,17 +149,16 @@ int main(int argc, char *argv[])
 					halt(REBOOT, true);
 					break;
 
-#ifdef LINUX
-				// Hibernate (Disabled for now on FreeBSD)
+				// Halt
 				case '7':
+					halt(HALT, true);
+					break;
+#ifdef LINUX
+				// Hibernate (Disabled on FreeBSD)
+				case '8':
 					halt(SLEEP, true);
 					break;
 #endif
-				// Halt
-				case '8':
-					halt(HALT, true);
-					break;
-
 				// Fallback
 				default:
 					return usage_init();
@@ -168,15 +173,11 @@ int main(int argc, char *argv[])
 
 	// When ran as halt(8)
 	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0) {
-		bool dosync    = true;     // Synchronize filesystems by default
 		int  runlevel  = POWEROFF; // 0 is the default runlevel for halt
+		bool dosync    = true;     // Synchronize filesystems by default
 
-		// Default behavior
-		if(argc == 1) {
-			halt(POWEROFF, dosync);
-
-		} else {
-
+		// When given arguments
+		if(argc != 1) {
 			int args;
 			while((args = getopt(argc, argv, "dfhnprw")) != -1) {
 				switch(args) {
@@ -185,23 +186,27 @@ int main(int argc, char *argv[])
 					case 'h':
 						return usage_halt(0);
 
-					// Disable filesystem sync
-					case 'n':
-						dosync = false;
-
-					// -w is not not supported
-					case 'w':
-						printf("WARNING: Option 'w' is not supported!\n");
-
 					// Ignore these options
 					case 'd':
 					case 'f':
 					case 'p':
 						printf("Option %s is being ignored\n", argv[1]);
+						break;
+
+					// -w is not not supported
+					case 'w':
+						printf("WARNING: Option 'w' is not supported!\n");
+						break;
+
+					// Disable filesystem sync
+					case 'n':
+						dosync = false;
+						break;
 
 					// Set the runlevel to 6 for reboot
 					case 'r':
 						runlevel = REBOOT;
+						break;
 
 					// Show usage, but with a return status of 1
 					default:
