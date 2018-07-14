@@ -24,6 +24,7 @@
  * lsvc - A program which enables and disables LeanInit services
  */
 
+#include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,8 +97,11 @@ static void enable(char *svc)
 		exit(0);
 	}
 
-	// Make the hardlink
-	link(svc_path, svce_path);
+	// Make the hardlink (with error checking)
+	if(link(svc_path, svce_path) != 0) {
+		printf("The service %s could not be enabled due to the hardlink failing with errno %s\n", svc, strerror(errno));
+		exit(1);
+	}
 
 	// Cleanup
 	fclose(svc_read);
