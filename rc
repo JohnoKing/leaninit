@@ -84,7 +84,11 @@ swapon -a
 
 # Load all sysctl settings
 print "Loading settings with sysctl..."
-fork sysctl --system > $OUT
+if [ `uname` = Linux ]; then
+	fork sysctl --system > $OUT
+elif [ `uname` = FreeBSD ]; then
+	fork sysctl -f /etc/sysctl.conf > $OUT
+fi
 
 # Load all modules specified in the /etc/modules-load.d folder
 if [ `uname` = Linux ] &&  [ -r /etc/modules-load.d ]; then
