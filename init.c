@@ -141,6 +141,7 @@ int main(int argc, char *argv[])
 					rc("q");
 
 				// Verbose boot (default)
+				case '-':
 				case 'v':
 					rc("v");
 
