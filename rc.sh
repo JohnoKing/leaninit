@@ -92,7 +92,7 @@ ENDEF
 
 DEFBSD
 print "Starting devd..."
-devd -q
+fork devd -q
 ENDEF
 
 # Manually mount all drives
