@@ -45,7 +45,14 @@ fork() {
 }
 
 # Echo to the console
+DEFLINUX
 OUT="/dev/stdout"
+ENDEF
+
+DEFBSD
+OUT="/dev/console"
+ENDEF
+
 print() {
 	echo "$@" > $OUT
 	echo "$@" >> /var/log/leaninit.log
@@ -63,11 +70,17 @@ DEFBSD
 fsck -F > $OUT
 ENDEF
 
-# Mount root as read-write (this is NOT done by udev)
-if [ "$1" = "v" ]; then
-	echo "Remounting root as read-write..." > $OUT
+# Mount drives and datasets
+echo "Remounting root as read-write..." > $OUT
+if [ -e /etc/leaninit/svce/zfs ]; then
+	. /etc/leaninit/svce/zfs
+	main
+else
+	mount -o remount,rw /
+	mount -a
 fi
-mount -o remount,rw /
+
+swapon -a
 mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
@@ -83,8 +96,6 @@ devd -q
 ENDEF
 
 # Manually mount all drives
-mount -a
-swapon -a
 
 # Load all sysctl settings
 print "Loading settings with sysctl..."
@@ -119,7 +130,7 @@ if [ -r /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; th
 fi
 
 # Start the services
-for i in `ls /etc/leaninit/svce`; do
+for i in `ls /etc/leaninit/svce | grep -v zfs`; do
 	. /etc/leaninit/svce/$i
 	export NAME
 	print "Starting $NAME..."
@@ -128,7 +139,7 @@ for i in `ls /etc/leaninit/svce`; do
 done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
-print "Launching gettys specified in /etc/ttys..."
+print "Launching gettys specified in /etc/leaninit/ttys..."
 for i in `cat /etc/leaninit/ttys | sed /#/d | sed /getty/d`; do
 	fork $GETTY $MODE $i
 done

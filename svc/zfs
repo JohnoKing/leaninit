@@ -1,0 +1,17 @@
+# The name of the service
+NAME=ZFS
+
+# The main function
+main() {
+	# Mount everything
+	zfs mount -a
+
+	# ZFS NFS
+	zfs share -a
+
+	# Turn on writes
+	for z in `zpool list -H | awk '{print $1;}'`; do
+		print "Turning readonly off for dataset $z"
+		zfs readonly=off $z
+	done
+}

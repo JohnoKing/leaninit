@@ -1,0 +1,7 @@
+# The name of the service
+NAME=PowerD
+
+# The main function
+main() {
+	powerd
+}
