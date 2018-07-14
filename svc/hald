@@ -1,0 +1,7 @@
+# The name of the service
+NAME=HALD
+
+# The main function
+main() {
+	hald
+}
