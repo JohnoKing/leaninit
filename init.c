@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
 					case 'd':
 					case 'f':
 					case 'p':
-						printf("Option %s is being ignored\n", argv[1]);
+						printf("Option %c is being ignored\n", args);
 						break;
 
 					// -w is not not supported
