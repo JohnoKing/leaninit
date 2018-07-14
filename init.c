@@ -54,8 +54,21 @@ static void rc(void)
 	sync();
 }
 
+// Shows usage for init(8)
+static int usage_init(void)
+{
+	printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
+	printf("  0            Poweroff\n");
+	printf("  6            Reboot\n");
+#ifdef LINUX
+	printf("  7            Hibernate\n");
+#endif
+	printf("  8            Halt\n");
+	return 1;
+}
+
 // Shows usage for halt(8)
-static void usage_halt(int ret)
+static int usage_halt(int ret)
 {
 	printf("Usage: %s [-dfhnprw]\n", __progname);
 	printf("  -d            Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
@@ -65,7 +78,7 @@ static void usage_halt(int ret)
 	printf("  -r            Restart the system\n");
 	printf("  -p            Powers off the system (default behavior)\n");
 	printf("  -w            Ignored for compatibility\n");
-	exit(ret);
+	return ret;
 }
 
 // Halts, reboots or turns off the system
@@ -115,34 +128,41 @@ int main(int argc, char *argv[])
 			rc();
 
 		} else {
+			if(argc == 1)
+				return usage_init();
+
 			switch(*argv[1]) {
 
 				// Poweroff
 				case '0':
 					halt(POWEROFF, true);
+					break;
 
 				// Reboot
 				case '6':
 					halt(REBOOT, true);
+					break;
 
 #ifdef LINUX
 				// Hibernate (Disabled for now on FreeBSD)
 				case '7':
 					halt(SLEEP, true);
+					break;
 #endif
 				// Halt
 				case '8':
 					halt(HALT, true);
+					break;
 
 				// Fallback
 				default:
-					printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
-					return 1;
+					return usage_init();
 			}
 
 			return 0;
 		}
 
+		// This should not be reached
 		return 1;
 	}
 
@@ -163,7 +183,7 @@ int main(int argc, char *argv[])
 
 					// Display usage with a return status of 0
 					case 'h':
-						usage_halt(0);
+						return usage_halt(0);
 
 					// Disable filesystem sync
 					case 'n':
@@ -185,7 +205,7 @@ int main(int argc, char *argv[])
 
 					// Show usage, but with a return status of 1
 					default:
-						usage_halt(1);
+						return usage_halt(1);
 				}
 			}
 		}
