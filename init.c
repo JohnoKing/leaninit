@@ -25,6 +25,7 @@
  */
 
 #include <sys/reboot.h>
+#include <sys/wait.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,10 +49,17 @@ static const char *rc_init = "/etc/rc";
 // argv[0] is not sufficent
 extern char *__progname;
 
-// Execute the init script
+// Execute the init script in a seperate process
 static void rc(void)
 {
-	execl("/bin/sh", "/bin/sh", rc_init, NULL);
+	pid_t sh_rc = fork();
+
+	if(sh_rc == 0)
+		execl("/bin/sh", "/bin/sh", rc_init, NULL);
+	else {
+		for(;;)
+			wait(0);
+	}
 
 	// This should never be reached
 	sync();
