@@ -37,8 +37,16 @@
 #define POWEROFF 0
 #define REBOOT   6
 #define HALT     7
+
 #ifdef LINUX
 #define SLEEP    8
+#define SYS_POWEROFF RB_POWER_OFF
+#define SYS_HALT     RB_HALT_SYSTEM
+#endif
+
+#ifdef FREEBSD
+#define SYS_POWEROFF RB_POWEROFF
+#define SYS_HALT     RB_HALT
 #endif
 
 // argv[0] is not sufficent
@@ -50,6 +58,10 @@ static const char *rc_init = "/etc/leaninit/rc";
 #else
 static const char *rc_init = "/etc/rc";
 #endif
+
+// Default booleans for halt
+static bool dosync = true;
+static bool wall   = true;
 
 // Execute the init script in a seperate process
 static void rc(void)
@@ -81,35 +93,35 @@ static int usage_init(void)
 }
 
 // Halts, reboots or turns off the system
-static int halt(int runlevel, bool dosync)
+static int halt(int runlevel)
 {
 	if(dosync == true)
 		sync();
 
 	// Act as per the runlevel
 	switch(runlevel) {
-#ifdef LINUX
-		case HALT:
-			reboot(RB_HALT_SYSTEM);
-			break;
 		case POWEROFF:
-			reboot(RB_POWER_OFF);
+			if(wall == true)
+				syslog(LOG_NOTICE, "The system is now powering off!\n");
+			reboot(SYS_POWEROFF);
 			break;
+		case REBOOT:
+			if(wall == true)
+				syslog(LOG_NOTICE, "The system is now rebooting!\n");
+			reboot(RB_AUTOBOOT);
+			break;
+		case HALT:
+			if(wall == true)
+				syslog(LOG_NOTICE, "Halting the system!\n");
+			reboot(SYS_HALT);
+			break;
+#ifdef LINUX
 		case SLEEP:
+			if(wall == true)
+				syslog(LOG_NOTICE, "The system is now being sent into sleep mode.\n");
 			reboot(RB_SW_SUSPEND); // Hibernate, currently disabled on FreeBSD
 			break;
 #endif
-#ifdef FREEBSD
-		case HALT:
-			reboot(RB_HALT);
-			break;
-		case POWEROFF:
-			reboot(RB_POWEROFF);
-			break;
-#endif
-		case REBOOT:
-			reboot(RB_AUTOBOOT);
-			break;
 		default:
 			printf("Something went wrong, received mode %i\n", runlevel);
 			return 2;
@@ -127,7 +139,7 @@ static int usage_halt(int ret)
 	printf("  -h, --halt             Halts the system\n");
 	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
-	printf("  -q, --no-wall          Currently ignored\n");
+	printf("  -q, --no-wall          Turn off wall messages\n");
 	printf("  -r, --reboot           Restart the system\n");
 	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
 	printf("  -?, --help             Show this usage information\n");
@@ -137,8 +149,7 @@ static int usage_halt(int ret)
 // Main function for halt
 int halt_main(int runlevel, int argc, char *argv[])
 {
-	bool dosync    = true;  // Synchronize filesystems by default
-	bool stop_opt  = false; // Prevent -hpr from being possible
+	bool stop_opt = false; // Prevent -hpr from being possible
 
 	// When given arguments
 	if(argc != 1) {
@@ -168,7 +179,6 @@ int halt_main(int runlevel, int argc, char *argv[])
 				// These options are currently ignored
 				case 'd':
 				case 'f':
-				case 'q':
 					printf("Option %c is being ignored\n", args);
 					break;
 
@@ -186,6 +196,11 @@ int halt_main(int runlevel, int argc, char *argv[])
 						return usage_halt(1);
 					stop_opt = true;
 					runlevel = POWEROFF;
+					break;
+
+				// Turn off wall messages
+				case 'q':
+					wall = false;
 					break;
 
 				// -w is not not supported
@@ -214,7 +229,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 		}
 	}
 
-	return halt(runlevel, dosync);
+	return halt(runlevel);
 }
 
 // The main function
@@ -241,19 +256,19 @@ int main(int argc, char *argv[])
 
 				// Poweroff
 				case '0':
-					return halt(POWEROFF, true);
+					return halt(POWEROFF);
 
 				// Reboot
 				case '6':
-					return halt(REBOOT, true);
+					return halt(REBOOT);
 
 				// Halt
 				case '7':
-					return halt(HALT, true);
+					return halt(HALT);
 #ifdef LINUX
 				// Hibernate (Disabled on FreeBSD)
 				case '8':
-					return halt(SLEEP, true);
+					return halt(SLEEP);
 #endif
 				// Fallback
 				default:
