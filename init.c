@@ -29,6 +29,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 // Macros for power management
@@ -233,7 +234,7 @@ int main(int argc, char *argv[])
 
 	// When ran as reboot
 	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
-		return halt(REBOOT, true)
+		return halt(REBOOT, true);
 
 	// This should not be reached, give an error and exit
 	printf("LeanInit cannot be executed as %s\n", __progname);
