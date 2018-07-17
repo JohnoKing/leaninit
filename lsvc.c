@@ -31,6 +31,10 @@
 #include <string.h>
 #include <unistd.h>
 
+// Macros for enable and disable
+#define ENABLE 0
+#define DISABLE 1
+
 // Program name
 extern char *__progname;
 
@@ -38,16 +42,12 @@ extern char *__progname;
 static char svc_path[119]  = "/etc/leaninit/svc/";
 static char svce_path[120] = "/etc/leaninit/svce/";
 
-// lsvc long options
+// Long options for lsvc
 static struct option lsvc_options[] = {
 	{ "disable", required_argument, NULL, 'd' },
 	{ "enable",  required_argument, NULL, 'e' },
 	{ "help",    no_argument,       NULL, '?' },
 };
-
-// Enable and disable
-#define ENABLE 0
-#define DISABLE 1
 
 // Usage info
 static int usage(int ret, const char *msg, ...)

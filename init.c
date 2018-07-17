@@ -26,6 +26,7 @@
 
 #include <sys/reboot.h>
 #include <sys/wait.h>
+#include <getopt.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,15 +41,15 @@
 #define SLEEP    8
 #endif
 
+// argv[0] is not sufficent
+extern char *__progname;
+
 // Location of the init script
 #ifndef OVERRIDE
 static const char *rc_init = "/etc/leaninit/rc";
 #else
 static const char *rc_init = "/etc/rc";
 #endif
-
-// argv[0] is not sufficent
-extern char *__progname;
 
 // Execute the init script in a seperate process
 static void rc(void)
@@ -70,11 +71,11 @@ static void rc(void)
 static int usage_init(void)
 {
 	printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
-	printf("  0            Poweroff\n");
-	printf("  6            Reboot\n");
-	printf("  7            Halt\n");
+	printf("  0         Poweroff\n");
+	printf("  6         Reboot\n");
+	printf("  7         Halt\n");
 #ifdef LINUX
-	printf("  8            Hibernate\n");
+	printf("  8         Hibernate\n");
 #endif
 	return 1;
 }
@@ -82,14 +83,15 @@ static int usage_init(void)
 // Shows usage for halt(8)
 static int usage_halt(int ret)
 {
-	printf("Usage: %s [-dfnprw?]\n", __progname);
-	printf("  -d            Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
-	printf("  -f            Ignored for compatibility\n");
-	printf("  -n            Disable filesystem synchronization before poweroff or reboot\n");
-	printf("  -r            Restart the system\n");
-	printf("  -p            Powers off the system (default behavior)\n");
-	printf("  -w            Ignored for compatibility\n");
-	printf("  -?            Show this usage information\n");
+	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
+	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
+	printf("  -f, --force            Ignored for compatibility\n");
+	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
+	printf("  -r, --reboot           Restart the system\n");
+	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
+	printf("  -q, --no-wall          Currently ignored\n");
+	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
+	printf("  -?, --help             Show this usage information\n");
 	return ret;
 }
 
@@ -129,6 +131,88 @@ static int halt(int runlevel, bool dosync)
 	}
 
 	return 0;
+}
+
+// Main function for halt
+int halt_main(int runlevel, int argc, char *argv[])
+{
+	bool dosync    = true;  // Synchronize filesystems by default
+	bool stop_opt  = false; // Prevent -hpr from being possible
+
+	// When given arguments
+	if(argc != 1) {
+		// Long options for halt
+		static struct option halt_options[] = {
+			{ "no-wtmp",     no_argument, NULL, 'd' },
+			{ "force",       no_argument, NULL, 'f' },
+			{ "halt",        no_argument, NULL, 'h' },
+			{ "nosync",      no_argument, NULL, 'N' },
+			{ "nosync",      no_argument, NULL, 'n' },
+			{ "poweroff",    no_argument, NULL, 'p' },
+			{ "no-wall",     no_argument, NULL, 'q' },
+			{ "reboot",      no_argument, NULL, 'r' },
+			{ "wtmp-only",   no_argument, NULL, 'w' },
+			{ "help",        no_argument, NULL, '?' },
+		};
+
+		// Parse the given options
+		int args;
+		while((args = getopt_long(argc, argv, "dfhnNpqrw?", halt_options, NULL)) != -1) {
+			switch(args) {
+
+				// Display usage with a return status of 0
+				case '?':
+					return usage_halt(0);
+
+				// These options are currently ignored
+				case 'd':
+				case 'f':
+				case 'q':
+					printf("Option %c is being ignored\n", args);
+					break;
+
+				// Force halt
+				case 'h':
+					if(stop_opt == true)
+						return usage_halt(1);
+					runlevel = HALT;
+					stop_opt = true;
+					break;
+
+				// Force poweroff
+				case 'p':
+					if(stop_opt == true)
+						return usage_halt(1);
+					stop_opt = true;
+					break;
+
+				// -w is not not supported
+				case 'w':
+					printf("Option 'w' is not supported!\n");
+					return 1;
+
+				// Disable filesystem sync
+				case 'N':
+				case 'n':
+					dosync = false;
+					break;
+
+				// Force reboot
+				case 'r':
+					if(stop_opt == true)
+						return usage_halt(1);
+					runlevel = REBOOT;
+					stop_opt = true;
+					break;
+
+				// Show usage, but with a return status of 1
+				default:
+					return usage_halt(1);
+			}
+		}
+	}
+
+	return halt(runlevel, dosync);
 }
 
 // The main function
@@ -173,68 +257,16 @@ int main(int argc, char *argv[])
 				default:
 					return usage_init();
 			}
-
-			return 0;
 		}
-
-		// This should not be reached
-		return 1;
 	}
 
-	// When ran as halt(8)
-	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0) {
-		int  runlevel  = POWEROFF; // 0 is the default runlevel for halt
-		bool dosync    = true;     // Synchronize filesystems by default
-
-		// When given arguments
-		if(argc != 1) {
-			int args;
-			while((args = getopt(argc, argv, "dfnprw?")) != -1) {
-				switch(args) {
-
-					// Display usage with a return status of 0
-					case '?':
-						return usage_halt(0);
-
-					// Ignore these options
-					case 'd':
-					case 'f':
-					case 'p':
-						printf("Option %c is being ignored\n", args);
-						break;
-
-					// -w is not not supported
-					case 'w':
-						printf("WARNING: Option 'w' is not supported!\n");
-						break;
-
-					// Disable filesystem sync
-					case 'n':
-						dosync = false;
-						break;
-
-					// Set the runlevel to 6 for reboot
-					case 'r':
-						runlevel = REBOOT;
-						break;
-
-					// Show usage, but with a return status of 1
-					default:
-						return usage_halt(1);
-				}
-			}
-		}
-
-		return halt(runlevel, dosync);
-	}
-
-	// When ran as poweroff
-	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
-		return halt(POWEROFF, true);
+	// When ran as halt or poweroff
+	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0 || strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
+		return halt_main(POWEROFF, argc, argv);
 
 	// When ran as reboot
 	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
-		return halt(REBOOT, true);
+		return halt_main(REBOOT, argc, argv);
 
 	// This should not be reached, give an error and exit
 	printf("LeanInit cannot be executed as %s\n", __progname);
