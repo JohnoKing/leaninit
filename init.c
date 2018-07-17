@@ -106,29 +106,25 @@ static int halt(int runlevel)
 		case POWEROFF:
 			if(wall == true)
 				syslog(LOG_NOTICE, "The system is now powering off!\n");
-			reboot(SYS_POWEROFF);
-			break;
+			return reboot(SYS_POWEROFF);
 
 		// Reboot
 		case REBOOT:
 			if(wall == true)
 				syslog(LOG_NOTICE, "The system is now rebooting!\n");
-			reboot(RB_AUTOBOOT);
-			break;
+			return reboot(RB_AUTOBOOT);
 
 		// Halt
 		case HALT:
 			if(wall == true)
 				syslog(LOG_NOTICE, "Halting the system!\n");
-			reboot(SYS_HALT);
-			break;
+			return reboot(SYS_HALT);
 #ifdef LINUX
-		// Sleep
+		// Hibernate
 		case SLEEP:
 			if(wall == true)
 				syslog(LOG_NOTICE, "The system is now being sent into sleep mode.\n");
-			reboot(RB_SW_SUSPEND); // Hibernate, currently disabled on FreeBSD
-			break;
+			return reboot(RB_SW_SUSPEND);
 #endif
 
 		// For bad signals (never reached)
@@ -136,8 +132,6 @@ static int halt(int runlevel)
 			printf("Something went wrong, received mode %i\n", runlevel);
 			return 2;
 	}
-
-	return 0;
 }
 
 // Shows usage for halt(8)
