@@ -25,6 +25,7 @@
  */
 
 #include <errno.h>
+#include <getopt.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,8 +35,15 @@
 extern char *__progname;
 
 // Base paths
-char svc_path[119]  = "/etc/leaninit/svc/";
-char svce_path[120] = "/etc/leaninit/svce/";
+static char svc_path[119]  = "/etc/leaninit/svc/";
+static char svce_path[120] = "/etc/leaninit/svce/";
+
+// lsvc long options
+static struct option lsvc_options[] = {
+	{ "disable", required_argument, NULL, 'd' },
+	{ "enable",  required_argument, NULL, 'e' },
+	{ "help",    no_argument,       NULL, '?' },
+};
 
 // Enable and disable
 #define ENABLE 0
@@ -51,10 +59,10 @@ static int usage(int ret, const char *msg, ...)
 	va_end(extra_arg);
 
 	// Usage info
-	printf("Usage: %s [-deh] service ...\n", __progname);
-	printf("  -d            Disable a service\n");
-	printf("  -e            Enable a service\n");
-	printf("  -h            Display this text\n");
+	printf("Usage: %s [-de?] service ...\n", __progname);
+	printf("  -d, --disable        Disable a service\n");
+	printf("  -e, --enable         Enable a service\n");
+	printf("  -?, --help           Display this text\n");
 
 	// Return the specified status
 	return ret;
@@ -140,7 +148,7 @@ int main(int argc, char *argv[])
 
 	// Get the arguments
 	int args;
-	while((args = getopt(argc, argv, "d:e:h")) != -1) {
+	while((args = getopt_long(argc, argv, "d:e:?", lsvc_options, NULL)) != -1) {
 		switch(args) {
 			// Disable
 			case 'd':
@@ -151,7 +159,7 @@ int main(int argc, char *argv[])
 				return modify_svc(optarg, ENABLE);
 
 			// Show usage (return status is 0)
-			case 'h':
+			case '?':
 				return usage(0, "");
 
 			// Fallback

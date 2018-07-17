@@ -32,6 +32,7 @@
 #include <string.h>
 #include <unistd.h>
 
+// Macros for power management
 #define POWEROFF 0
 #define REBOOT   6
 #define HALT     7
@@ -81,14 +82,14 @@ static int usage_init(void)
 // Shows usage for halt(8)
 static int usage_halt(int ret)
 {
-	printf("Usage: %s [-dfhnprw]\n", __progname);
+	printf("Usage: %s [-dfnprw?]\n", __progname);
 	printf("  -d            Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
 	printf("  -f            Ignored for compatibility\n");
-	printf("  -h            Show this usage information\n");
 	printf("  -n            Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -r            Restart the system\n");
 	printf("  -p            Powers off the system (default behavior)\n");
 	printf("  -w            Ignored for compatibility\n");
+	printf("  -?            Show this usage information\n");
 	return ret;
 }
 
@@ -190,11 +191,11 @@ int main(int argc, char *argv[])
 		// When given arguments
 		if(argc != 1) {
 			int args;
-			while((args = getopt(argc, argv, "dfhnprw")) != -1) {
+			while((args = getopt(argc, argv, "dfnprw?")) != -1) {
 				switch(args) {
 
 					// Display usage with a return status of 0
-					case 'h':
+					case '?':
 						return usage_halt(0);
 
 					// Ignore these options
