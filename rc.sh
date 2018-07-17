@@ -40,9 +40,16 @@ MODE=Pc
 ENDEF
 
 # Function which forks processes (for parallel booting)
+DEFLINUX
 fork() {
-	FORK_PROG "$@"
+	setsid "$@"
 }
+ENDEF
+DEFBSD
+fork() {
+	daemon "$@"
+}
+ENDEF
 
 # Echo to the console
 DEFLINUX
@@ -126,7 +133,12 @@ fi
 # Set the keyboard layout when needed (this requires kbd to work)
 if [ -r /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; then
 	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.conf`..."
-	fork KBD_PROG `cat /etc/leaninit/kbd.conf`
+DEFLINUX
+	fork loadkeys `cat /etc/leaninit/kbd.conf`
+ENDEF
+DEFBSD
+	fork setxkbmap `cat /etc/leaninit/kbd.conf`
+ENDEF
 fi
 
 # Start the services

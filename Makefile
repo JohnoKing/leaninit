@@ -25,8 +25,6 @@ SED     := sed -i
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
 OSFLAGS := -DLINUX
-FORK    := setsid
-KBD     := loadkeys
 GETTY   := /sbin/agetty
 SHDEF   := DEFBSD
 NSHDEF  := DEFLINUX
@@ -36,8 +34,6 @@ TTY     := tty
 ifeq ($(shell uname),FreeBSD)
 	OSFLAGS=-DFREEBSD
 	SED=sed -i ''
-	FORK=daemon
-	KBD=setxkbmap
 	GETTY=/usr/libexec/getty
 	SHDEF=DEFLINUX
 	NSHDEF=DEFBSD
@@ -53,8 +49,6 @@ all:
 	$(SED) "/$(SHDEF)/,/ENDEF/d" rc
 	$(SED) "s/$(NSHDEF)//g" rc
 	$(SED) "s/ENDEF//g" rc
-	$(SED) "s:FORK_PROG:$(FORK):g" rc
-	$(SED) "s:KBD_PROG:$(KBD):g" rc
 	$(SED) "s:GETTY_PROG:$(GETTY):g" ttys
 	$(SED) "s:TTY:$(TTY):g" ttys
 
