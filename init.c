@@ -29,7 +29,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 // Macros for power management
@@ -94,7 +93,7 @@ static int usage_halt(int ret)
 }
 
 // Halts, reboots or turns off the system
-static void halt(int runlevel, bool dosync)
+static int halt(int runlevel, bool dosync)
 {
 	if(dosync == true)
 		sync();
@@ -125,8 +124,10 @@ static void halt(int runlevel, bool dosync)
 			break;
 		default:
 			printf("Something went wrong, received mode %i\n", runlevel);
-			exit(2);
+			return 2;
 	}
+
+	return 0;
 }
 
 // The main function
@@ -153,23 +154,19 @@ int main(int argc, char *argv[])
 
 				// Poweroff
 				case '0':
-					halt(POWEROFF, true);
-					break;
+					return halt(POWEROFF, true);
 
 				// Reboot
 				case '6':
-					halt(REBOOT, true);
-					break;
+					return halt(REBOOT, true);
 
 				// Halt
 				case '7':
-					halt(HALT, true);
-					break;
+					return halt(HALT, true);
 #ifdef LINUX
 				// Hibernate (Disabled on FreeBSD)
 				case '8':
-					halt(SLEEP, true);
-					break;
+					return halt(SLEEP, true);
 #endif
 				// Fallback
 				default:
@@ -227,21 +224,16 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		halt(runlevel, dosync);
-		return 0;
+		return halt(runlevel, dosync);
 	}
 
 	// When ran as poweroff
-	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0) {
-		halt(POWEROFF, true);
-		return 0;
-	}
+	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
+		return halt(POWEROFF, true);
 
 	// When ran as reboot
-	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0) {
-		halt(REBOOT, true);
-		return 0;
-	}
+	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
+		return halt(REBOOT, true)
 
 	// This should not be reached, give an error and exit
 	printf("LeanInit cannot be executed as %s\n", __progname);
