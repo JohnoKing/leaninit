@@ -32,8 +32,8 @@
 #include <unistd.h>
 
 // Macros for enable and disable
-#define ENABLE 0
-#define DISABLE 1
+#define ENABLE 10
+#define DISABLE 11
 
 // Program name
 extern char *__progname;
@@ -81,7 +81,7 @@ static int modify_svc(char *svc, int action)
 	FILE *svc_read  = fopen(svc_path, "r");
 	FILE *svce_read = fopen(svce_path, "r");
 
-	// Error checking
+	// Make sure the service actually exists
 	if(svc_read == NULL) {
 		if(svce_read != NULL) {
 			fclose(svce_read);
@@ -98,6 +98,7 @@ static int modify_svc(char *svc, int action)
 
 	// What to do
 	switch(action) {
+
 		// Enable
 		case ENABLE:
 			if(svce_read == NULL) {
@@ -125,7 +126,11 @@ static int modify_svc(char *svc, int action)
 
 			// Remove the hardlink (which disables the service), then exit
 			fclose(svce_read);
-			unlink(svce_path);
+			if(unlink(svce_path) !=  0) {
+				printf("The service %s could not be disabled due to unlink failing with errno %s\n", svc, strerror(errno));
+				return 1;
+			}
+
 			printf("The service %s has been disabled.\n", svc);
 			return 0;
 
@@ -150,6 +155,7 @@ int main(int argc, char *argv[])
 	int args;
 	while((args = getopt_long(argc, argv, "d:e:?", lsvc_options, NULL)) != -1) {
 		switch(args) {
+
 			// Disable
 			case 'd':
 				return modify_svc(optarg, DISABLE);
@@ -162,7 +168,7 @@ int main(int argc, char *argv[])
 			case '?':
 				return usage(0, "");
 
-			// Fallback
+			// Fallback (return status is 1)
 			default:
 				return usage(1, "");
 		}

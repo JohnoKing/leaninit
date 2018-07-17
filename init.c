@@ -101,28 +101,37 @@ static int halt(int runlevel)
 
 	// Act as per the runlevel
 	switch(runlevel) {
+
+		// Poweroff
 		case POWEROFF:
 			if(wall == true)
 				syslog(LOG_NOTICE, "The system is now powering off!\n");
 			reboot(SYS_POWEROFF);
 			break;
+
+		// Reboot
 		case REBOOT:
 			if(wall == true)
 				syslog(LOG_NOTICE, "The system is now rebooting!\n");
 			reboot(RB_AUTOBOOT);
 			break;
+
+		// Halt
 		case HALT:
 			if(wall == true)
 				syslog(LOG_NOTICE, "Halting the system!\n");
 			reboot(SYS_HALT);
 			break;
 #ifdef LINUX
+		// Sleep
 		case SLEEP:
 			if(wall == true)
 				syslog(LOG_NOTICE, "The system is now being sent into sleep mode.\n");
 			reboot(RB_SW_SUSPEND); // Hibernate, currently disabled on FreeBSD
 			break;
 #endif
+
+		// For bad signals (never reached)
 		default:
 			printf("Something went wrong, received mode %i\n", runlevel);
 			return 2;
@@ -154,6 +163,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 
 	// When given arguments
 	if(argc != 1) {
+
 		// Long options for halt
 		static struct option halt_options[] = {
 			{ "no-wtmp",     no_argument, NULL, 'd' },
@@ -195,8 +205,8 @@ int halt_main(int runlevel, int argc, char *argv[])
 				case 'p':
 					if(stop_opt == true)
 						return usage_halt(1);
-					stop_opt = true;
 					runlevel = POWEROFF;
+					stop_opt = true;
 					break;
 
 				// Turn off wall messages
