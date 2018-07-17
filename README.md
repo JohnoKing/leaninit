@@ -43,7 +43,7 @@ system.
 On Linux, running `linit 8` will cause your system to hibernate.
 
 ### Enabling and disabling services
-The command to use for enabling and disabling services is `lsvc` (on both
+The tool for enabling and disabling services is `lsvc` (on both
 normal and override installs). To enable a service, use `lsvc -e yourservice`;
 and to disable a service, use `lsvc -d yourservice`. A list of services
 LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).
