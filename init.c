@@ -80,21 +80,6 @@ static int usage_init(void)
 	return 1;
 }
 
-// Shows usage for halt(8)
-static int usage_halt(int ret)
-{
-	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
-	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
-	printf("  -f, --force            Ignored for compatibility\n");
-	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
-	printf("  -r, --reboot           Restart the system\n");
-	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
-	printf("  -q, --no-wall          Currently ignored\n");
-	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
-	printf("  -?, --help             Show this usage information\n");
-	return ret;
-}
-
 // Halts, reboots or turns off the system
 static int halt(int runlevel, bool dosync)
 {
@@ -131,6 +116,22 @@ static int halt(int runlevel, bool dosync)
 	}
 
 	return 0;
+}
+
+// Shows usage for halt(8)
+static int usage_halt(int ret)
+{
+	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
+	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
+	printf("  -f, --force            Ignored for compatibility\n");
+	printf("  -h, --halt             Halts the system\n");
+	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
+	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
+	printf("  -q, --no-wall          Currently ignored\n");
+	printf("  -r, --reboot           Restart the system\n");
+	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
+	printf("  -?, --help             Show this usage information\n");
+	return ret;
 }
 
 // Main function for halt
