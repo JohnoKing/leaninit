@@ -27,16 +27,22 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+// Program name
+extern char *__progname;
 
 // Base paths
 char svc_path[119]  = "/etc/leaninit/svc/";
 char svce_path[120] = "/etc/leaninit/svce/";
 
+// Enable and disable
+#define ENABLE 0
+#define DISABLE 1
+
 // Usage info for lsvc
-static void usage(const char *msg, ...)
+static int usage(int ret, const char *msg, ...)
 {
 	// Error message
 	va_list extra_arg;
@@ -45,43 +51,22 @@ static void usage(const char *msg, ...)
 	va_end(extra_arg);
 
 	// Usage info
-	printf("\nUsage: lsvc [-de] service ...\n");
+	printf("Usage: %s [-deh] service ...\n", __progname);
 	printf("  -d            Disable a service\n");
 	printf("  -e            Enable a service\n");
+	printf("  -h            Display this text\n");
 
-	// Always exit with exit code 1
-	exit(1);
+	// Return the specified status
+	return ret;
 }
 
-// Function which disables the specified service (svc)
-static void disable(char *svc)
+// Function which can enable or disable the specified service (svc)
+static int modify_svc(char *svc, int action)
 {
-	// Path and file descriptor for the service (svc)
-	strncat(svce_path, svc, 100);
-	FILE *svce_read = fopen(svce_path, "r");
+	// Exit if the service name is too long
+	if(strlen(svc) > 100)
+		return usage(1, "The service name '%s' is too long!\n", svc);
 
-	// Error checking
-	if(svce_read == NULL) {
-		strncat(svc_path, svc, 100);
-		FILE *svc_read = fopen(svc_path, "r");
-		if(svc_read != NULL) {
-			fclose(svc_read);
-			printf("The service %s is not enabled.\n", svc);
-			exit(0);
-		} else
-			usage("The service %s does not exist!\n", svc);
-	}
-
-	// Remove the hardlink (which disables the service), then exit
-	fclose(svce_read);
-	unlink(svce_path);
-	printf("The service %s has been disabled.\n", svc);
-	exit(0);
-}
-
-// Function which enables the specified service (svc)
-static void enable(char *svc)
-{
 	// Paths and file descriptors for the service (svc)
 	strncat(svc_path, svc, 100);
 	strncat(svce_path, svc, 100);
@@ -89,59 +74,92 @@ static void enable(char *svc)
 	FILE *svce_read = fopen(svce_path, "r");
 
 	// Error checking
-	if(svc_read == NULL)
-		usage("The service %s does not exist!\n", svc);
-	else if(svce_read != NULL) {
-		fclose(svce_read);
-		printf("The service %s is already enabled.\n", svc);
-		exit(0);
+	if(svc_read == NULL) {
+		if(svce_read != NULL) {
+			fclose(svce_read);
+			printf("There is an error in your configuration, %s appears to exist in /etc/leaninit/svce but not in /etc/leaninit/svc\n", svc);
+			return 1;
+		} else {
+			printf("The service %s does not exist!\n", svc);
+			return 1;
+		}
 	}
 
-	// Make the hardlink (with error checking)
-	if(link(svc_path, svce_path) != 0) {
-		printf("The service %s could not be enabled due to the hardlink failing with errno %s\n", svc, strerror(errno));
-		exit(1);
-	}
-
-	// Cleanup
+	// This is no longer needed
 	fclose(svc_read);
-	printf("The service %s has been enabled.\n", svc);
-	exit(0);
+
+	// What to do
+	switch(action) {
+		// Enable
+		case ENABLE:
+			if(svce_read == NULL) {
+				// Make the hardlink (with error checking)
+				if(link(svc_path, svce_path) != 0) {
+					printf("The service %s could not be enabled due to the hardlink failing with errno %s\n", svc, strerror(errno));
+					return 1;
+				}
+
+				// Cleanup
+				printf("The service %s has been enabled.\n", svc);
+				return 0;
+			} else {
+				fclose(svce_read);
+				printf("The service %s is already enabled.\n", svc);
+				return 0;
+			}
+
+		// Disable
+		case DISABLE:
+			if(svce_read == NULL) {
+				printf("The service %s is not enabled.\n", svc);
+				return 0;
+			}
+
+			// Remove the hardlink (which disables the service), then exit
+			fclose(svce_read);
+			unlink(svce_path);
+			printf("The service %s has been disabled.\n", svc);
+			return 0;
+
+		// Fallback
+		default:
+			printf("Something went wrong, received action %i\n", action);
+			return 1;
+	}
 }
 
 int main(int argc, char *argv[])
 {
 	// This must be run as root
 	if(getuid() != 0)
-		usage("You must run lsvc as root!\n");
+		return usage(1, "%s must be run as root!\n", __progname);
 
 	// Show usage info if given no arguments
 	if(argc == 1)
-		usage("Do you want to enable or disable a service?\n");
-
-	// Exit if the service name is too long
-	if(strlen(argv[2]) > 255)
-		usage("The service name '%s' is too long!\n", argv[2]);
+		return usage(1, "Too few arguments passed to %s!\n", __progname);
 
 	// Get the arguments
 	int args;
-	while((args = getopt(argc, argv, "d:e:")) != -1) {
+	while((args = getopt(argc, argv, "d:e:h")) != -1) {
 		switch(args) {
-
 			// Disable
 			case 'd':
-				disable(argv[2]);
+				return modify_svc(optarg, DISABLE);
 
 			// Enable
 			case 'e':
-				enable(argv[2]);
+				return modify_svc(optarg, ENABLE);
+
+			// Show usage (return status is 0)
+			case 'h':
+				return usage(0, "");
 
 			// Fallback
 			default:
-				usage("");
+				return usage(1, "");
 		}
 	}
 
 	// If we got here due to the user not passing a normal argument (e.g. 'h' without a hyphen), exit
-	usage("You must pass arguments to lsvc correctly!\n");
+	return usage(1, "You must pass arguments to lsvc correctly!\n");
 }
