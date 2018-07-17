@@ -41,7 +41,7 @@ char svce_path[120] = "/etc/leaninit/svce/";
 #define ENABLE 0
 #define DISABLE 1
 
-// Usage info for lsvc
+// Usage info
 static int usage(int ret, const char *msg, ...)
 {
 	// Error message
@@ -161,5 +161,5 @@ int main(int argc, char *argv[])
 	}
 
 	// If we got here due to the user not passing a normal argument (e.g. 'h' without a hyphen), exit
-	return usage(1, "You must pass arguments to lsvc correctly!\n");
+	return usage(1, "You must pass arguments to %s correctly!\n", __progname);
 }
