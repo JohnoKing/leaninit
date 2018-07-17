@@ -185,6 +185,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 					if(stop_opt == true)
 						return usage_halt(1);
 					stop_opt = true;
+					runlevel = POWEROFF;
 					break;
 
 				// -w is not not supported
@@ -261,11 +262,15 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// When ran as halt or poweroff
-	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0 || strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
+	// Halt
+	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0)
+		return halt_main(HALT, argc, argv);
+
+	// Poweroff
+	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
 		return halt_main(POWEROFF, argc, argv);
 
-	// When ran as reboot
+	// Reboot
 	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
 		return halt_main(REBOOT, argc, argv);
 
