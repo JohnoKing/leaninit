@@ -40,7 +40,7 @@ To shut down your system when booted into LeanInit, run `lhalt` or
 `halt` (depending on your method of installation). `lpoweroff` has
 the same function as `lhalt`, while `lreboot` will restart your
 system.
-On Linux, running `linit 7` will cause your system to hibernate.
+On Linux, running `linit 8` will cause your system to hibernate.
 
 ### Enabling and disabling services
 The command to use for enabling and disabling services is `lsvc` (on both
