@@ -27,6 +27,7 @@
 #include <sys/reboot.h>
 #include <sys/wait.h>
 #include <getopt.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -61,6 +62,7 @@ static const char *rc_init = "/etc/rc";
 
 // Default booleans for halt
 static bool dosync = true;
+static bool force  = false;
 static bool wall   = true;
 
 // Execute the init script in a seperate process
@@ -80,7 +82,7 @@ static void rc(void)
 }
 
 // Shows usage for init(8)
-static int usage_init(void)
+static int init_usage(void)
 {
 	printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
 	printf("  0         Poweroff\n");
@@ -90,6 +92,34 @@ static int usage_init(void)
 	printf("  8         Hibernate\n");
 #endif
 	return 1;
+}
+
+// Notify the system of shutdown
+static void halt_notify(const char *message)
+{
+	// Output a message if wall is true
+	if(wall == true)
+		syslog(LOG_NOTICE, "%s", message);
+
+	// Kill all processes with SIGTERM if the force flag is not passed
+	if(force == false)
+		kill(-1, SIGTERM);
+}
+
+// Shows usage for halt(8)
+static int halt_usage(int ret)
+{
+	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
+	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
+	printf("  -f, --force            Perform shutdown or reboot without sending all processes SIGTERM\n");
+	printf("  -h, --halt             Halts the system\n");
+	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
+	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
+	printf("  -q, --no-wall          Turn off wall messages\n");
+	printf("  -r, --reboot           Restart the system\n");
+	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
+	printf("  -?, --help             Show this usage information\n");
+	return ret;
 }
 
 // Halts, reboots or turns off the system
@@ -104,26 +134,23 @@ static int halt(int runlevel)
 
 		// Poweroff
 		case POWEROFF:
-			if(wall == true)
-				syslog(LOG_NOTICE, "The system is now powering off!\n");
+			halt_notify("The system is now powering off!");
 			return reboot(SYS_POWEROFF);
 
 		// Reboot
 		case REBOOT:
-			if(wall == true)
-				syslog(LOG_NOTICE, "The system is now rebooting!\n");
+			halt_notify("The system is now rebooting!");
 			return reboot(RB_AUTOBOOT);
 
 		// Halt
 		case HALT:
-			if(wall == true)
-				syslog(LOG_NOTICE, "Halting the system!\n");
+			halt_notify("The system will now halt!");
 			return reboot(SYS_HALT);
 #ifdef LINUX
 		// Hibernate
 		case SLEEP:
-			if(wall == true)
-				syslog(LOG_NOTICE, "The system is now being sent into sleep mode.\n");
+			force = true;
+			halt_notify("The system is now being sent into sleep mode.");
 			return reboot(RB_SW_SUSPEND);
 #endif
 
@@ -132,22 +159,6 @@ static int halt(int runlevel)
 			printf("Something went wrong, received mode %i\n", runlevel);
 			return 2;
 	}
-}
-
-// Shows usage for halt(8)
-static int usage_halt(int ret)
-{
-	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
-	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
-	printf("  -f, --force            Ignored for compatibility\n");
-	printf("  -h, --halt             Halts the system\n");
-	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
-	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
-	printf("  -q, --no-wall          Turn off wall messages\n");
-	printf("  -r, --reboot           Restart the system\n");
-	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
-	printf("  -?, --help             Show this usage information\n");
-	return ret;
 }
 
 // Main function for halt
@@ -179,18 +190,17 @@ int halt_main(int runlevel, int argc, char *argv[])
 
 				// Display usage with a return status of 0
 				case '?':
-					return usage_halt(0);
+					return halt_usage(0);
 
-				// These options are currently ignored
-				case 'd':
+				// Forcefully shutdown the system without killing all processes first
 				case 'f':
-					printf("Option %c is being ignored\n", args);
+					force = true;
 					break;
 
 				// Force halt
 				case 'h':
 					if(stop_opt == true)
-						return usage_halt(1);
+						return halt_usage(1);
 					runlevel = HALT;
 					stop_opt = true;
 					break;
@@ -198,7 +208,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 				// Force poweroff
 				case 'p':
 					if(stop_opt == true)
-						return usage_halt(1);
+						return halt_usage(1);
 					runlevel = POWEROFF;
 					stop_opt = true;
 					break;
@@ -208,7 +218,11 @@ int halt_main(int runlevel, int argc, char *argv[])
 					wall = false;
 					break;
 
-				// -w is not not supported
+				// -d and -w are not not supported
+				case 'd':
+					printf("WARNING: Option 'd' is being ignored.\n");
+					break;
+
 				case 'w':
 					printf("Option 'w' is not supported!\n");
 					return 1;
@@ -222,14 +236,14 @@ int halt_main(int runlevel, int argc, char *argv[])
 				// Force reboot
 				case 'r':
 					if(stop_opt == true)
-						return usage_halt(1);
+						return halt_usage(1);
 					runlevel = REBOOT;
 					stop_opt = true;
 					break;
 
 				// Show usage, but with a return status of 1
 				default:
-					return usage_halt(1);
+					return halt_usage(1);
 			}
 		}
 	}
@@ -255,7 +269,7 @@ int main(int argc, char *argv[])
 
 		} else {
 			if(argc == 1)
-				return usage_init();
+				return init_usage();
 
 			switch(*argv[1]) {
 
@@ -277,7 +291,7 @@ int main(int argc, char *argv[])
 #endif
 				// Fallback
 				default:
-					return usage_init();
+					return init_usage();
 			}
 		}
 	}
