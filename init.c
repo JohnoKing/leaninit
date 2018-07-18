@@ -96,6 +96,7 @@ static int usage_init(void)
 // Halts, reboots or turns off the system
 static int halt(int runlevel)
 {
+	// Synchronize the filesystems if dosync is set to true
 	if(dosync == true)
 		sync();
 
