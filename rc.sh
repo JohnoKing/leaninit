@@ -79,7 +79,7 @@ ENDEF
 
 # Mount drives and datasets
 echo "Remounting root as read-write..." > $OUT
-if [ -e /etc/leaninit/svce/zfs ]; then
+if [ -r /etc/leaninit/svce/zfs ]; then
 	. /etc/leaninit/svce/zfs
 	main
 else
