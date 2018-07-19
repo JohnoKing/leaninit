@@ -113,9 +113,9 @@ static int halt_usage(int ret)
 	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
 	printf("  -f, --force            Perform shutdown or reboot without sending all processes SIGTERM\n");
 	printf("  -h, --halt             Halts the system\n");
+	printf("  -l, --no-wall          Turn off wall messages\n");
 	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
-	printf("  -q, --no-wall          Turn off wall messages\n");
 	printf("  -r, --reboot           Restart the system\n");
 	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
 	printf("  -?, --help             Show this usage information\n");
@@ -174,10 +174,10 @@ static int halt_main(int runlevel, int argc, char *argv[])
 			{ "no-wtmp",     no_argument, NULL, 'd' },
 			{ "force",       no_argument, NULL, 'f' },
 			{ "halt",        no_argument, NULL, 'h' },
+			{ "no-wall",     no_argument, NULL, 'l' },
 			{ "nosync",      no_argument, NULL, 'N' },
 			{ "nosync",      no_argument, NULL, 'n' },
 			{ "poweroff",    no_argument, NULL, 'p' },
-			{ "no-wall",     no_argument, NULL, 'q' },
 			{ "reboot",      no_argument, NULL, 'r' },
 			{ "wtmp-only",   no_argument, NULL, 'w' },
 			{ "help",        no_argument, NULL, '?' },
@@ -205,17 +205,17 @@ static int halt_main(int runlevel, int argc, char *argv[])
 					stop_opt = true;
 					break;
 
+				// Turn off wall messages
+				case 'l':
+					wall = false;
+					break;
+
 				// Force poweroff
 				case 'p':
 					if(stop_opt == true)
 						return halt_usage(1);
 					runlevel = POWEROFF;
 					stop_opt = true;
-					break;
-
-				// Turn off wall messages
-				case 'q':
-					wall = false;
 					break;
 
 				// -d and -w are not not supported
