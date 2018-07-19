@@ -162,7 +162,7 @@ static int halt(int runlevel)
 }
 
 // Main function for halt
-int halt_main(int runlevel, int argc, char *argv[])
+static int halt_main(int runlevel, int argc, char *argv[])
 {
 	bool stop_opt = false; // Prevent -hpr from being possible
 
