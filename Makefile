@@ -71,6 +71,7 @@ install: all install-base
 	cd $(DESTDIR)/sbin && ln -sf linit lhalt
 	cd $(DESTDIR)/sbin && ln -sf linit lpoweroff
 	cd $(DESTDIR)/sbin && ln -sf linit lreboot
+	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf linit lzzz; fi
 
 # Install LeanInit without regard for other init systems
 override-install: override install-base
@@ -79,6 +80,7 @@ override-install: override install-base
 	cd $(DESTDIR)/sbin && ln -sf init halt
 	cd $(DESTDIR)/sbin && ln -sf init poweroff
 	cd $(DESTDIR)/sbin && ln -sf init reboot
+	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf init zzz; fi
 
 # Clean the directory
 clean:

@@ -308,6 +308,12 @@ int main(int argc, char *argv[])
 	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
 		return halt_main(REBOOT, argc, argv);
 
+#ifdef LINUX
+	// Sleep
+	if(strncmp(__progname, "zzz", 3) == 0 || strncmp(__progname, "lzzz", 4) == 0)
+		return halt(SLEEP);
+#endif
+
 	// This should not be reached, give an error and exit
 	printf("LeanInit cannot be executed as %s\n", __progname);
 	return 1;
