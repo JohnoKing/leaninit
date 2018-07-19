@@ -152,7 +152,7 @@ done
 
 # Open some gettys, reserving tty7 for the X server and Wayland
 print "Launching gettys specified in /etc/leaninit/ttys..."
-for i in `cat /etc/leaninit/ttys | sed /#/d | sed /getty/d`; do
+for i in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
 	fork sh -c "while true; do $GETTY $MODE $i; done"
 done
 
