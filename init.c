@@ -263,10 +263,11 @@ int main(int argc, char *argv[])
 	// When ran as init(8)
 	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "linit", 5) == 0) {
 
-		// Defaults to verbose boot
+		// Run the init script if LeanInit is PID 1
 		if(getpid() == 1) {
 			rc();
 
+		// When LeanInit is not PID 1
 		} else {
 			if(argc == 1)
 				return init_usage();
