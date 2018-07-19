@@ -42,10 +42,10 @@ all: sh-all
 override: sh-all
 	if [ `uname` = Linux ]; then \
 		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o init init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o svc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS) ;\
 	elif [ `uname` = FreeBSD ]; then \
 		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o init init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o svc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
