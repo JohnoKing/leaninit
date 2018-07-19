@@ -37,9 +37,9 @@ installation.
 ## Usage
 
 ### ACPI Support
-To shut down your system when booted into LeanInit, run `lhalt` or
-`halt` (depending on your method of installation). `lpoweroff` has
-the same function as `lhalt`, while `lreboot` will restart your system.
+To shut down your system when booted into LeanInit, run `lpoweroff` or
+`poweroff` (depending on your method of installation). `lhalt` will halt
+your system instead of powering off, while `lreboot` will restart your system.
 On Linux, running `linit 8` or `lzzz` will cause your system to hibernate.
 
 ### Enabling and disabling services
