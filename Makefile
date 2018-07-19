@@ -24,41 +24,53 @@ CC      := cc
 SED     := sed -i
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
-OSFLAGS := -DLINUX
-GETTY   := /sbin/agetty
-SHDEF   := DEFBSD
-NSHDEF  := DEFLINUX
-TTY     := tty
-
-# FreeBSD Compatibility
-ifeq ($(shell uname),FreeBSD)
-	OSFLAGS=-DFREEBSD
-	SED=sed -i ''
-	GETTY=/usr/libexec/getty
-	SHDEF=DEFLINUX
-	NSHDEF=DEFBSD
-	TTY=ttyv
-endif
 
 # Compile LeanInit
 all: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o linit init.c $(LDFLAGS)
-	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o lsvc lsvc.c $(LDFLAGS)
+	if [ `uname` = Linux ]; then \
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o linit init.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o lsvc lsvc.c $(LDFLAGS) ;\
+	elif [ `uname` = FreeBSD ]; then \
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o linit init.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o lsvc lsvc.c $(LDFLAGS) ;\
+	else \
+		echo "`uname` is not supported by LeanInit!" ;\
+		false ;\
+	fi
 
 # Compile LeanInit without regard for other init systems
 override: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
-	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS)
+	if [ `uname` = Linux ]; then \
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o init init.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o svc lsvc.c $(LDFLAGS) ;\
+	elif [ `uname` = FreeBSD ]; then \
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o init init.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o svc lsvc.c $(LDFLAGS) ;\
+	else \
+		echo "`uname` is not supported by LeanInit!" ;\
+		false ;\
+	fi
 
 # 'Compile' rc.sh and ttys.cfg
 sh-all:
 	cp rc.sh rc
 	cp ttys.cfg ttys
-	$(SED) "/$(SHDEF)/,/ENDEF/d" rc
-	$(SED) "s/$(NSHDEF)//g" rc
-	$(SED) "s/ENDEF//g" rc
-	$(SED) "s:GETTY_PROG:$(GETTY):g" ttys
-	$(SED) "s:TTY:$(TTY):g" ttys
+	if [ `uname` = Linux ]; then \
+		$(SED) "/DEFBSD/,/ENDEF/d" rc ;\
+		$(SED) "s/DEFLINUX//g" rc ;\
+		$(SED) "s/ENDEF//g" rc ;\
+		$(SED) "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
+		$(SED) "s:TTY:tty:g" ttys ;\
+	elif [ `uname` = FreeBSD ]; then \
+		$(SED) '' "/DEFLINUX/,/ENDEF/d" rc ;\
+		$(SED) '' "s/DEFBSD//g" rc ;\
+		$(SED) '' "s/ENDEF//g" rc ;\
+		$(SED) '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
+		$(SED) '' "s:TTY:ttyv:g" ttys ;\
+	else \
+		echo "`uname` is not supported by LeanInit!" ;\
+		false ;\
+	fi
 
 # Used by both install and override-install
 install-base:

@@ -19,28 +19,28 @@ be built, named `linit`. Running `make install` as root will install
 LeanInit, without overriding other init systems.
 
 To boot into LeanInit, add `init=/sbin/linit` to your kernel command
-line.
+line. Make sure eudev is installed, as it is required on Linux.
 
 ### FreeBSD
-Follow the Linux building steps, but use `gmake` instead of `make` (BSD
-Make is not supported).
-To boot into LeanInit, append the following line to `/boot/loader.conf`:
+Follow the same steps as on Linux to build LeanInit. The Makefile
+is compatible with both GNU and BSD Make, so you don't need to install
+`gmake` as a seperate build dependency.
+To boot from LeanInit, append the following line to `/boot/loader.conf`:
 `init_path="/sbin/linit:/sbin/init:/rescue/init"`
 
 ### Override Build
 If you wish, running `make override` and `make override-install` will
 build a copy of LeanInit that will override existing init systems once
 installed. This is experimental, and not a recommended method of
-installation
+installation.
 
 ## Usage
 
 ### ACPI Support
 To shut down your system when booted into LeanInit, run `lhalt` or
 `halt` (depending on your method of installation). `lpoweroff` has
-the same function as `lhalt`, while `lreboot` will restart your
-system.
-On Linux, running `linit 8` will cause your system to hibernate.
+the same function as `lhalt`, while `lreboot` will restart your system.
+On Linux, running `linit 8` or `lzzz` will cause your system to hibernate.
 
 ### Enabling and disabling services
 The tool for enabling and disabling services is `lsvc` (on both
@@ -48,6 +48,13 @@ normal and override installs). To enable a service, use `lsvc -e yourservice`;
 and to disable a service, use `lsvc -d yourservice`. A list of services
 LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).
 
+### /etc/hostname
+`/etc/hostname` is the file LeanInit uses to set the system's hostname.
+
+### /etc/leaninit/kbd.conf
+`/etc/leaninit/kbd.conf` allows you to change the system's keyboard layout
+(kbd must be installed for this to work on Linux).
+
 ### /etc/leaninit/ttys
-LeanInit has a config file that allows you to add or remove ttys from
-being launched, and change the getty program used on boot.
+`/etc/leaninit/ttys` allows you to add and remove the ttys launched on boot,
+as well as change the getty program that will be used.
