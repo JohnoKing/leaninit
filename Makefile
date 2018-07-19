@@ -40,10 +40,18 @@ ifeq ($(shell uname),FreeBSD)
 	TTY=ttyv
 endif
 
-# Make the LeanInit binary
-all:
+# Compile LeanInit
+all: sh-all
 	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o linit init.c $(LDFLAGS)
 	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -o lsvc lsvc.c $(LDFLAGS)
+
+# Compile LeanInit without regard for other init systems
+override: sh-all
+	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
+	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS)
+
+# 'Compile' rc.sh and ttys.cfg
+sh-all:
 	cp rc.sh rc
 	cp ttys.cfg ttys
 	$(SED) "/$(SHDEF)/,/ENDEF/d" rc
@@ -51,11 +59,6 @@ all:
 	$(SED) "s/ENDEF//g" rc
 	$(SED) "s:GETTY_PROG:$(GETTY):g" ttys
 	$(SED) "s:TTY:$(TTY):g" ttys
-
-# Compile LeanInit without regard for other init systems
-override:
-	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o init init.c $(LDFLAGS)
-	$(CC) $(WFLAGS) $(CFLAGS) $(OSFLAGS) -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS)
 
 # Used by both install and override-install
 install-base:
