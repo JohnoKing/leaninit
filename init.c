@@ -111,7 +111,7 @@ static int halt_usage(int ret)
 {
 	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
 	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
-	printf("  -f, --force            Perform shutdown or reboot without sending all processes SIGTERM\n");
+	printf("  -f, -q,  --force       Perform shutdown or reboot without sending all processes SIGTERM\n");
 	printf("  -h, --halt             Halts the system\n");
 	printf("  -l, --no-wall          Turn off wall messages\n");
 	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
@@ -193,6 +193,7 @@ static int halt_main(int runlevel, int argc, char *argv[])
 					return halt_usage(0);
 
 				// Forcefully shutdown the system without killing all processes first
+				case 'q':
 				case 'f':
 					force = true;
 					break;
