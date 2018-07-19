@@ -29,9 +29,11 @@ CFLAGS  := -O2 -fno-math-errno -pipe
 all: sh-all
 	if [ `uname` = Linux ]; then \
 		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o linit init.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o lhalt halt.c $(LDFLAGS) ;\
 		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o lsvc lsvc.c $(LDFLAGS) ;\
 	elif [ `uname` = FreeBSD ]; then \
 		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o linit init.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o lhalt halt.c $(LDFLAGS) ;\
 		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o lsvc lsvc.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
@@ -42,10 +44,12 @@ all: sh-all
 override: sh-all
 	if [ `uname` = Linux ]; then \
 		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o init init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o svc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o halt halt.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS) ;\
 	elif [ `uname` = FreeBSD ]; then \
 		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o init init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o svc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o halt halt.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
@@ -81,25 +85,23 @@ install-base:
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
-	install -Dm0755 linit lsvc $(DESTDIR)/sbin
+	install -Dm0755 linit lhalt lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc/leaninit
-	cd $(DESTDIR)/sbin && ln -sf linit lhalt
-	cd $(DESTDIR)/sbin && ln -sf linit lpoweroff
-	cd $(DESTDIR)/sbin && ln -sf linit lreboot
-	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf linit lzzz; fi
+	cd $(DESTDIR)/sbin && ln -sf lhalt lpoweroff
+	cd $(DESTDIR)/sbin && ln -sf lhalt lreboot
+	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf lhalt lzzz; fi
 
 # Install LeanInit without regard for other init systems
 override-install: override install-base
-	install -Dm0755 init lsvc $(DESTDIR)/sbin
+	install -Dm0755 init halt lsvc $(DESTDIR)/sbin
 	install -Dm0755 rc $(DESTDIR)/etc
-	cd $(DESTDIR)/sbin && ln -sf init halt
-	cd $(DESTDIR)/sbin && ln -sf init poweroff
-	cd $(DESTDIR)/sbin && ln -sf init reboot
-	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf init zzz; fi
+	cd $(DESTDIR)/sbin && ln -sf halt poweroff
+	cd $(DESTDIR)/sbin && ln -sf halt reboot
+	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf halt zzz; fi
 
 # Clean the directory
 clean:
-	rm -f init linit lsvc rc ttys
+	rm -f init halt linit lhalt lsvc rc ttys
 
 # Calls clean, then resets the git repo
 clobber: clean
