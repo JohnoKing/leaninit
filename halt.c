@@ -44,7 +44,7 @@
 #ifndef OVERRIDE
 char init_cmd[25] = "/sbin/init";
 #else
-char init_cmd[26] = "/sbin/linit";
+char init_cmd[25] = "/sbin/linit";
 #endif
 
 // argv[0] is not sufficent
