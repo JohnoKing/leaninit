@@ -64,6 +64,7 @@ static int usage(int ret, const char *msg, ...)
 	printf("Usage: %s [-de?] service ...\n", __progname);
 	printf("  -d, --disable        Disable a service\n");
 	printf("  -e, --enable         Enable a service\n");
+	printf("  -s, --start          Start a service\n");
 	printf("  -?, --help           Display this text\n");
 
 	// Return the specified status
