@@ -3,5 +3,5 @@ NAME=NetworkManager
 
 # The main function
 main() {
-	fork NetworkManager
+	NetworkManager
 }

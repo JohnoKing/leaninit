@@ -3,5 +3,5 @@ NAME="ACPI Daemon"
 
 # The main function
 main() {
-	fork acpid
+	acpid
 }

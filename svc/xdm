@@ -9,7 +9,7 @@ main() {
 		NAME=$DM
 
 		# Start the display manager
-		fork $DM
+		$DM
 	else
 		print "The X Server cannot be started because $XDMCONF doesn't exist!"
 	fi

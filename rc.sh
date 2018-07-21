@@ -114,7 +114,7 @@ fi
 
 # Start the services
 for sv in `ls /etc/leaninit/svce | grep -v zfs`; do
-	sh /etc/leaninit/svc-run $sv print
+	fork sh /etc/leaninit/svc-run $sv print
 done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys
