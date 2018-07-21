@@ -21,7 +21,7 @@
  */
 
 /*
- * A minimal init system
+ * A fast init system
  */
 
 #include <sys/reboot.h>
