@@ -11,7 +11,7 @@ main() {
 		# Start the display manager
 		$DM
 	else
-		print "The X Server cannot be started because $XDMCONF doesn't exist!"\
+		print "The X Server cannot be started because $XDMCONF doesn't exist!"
 		return 1
 	fi
 }
