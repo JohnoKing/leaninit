@@ -21,11 +21,8 @@
 # SOFTWARE.
 #
 
-# Just in case, set a PATH variable in case /etc/profile does not contain one
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-
-# Load /etc/profile
-. /etc/profile
+# Source rc.api
+. /etc/leaninit/rc.api
 
 # Set the $GETTY variable
 GETTY=`grep getty /etc/leaninit/ttys | sed /#/d`
@@ -39,32 +36,7 @@ DEFBSD
 MODE=Pc
 ENDEF
 
-# Function which forks processes (for parallel booting)
-DEFLINUX
-fork() {
-	setsid "$@"
-}
-ENDEF
-DEFBSD
-fork() {
-	daemon "$@"
-}
-ENDEF
-
-# Echo to the console
-DEFLINUX
-OUT="/dev/stdout"
-ENDEF
-
-DEFBSD
-OUT="/dev/console"
-ENDEF
-
-print() {
-	echo "$@" > $OUT
-	echo "$@" >> /var/log/leaninit.log
-}
-
+# Initial output
 echo "LeanInit is running on `uname -srm`" > $OUT
 echo "Checking all filesystems for data corruption..." > $OUT # fsck(8) is run outside of the if statement
 
@@ -84,10 +56,11 @@ if [ -r /etc/leaninit/svce/zfs ]; then
 	main
 else
 	mount -o remount,rw /
-	mount -a
 fi
-
+mount -a
 swapon -a
+
+# Logging
 mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
@@ -101,8 +74,6 @@ DEFBSD
 print "Starting devd..."
 fork devd -q
 ENDEF
-
-# Manually mount all drives
 
 # Load all sysctl settings
 print "Loading settings with sysctl..."
@@ -142,15 +113,11 @@ ENDEF
 fi
 
 # Start the services
-for i in `ls /etc/leaninit/svce | grep -v zfs`; do
-	. /etc/leaninit/svce/$i
-	export NAME
-	print "Starting $NAME..."
-	main > $OUT
-	echo "Started $NAME" >> /var/log/leaninit.log
+for sv in `ls /etc/leaninit/svce | grep -v zfs`; do
+	sh /etc/leaninit/svc-run $sv print
 done
 
-# Open some gettys, reserving tty7 for the X server and Wayland
+# Open gettys on the ttys specified in /etc/leaninit/ttys
 print "Launching gettys specified in /etc/leaninit/ttys..."
 for i in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
 	fork sh -c "while true; do $GETTY $MODE $i; done"
@@ -158,7 +125,6 @@ done
 
 # Launch a getty on tty1 without forking
 print "Launching a getty on tty1..."
-
 while true; do
 DEFLINUX
 	$GETTY $MODE tty1

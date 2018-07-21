@@ -31,9 +31,10 @@
 #include <string.h>
 #include <unistd.h>
 
-// Macros for enable and disable
-#define ENABLE 10
+// Macros for service actions
+#define ENABLE  10
 #define DISABLE 11
+#define START   12
 
 // Program name
 extern char *__progname;
@@ -46,6 +47,7 @@ static char svce_path[120] = "/etc/leaninit/svce/";
 static struct option lsvc_options[] = {
 	{ "disable", required_argument, NULL, 'd' },
 	{ "enable",  required_argument, NULL, 'e' },
+	{ "start",   required_argument, NULL, 's' },
 	{ "help",    no_argument,       NULL, '?' },
 };
 
@@ -134,6 +136,14 @@ static int modify_svc(char *svc, int action)
 			printf("The service %s has been disabled.\n", svc);
 			return 0;
 
+		// Start
+		case START:
+			if(svce_read == NULL)
+				return usage(1, "The service %s is not enabled.\n", svc);
+
+			fclose(svce_read);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-run", svc, "echo", NULL);
+
 		// Fallback
 		default:
 			printf("Something went wrong, received action %i\n", action);
@@ -153,7 +163,7 @@ int main(int argc, char *argv[])
 
 	// Get the arguments
 	int args;
-	while((args = getopt_long(argc, argv, "d:e:?", lsvc_options, NULL)) != -1) {
+	while((args = getopt_long(argc, argv, "d:e:s:?", lsvc_options, NULL)) != -1) {
 		switch(args) {
 
 			// Disable
@@ -163,6 +173,10 @@ int main(int argc, char *argv[])
 			// Enable
 			case 'e':
 				return modify_svc(optarg, ENABLE);
+
+			// Start
+			case 's':
+				return modify_svc(optarg, START);
 
 			// Show usage (return status is 0)
 			case '?':

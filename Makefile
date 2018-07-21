@@ -54,17 +54,18 @@ override: sh-all
 # 'Compile' rc.sh and ttys.cfg
 sh-all:
 	cp rc.sh rc
+	cp rc.api.sh rc.api
 	cp ttys.cfg ttys
 	if [ `uname` = Linux ]; then \
-		$(SED) "/DEFBSD/,/ENDEF/d" rc ;\
-		$(SED) "s/DEFLINUX//g" rc ;\
-		$(SED) "s/ENDEF//g" rc ;\
+		$(SED) "/DEFBSD/,/ENDEF/d" rc rc.api ;\
+		$(SED) "s/DEFLINUX//g" rc rc.api ;\
+		$(SED) "s/ENDEF//g" rc rc.api ;\
 		$(SED) "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
 		$(SED) "s:TTY:tty:g" ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(SED) '' "/DEFLINUX/,/ENDEF/d" rc ;\
-		$(SED) '' "s/DEFBSD//g" rc ;\
-		$(SED) '' "s/ENDEF//g" rc ;\
+		$(SED) '' "/DEFLINUX/,/ENDEF/d" rc rc.api ;\
+		$(SED) '' "s/DEFBSD//g" rc rc.api ;\
+		$(SED) '' "s/ENDEF//g" rc rc.api ;\
 		$(SED) '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
 		$(SED) '' "s:TTY:ttyv:g" ttys ;\
 	else \
@@ -77,7 +78,8 @@ install-base:
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
 	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	install -Dm0644 ttys $(DESTDIR)/etc/leaninit
+	install -Dm0644 ttys xdm.conf $(DESTDIR)/etc/leaninit
+	install -Dm0755 rc.api svc-run $(DESTDIR)/etc/leaninit
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
@@ -99,7 +101,7 @@ override-install: override install-base
 
 # Clean the directory
 clean:
-	rm -f init linit lsvc rc ttys
+	rm -f init linit lsvc rc rc.api ttys
 
 # Calls clean, then resets the git repo
 clobber: clean

@@ -9,4 +9,5 @@ init
 linit
 lsvc
 rc
+rc.api
 ttys
