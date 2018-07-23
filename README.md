@@ -1,6 +1,6 @@
 LeanInit
 ========
-_A faster init system_
+_A fast init system_
 
 ## What is this
 This is a small init system that I made for myself, written from scratch.
