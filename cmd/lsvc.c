@@ -133,7 +133,7 @@ static int modify_svc(char *svc, int action)
 			if(svce_read == NULL)
 				return usage(1, "The service %s is not enabled.\n", svc);
 
-			// Execute svc-run
+			// Execute svc-start
 			fclose(svce_read);
 			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "echo", NULL);
 
