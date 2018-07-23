@@ -47,7 +47,7 @@ OUT="/dev/stdout"
 ENDEF
 
 DEFBSD
-OUT="/dev/console"
+OUT="/dev/ttyv0"
 ENDEF
 
 print() {

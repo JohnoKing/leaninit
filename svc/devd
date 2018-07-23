@@ -1,0 +1,8 @@
+# The name of the service
+NAME=devd
+DAEMON=devd
+
+# The main function
+main() {
+	devd > $OUT
+}

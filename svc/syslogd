@@ -1,0 +1,8 @@
+# The name of the service
+NAME=SyslogD
+DAEMON=syslogd
+
+# The main function
+main() {
+	syslogd
+}

@@ -64,15 +64,10 @@ swapon -a
 mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
-# Launch eudev or devd, depending on platform
+# Launch eudev (Linux)
 DEFLINUX
 print "Starting udev..."
 udevd --daemon
-ENDEF
-
-DEFBSD
-print "Starting devd..."
-fork devd -q
 ENDEF
 
 # Load all sysctl settings
@@ -131,6 +126,6 @@ DEFLINUX
 ENDEF
 
 DEFBSD
-	$GETTY $MODE ttyv1
+	$GETTY $MODE ttyv0
 ENDEF
 done

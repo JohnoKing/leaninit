@@ -63,15 +63,15 @@ sh-all:
 	cp rc/ttys.cfg     out/ttys
 	cd out ;\
 	if [ `uname` = Linux ]; then \
-		$(SED) "/DEFBSD/,/ENDEF/d" rc rc.api ;\
-		$(SED) "s/DEFLINUX//g"     rc rc.api ;\
-		$(SED) "s/ENDEF//g"        rc rc.api ;\
+		$(SED) "/DEFBSD/,/ENDEF/d" rc rc.api ttys ;\
+		$(SED) "s/DEFLINUX//g"     rc rc.api ttys ;\
+		$(SED) "s/ENDEF//g"        rc rc.api ttys ;\
 		$(SED) "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
 		$(SED) "s:TTY:tty:g"                 ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(SED) '' "/DEFLINUX/,/ENDEF/d" rc rc.api ;\
-		$(SED) '' "s/DEFBSD//g"         rc rc.api ;\
-		$(SED) '' "s/ENDEF//g"          rc rc.api ;\
+		$(SED) '' "/DEFLINUX/,/ENDEF/d" rc rc.api ttys ;\
+		$(SED) '' "s/DEFBSD//g"         rc rc.api ttys ;\
+		$(SED) '' "s/ENDEF//g"          rc rc.api ttys ;\
 		$(SED) '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
 		$(SED) '' "s:TTY:ttyv:g"                      ttys ;\
 	else \
