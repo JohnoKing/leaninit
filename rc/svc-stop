@@ -47,9 +47,16 @@ if [ $2 = print ]; then
 else
 	pkill -x $DAEMON
 fi
+RET=$?
+
+# Send SIGKILL if SIGTERM did not work
+if [ "`pgrep -x $DAEMON`" != "" ]; then
+	for s in "`pgrep -x $DAEMON`"; do
+		kill -s SIGKILL $s
+	done
+fi
 
 # Return output
-RET=$?
 if [ $RET = 0 ]; then
 	$2 "Stopped $NAME successfully"
 	exit 0
