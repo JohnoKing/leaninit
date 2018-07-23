@@ -34,6 +34,7 @@ static char svce_path[120] = "/etc/leaninit/svce/";
 static struct option lsvc_options[] = {
 	{ "disable", required_argument, NULL, 'd' },
 	{ "enable",  required_argument, NULL, 'e' },
+	{ "restart", required_argument, NULL, 'r' },
 	{ "stop",    required_argument, NULL, 'q' },
 	{ "start",   required_argument, NULL, 's' },
 	{ "help",    no_argument,       NULL, '?' },
@@ -49,9 +50,10 @@ static int usage(int ret, const char *msg, ...)
 	va_end(extra_arg);
 
 	// Usage info
-	printf("Usage: %s [-deqs?] service ...\n", __progname);
+	printf("Usage: %s [-derqs?] service ...\n", __progname);
 	printf("  -d, --disable        Disable a service\n");
 	printf("  -e, --enable         Enable a service\n");
+	printf("  -r, --restart        Restart a service\n");
 	printf("  -q, --stop           Stop a service\n");
 	printf("  -s, --start          Start a service\n");
 	printf("  -?, --help           Display this text\n");
@@ -131,16 +133,33 @@ static int modify_svc(char *svc, int action)
 			if(svce_read == NULL)
 				return usage(1, "The service %s is not enabled.\n", svc);
 
+			// Execute svc-run
 			fclose(svce_read);
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-run", svc, "echo", NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "echo", NULL);
 
 		// Stop
 		case STOP:
 			if(svce_read == NULL)
 				return usage(1, "The service %s is not enabled.\n", svc);
 
+			// Execute svc-stop
 			fclose(svce_read);
 			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", NULL);
+
+		// Stop
+		case RESTART:
+			if(svce_read == NULL)
+				return usage(1, "The service %s is not enabled.\n", svc);
+
+			// First, stop the service
+			fclose(svce_read);
+			pid_t stop = fork();
+			if(stop == 0)
+				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", NULL);
+
+			// Then, start it again
+			wait(0);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "echo", NULL);
 
 		// Fallback
 		default:
@@ -171,6 +190,10 @@ int main(int argc, char *argv[])
 			// Enable
 			case 'e':
 				return modify_svc(optarg, ENABLE);
+
+			// Restart
+			case 'r':
+				return modify_svc(optarg, RESTART);
 
 			// Stop
 			case 'q':

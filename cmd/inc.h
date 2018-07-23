@@ -54,6 +54,7 @@
 #define DISABLE 11
 #define STOP    12
 #define START   13
+#define RESTART 14
 
 // argv[0] is not sufficent
 extern char *__progname;

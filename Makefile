@@ -85,7 +85,7 @@ install-base:
 	cp -r svc $(DESTDIR)/etc/leaninit
 	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	install -Dm0644 out/ttys rc/xdm.conf $(DESTDIR)/etc/leaninit
-	install -Dm0755 out/rc.api rc/svc-run rc/svc-stop $(DESTDIR)/etc/leaninit
+	install -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base

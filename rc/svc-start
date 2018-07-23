@@ -53,5 +53,5 @@ RET=$?
 if [ $RET = 0 ]; then
 	$2 "Started $NAME successfully"
 else
-	$2 "WARNING: $NAME failed to start (exited with status $RET)"
+	$2 "ERROR: $NAME failed to start (exited with status $RET)"
 fi
