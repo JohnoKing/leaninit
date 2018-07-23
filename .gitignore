@@ -4,10 +4,5 @@
 # Plasma Dolphin
 *.directory
 
-# Ignore the built files
-init
-linit
-lsvc
-rc
-rc.api
-ttys
+# Ignore ./out (stores built files)
+out

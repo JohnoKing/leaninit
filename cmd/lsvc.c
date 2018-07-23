@@ -24,21 +24,7 @@
  * lsvc - A program which enables and disables LeanInit services
  */
 
-#include <errno.h>
-#include <getopt.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-
-// Macros for service actions
-#define ENABLE  10
-#define DISABLE 11
-#define STOP    12
-#define START   13
-
-// Program name
-extern char *__progname;
+#include "inc.h"
 
 // Base paths
 static char svc_path[119]  = "/etc/leaninit/svc/";

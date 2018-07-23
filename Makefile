@@ -25,14 +25,18 @@ SED     := sed -i
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
 
+# Source Files
+LINIT   := cmd/halt.c cmd/init.c
+LSVC    := cmd/lsvc.c
+
 # Compile LeanInit
 all: sh-all
 	if [ `uname` = Linux ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o linit init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o lsvc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/linit   $(LINIT) $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/lsvc    $(LSVC)  $(LDFLAGS) ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o linit init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o lsvc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/linit $(LINIT) $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/lsvc  $(LSVC)  $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
@@ -41,11 +45,11 @@ all: sh-all
 # Compile LeanInit without regard for other init systems
 override: sh-all
 	if [ `uname` = Linux ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o init init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/init   $(LINIT) $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/lsvc   $(LSVC)  $(LDFLAGS) ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o init init.c $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o lsvc lsvc.c $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
@@ -53,21 +57,23 @@ override: sh-all
 
 # 'Compile' rc.sh and ttys.cfg
 sh-all:
-	cp rc.sh rc
-	cp rc.api.sh rc.api
-	cp ttys.cfg ttys
+	mkdir -p out
+	cp rc/rc.sh     out/rc
+	cp rc/rc.api.sh out/rc.api
+	cp rc/ttys.cfg     out/ttys
+	cd out ;\
 	if [ `uname` = Linux ]; then \
 		$(SED) "/DEFBSD/,/ENDEF/d" rc rc.api ;\
-		$(SED) "s/DEFLINUX//g" rc rc.api ;\
-		$(SED) "s/ENDEF//g" rc rc.api ;\
+		$(SED) "s/DEFLINUX//g"     rc rc.api ;\
+		$(SED) "s/ENDEF//g"        rc rc.api ;\
 		$(SED) "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
-		$(SED) "s:TTY:tty:g" ttys ;\
+		$(SED) "s:TTY:tty:g"                 ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
 		$(SED) '' "/DEFLINUX/,/ENDEF/d" rc rc.api ;\
-		$(SED) '' "s/DEFBSD//g" rc rc.api ;\
-		$(SED) '' "s/ENDEF//g" rc rc.api ;\
+		$(SED) '' "s/DEFBSD//g"         rc rc.api ;\
+		$(SED) '' "s/ENDEF//g"          rc rc.api ;\
 		$(SED) '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
-		$(SED) '' "s:TTY:ttyv:g" ttys ;\
+		$(SED) '' "s:TTY:ttyv:g"                      ttys ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
@@ -76,15 +82,15 @@ sh-all:
 # Used by both install and override-install
 install-base:
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
-	cp -r svc xdm.conf $(DESTDIR)/etc/leaninit
+	cp -r svc $(DESTDIR)/etc/leaninit
 	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	install -Dm0644 ttys xdm.conf $(DESTDIR)/etc/leaninit
-	install -Dm0755 rc.api svc-run svc-stop $(DESTDIR)/etc/leaninit
+	install -Dm0644 out/ttys rc/xdm.conf $(DESTDIR)/etc/leaninit
+	install -Dm0755 out/rc.api rc/svc-run rc/svc-stop $(DESTDIR)/etc/leaninit
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
-	install -Dm0755 linit lsvc $(DESTDIR)/sbin
-	install -Dm0755 rc $(DESTDIR)/etc/leaninit
+	install -Dm0755 out/linit out/lsvc $(DESTDIR)/sbin
+	install -Dm0755 out/rc $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/sbin && ln -sf linit lhalt
 	cd $(DESTDIR)/sbin && ln -sf linit lpoweroff
 	cd $(DESTDIR)/sbin && ln -sf linit lreboot
@@ -92,8 +98,8 @@ install: all install-base
 
 # Install LeanInit without regard for other init systems
 override-install: override install-base
-	install -Dm0755 init lsvc $(DESTDIR)/sbin
-	install -Dm0755 rc $(DESTDIR)/etc
+	install -Dm0755 out/init out/lsvc $(DESTDIR)/sbin
+	install -Dm0755 out/rc $(DESTDIR)/etc
 	cd $(DESTDIR)/sbin && ln -sf init halt
 	cd $(DESTDIR)/sbin && ln -sf init poweroff
 	cd $(DESTDIR)/sbin && ln -sf init reboot
@@ -101,7 +107,7 @@ override-install: override install-base
 
 # Clean the directory
 clean:
-	rm -f init linit lsvc rc rc.api ttys
+	rm -rf out
 
 # Calls clean, then resets the git repo
 clobber: clean
