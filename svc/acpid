@@ -1,5 +1,6 @@
 # The name of the service
 NAME="ACPI Daemon"
+DAEMON=acpid
 
 # The main function
 main() {

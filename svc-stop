@@ -34,24 +34,26 @@ fi
 . /etc/leaninit/svce/$1
 export $NAME
 
-# Do not run if the service is already running
-if [ "`pgrep -x $DAEMON`" != "" ]; then
-	echo "$NAME is already running"
+# Do not attempt to run if the service is not running
+if [ "`pgrep -x $DAEMON`" = "" ]; then
+	$2 "$NAME is not running"
 	exit 0
 fi
 
-# Start $NAME
-$2 "Starting $NAME..."
+# Stop $NAME
+$2 "Stopping $NAME..."
 if [ $2 = print ]; then
-	main > $OUT
+	pkill -x $DAEMON > $OUT
 else
-	main
+	pkill -x $DAEMON
 fi
 
 # Return output
 RET=$?
 if [ $RET = 0 ]; then
-	$2 "Started $NAME successfully"
+	$2 "Stopped $NAME successfully"
+	exit 0
 else
-	$2 "WARNING: $NAME failed to start (exited with status $RET)"
+	$2 "ERROR: $NAME failed to stop (exited with status $RET)"
+	exit $RET
 fi

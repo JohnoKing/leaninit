@@ -1,5 +1,6 @@
 # The name of the service
 NAME=DBus
+DAEMON=dbus-daemon
 
 # The main function
 main() {

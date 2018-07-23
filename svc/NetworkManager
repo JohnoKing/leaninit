@@ -1,5 +1,6 @@
 # The name of the service
 NAME=NetworkManager
+DAEMON=NetworkManager
 
 # The main function
 main() {

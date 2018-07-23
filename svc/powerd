@@ -1,5 +1,6 @@
 # The name of the service
 NAME=PowerD
+DAEMON=powerd
 
 # The main function
 main() {
