@@ -71,8 +71,6 @@ int halt_usage(int ret)
 // Main function for halt
 int halt_main(int runlevel, int argc, char *argv[])
 {
-	bool stop_opt = false; // Prevent -hpr from being possible
-
 	// When given arguments
 	if(argc != 1) {
 
@@ -93,10 +91,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 
 				// Force halt
 				case 'h':
-					if(stop_opt == true)
-						return halt_usage(1);
-					runlevel = HALT;
-					stop_opt = true;
+					runlevel |= HALT;
 					break;
 
 				// Turn off wall messages
@@ -106,10 +101,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 
 				// Force poweroff
 				case 'p':
-					if(stop_opt == true)
-						return halt_usage(1);
-					runlevel = POWEROFF;
-					stop_opt = true;
+					runlevel |= POWEROFF;
 					break;
 
 				// -d and -w are not not supported
@@ -129,10 +121,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 
 				// Force reboot
 				case 'r':
-					if(stop_opt == true)
-						return halt_usage(1);
-					runlevel = REBOOT;
-					stop_opt = true;
+					runlevel |= REBOOT;
 					break;
 
 				// Show usage, but with a return status of 1
