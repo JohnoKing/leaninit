@@ -61,7 +61,7 @@ int halt_usage(int ret)
 	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
 	printf("  -h, --halt             Halts the system\n");
 	printf("  -l, --no-wall          Turn off wall messages\n");
-	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
+	printf("  -p, --poweroff         Turn off the system\n");
 	printf("  -r, --reboot           Restart the system\n");
 	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
 	printf("  -?, --help             Show this usage information\n");
