@@ -56,11 +56,11 @@ void halt_notify(const char *message)
 int halt_usage(int ret)
 {
 	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
+	printf("  -f, -q, --force        Perform shutdown or reboot without sending all processes SIGTERM\n");
+	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
-	printf("  -f, -q,  --force       Perform shutdown or reboot without sending all processes SIGTERM\n");
 	printf("  -h, --halt             Halts the system\n");
 	printf("  -l, --no-wall          Turn off wall messages\n");
-	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -p, --poweroff         Turn off the system (default behavior)\n");
 	printf("  -r, --reboot           Restart the system\n");
 	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
