@@ -61,7 +61,7 @@ int halt(int runlevel)
 		// Hibernate
 		case SLEEP:
 			force = true;
-			halt_notify("The system is now being sent into sleep mode.");
+			halt_notify("The system is now being sent into hibernate (S4)");
 			return reboot(RB_SW_SUSPEND);
 #endif
 
