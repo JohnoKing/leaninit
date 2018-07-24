@@ -29,6 +29,6 @@ void halt_notify(const char *message);
 int  halt_usage(int ret);
 
 // Halt booleans
-bool dosync;
-bool force;
-bool wall;
+static bool dosync;
+static bool force;
+static bool wall;
