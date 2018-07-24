@@ -68,7 +68,7 @@ int halt(int runlevel)
 		// For bad signals (never reached)
 		default:
 			printf("Something went wrong, received mode %i\n", runlevel);
-			return 2;
+			return runlevel;
 	}
 }
 
