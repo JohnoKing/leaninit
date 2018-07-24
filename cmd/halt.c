@@ -55,7 +55,7 @@ void halt_notify(const char *message)
 // Shows usage for halt(8)
 int halt_usage(int ret)
 {
-	printf("Usage: %s [-dfhnNpqrw?]\n", __progname);
+	printf("Usage: %s [-dfhlnNpqrw?]\n", __progname);
 	printf("  -f, -q, --force        Perform shutdown or reboot without sending all processes SIGTERM\n");
 	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
