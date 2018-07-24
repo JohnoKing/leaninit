@@ -51,7 +51,7 @@ fi
 # Exit with error if the service failed to stop
 RET=$?
 if [ $? != 0 ] || [ "`pgrep -x $DAEMON`" != "" ] && [ "$3" != "f" ]; then
-	$2 "ERROR: $NAME failed to stop (exited with status $RET)"
+	$2 "ERROR: $NAME failed to stop (pkill exited with status $RET)"
 	exit $RET
 fi
 
@@ -63,8 +63,6 @@ if [ "`pgrep -x $DAEMON`" != "" ] && [ "$3" = "f" ]; then
 	done
 fi
 
-# Return output
-if [ $RET = 0 ]; then
-	$2 "Stopped $NAME successfully"
-	exit 0
-else
+# Finish
+$2 "Stopped $NAME successfully"
+exit 0
