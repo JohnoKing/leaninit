@@ -27,18 +27,21 @@
 #include "init.h"
 
 // Long options for halt
-static struct option halt_options[] = {
+static struct option halt_long_options[] = {
 	{ "no-wtmp",     no_argument, NULL, 'd' },
 	{ "force",       no_argument, NULL, 'f' },
 	{ "halt",        no_argument, NULL, 'h' },
 	{ "no-wall",     no_argument, NULL, 'l' },
-	{ "nosync",      no_argument, NULL, 'N' },
 	{ "nosync",      no_argument, NULL, 'n' },
+	{ "nosync",      no_argument, NULL, 'N' },
 	{ "poweroff",    no_argument, NULL, 'p' },
 	{ "reboot",      no_argument, NULL, 'r' },
 	{ "wtmp-only",   no_argument, NULL, 'w' },
 	{ "help",        no_argument, NULL, '?' },
 };
+
+// Shortened options
+static const char *halt_short_options = "dfhlnNpqrw?";
 
 // Notify the system of shutdown
 void halt_notify(const char *message)
@@ -55,7 +58,7 @@ void halt_notify(const char *message)
 // Shows usage for halt(8)
 int halt_usage(int ret)
 {
-	printf("Usage: %s [-dfhlnNpqrw?]\n", __progname);
+	printf("Usage: %s [-%s]\n", __progname, halt_short_options);
 	printf("  -f, -q, --force        Perform shutdown or reboot without sending all processes SIGTERM\n");
 	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
@@ -76,7 +79,7 @@ int halt_main(int runlevel, int argc, char *argv[])
 
 		// Parse the given options
 		int args;
-		while((args = getopt_long(argc, argv, "dfhnNpqrw?", halt_options, NULL)) != -1) {
+		while((args = getopt_long(argc, argv, halt_short_options, halt_long_options, NULL)) != -1) {
 			switch(args) {
 
 				// Display usage with a return status of 0
