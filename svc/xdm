@@ -1,10 +1,10 @@
-XDMCONF=/etc/leaninit/xdm.conf
+XDMCFG=/etc/leaninit/xdm.cfg
 
 # The main function
 main() {
-	# Source the /etc/leaninit/xdm.conf file if it exists, error if it doesn't
-	if [ -r $XDMCONF ]; then
-		. $XDMCONF
+	# Source the XDM config if it exists, return an error if it doesn't
+	if [ -r $XDMCFG ]; then
+		. $XDMCFG
 		export DM
 		NAME=$DM
 		DAEMON=$DM

@@ -28,6 +28,7 @@ CFLAGS  := -O2 -fno-math-errno -pipe
 # Source Files
 LINIT   := cmd/halt.c cmd/init.c
 LSVC    := cmd/lsvc.c
+RC      := rc rc.api ttys zfs.cfg
 
 # Compile LeanInit
 all: sh-all
@@ -55,23 +56,24 @@ override: sh-all
 		false ;\
 	fi
 
-# 'Compile' rc.sh and ttys.cfg
+# Run sed on $RC
 sh-all:
 	mkdir -p out
-	cp rc/rc.sh     out/rc
-	cp rc/rc.api.sh out/rc.api
-	cp rc/ttys.cfg     out/ttys
+	cp rc/rc.sh      out/rc
+	cp rc/rc.api.sh  out/rc.api
+	cp rc/ttys       out/ttys
+	cp rc/zfs.cfg    out/zfs.cfg
 	cd out ;\
 	if [ `uname` = Linux ]; then \
-		$(SED) "/DEFBSD/,/ENDEF/d" rc rc.api ttys ;\
-		$(SED) "s/DEFLINUX//g"     rc rc.api ttys ;\
-		$(SED) "s/ENDEF//g"        rc rc.api ttys ;\
+		$(SED) "/DEFBSD/,/ENDEF/d" $(RC) ;\
+		$(SED) "s/DEFLINUX//g"     $(RC) ;\
+		$(SED) "s/ENDEF//g"        $(RC) ;\
 		$(SED) "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
 		$(SED) "s:TTY:tty:g"                 ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(SED) '' "/DEFLINUX/,/ENDEF/d" rc rc.api ttys ;\
-		$(SED) '' "s/DEFBSD//g"         rc rc.api ttys ;\
-		$(SED) '' "s/ENDEF//g"          rc rc.api ttys ;\
+		$(SED) '' "/DEFLINUX/,/ENDEF/d" $(RC) ;\
+		$(SED) '' "s/DEFBSD//g"         $(RC) ;\
+		$(SED) '' "s/ENDEF//g"          $(RC) ;\
 		$(SED) '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
 		$(SED) '' "s:TTY:ttyv:g"                      ttys ;\
 	else \
@@ -84,7 +86,7 @@ install-base:
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
 	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	install -Dm0644 out/ttys rc/xdm.conf $(DESTDIR)/etc/leaninit
+	install -Dm0644 out/ttys rc/xdm.cfg out/zfs.cfg $(DESTDIR)/etc/leaninit
 	install -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
 
 # Install LeanInit (compatible with other init systems)

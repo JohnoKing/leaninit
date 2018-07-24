@@ -51,8 +51,8 @@ LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/l
 ### /etc/hostname
 `/etc/hostname` is the file LeanInit uses to set the system's hostname.
 
-### /etc/leaninit/kbd.conf
-`/etc/leaninit/kbd.conf` allows you to change the system's keyboard layout
+### /etc/leaninit/kbd.cfg
+`/etc/leaninit/kbd.cfg` allows you to change the system's keyboard layout
 (kbd must be installed for this to work on Linux).
 
 ### /etc/leaninit/ttys

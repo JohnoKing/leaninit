@@ -23,6 +23,7 @@
 
 # Source rc.api
 . /etc/leaninit/rc.api
+. /etc/leaninit/zfs.cfg
 
 # Set the $GETTY variable
 GETTY=`grep getty /etc/leaninit/ttys | sed /#/d`
@@ -49,11 +50,25 @@ DEFBSD
 fsck -F > $OUT
 ENDEF
 
+# ZFS support
+zfs_mount_all() {
+	# Mount everything
+	zfs mount -a
+
+	# ZFS NFS
+	zfs share -a
+
+	# Turn on writes
+	for z in `zpool list -H | awk '{print $1;}'`; do
+		print "Turning readonly off for dataset $z"
+		zfs readonly=off $z
+	done
+}
+
 # Mount drives and datasets
 echo "Remounting root as read-write..." > $OUT
-if [ -r /etc/leaninit/svce/zfs ]; then
-	. /etc/leaninit/svce/zfs
-	main
+if [ "$ZFS_ENABLE" = "TRUE" ]; then
+	zfs_mount_all
 else
 	mount -o remount,rw /
 fi
@@ -97,13 +112,13 @@ if [ -r /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
 fi
 
 # Set the keyboard layout when needed (this requires kbd to work)
-if [ -r /etc/leaninit/kbd.conf ] && [ "`cat /etc/leaninit/kbd.conf`" != "" ]; then
-	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.conf`..."
+if [ -r /etc/leaninit/kbd.cfg ] && [ "`cat /etc/leaninit/kbd.cfg`" != "" ]; then
+	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.cfg`..."
 DEFLINUX
-	fork loadkeys `cat /etc/leaninit/kbd.conf`
+	fork loadkeys `cat /etc/leaninit/kbd.cfg`
 ENDEF
 DEFBSD
-	fork setxkbmap `cat /etc/leaninit/kbd.conf`
+	fork setxkbmap `cat /etc/leaninit/kbd.cfg`
 ENDEF
 fi
 
