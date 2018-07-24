@@ -91,7 +91,8 @@ static void rc(void)
 // Shows usage for init(8)
 static int init_usage(void)
 {
-	printf("%s: Option not permitted\nUsage: %s [mode] ...\n", __progname, __progname);
+	printf("%s: Option not permitted\n", __progname);
+	printf("Usage: %s [mode] ...\n", __progname);
 	printf("  0         Poweroff\n");
 	printf("  6         Reboot\n");
 	printf("  7         Halt\n");
