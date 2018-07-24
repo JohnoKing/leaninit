@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# svc-run - used internally by rc and lsvc to start services
+# svc-start - used internally by rc and lsvc to start services
 #
 
 # Only allow root to run this, with proper arguments

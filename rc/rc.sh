@@ -123,8 +123,8 @@ ENDEF
 fi
 
 # Start the services
-for sv in `ls /etc/leaninit/svce | grep -v zfs`; do
-	fork sh /etc/leaninit/svc-run $sv print
+for sv in `ls /etc/leaninit/svce`; do
+	fork sh /etc/leaninit/svc-start $sv print
 done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys
