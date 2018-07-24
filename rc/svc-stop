@@ -31,7 +31,7 @@ fi
 
 # Set up variables
 . /etc/leaninit/rc.api
-. /etc/leaninit/svce/$1
+. /etc/leaninit/svc/$1
 export $NAME
 
 # Do not attempt to run if the service is not running
@@ -47,10 +47,17 @@ if [ $2 = print ]; then
 else
 	pkill -x $DAEMON
 fi
-RET=$?
 
-# Send SIGKILL if SIGTERM did not work
-if [ "`pgrep -x $DAEMON`" != "" ]; then
+# Exit with error if the service failed to stop
+RET=$?
+if [ $? != 0 ] || [ "`pgrep -x $DAEMON`" != "" ] && [ "$3" != "f" ]; then
+	$2 "ERROR: $NAME failed to stop (exited with status $RET)"
+	exit $RET
+fi
+
+# Send SIGKILL if SIGTERM did not work (force only)
+if [ "`pgrep -x $DAEMON`" != "" ] && [ "$3" = "f" ]; then
+	$2 "Sending $NAME SIGKILL..."
 	for s in "`pgrep -x $DAEMON`"; do
 		kill -s SIGKILL $s
 	done
@@ -61,6 +68,3 @@ if [ $RET = 0 ]; then
 	$2 "Stopped $NAME successfully"
 	exit 0
 else
-	$2 "ERROR: $NAME failed to stop (exited with status $RET)"
-	exit $RET
-fi

@@ -30,10 +30,15 @@
 static char svc_path[119]  = "/etc/leaninit/svc/";
 static char svce_path[120] = "/etc/leaninit/svce/";
 
+// Force flag
+static char *force    = "n";
+static bool force_svc = false;
+
 // Long options for lsvc
 static struct option lsvc_options[] = {
 	{ "disable", required_argument, NULL, 'd' },
 	{ "enable",  required_argument, NULL, 'e' },
+	{ "force",   required_argument, NULL, 'f' },
 	{ "restart", required_argument, NULL, 'r' },
 	{ "stop",    required_argument, NULL, 'q' },
 	{ "start",   required_argument, NULL, 's' },
@@ -50,9 +55,10 @@ static int usage(int ret, const char *msg, ...)
 	va_end(extra_arg);
 
 	// Usage info
-	printf("Usage: %s [-derqs?] service ...\n", __progname);
+	printf("Usage: %s [-defrqs?] service ...\n", __progname);
 	printf("  -d, --disable        Disable a service\n");
 	printf("  -e, --enable         Enable a service\n");
+	printf("  -f, --force          Force lsvc to to the specified action\n");
 	printf("  -r, --restart        Restart a service\n");
 	printf("  -q, --stop           Stop a service\n");
 	printf("  -s, --start          Start a service\n");
@@ -130,32 +136,35 @@ static int modify_svc(char *svc, int action)
 
 		// Start
 		case START:
-			if(svce_read == NULL)
+			if((svce_read == NULL) && (force_svc != true))
 				return usage(1, "The service %s is not enabled.\n", svc);
+			else if(svce_read != NULL)
+				fclose(svce_read);
 
 			// Execute svc-start
-			fclose(svce_read);
 			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "echo", NULL);
 
 		// Stop
 		case STOP:
-			if(svce_read == NULL)
+			if((svce_read == NULL) && (force_svc != true))
 				return usage(1, "The service %s is not enabled.\n", svc);
+			else if(svce_read != NULL)
+				fclose(svce_read);
 
 			// Execute svc-stop
-			fclose(svce_read);
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", force, NULL);
 
 		// Restart
 		case RESTART:
-			if(svce_read == NULL)
+			if((svce_read == NULL) && (force_svc != true))
 				return usage(1, "The service %s is not enabled.\n", svc);
+			else if(svce_read != NULL)
+				fclose(svce_read);
 
 			// First, stop the service
-			fclose(svce_read);
 			pid_t stop = fork();
 			if(stop == 0)
-				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", NULL);
+				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", force, NULL);
 
 			// Then, start it again
 			wait(0);
@@ -180,8 +189,14 @@ int main(int argc, char *argv[])
 
 	// Get the arguments
 	int args;
-	while((args = getopt_long(argc, argv, "d:e:q:s:?", lsvc_options, NULL)) != -1) {
+	while((args = getopt_long(argc, argv, "fd:e:r:q:s:?", lsvc_options, NULL)) != -1) {
 		switch(args) {
+
+			// Force flag
+			case 'f':
+				force     = "f";
+				force_svc = true;
+				break;
 
 			// Disable
 			case 'd':
