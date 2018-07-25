@@ -57,6 +57,7 @@ int halt(int runlevel)
 		case HALT:
 			halt_notify("The system will now halt!");
 			return reboot(SYS_HALT);
+
 #ifdef LINUX
 		// Hibernate
 		case SLEEP:
