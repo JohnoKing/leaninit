@@ -99,8 +99,8 @@ DEFLINUX
 # Load all modules specified in the /etc/modules-load.d folder (Linux only)
 if [ -d /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
-	for i in `cat /etc/modules-load.d/* | sed '/#/d'`; do
-		modprobe $i
+	for m in `cat /etc/modules-load.d/* | sed '/#/d'`; do
+		modprobe $m
 	done
 fi
 ENDEF
@@ -129,8 +129,8 @@ done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys
 print "Launching gettys specified in /etc/leaninit/ttys..."
-for i in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
-	fork sh -c "while true; do $GETTY $MODE $i; done"
+for tty in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
+	fork sh -c "while true; do $GETTY $MODE $tty; done"
 done
 
 # Launch a getty on tty1 without forking
