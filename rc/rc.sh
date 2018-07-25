@@ -21,7 +21,7 @@
 # SOFTWARE.
 #
 
-# Source rc.api
+# Source rc.api and zfs.cfg
 . /etc/leaninit/rc.api
 . /etc/leaninit/zfs.cfg
 
