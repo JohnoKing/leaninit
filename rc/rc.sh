@@ -39,9 +39,9 @@ ENDEF
 
 # Initial output
 echo "LeanInit is running on `uname -srm`" > $OUT
-echo "Checking all filesystems for data corruption..." > $OUT # fsck(8) is run outside of the if statement
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
+echo "Checking all filesystems for data corruption..." > $OUT
 DEFLINUX
 fsck -A > $OUT
 ENDEF
