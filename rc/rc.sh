@@ -97,7 +97,7 @@ ENDEF
 
 DEFLINUX
 # Load all modules specified in the /etc/modules-load.d folder (Linux only)
-if [ -r /etc/modules-load.d ]; then
+if [ -d /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
 	for i in `cat /etc/modules-load.d/* | sed '/#/d'`; do
 		modprobe $i
