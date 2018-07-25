@@ -26,7 +26,7 @@
 . /etc/leaninit/zfs.cfg
 
 # Set the $GETTY variable
-GETTY=`grep getty /etc/leaninit/ttys | sed /#/d`
+GETTY=`grep getty /etc/leaninit/ttys | sed '/#/d'`
 
 # Set $MODE for getty
 DEFLINUX
@@ -99,7 +99,7 @@ DEFLINUX
 # Load all modules specified in the /etc/modules-load.d folder (Linux only)
 if [ -r /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
-	for i in `cat /etc/modules-load.d/* | sed /#/d`; do
+	for i in `cat /etc/modules-load.d/* | sed '/#/d'`; do
 		modprobe $i
 	done
 fi
