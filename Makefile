@@ -19,7 +19,7 @@
 # SOFTWARE.
 #
 
-# Variables (each one can be overridden)
+# Variables (each one may be overridden)
 CC      := cc
 SED     := sed -i
 WFLAGS  := -Wall -Wextra -Wpedantic
