@@ -107,6 +107,20 @@ override-install: override install-base
 	cd $(DESTDIR)/sbin && ln -sf init reboot
 	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf init zzz; fi
 
+# Uninstall (only works with normal installations)
+uninstall:
+	if [ `id -u` != 0 ]; then \
+		echo "You must be root to uninstall LeanInit!" ;\
+		false ;\
+	fi
+	if [ ! -r /sbin/linit ]; then \
+		echo "Failed to detect a normal installation of LeanInit, exiting..." ;\
+		false ;\
+	fi
+	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!" ;\
+	rm -rf /sbin/linit /sbin/lhalt /sbin/lpoweroff /sbin/lreboot /usr/share/licenses/leaninit \
+		/sbin/lzzz /sbin/lsvc /etc/leaninit /var/log/leaninit.log*
+
 # Clean the directory
 clean:
 	rm -rf out
