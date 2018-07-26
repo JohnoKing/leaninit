@@ -76,6 +76,7 @@ mount -a
 swapon -a
 
 # Logging
+touch /var/log/leaninit.log
 mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
