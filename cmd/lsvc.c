@@ -49,10 +49,10 @@ static struct option lsvc_options[] = {
 static int usage(int ret, const char *msg, ...)
 {
 	// Error message
-	va_list extra_arg;
-	va_start(extra_arg, msg);
-	vprintf(msg, extra_arg);
-	va_end(extra_arg);
+	va_list vargs;
+	va_start(vargs, msg);
+	vprintf(msg, vargs);
+	va_end(vargs);
 
 	// Usage info
 	printf("Usage: %s [-defrqs?] service ...\n", __progname);
