@@ -50,8 +50,9 @@ DEFBSD
 fsck -F > $OUT
 ENDEF
 
-# ZFS support
-zfs_mount_all() {
+# Mount drives and datasets
+echo "Remounting root as read-write..." > $OUT
+if [ "$ZFS_ENABLE" = "TRUE" ]; then
 	# Mount everything
 	zfs mount -a
 
@@ -63,12 +64,6 @@ zfs_mount_all() {
 		print "Turning readonly off for dataset $z"
 		zfs readonly=off $z
 	done
-}
-
-# Mount drives and datasets
-echo "Remounting root as read-write..." > $OUT
-if [ "$ZFS_ENABLE" = "TRUE" ]; then
-	zfs_mount_all
 else
 	mount -o remount,rw /
 fi
