@@ -5,5 +5,6 @@ DAEMON=dbus-daemon
 # The main function
 main() {
 	mkdir -p /run/dbus
+	rm -f /var/run/dbus/pid
 	dbus-daemon --system
 }
