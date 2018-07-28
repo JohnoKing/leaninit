@@ -56,7 +56,7 @@ override: sh-all
 		false ;\
 	fi
 
-# Run sed on $RC
+# Run sed on the scripts and config files
 sh-all:
 	mkdir -p out
 	cp rc/rc.sh      out/rc
