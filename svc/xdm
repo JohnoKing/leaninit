@@ -1,5 +1,5 @@
 XDMCFG=/etc/leaninit/xdm.cfg
-DAEMON=X
+DAEMON=Xorg
 
 # The main function
 main() {
@@ -8,7 +8,6 @@ main() {
 		. $XDMCFG
 		export DM
 		NAME=$DM
-		DAEMON=$DM
 
 		# Start the display manager
 		fork $DM
