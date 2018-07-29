@@ -1,4 +1,5 @@
 XDMCFG=/etc/leaninit/xdm.cfg
+DAEMON=X
 
 # The main function
 main() {
