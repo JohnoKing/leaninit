@@ -104,16 +104,13 @@ if [ -r /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
 	fork hostname `cat /etc/hostname`
 fi
 
+DEFLINUX
 # Set the keyboard layout when needed (this requires kbd to work)
 if [ -r /etc/leaninit/kbd.cfg ] && [ "`cat /etc/leaninit/kbd.cfg`" != "" ]; then
 	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.cfg`..."
-DEFLINUX
 	fork loadkeys `cat /etc/leaninit/kbd.cfg`
-ENDEF
-DEFBSD
-	fork setxkbmap `cat /etc/leaninit/kbd.cfg`
-ENDEF
 fi
+ENDEF
 
 # Start the services
 for sv in `ls /etc/leaninit/svce`; do
