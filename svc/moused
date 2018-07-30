@@ -1,0 +1,21 @@
+NAME="moused"
+DAEMON="moused"
+
+main() {
+	if [ -r /etc/leaninit/mouse.cfg ]; then
+		. /etc/leaninit/mouse.cfg
+	else
+		MOUSE=ums0
+	fi
+	if [ -r /etc/leaninit/svce/devd ]; then
+		while true; do
+			if [ "`pgrep -x moused`" != "" ]; then
+				kill `pgrep -x moused`
+				break
+			fi
+		done
+	fi
+
+	sleep 1
+	fork moused -f -p /dev/${MOUSE}
+}

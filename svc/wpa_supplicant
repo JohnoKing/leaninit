@@ -15,6 +15,6 @@ main() {
 		done
 	fi
 	. /etc/leaninit/wpa.cfg
-	sleep 2
+	sleep 1
 	wpa_supplicant -s -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf
 }
