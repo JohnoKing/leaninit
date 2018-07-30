@@ -4,5 +4,5 @@ DAEMON=devd
 
 # The main function
 main() {
-	devd
+	devd -n
 }
