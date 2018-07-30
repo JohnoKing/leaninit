@@ -1,0 +1,12 @@
+NAME="WPA Supplicant"
+DAEMON="wpa_supplicant"
+
+main() {
+	if [ ! -r /etc/leaninit/wpa.cfg ]; then
+		echo "Failed to start $NAME because /etc/leaninit/wpa.cfg does not exist!"
+		return 1
+	fi
+	. /etc/leaninit/wpa.cfg
+	pkill -x wpa_supplicant
+	wpa_supplicant -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf
+}
