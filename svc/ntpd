@@ -2,5 +2,13 @@ NAME="ntpd"
 DAEMON="ntpd"
 
 main() {
+	if [ -r /etc/leaninit/svce/wpa_supplicant ]; then
+		while true; do
+			if [ "`pgrep -x wpa_supplicant`" != "" ]; then
+				break
+			fi
+		done
+	fi
+
 	ntpd
 }
