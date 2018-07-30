@@ -1,0 +1,15 @@
+NAME="SSH"
+DAEMON="sshd"
+
+main() {
+	if [ -r /etc/leaninit/svce/wpa_supplicant ] && [ "$1" = init ]; then
+		while true; do
+			if [ "`pgrep -x wpa_supplicant`" != "" ]; then
+				break
+			fi
+		done
+	fi
+
+	sleep 1
+	command `command -v sshd`
+}
