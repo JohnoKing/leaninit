@@ -4,5 +4,5 @@ DAEMON=hald
 
 # The main function
 main() {
-	hald
+	hald --daemon=yes --use-syslog
 }
