@@ -46,3 +46,15 @@ print() {
         echo "$@"
         echo "$@" >> /var/log/leaninit.log
 }
+
+# Wait for another service if it is enabled
+waitforinit() {
+	if [ -r /etc/leaninit/svce/$1 ] && [ "$4" = init ]; then
+		while true; do
+			if [ "`pgrep -x $2`" != "" ]; then
+				$3
+				break
+			fi
+		done
+	fi
+}

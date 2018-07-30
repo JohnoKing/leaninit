@@ -7,15 +7,8 @@ main() {
 	else
 		MOUSE=ums0
 	fi
-	if [ -r /etc/leaninit/svce/devd ] && [ "$1" = init ]; then
-		while true; do
-			if [ "`pgrep -x moused`" != "" ]; then
-				kill `pgrep -x moused`
-				break
-			fi
-		done
-	fi
 
+	waitforinit devd moused "pkill moused" $1
 	sleep 1
 	fork moused -f -p /dev/${MOUSE}
 }
