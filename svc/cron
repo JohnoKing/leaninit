@@ -1,0 +1,6 @@
+NAME="cron"
+DAEMON="cron"
+
+main() {
+	cron
+}
