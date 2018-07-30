@@ -142,7 +142,7 @@ static int modify_svc(char *svc, int action)
 				fclose(svce_read);
 
 			// Execute svc-start
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "echo", NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, NULL);
 
 		// Stop
 		case STOP:
@@ -152,7 +152,7 @@ static int modify_svc(char *svc, int action)
 				fclose(svce_read);
 
 			// Execute svc-stop
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", force, NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, NULL);
 
 		// Restart
 		case RESTART:
@@ -164,11 +164,11 @@ static int modify_svc(char *svc, int action)
 			// First, stop the service
 			pid_t stop = fork();
 			if(stop == 0)
-				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, "echo", force, NULL);
+				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, NULL);
 
 			// Then, start it again
 			wait(0);
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "echo", NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, NULL);
 
 		// Fallback
 		default:

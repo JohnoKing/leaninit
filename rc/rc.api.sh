@@ -41,16 +41,8 @@ fork() {
 }
 ENDEF
 
-# Allow the console to print output
-DEFLINUX
-OUT="/dev/stdout"
-ENDEF
-
-DEFBSD
-OUT="/dev/ttyv0"
-ENDEF
-
+# Send the output to the log as well as stdout
 print() {
-        echo "$@" > $OUT
+        echo "$@"
         echo "$@" >> /var/log/leaninit.log
 }

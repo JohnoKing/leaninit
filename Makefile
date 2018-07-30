@@ -24,6 +24,7 @@ CC      := cc
 SED     := sed -i
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
+LIBS    := -lutil
 
 # Source Files
 LINIT   := cmd/halt.c cmd/init.c
@@ -33,11 +34,11 @@ RC      := rc rc.api ttys zfs.cfg
 # Compile LeanInit
 all: sh-all
 	if [ `uname` = Linux ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/linit   $(LINIT) $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/lsvc    $(LSVC)  $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/linit   $(LINIT) $(LDFLAGS) $(LIBS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/lsvc    $(LSVC)  $(LDFLAGS) $(LIBS) ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/linit $(LINIT) $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/lsvc  $(LSVC)  $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/linit $(LINIT) $(LDFLAGS) $(LIBS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/lsvc  $(LSVC)  $(LDFLAGS) $(LIBS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
@@ -46,11 +47,11 @@ all: sh-all
 # Compile LeanInit without regard for other init systems
 override: sh-all
 	if [ `uname` = Linux ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/init   $(LINIT) $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/lsvc   $(LSVC)  $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/init   $(LINIT) $(LDFLAGS) $(LIBS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/lsvc   $(LSVC)  $(LDFLAGS) $(LIBS) ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) $(LIBS) ;\
+		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) $(LIBS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\

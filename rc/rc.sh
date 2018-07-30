@@ -37,21 +37,18 @@ DEFBSD
 MODE=Pc
 ENDEF
 
-# Initial output
-echo "LeanInit is running on `uname -srm`" > $OUT
-
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
-echo "Checking all filesystems for data corruption..." > $OUT
+echo "Checking all filesystems for data corruption..."
 DEFLINUX
-fsck -A > $OUT
+fsck -A
 ENDEF
 
 DEFBSD
-fsck -F > $OUT
+fsck -F
 ENDEF
 
 # Mount drives and datasets
-echo "Remounting root as read-write..." > $OUT
+echo "Remounting root as read-write..."
 if [ "$ZFS_ENABLE" = "TRUE" ]; then
 	# Mount everything
 	zfs mount -a
@@ -84,11 +81,11 @@ ENDEF
 # Load all sysctl settings
 print "Loading settings with sysctl..."
 DEFLINUX
-fork sysctl --system > $OUT
+fork sysctl --system
 ENDEF
 
 DEFBSD
-fork sysctl -f /etc/sysctl.conf > $OUT
+fork sysctl -f /etc/sysctl.conf
 ENDEF
 
 DEFLINUX
@@ -120,7 +117,7 @@ fi
 
 # Start the services
 for sv in `ls /etc/leaninit/svce`; do
-	fork sh /etc/leaninit/svc-start $sv print
+	fork sh /etc/leaninit/svc-start $sv
 done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys

@@ -24,7 +24,7 @@
 #
 
 # Only allow root to run this, with proper arguments
-if [ `id -u` != 0 ] || [ "$2" = "" ]; then
+if [ `id -u` != 0 ] || [ "$1" = "" ]; then
 	echo "This script is only meant for internal use!"
 	exit 1
 fi
@@ -36,33 +36,29 @@ export $NAME
 
 # Do not attempt to run if the service is not running
 if [ "`pgrep -x $DAEMON`" = "" ]; then
-	$2 "$NAME is not running"
+	print "$NAME is not running"
 	exit 0
 fi
 
 # Stop $NAME
-$2 "Stopping $NAME..."
-if [ $2 = print ]; then
-	pkill -x $DAEMON > $OUT
-else
-	pkill -x $DAEMON
-fi
+print "Stopping $NAME..."
+pkill -x $DAEMON
 
 # Exit with error if the service failed to stop
 RET=$?
-if [ $? != 0 ] || [ "`pgrep -x $DAEMON`" != "" ] && [ "$3" != "f" ]; then
-	$2 "ERROR: $NAME failed to stop (pkill exited with status $RET)"
+if [ $? != 0 ] || [ "`pgrep -x $DAEMON`" != "" ] && [ "$2" != "f" ]; then
+	print "ERROR: $NAME failed to stop (pkill exited with status $RET)"
 	exit $RET
 fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
-if [ "`pgrep -x $DAEMON`" != "" ] && [ "$3" = "f" ]; then
-	$2 "Sending $NAME SIGKILL..."
+if [ "`pgrep -x $DAEMON`" != "" ] && [ "$2" = "f" ]; then
+	print "Sending $NAME SIGKILL..."
 	for s in "`pgrep -x $DAEMON`"; do
 		kill -s SIGKILL $s
 	done
 fi
 
 # Finish
-$2 "Stopped $NAME successfully"
+print "Stopped $NAME successfully"
 exit 0

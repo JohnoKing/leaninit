@@ -6,6 +6,9 @@
 DEFLINUX
 # NOTE: Do NOT include tty1, doing so will cause issues.
 ENDEF
+DEFBSD
+# NOTE: Do NOT include ttyv0, doing so will cause issues.
+ENDEF
 
 # Path to the getty program
 GETTY_PROG

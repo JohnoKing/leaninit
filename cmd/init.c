@@ -74,10 +74,20 @@ int halt(int runlevel)
 }
 
 // Execute the init script in a seperate process
-static void rc(void)
+static void bootrc(void)
 {
-	pid_t sh_rc = fork();
+	// Open up the tty (eliminates the need for '> /dev/tty')
+	int tty = open(DEFAULT_TTY, O_RDWR);
+	login_tty(tty);
+	close(tty);
 
+	// Print to console the current platform LeanInit is running on
+	struct utsname uts;
+	uname(&uts);
+	printf("LeanInit is running on %s %s %s\n", uts.sysname, uts.release, uts.machine);
+
+	// Run the init script
+	pid_t sh_rc = fork();
 	if(sh_rc == 0)
 		execl("/bin/sh", "/bin/sh", rc_init, NULL);
 	else {
@@ -87,6 +97,7 @@ static void rc(void)
 
 	// This should never be reached
 	sync();
+	return;
 }
 
 // Shows usage for init(8)
@@ -122,7 +133,7 @@ int main(int argc, char *argv[])
 
 		// Run the init script if LeanInit is PID 1
 		if(getpid() == 1) {
-			rc();
+			bootrc();
 
 		// When LeanInit is not PID 1
 		} else {

@@ -22,8 +22,10 @@
 
 // Include files
 #include <sys/reboot.h>
+#include <sys/utsname.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <getopt.h>
 #include <signal.h>
 #include <stdarg.h>
@@ -32,6 +34,12 @@
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
+#ifdef LINUX
+#include <utmp.h>
+#endif
+#ifdef FREEBSD
+#include <libutil.h>
+#endif
 
 // Power management macros
 #define POWEROFF 0
@@ -42,11 +50,13 @@
 #define SLEEP    8
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_HALT     RB_HALT_SYSTEM
+#define DEFAULT_TTY  "/dev/tty1"
 #endif
 
 #ifdef FREEBSD
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_HALT     RB_HALT
+#define DEFAULT_TTY  "/dev/ttyv0"
 #endif
 
 // Macros for service actions

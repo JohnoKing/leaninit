@@ -24,7 +24,7 @@
 #
 
 # Only allow root to run this, with proper arguments
-if [ `id -u` != 0 ] || [ "$2" = "" ]; then
+if [ `id -u` != 0 ] || [ "$1" = "" ]; then
 	echo "This script is only meant for internal use!"
 	exit 1
 fi
@@ -41,17 +41,13 @@ if [ "`pgrep -x $DAEMON`" != "" ]; then
 fi
 
 # Start $NAME
-$2 "Starting $NAME..."
-if [ $2 = print ]; then
-	main > $OUT
-else
-	main
-fi
+print "Starting $NAME..."
+main
 
 # Return output
 RET=$?
 if [ $RET = 0 ]; then
-	$2 "Started $NAME successfully"
+	print "Started $NAME successfully"
 else
-	$2 "ERROR: $NAME failed to start (exited with status $RET)"
+	print "ERROR: $NAME failed to start (exited with status $RET)"
 fi
