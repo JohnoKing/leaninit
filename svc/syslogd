@@ -4,5 +4,5 @@ DAEMON=syslogd
 
 # The main function
 main() {
-	syslogd
+	syslogd -ss
 }
