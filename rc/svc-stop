@@ -46,7 +46,7 @@ pkill -x $DAEMON
 
 # Exit with error if the service failed to stop
 RET=$?
-if [ $? != 0 ] || [ "`pgrep -x $DAEMON`" != "" ] && [ "$2" != "f" ]; then
+if [ $? != 0 ] && [ "$2" != "f" ]; then
 	print "ERROR: $NAME failed to stop (pkill exited with status $RET)"
 	exit $RET
 fi
