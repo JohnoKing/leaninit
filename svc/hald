@@ -4,5 +4,6 @@ DAEMON=hald
 
 # The main function
 main() {
+	waitforinit dbus dbus-daemon command $1
 	hald --daemon=yes --use-syslog
 }

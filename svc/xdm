@@ -11,6 +11,6 @@ fi
 
 # The main function
 main() {
-	# Start the display manager
+	waitforinit dbus dbus-daemon command $1
 	fork $DM
 }
