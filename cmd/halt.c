@@ -41,7 +41,7 @@ static struct option halt_long_options[] = {
 };
 
 // Shortened options
-static const char *halt_short_options = "dfhlnNpqrw?";
+static const char *halt_short_options = "dfhlNnpqrw?";
 
 // Notify the system of shutdown
 void halt_notify(const char *message)
