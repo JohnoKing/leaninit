@@ -56,5 +56,7 @@ waitforinit() {
 				break
 			fi
 		done
+	else
+		return 1
 	fi
 }
