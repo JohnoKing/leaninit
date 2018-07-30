@@ -1,0 +1,6 @@
+NAME="ntpd"
+DAEMON="ntpd"
+
+main() {
+	ntpd
+}
