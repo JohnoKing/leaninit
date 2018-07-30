@@ -1,0 +1,6 @@
+NAME="Common UNIX Printing System"
+DAEMON="cupsd"
+
+main() {
+	cupsd
+}
