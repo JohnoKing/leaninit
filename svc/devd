@@ -5,5 +5,4 @@ DAEMON=devd
 # The main function
 main() {
 	devd -n
-	pkill -x wpa_supplicant
 }
