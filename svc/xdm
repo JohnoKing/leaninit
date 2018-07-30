@@ -1,18 +1,17 @@
 XDMCFG=/etc/leaninit/xdm.cfg
 DAEMON=Xorg
 
+# Source the XDM config if it exists, return an error if it doesn't
+if [ -r $XDMCFG ]; then
+	. $XDMCFG
+	NAME=$DM
+else
+	print "The X Server cannot be started because $XDMCONF doesn't exist!"
+	exit 1
+fi
+
 # The main function
 main() {
-	# Source the XDM config if it exists, return an error if it doesn't
-	if [ -r $XDMCFG ]; then
-		. $XDMCFG
-		export DM
-		NAME=$DM
-
-		# Start the display manager
-		fork $DM
-	else
-		print "The X Server cannot be started because $XDMCONF doesn't exist!"
-		return 1
-	fi
+	# Start the display manager
+	fork $DM
 }
