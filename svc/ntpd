@@ -2,7 +2,7 @@ NAME="ntpd"
 DAEMON="ntpd"
 
 main() {
-	if [ -r /etc/leaninit/svce/wpa_supplicant ]; then
+	if [ -r /etc/leaninit/svce/wpa_supplicant ] && [ "$1" = init ]; then
 		while true; do
 			if [ "`pgrep -x wpa_supplicant`" != "" ]; then
 				break

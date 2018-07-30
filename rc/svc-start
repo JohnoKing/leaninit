@@ -42,7 +42,7 @@ fi
 
 # Start $NAME
 print "Starting $NAME..."
-main
+main $2
 
 # Return output
 RET=$?

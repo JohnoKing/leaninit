@@ -142,7 +142,7 @@ static int modify_svc(char *svc, int action)
 				fclose(svce_read);
 
 			// Execute svc-start
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", NULL);
 
 		// Stop
 		case STOP:
@@ -168,7 +168,7 @@ static int modify_svc(char *svc, int action)
 
 			// Then, start it again
 			wait(0);
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", NULL);
 
 		// Fallback
 		default:

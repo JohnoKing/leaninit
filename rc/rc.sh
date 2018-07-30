@@ -114,7 +114,7 @@ ENDEF
 
 # Start the services
 for sv in `ls /etc/leaninit/svce`; do
-	fork sh /etc/leaninit/svc-start $sv
+	fork sh /etc/leaninit/svc-start $sv init
 done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys

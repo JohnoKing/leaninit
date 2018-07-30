@@ -7,7 +7,7 @@ main() {
 	else
 		MOUSE=ums0
 	fi
-	if [ -r /etc/leaninit/svce/devd ]; then
+	if [ -r /etc/leaninit/svce/devd ] && [ "$1" = init ]; then
 		while true; do
 			if [ "`pgrep -x moused`" != "" ]; then
 				kill `pgrep -x moused`

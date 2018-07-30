@@ -6,7 +6,7 @@ main() {
 		echo "Failed to start $NAME because /etc/leaninit/wpa.cfg does not exist!"
 		return 1
 	fi
-	if [ -r /etc/leaninit/svce/devd ]; then
+	if [ -r /etc/leaninit/svce/devd ] && [ "$1" = init ]; then
 		while true; do
 			if [ "`pgrep -x wpa_supplicant`" != "" ]; then
 				kill `pgrep -x wpa_supplicant`
