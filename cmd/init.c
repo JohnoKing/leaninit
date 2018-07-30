@@ -81,7 +81,7 @@ static void bootrc(void)
 	login_tty(tty);
 	close(tty);
 
-	// Print to console the current platform LeanInit is running on
+	// Print to DEFAULT_TTY the current platform LeanInit is running on
 	struct utsname uts;
 	uname(&uts);
 	printf("LeanInit is running on %s %s %s\n", uts.sysname, uts.release, uts.machine);
