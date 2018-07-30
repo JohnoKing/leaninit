@@ -127,13 +127,14 @@ for tty in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
 done
 
 # Launch a getty on tty1 without forking
-print "Launching a getty on tty1..."
 while true; do
 DEFLINUX
+	print "Launching a getty on tty1..."
 	$GETTY $MODE tty1
 ENDEF
 
 DEFBSD
+	print "Launching a getty on ttyv0..."
 	$GETTY $MODE ttyv0
 ENDEF
 done
