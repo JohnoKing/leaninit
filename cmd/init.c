@@ -93,9 +93,8 @@ static int bootrc(void)
 
 	// Suspend init
 	wait(0);
-	for(;;) {
-		sleep(5);
-	}
+	for(;;)
+		sleep(1);
 
 	// This should never be reached
 	return 1;
