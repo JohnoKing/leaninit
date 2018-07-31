@@ -74,7 +74,7 @@ int halt(int runlevel)
 }
 
 // Execute the init script in a seperate process
-static void bootrc(void)
+static int bootrc(void)
 {
 	// Open up the tty (eliminates the need for '> /dev/tty')
 	int tty = open(DEFAULT_TTY, O_RDWR);
@@ -96,8 +96,7 @@ static void bootrc(void)
 	}
 
 	// This should never be reached
-	sync();
-	return;
+	return 1;
 }
 
 // Shows usage for init(8)
@@ -117,6 +116,10 @@ static int init_usage(void)
 // The main function
 int main(int argc, char *argv[])
 {
+	// Run the init script if LeanInit is PID 1 (getuid and strncmp are skipped)
+	if(getpid() == 1)
+		return bootrc();
+
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
 		printf("Permission denied\n");
@@ -128,40 +131,32 @@ int main(int argc, char *argv[])
 	force  = false;
 	wall   = true;
 
-	// When ran as init(8)
+	// When re-executed as init (not PID 1)
 	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "linit", 5) == 0) {
+		if(argc == 1)
+			return init_usage();
 
-		// Run the init script if LeanInit is PID 1
-		if(getpid() == 1) {
-			bootrc();
+		switch(*argv[1]) {
 
-		// When LeanInit is not PID 1
-		} else {
-			if(argc == 1)
-				return init_usage();
+			// Poweroff
+			case '0':
+				return halt(POWEROFF);
 
-			switch(*argv[1]) {
+			// Reboot
+			case '6':
+				return halt(REBOOT);
 
-				// Poweroff
-				case '0':
-					return halt(POWEROFF);
-
-				// Reboot
-				case '6':
-					return halt(REBOOT);
-
-				// Halt
-				case '7':
-					return halt(HALT);
+			// Halt
+			case '7':
+				return halt(HALT);
 #ifdef LINUX
-				// Hibernate (Disabled on FreeBSD)
-				case '8':
-					return halt(SLEEP);
+			// Hibernate (Disabled on FreeBSD)
+			case '8':
+				return halt(SLEEP);
 #endif
-				// Fallback
-				default:
-					return init_usage();
-			}
+			// Fallback
+			default:
+				return init_usage();
 		}
 	}
 
