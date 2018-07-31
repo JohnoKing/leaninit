@@ -90,9 +90,10 @@ static int bootrc(void)
 	pid_t sh_rc = fork();
 	if(sh_rc == 0)
 		execl("/bin/sh", "/bin/sh", rc_init, NULL);
-	else {
-		for(;;)
-			wait(0);
+
+	wait(0);
+	for(;;) {
+		sleep(5);
 	}
 
 	// This should never be reached
