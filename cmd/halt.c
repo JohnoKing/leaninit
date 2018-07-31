@@ -60,7 +60,7 @@ int halt_usage(int ret)
 {
 	printf("Usage: %s [-%s]\n", __progname, halt_short_options);
 	printf("  -f, -q, --force        Perform shutdown or reboot without sending all processes SIGTERM\n");
-	printf("  -n, -N, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
+	printf("  -N, -n, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
 	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
 	printf("  -h, --halt             Halts the system\n");
 	printf("  -l, --no-wall          Turn off wall messages\n");
