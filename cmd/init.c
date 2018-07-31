@@ -91,6 +91,7 @@ static int bootrc(void)
 	if(sh_rc == 0)
 		execl("/bin/sh", "/bin/sh", rc_init, NULL);
 
+	// Suspend init
 	wait(0);
 	for(;;) {
 		sleep(5);
