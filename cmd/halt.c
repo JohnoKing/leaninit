@@ -50,9 +50,11 @@ void halt_notify(const char *message)
 	if(wall == true)
 		syslog(LOG_NOTICE, "%s", message);
 
-	// Kill all processes with SIGTERM if the force flag is not passed
-	if(force == false)
+	// Kill all processes with SIGTERM and SIGKILL if the force flag is not passed
+	if(force == false) {
 		kill(-1, SIGTERM);
+		kill(-1, SIGKILL);
+	}
 }
 
 // Shows usage for halt(8)
