@@ -8,7 +8,7 @@ main() {
 		MOUSE=ums0
 	fi
 
-	waitforinit devd moused "pkill -x moused" $1
+	waitforinit devd moused 'kill -s SIGKILL `pgrep -x moused`' $1
 	sleep 1
 	fork moused -f -p /dev/${MOUSE}
 }
