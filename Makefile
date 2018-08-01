@@ -44,11 +44,11 @@ override: sh-all
 
 # Run sed on the scripts and config files
 sh-all:
-	mkdir -p out
-	cp rc/rc.sh     out/rc
-	cp rc/rc.api.sh out/rc.api
-	cp rc/ttys      out/ttys
-	cp rc/zfs.cfg   out/zfs.cfg
+	mkdir -p      out
+	cp rc/rc      out/rc
+	cp rc/rc.api  out/rc.api
+	cp rc/ttys    out/ttys
+	cp rc/zfs.cfg out/zfs.cfg
 	cd out ;\
 	if [ `uname` = Linux ]; then \
 		$(SED) "/DEFBSD/,/ENDEF/d" $(RC) ;\
