@@ -58,7 +58,7 @@ if [ "$ZFS_ENABLE" = "TRUE" ]; then
 
 	# Turn on writes
 	for z in `zpool list -H | awk '{print $1;}'`; do
-		print "Turning readonly off for dataset $z"
+		echo "Turning readonly off for dataset $z"
 		zfs readonly=off $z
 	done
 else
