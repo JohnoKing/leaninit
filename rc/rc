@@ -79,7 +79,11 @@ fork sysctl -f /etc/sysctl.conf
 ENDEF
 
 DEFLINUX
-# Load all modules specified in the /etc/modules-load.d folder
+# Set up lo
+print "Setting up a loopback interface..."
+ip link set up lo
+
+# Load all modules specified in /etc/modules-load.d
 if [ -d /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
 	for m in `cat /etc/modules-load.d/* | sed '/#/d'`; do
