@@ -22,6 +22,7 @@
 # Variables (each one may be overridden)
 CC      := cc
 SED     := sed -i
+INSTALL := install
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
 LIBS    := -lutil
@@ -70,14 +71,14 @@ sh-all:
 install-base:
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
-	install -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	install -Dm0644 out/ttys rc/xdm.cfg out/zfs.cfg $(DESTDIR)/etc/leaninit
-	install -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
+	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
+	$(INSTALL) -Dm0644 out/ttys rc/xdm.cfg out/zfs.cfg $(DESTDIR)/etc/leaninit
+	$(INSTALL) -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
-	install -Dm0755 out/linit out/lsvc $(DESTDIR)/sbin
-	install -Dm0755 out/rc $(DESTDIR)/etc/leaninit
+	$(INSTALL) -Dm0755 out/linit out/lsvc $(DESTDIR)/sbin
+	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/sbin && ln -sf linit lhalt
 	cd $(DESTDIR)/sbin && ln -sf linit lpoweroff
 	cd $(DESTDIR)/sbin && ln -sf linit lreboot
@@ -85,8 +86,8 @@ install: all install-base
 
 # Install LeanInit without regard for other init systems
 override-install: override install-base
-	install -Dm0755 out/init out/lsvc $(DESTDIR)/sbin
-	install -Dm0755 out/rc $(DESTDIR)/etc
+	$(INSTALL) -Dm0755 out/init out/lsvc $(DESTDIR)/sbin
+	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc
 	cd $(DESTDIR)/sbin && ln -sf init halt
 	cd $(DESTDIR)/sbin && ln -sf init poweroff
 	cd $(DESTDIR)/sbin && ln -sf init reboot
