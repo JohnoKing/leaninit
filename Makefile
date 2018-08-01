@@ -52,14 +52,14 @@ sh-all:
 	cd out ;\
 	if [ `uname` = Linux ]; then \
 		$(SED) "/DEFBSD/,/ENDEF/d" $(RC) ;\
-		$(SED) "s/DEFLINUX//g"     $(RC) ;\
-		$(SED) "s/ENDEF//g"        $(RC) ;\
+		$(SED) "/DEFLINUX/d"     $(RC) ;\
+		$(SED) "/ENDEF/d"        $(RC) ;\
 		$(SED) "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
 		$(SED) "s:TTY:tty:g"                 ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
 		$(SED) '' "/DEFLINUX/,/ENDEF/d" $(RC) ;\
-		$(SED) '' "s/DEFBSD//g"         $(RC) ;\
-		$(SED) '' "s/ENDEF//g"          $(RC) ;\
+		$(SED) '' "/DEFBSD/d"         $(RC) ;\
+		$(SED) '' "/ENDEF/d"          $(RC) ;\
 		$(SED) '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
 		$(SED) '' "s:TTY:ttyv:g"                      ttys ;\
 	else \
