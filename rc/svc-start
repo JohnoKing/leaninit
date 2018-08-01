@@ -51,3 +51,5 @@ if [ $RET = 0 ]; then
 else
 	print "ERROR: $NAME failed to start (exited with status $RET)"
 fi
+
+exit $RET
