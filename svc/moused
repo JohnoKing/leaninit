@@ -5,7 +5,7 @@ main() {
 	waitforinit devd moused 'kill -s SIGKILL `pgrep -x moused`' $1
 	waitforinit hald hald command $1
 	sleep 5
-	pkill -KILL moused
-	sleep 5
+	pkill -KILL -x moused
+	sleep 4
 	moused -f -p /dev/${MOUSE}
 }

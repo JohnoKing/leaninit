@@ -4,5 +4,6 @@ DAEMON="wpa_supplicant"
 main() {
 	waitforinit devd wpa_supplicant "pkill -x wpa_supplicant" $1
 	sleep 2
+	pkill -KILL -x wpa_supplicant
 	wpa_supplicant -s -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf
 }
