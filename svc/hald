@@ -5,5 +5,8 @@ DAEMON=hald
 # The main function
 main() {
 	waitforinit dbus dbus-daemon command $1
+	sleep 1
 	hald --daemon=yes --verbose=yes --use-syslog
+	sleep 2
+	pkill -KILL hald
 }
