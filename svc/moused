@@ -10,5 +10,6 @@ main() {
 
 	waitforinit devd moused 'kill -s SIGKILL `pgrep -x moused`' $1
 	sleep 4
+	kill -s SIGKILL `pgrep -x moused`
 	fork moused -f -p /dev/${MOUSE}
 }

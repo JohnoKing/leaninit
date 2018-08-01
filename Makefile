@@ -33,37 +33,21 @@ RC      := rc rc.api ttys zfs.cfg
 
 # Compile LeanInit
 all: sh-all
-	if [ `uname` = Linux ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/linit   $(LINIT) $(LDFLAGS) $(LIBS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -o out/lsvc    $(LSVC)  $(LDFLAGS) $(LIBS) ;\
-	elif [ `uname` = FreeBSD ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/linit $(LINIT) $(LDFLAGS) $(LIBS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -o out/lsvc  $(LSVC)  $(LDFLAGS) $(LIBS) ;\
-	else \
-		echo "`uname` is not supported by LeanInit!" ;\
-		false ;\
-	fi
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/linit $(LINIT) $(LDFLAGS) $(LIBS) ;\
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  $(LSVC)  $(LDFLAGS) $(LIBS) ;\
 
 # Compile LeanInit without regard for other init systems
 override: sh-all
-	if [ `uname` = Linux ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/init   $(LINIT) $(LDFLAGS) $(LIBS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DLINUX -DOVERRIDE -o out/lsvc   $(LSVC)  $(LDFLAGS) $(LIBS) ;\
-	elif [ `uname` = FreeBSD ]; then \
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) $(LIBS) ;\
-		$(CC) $(WFLAGS) $(CFLAGS) -DFREEBSD -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) $(LIBS) ;\
-	else \
-		echo "`uname` is not supported by LeanInit!" ;\
-		false ;\
-	fi
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) $(LIBS) ;\
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) $(LIBS) ;\
 
 # Run sed on the scripts and config files
 sh-all:
 	mkdir -p out
-	cp rc/rc.sh      out/rc
-	cp rc/rc.api.sh  out/rc.api
-	cp rc/ttys       out/ttys
-	cp rc/zfs.cfg    out/zfs.cfg
+	cp rc/rc.sh     out/rc
+	cp rc/rc.api.sh out/rc.api
+	cp rc/ttys      out/ttys
+	cp rc/zfs.cfg   out/zfs.cfg
 	cd out ;\
 	if [ `uname` = Linux ]; then \
 		$(SED) "/DEFBSD/,/ENDEF/d" $(RC) ;\

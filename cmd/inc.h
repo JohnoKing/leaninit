@@ -34,11 +34,10 @@
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
-#ifdef LINUX
-#include <utmp.h>
-#endif
-#ifdef FREEBSD
+#ifdef FreeBSD
 #include <libutil.h>
+#else
+#include <utmp.h>
 #endif
 
 // Power management macros
@@ -46,14 +45,14 @@
 #define REBOOT   6
 #define HALT     7
 
-#ifdef LINUX
+#ifdef Linux
 #define SLEEP    8
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_HALT     RB_HALT_SYSTEM
 #define DEFAULT_TTY  "/dev/tty1"
 #endif
 
-#ifdef FREEBSD
+#ifdef FreeBSD
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_HALT     RB_HALT
 #define DEFAULT_TTY  "/dev/ttyv0"

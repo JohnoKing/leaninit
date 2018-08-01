@@ -58,7 +58,7 @@ int halt(int runlevel)
 			halt_notify("The system will now halt!");
 			return reboot(SYS_HALT);
 
-#ifdef LINUX
+#ifdef Linux
 		// Hibernate
 		case SLEEP:
 			force = true;
@@ -108,7 +108,7 @@ static int init_usage(void)
 	printf("  0         Poweroff\n");
 	printf("  6         Reboot\n");
 	printf("  7         Halt\n");
-#ifdef LINUX
+#ifdef Linux
 	printf("  8         Hibernate\n");
 #endif
 	return 1;
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 			// Halt
 			case '7':
 				return halt(HALT);
-#ifdef LINUX
+#ifdef Linux
 			// Hibernate (Disabled on FreeBSD)
 			case '8':
 				return halt(SLEEP);
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
 		return halt_main(REBOOT, argc, argv);
 
-#ifdef LINUX
+#ifdef Linux
 	// Sleep
 	if(strncmp(__progname, "zzz", 3) == 0 || strncmp(__progname, "lzzz", 4) == 0)
 		return halt(SLEEP);
