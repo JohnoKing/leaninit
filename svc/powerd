@@ -1,5 +1,5 @@
-# The name of the service
-NAME=PowerD
+# CPU frequency control (FreeBSD)
+NAME="PowerD"
 DAEMON=powerd
 
 # The main function

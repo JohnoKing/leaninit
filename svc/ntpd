@@ -1,7 +1,10 @@
+# Network Time Protocol Daemon
 NAME="ntpd"
-DAEMON="ntpd"
+DAEMON=ntpd
 
 main() {
+	# Wait for internet services to start
 	waitforinit wpa_supplicant wpa_supplicant command $1
+	waitforinit dhcpcd dhcpcd command $1
 	ntpd
 }

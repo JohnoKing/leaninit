@@ -1,8 +1,8 @@
-# The name of the service
-NAME=devd
+# devd (for FreeBSD)
+NAME="devd"
 DAEMON=devd
 
-# The main function
+# -n is passed to ensure devd runs as a daemon
 main() {
 	devd -n
 }

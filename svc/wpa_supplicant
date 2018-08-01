@@ -1,6 +1,8 @@
+# WPA Supplicant service (intended for FreeBSD, may also work on Linux)
 NAME="WPA Supplicant"
-DAEMON="wpa_supplicant"
+DAEMON=wpa_supplicant
 
+# WPA Supplicant is a bit stubborn, similar workaround like in HALD and moused
 main() {
 	waitforinit devd wpa_supplicant "pkill -x wpa_supplicant" $1
 	sleep 2

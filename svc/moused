@@ -1,6 +1,8 @@
+# Service for FreeBSD's moused
 NAME="moused"
-DAEMON="moused"
+DAEMON=moused
 
+# moused is extremely stubborn, we must workaround many bugs
 main() {
 	waitforinit devd moused 'kill -s SIGKILL `pgrep -x moused`' $1
 	waitforinit hald hald command $1

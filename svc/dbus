@@ -1,10 +1,10 @@
-# The name of the service
-NAME=DBus
+# D-Bus (required by many other services)
+NAME="D-Bus"
 DAEMON=dbus-daemon
 
 # The main function
 main() {
-	mkdir -p /run/dbus
-	rm -f /var/run/dbus/pid
+	mkdir -p /run/dbus      # Linux /run
+	rm -f /var/run/dbus/pid # FreeBSD PID file
 	dbus-daemon --system
 }

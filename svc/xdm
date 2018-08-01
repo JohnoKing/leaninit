@@ -1,9 +1,11 @@
+# Service for the X Server
 # Set the required service variables
 NAME=$XDMNAME
 DAEMON=Xorg
 
 # The main function
 main() {
+	# X requires D-Bus
 	waitforinit dbus dbus-daemon command $1
 	fork $DM
 }

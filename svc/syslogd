@@ -1,5 +1,5 @@
-# The name of the service
-NAME=SyslogD
+# Daemon for syslog(3)
+NAME="SyslogD"
 DAEMON=syslogd
 
 # The main function

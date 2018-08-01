@@ -1,8 +1,13 @@
+# Secure SHell Daemon
 NAME="SSH"
-DAEMON="sshd"
+DAEMON=sshd
 
 main() {
+	# Wait for internet services
 	waitforinit wpa_supplicant wpa_supplicant command $1
+	waitforinit dhcpcd dhcpcd command $1
 	sleep 1
+
+	# sshd must be executed with the full path to the executable
 	command `command -v sshd`
 }

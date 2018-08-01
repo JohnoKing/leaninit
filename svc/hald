@@ -1,10 +1,13 @@
-# The name of the service
-NAME=HALD
+# HALD (this service file is intended for FreeBSD with devd)
+NAME="HALD"
 DAEMON=hald
 
 # The main function
 main() {
+	# HALD requires D-BUS
 	waitforinit dbus dbus-daemon command $1
+
+	# HALD is stubborn, workaround CPU bug
 	sleep 1
 	hald --daemon=yes --verbose=yes --use-syslog
 	sleep 2
