@@ -33,7 +33,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 # Function which forks processes (for parallel booting)
 DEFLINUX
 fork() {
-	setsid "$@"
+	setsid -f "$@"
 }
 ENDEF
 DEFBSD
