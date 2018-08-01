@@ -19,7 +19,7 @@ be built, named `linit`. Running `make install` as root will install
 LeanInit, without overriding other init systems.
 
 To boot into LeanInit, add `init=/sbin/linit` to your kernel command
-line. Make sure eudev is installed, as it is required on Linux.
+line. Make sure eudev and iproute2 are installed, as they are required on Linux.
 
 ### FreeBSD
 Follow the same steps as on Linux to build LeanInit. The Makefile
