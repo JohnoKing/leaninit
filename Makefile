@@ -30,17 +30,17 @@ LIBS    := -lutil
 # Source Files
 LINIT   := cmd/halt.c cmd/init.c
 LSVC    := cmd/lsvc.c
-RC      := rc rc.api ttys zfs.cfg
+RC      := rc rc.api rc.conf ttys
 
 # Compile LeanInit
 all: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/linit $(LINIT) $(LDFLAGS) $(LIBS) ;\
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  $(LSVC)  $(LDFLAGS) $(LIBS) ;\
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/linit $(LINIT) $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  $(LSVC)  $(LDFLAGS) $(LIBS)
 
 # Compile LeanInit without regard for other init systems
 override: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) $(LIBS) ;\
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) $(LIBS) ;\
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) $(LIBS)
 
 # Run sed on the scripts and config files
 sh-all:
@@ -48,7 +48,7 @@ sh-all:
 	cp rc/rc      out/rc
 	cp rc/rc.api  out/rc.api
 	cp rc/ttys    out/ttys
-	cp rc/zfs.cfg out/zfs.cfg
+	cp rc/rc.conf out/rc.conf
 	cd out ;\
 	if [ `uname` = Linux ]; then \
 		$(SED) "/DEFBSD/,/ENDEF/d" $(RC) ;\
@@ -72,7 +72,12 @@ install-base:
 	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	$(INSTALL) -Dm0644 out/ttys rc/xdm.cfg out/zfs.cfg $(DESTDIR)/etc/leaninit
+	if [ ! -r /etc/leaninit/rc.conf ]; then \
+		$(INSTALL) -Dm0644 out/rc.conf $(DESTDIR)/etc/leaninit ;\
+	fi
+	if [ ! -r /etc/leaninit/ttys ]; then \
+		$(INSTALL) -Dm0644 out/ttys $(DESTDIR)/etc/leaninit ;\
+	fi
 	$(INSTALL) -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
 
 # Install LeanInit (compatible with other init systems)

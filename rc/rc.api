@@ -26,25 +26,26 @@
 # Just in case, set a PATH variable in case /etc/profile does not contain one
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
-# Load /etc/profile
+# Load /etc/profile and /etc/leaninit/rc.conf
 . /etc/profile
+. /etc/leaninit/rc.conf
 
 # Function which forks processes (for parallel booting)
 DEFLINUX
 fork() {
-        setsid "$@"
+	setsid "$@"
 }
 ENDEF
 DEFBSD
 fork() {
-        daemon "$@"
+	daemon "$@"
 }
 ENDEF
 
-# Send the output to the log as well as stdout
+# Send output to the log as well as stdout
 print() {
-        echo "$@"
-        echo "$@" >> /var/log/leaninit.log
+	echo "$@"
+	echo "$@" >> $LOGFILE
 }
 
 # Wait for another service if it is enabled

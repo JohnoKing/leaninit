@@ -21,21 +21,11 @@
 # SOFTWARE.
 #
 
-# Source rc.api and zfs.cfg
+# Source rc.api
 . /etc/leaninit/rc.api
-. /etc/leaninit/zfs.cfg
 
 # Set the $GETTY variable
 GETTY=`grep getty /etc/leaninit/ttys | sed '/#/d'`
-
-# Set $MODE for getty
-DEFLINUX
-MODE=38400
-ENDEF
-
-DEFBSD
-MODE=Pc
-ENDEF
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
 echo "Checking all filesystems for data corruption..."
@@ -49,7 +39,7 @@ ENDEF
 
 # Mount drives and datasets
 echo "Remounting root as read-write..."
-if [ "$ZFS_ENABLE" = "TRUE" ]; then
+if [ "$ZFS_ENABLE" = "true" ]; then
 	# Mount everything
 	zfs mount -a
 
@@ -68,9 +58,9 @@ mount -a
 swapon -a
 
 # Logging
-touch /var/log/leaninit.log
-mv /var/log/leaninit.log /var/log/leaninit.log.old
-echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
+touch $LOGFILE
+mv $LOGFILE $LOGFILE.old
+echo "LeanInit is running on `uname -srm`" > $LOGFILE
 
 DEFLINUX
 # Launch eudev (Linux)
@@ -89,7 +79,7 @@ fork sysctl -f /etc/sysctl.conf
 ENDEF
 
 DEFLINUX
-# Load all modules specified in the /etc/modules-load.d folder (Linux only)
+# Load all modules specified in the /etc/modules-load.d folder
 if [ -d /etc/modules-load.d ]; then
 	print "Loading kernel modules..."
 	for m in `cat /etc/modules-load.d/* | sed '/#/d'`; do
@@ -99,16 +89,16 @@ fi
 ENDEF
 
 # Set the hostname
-if [ -r /etc/hostname ] && [ "`cat /etc/hostname`" != "" ]; then
-	print "Setting the hostname to `cat /etc/hostname`..."
-	fork hostname `cat /etc/hostname`
+if [ "$HOSTNAME" != "" ]; then
+	print "Setting the hostname to $HOSTNAME..."
+	fork hostname $HOSTNAME
 fi
 
 DEFLINUX
-# Set the keyboard layout when needed (this requires kbd to work)
-if [ -r /etc/leaninit/kbd.cfg ] && [ "`cat /etc/leaninit/kbd.cfg`" != "" ]; then
-	print "Setting the keyboard layout to `cat /etc/leaninit/kbd.cfg`..."
-	fork loadkeys `cat /etc/leaninit/kbd.cfg`
+# Set the keyboard layout (this requires kbd to work)
+if [ "$KEYMAP" != "" ]; then
+	print "Setting the keyboard layout to $KEYMAP..."
+	fork loadkeys $KEYMAP
 fi
 ENDEF
 
@@ -120,7 +110,7 @@ done
 # Open gettys on the ttys specified in /etc/leaninit/ttys
 print "Launching gettys specified in /etc/leaninit/ttys..."
 for tty in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
-	fork sh -c "while true; do $GETTY $MODE $tty; done"
+	fork sh -c "while true; do $GETTY $GETTYMODE $tty; done"
 done
 
 exit 0

@@ -2,15 +2,10 @@ NAME="moused"
 DAEMON="moused"
 
 main() {
-	if [ -r /etc/leaninit/mouse.cfg ]; then
-		. /etc/leaninit/mouse.cfg
-	else
-		MOUSE=ums0
-	fi
-
 	waitforinit devd moused 'kill -s SIGKILL `pgrep -x moused`' $1
 	waitforinit hald hald command $1
-	sleep 4
+	sleep 5
 	pkill -KILL moused
+	sleep 5
 	moused -f -p /dev/${MOUSE}
 }

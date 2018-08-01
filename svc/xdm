@@ -1,13 +1,6 @@
-XDMCFG=/etc/leaninit/xdm.cfg
+# Set the required service variables
+NAME=$XDMNAME
 DAEMON=Xorg
-
-# Source the XDM config if it exists, return an error if it doesn't
-if [ -r $XDMCFG ]; then
-	. $XDMCFG
-else
-	print "The X Server cannot be started because $XDMCFG doesn't exist!"
-	exit 1
-fi
 
 # The main function
 main() {

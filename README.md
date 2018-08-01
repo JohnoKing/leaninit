@@ -48,12 +48,9 @@ normal and override installs). To enable a service, use `lsvc -e yourservice`;
 and to disable a service, use `lsvc -d yourservice`. A list of services
 LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).
 
-### /etc/hostname
-`/etc/hostname` is the file LeanInit uses to set the system's hostname.
-
-### /etc/leaninit/kbd.cfg (Linux)
-`/etc/leaninit/kbd.cfg` allows you to change the system's keyboard layout
-(kbd must be installed for this to work).
+### /etc/leaninit/rc.conf
+`/etc/leaninit/rc.conf allows you to change your hostname, keyboard layout (Linux), 
+wireless interface, and other settings.
 
 ### /etc/leaninit/ttys
 `/etc/leaninit/ttys` allows you to add and remove the ttys launched on boot,
