@@ -4,6 +4,5 @@ DAEMON="dhcpcd"
 
 # The main function
 main() {
-	ip link set up $INTERFACE
 	dhcpcd $INTERFACE
 }
