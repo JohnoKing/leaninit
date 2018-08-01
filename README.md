@@ -49,7 +49,7 @@ and to disable a service, use `lsvc -d yourservice`. A list of services
 LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).
 
 ### /etc/leaninit/rc.conf
-`/etc/leaninit/rc.conf allows you to change your hostname, keyboard layout (Linux), 
+`/etc/leaninit/rc.conf` allows you to change your hostname, keyboard layout (Linux), 
 wireless interface, and other settings.
 
 ### /etc/leaninit/ttys
