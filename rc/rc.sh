@@ -72,8 +72,8 @@ touch /var/log/leaninit.log
 mv /var/log/leaninit.log /var/log/leaninit.log.old
 echo "LeanInit is running on `uname -srm`" > /var/log/leaninit.log
 
-# Launch eudev (Linux)
 DEFLINUX
+# Launch eudev (Linux)
 print "Starting udev..."
 udevd --daemon
 ENDEF
