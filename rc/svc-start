@@ -32,7 +32,6 @@ fi
 # Set up variables
 . /etc/leaninit/rc.api
 . /etc/leaninit/svc/$1
-export $NAME
 
 # Do not run if the service is already running
 if [ "`pgrep -x $DAEMON`" != "" ]; then
