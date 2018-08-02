@@ -74,7 +74,7 @@ static void sighandle(int signal)
 }
 
 // Execute the init script in a seperate process
-static int bootrc(void)
+static void bootrc(void)
 {
 	// Open up the tty (eliminates the need for '> /dev/tty')
 	int tty = open(DEFAULT_TTY, O_RDWR);
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 {
 	// Run the init script if LeanInit is PID 1 (getuid is skipped)
 	if(getpid() == 1)
-		return bootrc();
+		bootrc();
 
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
