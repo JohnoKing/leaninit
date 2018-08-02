@@ -2,12 +2,7 @@
 NAME="moused"
 DAEMON=moused
 
-# moused is extremely stubborn, we must workaround many bugs
+# moused is extremely stubborn
 main() {
 	waitforinit devd moused 'kill -s SIGKILL `pgrep -x moused`' $1
-	waitforinit hald hald true $1
-	sleep 5
-	pkill -KILL -x moused
-	sleep 4
-	moused -f -p /dev/${MOUSE}
 }
