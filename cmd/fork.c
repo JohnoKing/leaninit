@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	int daemon = fork();
 	if(daemon == 0) {
 		setsid();
-		execl("/bin/sh", "/bin/sh", "-c", argv[1], NULL);
+		return execl("/bin/sh", "/bin/sh", "-c", argv[1], NULL);
 	}
 
 	// Exit
