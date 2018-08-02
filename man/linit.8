@@ -1,0 +1,108 @@
+.\" Copyright (c) 2018 Johnothan King. All rights reserved.
+.\"
+.\" Permission is hereby granted, free of charge, to any person obtaining a copy
+.\" of this software and associated documentation files (the "Software"), to deal
+.\" in the Software without restriction, including without limitation the rights
+.\" to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+.\" copies of the Software, and to permit persons to whom the Software is
+.\" furnished to do so, subject to the following conditions:
+.\"
+.\" The above copyright notice and this permission notice shall be included in all
+.\" copies or substantial portions of the Software.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+.\" IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+.\" FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+.\" AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+.\" LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+.\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+.\" SOFTWARE.
+.\"
+.Dd August 1, 2018
+.Dt INIT 8
+.Os
+.Sh NAME
+.Nm linit
+.Nd a fast init system
+.Sh SYNOPSIS
+.Nm init
+.Oo
+.Nm 0 | 6 | 7 | 8
+.Sh DESCRIPTION
+LeanInit is a Research Unix-style init system made for Linux and FreeBSD operating systems.
+The executable for LeanInit is named
+.Nm linit
+on normal installations, and
+.Nm init
+on override installations.
+When LeanInit is executed, it will first check if it is running as
+.Nm PID
+1.
+.Pp
+If it is
+.Nm PID
+1, LeanInit will run
+.Nm login_tty(3)
+to open the initial tty;
+.Em /dev/tty1
+on Linux and
+.Em /dev/ttyv0
+on FreeBSD. Then, it will output
+.Nm uname -srm
+to the initial tty and run
+.Nm rc(8)
+as a child process. LeanInit will suspend its own execution afterwards.
+.Pp
+If it is not
+.Nm PID
+1, however, LeanInit will instead read from argv to emulate some System V-like options.
+The following options available are:
+.Pp
+.Nm 0
+Poweroff
+
+.Nm 6
+Reboot
+
+.Nm 7
+Halt
+
+.Nm 8
+Hibernate (S4) (Linux only)
+.Pp
+LeanInit will also check if it is executed as
+.Nm halt(8), poweroff, reboot,
+and (on Linux)
+.Nm zzz.
+Consult the
+.Nm halt(8)
+man page for more information on how LeanInit emulates these programs.
+.Sh FILES
+.Bl -width /var/log/leaninit.log
+.Em /etc/rc
+Primary init script for override installations of LeanInit
+
+.Em /etc/leaninit/rc
+Primary init script for normal installations of LeanInit
+
+.Em /etc/leaninit/rc.api
+Provides variables and functions for LeanInit scripts
+
+.Em /etc/leaninit/svc
+Folder containing scripts for starting various extra services (such as D-BUS)
+
+.Em /etc/leaninit/svce
+Location of hardlinks created by
+.Nm lsvc(8)
+for services in
+.Em /etc/leaninit/svc
+
+.Em /etc/leaninit/svc-start
+Internal script which starts services
+
+.Em /etc/leaninit/svc-stop
+Internal script which stops services
+.Sh SEE ALSO
+lsvc(8), halt(8), rc(8), rc.conf(5), rc.api(7), lttys(5), svc-start(8), svc-stop(8)
+.Sh AUTHOR
+Johnothan King
