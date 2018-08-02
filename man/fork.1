@@ -19,34 +19,33 @@
 .\" SOFTWARE.
 .\"
 .Dd August 2, 2018
-.Dt LTTYS 5
+.Dt FORK 1
 .Os
 .Sh NAME
-.Em /etc/leaninit/ttys
+.Nm fork
+.Nd daemonizes any given command
+.Sh SYNOPSIS
+.Nm fork 'enclosed command'
 .Sh DESCRIPTION
-.Em /etc/leaninit/ttys
-is the file
-.Nm rc(8)
-reads from for two things:
+.Nm Fork
+is the program
+.Nm LeanInit
+uses to fork processes.
+It is used due to the
+.Nm setsid(1)
+and
+.Nm daemon(8)
+commands having portability issues.
 .Pp
-1. The
-.Nm getty(8)
-program that should be used.
+Commands given to
+.Nm fork
+must be enclosed in quotes, as fork will only read from
+.Em argv[1].
+.Sh EXAMPLES
+fork "/sbin/agetty 38400 tty9" # Launches agetty on tty9
 
-2. The ttys to launch said getty on.
-.Pp
-The
-.Nm ttys
-file may have comments using '#', however,
-all comments must be on their own line.
-.Sh EXAMPLE
-# This sets the getty program to /sbin/getty
- /sbin/getty
-.Pp
-# This will cause the getty program to be launched on /dev/console and /dev/tty2
- console
- tty2
+fork "vlc ~/Music" # Start VLC at ~/Music
 .Sh SEE ALSO
-rc(8)
+rc(8), setsid(1), daemon(8)
 .Sh AUTHOR
 Johnothan King
