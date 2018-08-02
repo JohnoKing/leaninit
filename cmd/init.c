@@ -34,7 +34,7 @@ static const char *rc_init = "/etc/rc";
 #endif
 
 // Halts, reboots or turns off the system
-int halt(int runlevel)
+int halt(int signal)
 {
 	// Synchronize the filesystems
 	sync();
@@ -45,33 +45,30 @@ int halt(int runlevel)
 
 	// Call reboot(2)
 	switch(runlevel) {
-		case POWEROFF:
-			return reboot(SYS_POWEROFF);
-
-		case REBOOT:
-			return reboot(RB_AUTOBOOT);
-
-		case HALT:
+		case SIGUSR1: // Halt
 			return reboot(SYS_HALT);
 
-		// For bad signals (never reached)
-		default:
-			printf("Something went wrong, received mode %i\n", runlevel);
-			return runlevel;
+		case SIGUSR2: // Power-off
+			return reboot(SYS_POWEROFF);
+
+		case SIGINT:  // Reboot
+			return reboot(RB_AUTOBOOT);
 	}
+
+	return 1;
 }
 
 static void sighandle(int signal)
 {
 	switch(signal) {
 		case SIGUSR1:       // Halt
-			halt(HALT);
+			halt(SIGUSR1);
 			break;
 		case SIGUSR2:       // Power-off
-			halt(POWEROFF);
+			halt(SIGUSR2);
 			break;
 		case SIGINT:        // Reboot
-			halt(REBOOT);
+			halt(SIGINT);
 			break;
 	}
 }

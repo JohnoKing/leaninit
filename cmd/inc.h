@@ -40,13 +40,8 @@
 #include <utmp.h>
 #endif
 
-// Power management macros
-#define POWEROFF 0
-#define REBOOT   6
-#define HALT     7
-
+// OS specific macros
 #ifdef Linux
-#define SLEEP    8
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_HALT     RB_HALT_SYSTEM
 #define DEFAULT_TTY  "/dev/tty1"
