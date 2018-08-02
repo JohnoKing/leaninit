@@ -1,0 +1,84 @@
+.\" Copyright (c) 2018 Johnothan King. All rights reserved.
+.\"
+.\" Permission is hereby granted, free of charge, to any person obtaining a copy
+.\" of this software and associated documentation files (the "Software"), to deal
+.\" in the Software without restriction, including without limitation the rights
+.\" to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+.\" copies of the Software, and to permit persons to whom the Software is
+.\" furnished to do so, subject to the following conditions:
+.\"
+.\" The above copyright notice and this permission notice shall be included in all
+.\" copies or substantial portions of the Software.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+.\" IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+.\" FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+.\" AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+.\" LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+.\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+.\" SOFTWARE.
+.\"
+.Dd August 1, 2018
+.Dt LSVC 8
+.Os
+.Sh NAME
+.Nm lsvc
+.Nd service manager for LeanInit
+.Sh SYNOPSIS
+.Nm lsvc [-defrqs?] service
+.Sh DESCRIPTION
+.Nm LSvc
+is the primary service manager for LeanInit. It can be used to start,
+stop, restart, enable and disable services.
+.Pp
+.Nm LSvc
+starts, stops and restarts services using the
+.Nm svc-start(8)
+and
+.Nm svc-stop(8)
+scripts, and enables and disables services by creating and deleting
+hardlinks in
+.Em /etc/leaninit/svce
+.Pp
+.Nm LSvc
+supports the following flags:
+.Pp
+.Nm -d, --disable
+Disables
+.Nm LeanInit
+services by removing the service's hardlink in
+.Em /etc/leaninit/svce
+.Pp
+.Nm -e, --enable
+Enables
+.Nm LeanInit
+services by creating hardlinks in
+.Em /etc/leaninit/svce
+to the service's file in
+.Em /etc/leaninit/svc
+.Pp
+.Nm -f, --force
+Allows --start to start services that aren't enabled and the
+--stop and --restart flags to send services SIGKILL.
+.Pp
+.Nm -r, --restart
+Restart the specified
+.Nm LeanInit
+service (or start it if it isn't running).
+.Pp
+.Nm -q, --stop
+Stops the specified
+.Nm LeanInit
+service.
+.Pp
+.Nm -s, --start
+Starts the specified
+.Nm LeanInit
+service.
+.Pp
+.Nm -?, --help
+Display usage information for LSvc.
+.Sh SEE ALSO
+rc(8), rc.api(7), svc-start(8), svc-stop(8)
+.Sh AUTHOR
+Johnothan King
