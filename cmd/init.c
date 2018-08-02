@@ -44,7 +44,7 @@ int halt(int signal)
 	kill(-1, SIGKILL);
 
 	// Call reboot(2)
-	switch(runlevel) {
+	switch(signal) {
 		case SIGUSR1: // Halt
 			return reboot(SYS_HALT);
 
