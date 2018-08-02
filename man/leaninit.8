@@ -27,7 +27,7 @@
 .Sh SYNOPSIS
 .Nm init
 .Oo
-.Nm 0 | 6 | 7 | 8
+.Nm 0 | 6
 .Sh DESCRIPTION
 LeanInit is a Research Unix-style init system developed for Linux and FreeBSD operating systems.
 The executable for LeanInit is named
@@ -54,7 +54,7 @@ as a child process. LeanInit will suspend its own execution until it receives a 
 .Pp
 If it is not
 .Nm PID
-1, however, LeanInit will instead read from argv to emulate some System V-like options.
+1, however, LeanInit will instead read from argv to emulate a few System V-like options.
 The following options available are:
 .Pp
 .Nm 0
@@ -62,12 +62,6 @@ Power-off
 
 .Nm 6
 Reboot
-
-.Nm 7
-Halt
-
-.Nm 8
-Hibernate (S4) (Linux only)
 .Pp
 .Sh FILES
 .Em /etc/rc

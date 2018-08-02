@@ -110,10 +110,6 @@ static int usage(void)
 	printf("Usage: %s [mode] ...\n", __progname);
 	printf("  0         Poweroff\n");
 	printf("  6         Reboot\n");
-	printf("  7         Halt\n");
-#ifdef Linux
-	printf("  8         Hibernate\n");
-#endif
 	return 1;
 }
 
@@ -144,14 +140,6 @@ int main(int argc, char *argv[])
 		case '6':
 			return kill(1, SIGINT);
 
-		// Halt
-		case '7':
-			return kill(1, SIGUSR1);
-#ifdef Linux
-		// Hibernate (Linux only)
-		case '8':
-			return reboot(RB_SW_SUSPEND);
-#endif
 		// Fallback
 		default:
 			return usage();
