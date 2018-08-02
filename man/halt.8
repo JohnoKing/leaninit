@@ -1,0 +1,83 @@
+.\" Copyright (c) 2018 Johnothan King. All rights reserved.
+.\"
+.\" Permission is hereby granted, free of charge, to any person obtaining a copy
+.\" of this software and associated documentation files (the "Software"), to deal
+.\" in the Software without restriction, including without limitation the rights
+.\" to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+.\" copies of the Software, and to permit persons to whom the Software is
+.\" furnished to do so, subject to the following conditions:
+.\"
+.\" The above copyright notice and this permission notice shall be included in all
+.\" copies or substantial portions of the Software.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+.\" IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+.\" FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+.\" AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+.\" LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+.\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+.\" SOFTWARE.
+.\"
+.Dd August 1, 2018
+.Dt HALT 8
+.Os
+.Sh NAME
+.Nm halt
+.Nd halt, poweroff or reboot
+.Sh SYNOPSIS
+.Nm halt
+.Op Fl fhlNnpqr?
+.Sh DESCRIPTION
+.Nm Halt
+will poweroff, reboot or halt the system when executed. LeanInit's version of
+.Nm halt
+can also send the system into hibernate when executed as
+.Nm zzz
+on Linux.
+.Pp
+Halt accepts the following flags:
+.Pp
+.Nm -f, -q, --force
+Cause halt to skip sending all processes SIGTERM and
+SIGKILL before calling
+.Nm reboot(2).
+.Pp
+.Nm -N, -n, --nosync
+Do not synchronize the filesystems before rebooting.
+LeanInit's variant of halt does not use
+.Em RB_NOSYNC
+with this flag (so
+kernels such as the FreeBSD kernel will still run
+.Nm sync(2)
+anyways).
+.Pp
+.Nm -h, --halt
+Halt, even if called as
+.Nm poweroff
+or
+.Nm reboot.
+.Pp
+.Nm -l, --no-wall
+Do not send a message using
+.Nm syslog(3)
+before rebooting
+.Pp
+.Nm -p, --poweroff
+Power-off, even if called as
+.Nm halt
+or
+.Nm reboot.
+.Pp
+.Nm -r, --reboot
+Reboot, even if called as
+.Nm halt
+or
+.Nm poweroff.
+.Pp
+.Nm -?, --help
+Display usage information for LeanInit's implementation of
+.Nm halt(8).
+.Sh SEE ALSO
+init(8)
+.Sh AUTHOR
+Johnothan King
