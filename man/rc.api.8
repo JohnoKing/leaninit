@@ -19,21 +19,62 @@
 .\" SOFTWARE.
 .\"
 .Dd August 2, 2018
-.Dt SVC-STOP 8
+.Dt RC.API 8
 .Os
 .Sh NAME
-.Nm svc-stop
-.Nd used internally by LeanInit
-.Sh SYNOPSIS
-.Nm /etc/leaninit/svc-stop service doforce
+.Nm rc.api
+.Nd provides functions and variables to LeanInit scripts
 .Sh DESCRIPTION
 The
-.Nm svc-stop
-script is used internally by
-.Nm lsvc(8)
-for stopping services.
-It is not intended to be used directly by users.
+.Nm rc.api
+script is responsible for reading
+.Em /etc/leaninit/rc.conf,
+then providing all required
+variables and functions to
+.Nm rc(8), svc-start(8)
+and
+.Nm svc-stop(8).
+.Pp
+.Nm RC.API
+provides the following functions and variables:
+
+.Em $PATH
+.Nm rc.api
+will set the path to
+.Em /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin,
+then source
+.Em /etc/profile
+
+.Nm fork
+This function is a wrapper for
+.Nm setsid(1)
+on Linux and
+.Nm daemon(8)
+on FreeBSD, used to aid in making
+.Nm LeanInit's
+scripts portable
+
+.Nm print
+This function prints output to
+.Em /dev/stdout
+and
+.Em /var/log/leaninit.log
+
+.Nm waitforinit
+This function allows scripts to have basic dependency management,
+by letting them wait for the specified service to start first.
+It will only run if
+.Em $4
+is set to init (which prevents this function from running when
+manually starting services).
+.Sh FILES
+.Em /etc/leaninit/rc.conf
+Provides variables and functions for
+.Nm rc
+and
+.Nm LeanInit
+scripts.
 .Sh SEE ALSO
-lsvc(8), rc.api(8), svc-start(8)
+rc(8), rc.conf(5), svc-start(8), svc-stop(8), setsid(1), daemon(8)
 .Sh AUTHOR
 Johnothan King

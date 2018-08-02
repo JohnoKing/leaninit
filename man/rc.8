@@ -19,21 +19,56 @@
 .\" SOFTWARE.
 .\"
 .Dd August 2, 2018
-.Dt SVC-STOP 8
+.Dt RC 8
 .Os
 .Sh NAME
-.Nm svc-stop
-.Nd used internally by LeanInit
-.Sh SYNOPSIS
-.Nm /etc/leaninit/svc-stop service doforce
+.Nm rc
+.Nd init script
 .Sh DESCRIPTION
 The
-.Nm svc-stop
-script is used internally by
-.Nm lsvc(8)
-for stopping services.
-It is not intended to be used directly by users.
+.Nm rc
+script is responsible for mounting all file systems, starting
+.Nm LeanInit
+services in
+.Em /etc/leaninit/svce
+quickly, and starting a
+.Nm getty(8)
+on all ttys listed in
+.Em /etc/leaninit/ttys.
+.Pp
+.Nm RC
+will start services using
+.Nm setsid(1)
+on Linux and
+.Nm daemon(8)
+on FreeBSD.
+Like
+.Nm lsvc(8),
+.Nm rc
+will start services by calling
+.Nm svc-start(8).
+.Nm RC
+will log the output from booting the system to
+.Em /var/log/leaninit.log
+by default.
+.Sh FILES
+.Em /etc/leaninit/rc.api
+Provides variables and functions to
+.Nm rc
+
+.Em /etc/leaninit/rc.conf
+Config file for
+.Nm rc
+and
+.Nm LeanInit
+services
+
+.Em /etc/leaninit/svc-start
+Internal script which starts services
+
+.Em /var/log/leaninit.log
+Default log file for LeanInit
 .Sh SEE ALSO
-lsvc(8), rc.api(8), svc-start(8)
+rc(8), rc.conf(5), rc.api(8), lttys(5), svc-start(8)
 .Sh AUTHOR
 Johnothan King
