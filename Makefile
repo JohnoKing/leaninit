@@ -102,13 +102,13 @@ uninstall:
 		echo "You must be root to uninstall LeanInit!" ;\
 		false ;\
 	fi
-	if [ ! -r /sbin/linit ]; then \
+	if [ ! -r $(DESTDIR)/sbin/linit ]; then \
 		echo "Failed to detect a normal installation of LeanInit, exiting..." ;\
 		false ;\
 	fi
 	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!" ;\
-	rm -rf /sbin/linit /sbin/lhalt /sbin/lpoweroff /sbin/lreboot /usr/share/licenses/leaninit \
-		/sbin/lzzz /sbin/lsvc /etc/leaninit /var/log/leaninit.log*
+	rm -rf $(DESTDIR)/sbin/linit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/usr/share/licenses/leaninit \
+		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/usr/bin/fork $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log*
 
 # Clean the directory
 clean:
