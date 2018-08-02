@@ -37,10 +37,11 @@ installation.
 ## Usage
 
 ### Enabling and disabling services
-The tool for enabling and disabling services is `lsvc` (on both
-normal and override installs). To enable a service, use `lsvc -e yourservice`;
+The tool for enabling and disabling services is `lsvc`.
+To enable a service, use `lsvc -e yourservice`;
 and to disable a service, use `lsvc -d yourservice`. A list of services
 LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).
+To see extra information on `lsvc`, run `lsvc --help` to see all of the options `lsvc` accepts.
 
 ### /etc/leaninit/rc.conf
 `/etc/leaninit/rc.conf` allows you to change your hostname, keyboard layout (Linux), 
