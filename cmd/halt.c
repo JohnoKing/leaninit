@@ -28,20 +28,17 @@
 
 // Long options for halt
 static struct option halt_long_options[] = {
-	{ "no-wtmp",     no_argument, NULL, 'd' },
 	{ "force",       no_argument, NULL, 'f' },
 	{ "halt",        no_argument, NULL, 'h' },
 	{ "no-wall",     no_argument, NULL, 'l' },
 	{ "nosync",      no_argument, NULL, 'n' },
-	{ "nosync",      no_argument, NULL, 'N' },
 	{ "poweroff",    no_argument, NULL, 'p' },
 	{ "reboot",      no_argument, NULL, 'r' },
-	{ "wtmp-only",   no_argument, NULL, 'w' },
 	{ "help",        no_argument, NULL, '?' },
 };
 
 // Shortened options
-static const char *halt_short_options = "dfhlNnpqrw?";
+static const char *halt_short_options = "fhlNnpqr?";
 
 // Notify the system of shutdown
 void halt_notify(const char *message)
@@ -63,12 +60,10 @@ int halt_usage(int ret)
 	printf("Usage: %s [-%s]\n", __progname, halt_short_options);
 	printf("  -f, -q, --force        Perform shutdown or reboot without sending all processes SIGTERM\n");
 	printf("  -N, -n, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
-	printf("  -d, --no-wtmp          Ignored for compatibility (LeanInit currently does not write a wtmp entry on shutdown)\n");
 	printf("  -h, --halt             Halts the system\n");
 	printf("  -l, --no-wall          Turn off wall messages\n");
 	printf("  -p, --poweroff         Turn off the system\n");
 	printf("  -r, --reboot           Restart the system\n");
-	printf("  -w, --wtmp-only        Incompatible, exits with return status 1\n");
 	printf("  -?, --help             Show this usage information\n");
 	return ret;
 }
@@ -108,15 +103,6 @@ int halt_main(int runlevel, int argc, char *argv[])
 				case 'p':
 					runlevel |= POWEROFF;
 					break;
-
-				// -d and -w are not not supported
-				case 'd':
-					printf("WARNING: Option 'd' is being ignored.\n");
-					break;
-
-				case 'w':
-					printf("Option 'w' is not supported!\n");
-					return 1;
 
 				// Disable filesystem sync
 				case 'N':
