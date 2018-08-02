@@ -27,10 +27,10 @@
 #include "inc.h"
 
 // Location of the init script
-#ifndef OVERRIDE
-static const char *rc_init = "/etc/leaninit/rc";
+#ifdef COMPAT
+#define RC "/etc/leaninit/rc"
 #else
-static const char *rc_init = "/etc/rc";
+#define RC "/etc/rc"
 #endif
 
 // Halts, reboots or turns off the system
@@ -89,7 +89,7 @@ static int bootrc(void)
 	// Run the init script
 	pid_t sh_rc = fork();
 	if(sh_rc == 0)
-		execl("/bin/sh", "/bin/sh", rc_init, NULL);
+		execl("/bin/sh", "/bin/sh", RC, NULL);
 
 	// Suspend init
 	for(;;) {

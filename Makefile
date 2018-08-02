@@ -30,15 +30,15 @@ RC      := rc rc.api rc.conf ttys
 
 # Compile LeanInit
 all: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/linit cmd/init.c $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lhalt cmd/halt.c $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  cmd/lsvc.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DCOMPAT -o out/linit cmd/init.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DCOMPAT -o out/lhalt cmd/halt.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DCOMPAT -o out/lsvc  cmd/lsvc.c $(LDFLAGS) $(LIBS)
 
 # Compile LeanInit without regard for other init systems
 override: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/init  cmd/init.c $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/halt  cmd/halt.c $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/lsvc  cmd/lsvc.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/init  cmd/init.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/halt  cmd/halt.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  cmd/lsvc.c $(LDFLAGS) $(LIBS)
 
 # Run sed on the scripts and config files
 sh-all:
