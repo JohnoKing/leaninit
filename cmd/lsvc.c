@@ -180,8 +180,10 @@ static int modify_svc(char *svc, int action)
 int main(int argc, char *argv[])
 {
 	// This must be run as root
-	if(getuid() != 0)
-		return usage(1, "%s must be run as root!\n", __progname);
+	if(getuid() != 0) {
+		printf("%s\n", strerror(EPERM));
+		return 1;
+	}
 
 	// Show usage info if given no arguments
 	if(argc == 1)

@@ -26,10 +26,12 @@
 .Nd halt, poweroff or reboot
 .Sh SYNOPSIS
 .Nm halt
-.Op Fl fhlNnpqr?
+.Op Fl l?
 .Sh DESCRIPTION
 .Nm Halt
-will poweroff, reboot or halt the system when executed. LeanInit's version of
+will poweroff, reboot or halt the system when executed by sending the correct signal to init.
+SIGUSR1 will halt, SIGUSR2 will power-off, and SIGINT will reboot.
+LeanInit's version of
 .Nm halt
 can also send the system into hibernate when executed as
 .Nm zzz
@@ -37,45 +39,13 @@ on Linux.
 .Pp
 Halt accepts the following flags:
 .Pp
-.Nm -f, -q, --force
-Cause halt to skip sending all processes SIGTERM and
-SIGKILL before calling
-.Nm reboot(2).
-.Pp
-.Nm -N, -n, --nosync
-Do not synchronize the filesystems before rebooting.
-LeanInit's variant of halt does not use
-.Em RB_NOSYNC
-with this flag (so
-kernels such as the FreeBSD kernel will still run
-.Nm sync(2)
-anyways).
-.Pp
-.Nm -h, --halt
-Halt, even if called as
-.Nm poweroff
-or
-.Nm reboot.
-.Pp
 .Nm -l, --no-wall
 Do not send a message using
 .Nm syslog(3)
 before rebooting
 .Pp
-.Nm -p, --poweroff
-Power-off, even if called as
-.Nm halt
-or
-.Nm reboot.
-.Pp
-.Nm -r, --reboot
-Reboot, even if called as
-.Nm halt
-or
-.Nm poweroff.
-.Pp
 .Nm -?, --help
-Display usage information for LeanInit's implementation of
+Display usage information for
 .Nm halt(8).
 .Sh SEE ALSO
 init(8)

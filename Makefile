@@ -26,21 +26,19 @@ INSTALL := install
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
 LIBS    := -lutil
-
-# Source Files
-LINIT   := cmd/halt.c cmd/init.c
-LSVC    := cmd/lsvc.c
 RC      := rc rc.api rc.conf ttys
 
 # Compile LeanInit
 all: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/linit $(LINIT) $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  $(LSVC)  $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/linit cmd/init.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lhalt cmd/halt.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  cmd/lsvc.c $(LDFLAGS) $(LIBS)
 
 # Compile LeanInit without regard for other init systems
 override: sh-all
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/init $(LINIT) $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -DOVERRIDE -o out/lsvc $(LSVC)  $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/init  cmd/init.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/halt  cmd/halt.c $(LDFLAGS) $(LIBS)
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lsvc  cmd/lsvc.c $(LDFLAGS) $(LIBS)
 
 # Run sed on the scripts and config files
 sh-all:
@@ -82,21 +80,19 @@ install-base:
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
-	$(INSTALL) -Dm0755 out/linit out/lsvc $(DESTDIR)/sbin
+	$(INSTALL) -Dm0755 out/linit out/lhalt out/lsvc $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit
-	cd $(DESTDIR)/sbin && ln -sf linit lhalt
-	cd $(DESTDIR)/sbin && ln -sf linit lpoweroff
-	cd $(DESTDIR)/sbin && ln -sf linit lreboot
-	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf linit lzzz; fi
+	cd $(DESTDIR)/sbin && ln -sf lhalt lpoweroff
+	cd $(DESTDIR)/sbin && ln -sf lhalt lreboot
+	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf lhalt lzzz; fi
 
 # Install LeanInit without regard for other init systems
 override-install: override install-base
-	$(INSTALL) -Dm0755 out/init out/lsvc $(DESTDIR)/sbin
+	$(INSTALL) -Dm0755 out/init out/halt out/lsvc $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc
-	cd $(DESTDIR)/sbin && ln -sf init halt
-	cd $(DESTDIR)/sbin && ln -sf init poweroff
-	cd $(DESTDIR)/sbin && ln -sf init reboot
-	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf init zzz; fi
+	cd $(DESTDIR)/sbin && ln -sf halt poweroff
+	cd $(DESTDIR)/sbin && ln -sf halt reboot
+	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf halt zzz; fi
 
 # Uninstall (only works with normal installations)
 uninstall:

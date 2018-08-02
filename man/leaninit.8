@@ -50,7 +50,7 @@ on Linux and
 on FreeBSD. It will then output basic system information
 to the initial tty and run
 .Nm rc(8)
-as a child process. LeanInit will suspend its own execution afterwards.
+as a child process. LeanInit will suspend its own execution until it receives a signal.
 .Pp
 If it is not
 .Nm PID
@@ -69,13 +69,6 @@ Halt
 .Nm 8
 Hibernate (S4) (Linux only)
 .Pp
-LeanInit will also check if it is executed as
-.Nm halt(8), poweroff, reboot,
-and (on Linux)
-.Nm zzz.
-Consult the
-.Nm halt(8)
-man page for more information on how LeanInit emulates these programs.
 .Sh FILES
 .Em /etc/rc
 Primary init script for override installations of LeanInit
@@ -105,7 +98,7 @@ Internal script which stops services
 Default log file for LeanInit
 
 .Em /var/log/leaninit.log.old
-Log files from the previous instance of LeanInit
+Log file from the previous instance of LeanInit
 .Sh SEE ALSO
 lsvc(8), halt(8), rc(8), rc.conf(5), rc.api(7), lttys(5), svc-start(8), svc-stop(8)
 .Sh AUTHOR

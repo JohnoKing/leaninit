@@ -24,103 +24,87 @@
  * halt - Shutdown, reboot or halt system
  */
 
-#include "init.h"
+#include "inc.h"
 
 // Long options for halt
 static struct option halt_long_options[] = {
-	{ "force",       no_argument, NULL, 'f' },
-	{ "halt",        no_argument, NULL, 'h' },
 	{ "no-wall",     no_argument, NULL, 'l' },
-	{ "nosync",      no_argument, NULL, 'n' },
-	{ "poweroff",    no_argument, NULL, 'p' },
-	{ "reboot",      no_argument, NULL, 'r' },
 	{ "help",        no_argument, NULL, '?' },
 };
 
-// Shortened options
-static const char *halt_short_options = "fhlNnpqr?";
-
-// Notify the system of shutdown
-void halt_notify(const char *message)
-{
-	// Output a message if wall is true
-	if(wall == true)
-		syslog(LOG_NOTICE, "%s", message);
-
-	// Kill all processes with SIGTERM and SIGKILL if the force flag is not passed
-	if(force == false) {
-		kill(-1, SIGTERM);
-		kill(-1, SIGKILL);
-	}
-}
-
 // Shows usage for halt(8)
-int halt_usage(int ret)
+static int usage(int ret)
 {
-	printf("Usage: %s [-%s]\n", __progname, halt_short_options);
-	printf("  -f, -q, --force        Perform shutdown or reboot without sending all processes SIGTERM\n");
-	printf("  -N, -n, --nosync       Disable filesystem synchronization before poweroff or reboot\n");
-	printf("  -h, --halt             Halts the system\n");
+	printf("Usage: %s [-l?]\n", __progname);
 	printf("  -l, --no-wall          Turn off wall messages\n");
-	printf("  -p, --poweroff         Turn off the system\n");
-	printf("  -r, --reboot           Restart the system\n");
 	printf("  -?, --help             Show this usage information\n");
 	return ret;
 }
 
 // Main function for halt
-int halt_main(int runlevel, int argc, char *argv[])
+int main(int argc, char *argv[])
 {
+	// halt(8) can only be run by root
+	if(getuid() != 0) {
+		printf("%s\n", strerror(EPERM));
+		return 1;
+	}
+
+	bool wall = true; // For syslog(3)
+	int signal;       // For signals to init
+
+	// Halt
+	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0)
+		signal = SIGUSR1;
+
+	// Poweroff
+	else if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
+		signal = SIGUSR2;
+
+	// Reboot
+	else if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
+		signal = SIGINT;
+
+#ifdef Linux
+	// Hibernate
+	else if(strncmp(__progname, "zzz", 3) == 0 || strncmp(__progname, "lzzz", 4) == 0)
+		return reboot(RB_SW_SUSPEND);
+#endif
+
+	// Not valid
+	else {
+		printf("Halt cannot be run as %s\n", __progname);
+		return 1;
+	}
+
 	// When given arguments
 	if(argc != 1) {
 
 		// Parse the given options
 		int args;
-		while((args = getopt_long(argc, argv, halt_short_options, halt_long_options, NULL)) != -1) {
+		while((args = getopt_long(argc, argv, "l?", halt_long_options, NULL)) != -1) {
 			switch(args) {
 
 				// Display usage with a return status of 0
 				case '?':
-					return halt_usage(0);
-
-				// Forcefully shutdown the system without killing all processes first
-				case 'q':
-				case 'f':
-					force = true;
-					break;
-
-				// Force halt
-				case 'h':
-					runlevel |= HALT;
-					break;
+					return usage(0);
 
 				// Turn off wall messages
 				case 'l':
 					wall = false;
 					break;
 
-				// Force poweroff
-				case 'p':
-					runlevel |= POWEROFF;
-					break;
-
-				// Disable filesystem sync
-				case 'N':
-				case 'n':
-					dosync = false;
-					break;
-
-				// Force reboot
-				case 'r':
-					runlevel |= REBOOT;
-					break;
-
 				// Show usage, but with a return status of 1
 				default:
-					return halt_usage(1);
+					return usage(1);
 			}
 		}
 	}
 
-	return halt(runlevel);
+	// Syslog
+	if(wall == true)
+		syslog(LOG_NOTICE, "The system is going down NOW!");
+
+	// Send the correct sygnal to init
+	return kill(1, signal);
 }

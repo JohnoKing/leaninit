@@ -24,7 +24,7 @@
  * A fast init system
  */
 
-#include "init.h"
+#include "inc.h"
 
 // Location of the init script
 #ifndef OVERRIDE
@@ -36,40 +36,43 @@ static const char *rc_init = "/etc/rc";
 // Halts, reboots or turns off the system
 int halt(int runlevel)
 {
-	// Synchronize the filesystems if dosync is set to true
-	if(dosync == true)
-		sync();
+	// Synchronize the filesystems
+	sync();
 
-	// Act as per the runlevel
+	// Kill all processes
+	kill(-1, SIGTERM);
+	kill(-1, SIGKILL);
+
+	// Call reboot(2)
 	switch(runlevel) {
-
-		// Poweroff
 		case POWEROFF:
-			halt_notify("The system is now powering off!");
 			return reboot(SYS_POWEROFF);
 
-		// Reboot
 		case REBOOT:
-			halt_notify("The system is now rebooting!");
 			return reboot(RB_AUTOBOOT);
 
-		// Halt
 		case HALT:
-			halt_notify("The system will now halt!");
 			return reboot(SYS_HALT);
-
-#ifdef Linux
-		// Hibernate
-		case SLEEP:
-			force = true;
-			halt_notify("The system is now being sent into hibernate (S4)");
-			return reboot(RB_SW_SUSPEND);
-#endif
 
 		// For bad signals (never reached)
 		default:
 			printf("Something went wrong, received mode %i\n", runlevel);
 			return runlevel;
+	}
+}
+
+static void sighandle(int signal)
+{
+	switch(signal) {
+		case SIGUSR1:       // Halt
+			halt(HALT);
+			break;
+		case SIGUSR2:       // Power-off
+			halt(POWEROFF);
+			break;
+		case SIGINT:        // Reboot
+			halt(REBOOT);
+			break;
 	}
 }
 
@@ -92,16 +95,19 @@ static int bootrc(void)
 		execl("/bin/sh", "/bin/sh", rc_init, NULL);
 
 	// Suspend init
-	wait(0);
-	for(;;)
+	for(;;) {
 		sleep(1);
+		signal(SIGUSR1, sighandle);
+		signal(SIGUSR2, sighandle);
+		signal(SIGINT,  sighandle);
+	}
 
 	// This should never be reached
 	return 1;
 }
 
 // Shows usage for init(8)
-static int init_usage(void)
+static int usage(void)
 {
 	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [mode] ...\n", __progname);
@@ -117,69 +123,40 @@ static int init_usage(void)
 // The main function
 int main(int argc, char *argv[])
 {
-	// Run the init script if LeanInit is PID 1 (getuid and strncmp are skipped)
+	// Run the init script if LeanInit is PID 1 (getuid is skipped)
 	if(getpid() == 1)
 		return bootrc();
 
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
-		printf("Permission denied\n");
+		printf("%s\n", strerror(EPERM));
 		return 1;
 	}
 
-	// Default booleans for halt
-	dosync = true;
-	force  = false;
-	wall   = true;
+	// When re-executed (not PID 1)
+	if(argc == 1)
+		return usage();
 
-	// When re-executed as init (not PID 1)
-	if(strncmp(__progname, "init", 4) == 0 || strncmp(__progname, "linit", 5) == 0) {
-		if(argc == 1)
-			return init_usage();
+	switch(*argv[1]) {
 
-		switch(*argv[1]) {
+		// Poweroff
+		case '0':
+			return kill(1, SIGUSR2);
 
-			// Poweroff
-			case '0':
-				return halt(POWEROFF);
+		// Reboot
+		case '6':
+			return kill(1, SIGINT);
 
-			// Reboot
-			case '6':
-				return halt(REBOOT);
-
-			// Halt
-			case '7':
-				return halt(HALT);
+		// Halt
+		case '7':
+			return kill(1, SIGUSR1);
 #ifdef Linux
-			// Hibernate (Disabled on FreeBSD)
-			case '8':
-				return halt(SLEEP);
+		// Hibernate (Linux only)
+		case '8':
+			return reboot(RB_SW_SUSPEND);
 #endif
-			// Fallback
-			default:
-				return init_usage();
-		}
+		// Fallback
+		default:
+			return usage();
 	}
-
-	// Halt
-	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0)
-		return halt_main(HALT, argc, argv);
-
-	// Poweroff
-	if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
-		return halt_main(POWEROFF, argc, argv);
-
-	// Reboot
-	if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
-		return halt_main(REBOOT, argc, argv);
-
-#ifdef Linux
-	// Sleep
-	if(strncmp(__progname, "zzz", 3) == 0 || strncmp(__progname, "lzzz", 4) == 0)
-		return halt(SLEEP);
-#endif
-
-	// This should not be reached, give an error and exit
-	printf("LeanInit cannot be executed as %s\n", __progname);
-	return 1;
 }
