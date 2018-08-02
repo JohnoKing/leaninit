@@ -47,8 +47,7 @@ to open the initial tty;
 .Em /dev/tty1
 on Linux and
 .Em /dev/ttyv0
-on FreeBSD. Then, it will output
-.Nm uname -srm
+on FreeBSD. It will then output basic system information
 to the initial tty and run
 .Nm rc(8)
 as a child process. LeanInit will suspend its own execution afterwards.
