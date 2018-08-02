@@ -26,7 +26,7 @@ Follow the same steps as on Linux to build LeanInit. The Makefile
 is compatible with both GNU and BSD Make, so you don't need to install
 `gmake` as a seperate build dependency.
 To boot from LeanInit, append the following line to `/boot/loader.conf`:
-`init_path="/sbin/linit:/sbin/init:/rescue/init"`
+`init_path="/sbin/linit"`
 
 ### Override Build
 If you wish, running `make override` and `make override-install` will
