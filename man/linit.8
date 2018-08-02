@@ -77,7 +77,6 @@ Consult the
 .Nm halt(8)
 man page for more information on how LeanInit emulates these programs.
 .Sh FILES
-.Bl -width /var/log/leaninit.log
 .Em /etc/rc
 Primary init script for override installations of LeanInit
 
@@ -101,6 +100,12 @@ Internal script which starts services
 
 .Em /etc/leaninit/svc-stop
 Internal script which stops services
+
+.Em /var/log/leaninit.log
+Default log file for LeanInit
+
+.Em /var/log/leaninit.log.old
+Log files from the previous instance of LeanInit
 .Sh SEE ALSO
 lsvc(8), halt(8), rc(8), rc.conf(5), rc.api(7), lttys(5), svc-start(8), svc-stop(8)
 .Sh AUTHOR
