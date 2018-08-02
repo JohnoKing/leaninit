@@ -68,17 +68,18 @@ sh-all:
 
 # Used by both install and override-install
 install-base:
-	mkdir -p $(DESTDTIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
+	mkdir -p  $(DESTDIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
+	cp -r man $(DESTDIR)/usr/share
 	cp -r svc $(DESTDIR)/etc/leaninit
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	if [ ! -r /etc/leaninit/rc.conf ]; then \
+	if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
 		$(INSTALL) -Dm0644 out/rc.conf $(DESTDIR)/etc/leaninit ;\
 	fi
-	if [ ! -r /etc/leaninit/ttys ]; then \
+	if [ ! -r $(DESTDIR)/etc/leaninit/ttys ]; then \
 		$(INSTALL) -Dm0644 out/ttys $(DESTDIR)/etc/leaninit ;\
 	fi
 	$(INSTALL) -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
-	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/usr/bin
+	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/usr/bin/fork
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
