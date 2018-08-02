@@ -106,7 +106,7 @@ uninstall:
 		echo "Failed to detect a normal installation of LeanInit, exiting..." ;\
 		false ;\
 	fi
-	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!" ;\
+	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!"
 	rm -rf $(DESTDIR)/sbin/linit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/usr/share/licenses/leaninit \
 		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/usr/bin/fork $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log*
 
