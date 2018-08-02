@@ -25,7 +25,6 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -41,7 +40,7 @@ int main(int argc, char *argv[])
 	int daemon = fork();
 	if(daemon == 0) {
 		setsid();
-		system(argv[1]);
+		execl("/bin/sh", "/bin/sh", "-c", argv[1], NULL);
 	}
 
 	// Exit
