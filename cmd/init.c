@@ -34,7 +34,7 @@
 #endif
 
 // Halts, reboots or turns off the system
-int halt(int signal)
+static int halt(int signal)
 {
 	// Synchronize the filesystems
 	sync();
@@ -98,9 +98,6 @@ static int bootrc(void)
 		signal(SIGUSR2, sighandle);
 		signal(SIGINT,  sighandle);
 	}
-
-	// This should never be reached
-	return 1;
 }
 
 // Shows usage for init(8)
