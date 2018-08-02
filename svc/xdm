@@ -7,5 +7,5 @@ DAEMON=Xorg
 main() {
 	# X requires D-Bus
 	waitforinit dbus dbus-daemon true $1
-	fork $DM
+	fork "$DM"
 }

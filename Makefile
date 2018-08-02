@@ -64,10 +64,11 @@ sh-all:
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
+	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/fork  cmd/fork.c $(LDFLAGS) $(LIBS)
 
 # Used by both install and override-install
 install-base:
-	mkdir -p $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
+	mkdir -p $(DESTDTIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	if [ ! -r /etc/leaninit/rc.conf ]; then \
@@ -77,6 +78,7 @@ install-base:
 		$(INSTALL) -Dm0644 out/ttys $(DESTDIR)/etc/leaninit ;\
 	fi
 	$(INSTALL) -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
+	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/usr/bin
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base

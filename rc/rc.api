@@ -30,18 +30,6 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 . /etc/profile
 . /etc/leaninit/rc.conf
 
-# Function which forks processes (for parallel booting)
-DEFLINUX
-fork() {
-	setsid -f "$@"
-}
-ENDEF
-DEFBSD
-fork() {
-	daemon "$@"
-}
-ENDEF
-
 # Send output to the log as well as stdout
 print() {
 	echo "$@"

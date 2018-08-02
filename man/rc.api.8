@@ -45,15 +45,6 @@ will set the path to
 then source
 .Em /etc/profile
 
-.Nm fork
-This function is a wrapper for
-.Nm setsid(1)
-on Linux and
-.Nm daemon(8)
-on FreeBSD, used to aid in making
-.Nm LeanInit's
-scripts portable
-
 .Nm print
 This function prints output to
 .Em /dev/stdout
@@ -75,6 +66,6 @@ and
 .Nm LeanInit
 scripts.
 .Sh SEE ALSO
-rc(8), rc.conf(5), svc-start(8), svc-stop(8), setsid(1), daemon(8)
+rc(8), rc.conf(5), svc-start(8), svc-stop(8), fork(1)
 .Sh AUTHOR
 Johnothan King

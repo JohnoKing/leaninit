@@ -31,17 +31,13 @@ script is responsible for mounting all file systems, starting
 .Nm LeanInit
 services in
 .Em /etc/leaninit/svce
-quickly, and starting a
+using
+.Nm fork(1),
+and starting a
 .Nm getty(8)
 on all ttys listed in
 .Em /etc/leaninit/ttys.
 .Pp
-.Nm RC
-will start services using
-.Nm setsid(1)
-on Linux and
-.Nm daemon(8)
-on FreeBSD.
 Like
 .Nm lsvc(8),
 .Nm rc
@@ -69,6 +65,6 @@ Internal script which starts services
 .Em /var/log/leaninit.log
 Default log file for LeanInit
 .Sh SEE ALSO
-rc(8), rc.conf(5), rc.api(8), lttys(5), svc-start(8)
+rc(8), rc.conf(5), rc.api(8), lttys(5), svc-start(8), fork(1)
 .Sh AUTHOR
 Johnothan King

@@ -71,11 +71,11 @@ ENDEF
 # Load all sysctl settings
 print "Loading settings with sysctl..."
 DEFLINUX
-fork sysctl --system
+fork "sysctl --system"
 ENDEF
 
 DEFBSD
-fork sysctl -f /etc/sysctl.conf
+fork "sysctl -f /etc/sysctl.conf"
 ENDEF
 
 DEFLINUX
@@ -97,26 +97,26 @@ ENDEF
 # Set the hostname
 if [ "$HOSTNAME" != "" ]; then
 	print "Setting the hostname to $HOSTNAME..."
-	fork hostname $HOSTNAME
+	fork "hostname $HOSTNAME"
 fi
 
 DEFLINUX
 # Set the keyboard layout (this requires kbd to work)
 if [ "$KEYMAP" != "" ]; then
 	print "Setting the keyboard layout to $KEYMAP..."
-	fork loadkeys $KEYMAP
+	fork "loadkeys $KEYMAP"
 fi
 ENDEF
 
 # Start the services
 for sv in `ls /etc/leaninit/svce`; do
-	fork sh /etc/leaninit/svc-start $sv init
+	fork "/etc/leaninit/svc-start $sv init"
 done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys
 print "Launching gettys specified in /etc/leaninit/ttys..."
 for tty in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
-	fork sh -c "while true; do $GETTY $GETTYMODE $tty; done"
+	fork "while true; do $GETTY $GETTYMODE $tty; done"
 done
 
 exit 0
