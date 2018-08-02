@@ -5,7 +5,7 @@ DAEMON=moused
 # moused is extremely stubborn, we must workaround many bugs
 main() {
 	waitforinit devd moused 'kill -s SIGKILL `pgrep -x moused`' $1
-	waitforinit hald hald command $1
+	waitforinit hald hald true $1
 	sleep 5
 	pkill -KILL -x moused
 	sleep 4

@@ -5,6 +5,6 @@ DAEMON=console-kit-daemon
 # The main function
 main() {
 	# D-Bus is required to run ConsoleKit
-	waitforinit dbus dbus-daemon command $1
+	waitforinit dbus dbus-daemon true $1
 	console-kit-daemon
 }

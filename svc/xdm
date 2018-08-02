@@ -6,6 +6,6 @@ DAEMON=Xorg
 # The main function
 main() {
 	# X requires D-Bus
-	waitforinit dbus dbus-daemon command $1
+	waitforinit dbus dbus-daemon true $1
 	fork $DM
 }
