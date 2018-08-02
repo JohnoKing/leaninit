@@ -40,7 +40,7 @@ installation.
 The tool for enabling and disabling services is `lsvc`.
 To enable a service, use `lsvc -e yourservice`;
 and to disable a service, use `lsvc -d yourservice`. A list of services
-LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).
+LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).  
 To see extra information on `lsvc`, run `lsvc --help` to see all of the options `lsvc` accepts.
 
 ### /etc/leaninit/rc.conf
