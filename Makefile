@@ -21,7 +21,7 @@
 
 # Variables (each one may be overridden)
 CC      := cc
-SED     := sed -i
+SED     := sed
 INSTALL := install
 WFLAGS  := -Wall -Wextra -Wpedantic
 CFLAGS  := -O2 -fno-math-errno -pipe
@@ -49,17 +49,17 @@ sh-all:
 	cp rc/rc.conf out/rc.conf
 	cd out ;\
 	if [ `uname` = Linux ]; then \
-		$(SED) "/DEFBSD/,/ENDEF/d" $(RC) ;\
-		$(SED) "/DEFLINUX/d"     $(RC) ;\
-		$(SED) "/ENDEF/d"        $(RC) ;\
-		$(SED) "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
-		$(SED) "s:TTY:tty:g"                 ttys ;\
+		$(SED) -i "/DEFBSD/,/ENDEF/d" $(RC) ;\
+		$(SED) -i "/DEFLINUX/d"     $(RC) ;\
+		$(SED) -i "/ENDEF/d"        $(RC) ;\
+		$(SED) -i "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
+		$(SED) -i "s:TTY:tty:g"                 ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(SED) '' "/DEFLINUX/,/ENDEF/d" $(RC) ;\
-		$(SED) '' "/DEFBSD/d"         $(RC) ;\
-		$(SED) '' "/ENDEF/d"          $(RC) ;\
-		$(SED) '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
-		$(SED) '' "s:TTY:ttyv:g"                      ttys ;\
+		$(SED) -i '' "/DEFLINUX/,/ENDEF/d" $(RC) ;\
+		$(SED) -i '' "/DEFBSD/d"         $(RC) ;\
+		$(SED) -i '' "/ENDEF/d"          $(RC) ;\
+		$(SED) -i '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
+		$(SED) -i '' "s:TTY:ttyv:g"                      ttys ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
