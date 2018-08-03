@@ -66,6 +66,9 @@ DEFLINUX
 # Launch eudev (Linux)
 print "Starting udev..."
 udevd --daemon
+udevadm trigger --type=devices
+udevadm trigger --type=subsystems
+udevadm settle
 ENDEF
 
 # Load all sysctl settings
