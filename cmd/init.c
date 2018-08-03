@@ -36,12 +36,12 @@
 // Halts, reboots or turns off the system
 static int halt(int signal)
 {
-	// Synchronize the filesystems
-	sync();
-
 	// Kill all processes
 	kill(-1, SIGTERM);
 	kill(-1, SIGKILL);
+
+	// Synchronize the filesystems
+	sync();
 
 	// Call reboot(2)
 	switch(signal) {

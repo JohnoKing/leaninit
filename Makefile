@@ -85,10 +85,10 @@ install-base:
 	$(INSTALL) -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
 	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/usr/bin/fork
 	cd $(DESTDIR)/usr/share/man/man8 ;\
-	link leaninit.8 linit.8 ;\
-	link lhalt.8    lpoweroff.8 ;\
-	link lhalt.8    lreboot.8 ;\
-	if [ `uname` = Linux ]; then link lhalt.8 lzzz.8; fi
+	[ -r linit.8 ] || link leaninit.8 linit.8 ;\
+	[ -r lpoweroff.8 ] || link lhalt.8 lpoweroff.8 ;\
+	[ -r lreboot.8 ] || link lhalt.8 lreboot.8 ;\
+	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || link lhalt.8 lzzz.8; fi
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
@@ -103,12 +103,12 @@ override-install: override install-base
 	cd $(DESTDIR)/usr/share/man/man5 ;\
 	link lrc.conf.5 rc.conf.5
 	cd $(DESTDIR)/usr/share/man/man8 ;\
-	link leaninit.8 init.8 ;\
-	link lhalt.8    halt.8 ;\
-	link lrc.8      rc.8 ;\
-	link lhalt.8    poweroff.8 ;\
-	link lhalt.8    reboot.8 ;\
-	if [ `uname` = Linux ]; then link lhalt.8 zzz.8; fi
+	[ -r init.8 ] || link leaninit.8 init.8 ;\
+	[ -r halt.8 ] || link lhalt.8    halt.8 ;\
+	[ -r rc.8 ]  || link lrc.8      rc.8 ;\
+	[ -r poweroff.8 ] || link lhalt.8    poweroff.8 ;\
+	[ -r reboot.8 ] || link lhalt.8    reboot.8 ;\
+	if [ `uname` = Linux ]; then [ -r zzz.8 ] ||  link lhalt.8 zzz.8; fi
 	$(INSTALL) -Dm0755 out/init out/halt out/lsvc $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc
 	cd $(DESTDIR)/sbin && ln -sf halt poweroff
