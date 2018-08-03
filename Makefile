@@ -20,13 +20,17 @@
 #
 
 # Variables (each one may be overridden)
-CC      := cc
-SED     := sed
-INSTALL := install
-WFLAGS  := -Wall -Wextra -Wpedantic
-CFLAGS  := -O2 -fno-math-errno -pipe
-LIBS    := -lutil
-RC      := rc rc.api rc.conf ttys
+CC       := cc
+SED      := sed
+INSTALL  := install
+WFLAGS   := -Wall -Wextra -Wpedantic
+CFLAGS   := -O2 -fno-math-errno -pipe
+LIBS     := -lutil
+RC       := rc rc.api rc.conf ttys
+MANPAGES := $(DESTDIR)/usr/share/man/man1/fork.1 $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 \
+			$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
+			$(DESTDIR)/usr/share/man/man8/lsvc.8 $(DESTDIR)/usr/share/man/man8/rc.api.8 $(DESTDIR)/usr/share/man/man8/svc-start.8 \
+			$(DESTDIR)/usr/share/man/man8/svc-stop.8 $(DESTDIR)/usr/share/man/man8/linit.8
 
 # Compile LeanInit
 all: base
@@ -69,8 +73,8 @@ base:
 # Used by both install and override-install
 install-base:
 	mkdir -p  $(DESTDIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
-	cp -r man $(DESTDIR)/usr/share
 	cp -r svc $(DESTDIR)/etc/leaninit
+	cp -r man $(DESTDIR)/usr/share
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
 		$(INSTALL) -Dm0644 out/rc.conf $(DESTDIR)/etc/leaninit ;\
@@ -80,6 +84,11 @@ install-base:
 	fi
 	$(INSTALL) -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
 	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/usr/bin/fork
+	cd $(DESTDIR)/usr/share/man/man8 ;\
+	link leaninit.8 linit.8 ;\
+	link lhalt.8    lpoweroff.8 ;\
+	link lhalt.8    lreboot.8 ;\
+	if [ `uname` = Linux ]; then link lhalt.8 lzzz.8; fi
 
 # Install LeanInit (compatible with other init systems)
 install: all install-base
@@ -91,6 +100,15 @@ install: all install-base
 
 # Install LeanInit without regard for other init systems
 override-install: override install-base
+	cd $(DESTDIR)/usr/share/man/man5 ;\
+	link lrc.conf.5 rc.conf.5
+	cd $(DESTDIR)/usr/share/man/man8 ;\
+	link leaninit.8 init.8 ;\
+	link lhalt.8    halt.8 ;\
+	link lrc.8      rc.8 ;\
+	link lhalt.8    poweroff.8 ;\
+	link lhalt.8    reboot.8 ;\
+	if [ `uname` = Linux ]; then link lhalt.8 zzz.8; fi
 	$(INSTALL) -Dm0755 out/init out/halt out/lsvc $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc
 	cd $(DESTDIR)/sbin && ln -sf halt poweroff
@@ -109,7 +127,7 @@ uninstall:
 	fi
 	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!"
 	rm -rf $(DESTDIR)/sbin/linit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/usr/share/licenses/leaninit \
-		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/usr/bin/fork $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log*
+		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/usr/bin/fork $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log* $(MANPAGES)
 
 # Clean the directory
 clean:
