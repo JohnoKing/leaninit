@@ -100,8 +100,8 @@ static void bootrc(void)
 	printf("LeanInit is running on %s %s %s\n", uts.sysname, uts.release, uts.machine);
 
 	// Run the init script
-	pid_t sh_rc = fork();
-	if(sh_rc == 0)
+	pid_t shrc = fork();
+	if(shrc == 0)
 		execl("/bin/sh", "/bin/sh", RC, NULL);
 
 	// Suspend init
