@@ -29,7 +29,7 @@
 .Oo
 .Nm 0 | 6
 .Sh DESCRIPTION
-LeanInit is a Research Unix-style init system developed for Linux and FreeBSD operating systems.
+LeanInit is a Research Unix/BSD-style init system developed for Linux and FreeBSD operating systems.
 The executable for LeanInit is named
 .Nm linit
 on normal installations, and
@@ -50,7 +50,9 @@ on Linux and
 on FreeBSD. It will then output basic system information
 to the initial tty and run
 .Nm rc(8)
-as a child process. LeanInit will suspend its own execution until it receives a signal.
+as a child process. After
+.Nm rc(8)
+is executed, LeanInit wall suspend its own execution until it receives a signal.
 .Pp
 If it is not
 .Nm PID
