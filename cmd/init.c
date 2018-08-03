@@ -33,6 +33,15 @@
 #define RC "/etc/rc"
 #endif
 
+// Execute a command and wait until it finishes
+static void cmd(const char *cmd)
+{
+	int cfork = fork();
+	if(cfork == 0)
+		execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
+	wait(0);
+}
+
 // Halts, reboots or turns off the system
 static int halt(int signal)
 {
@@ -42,6 +51,10 @@ static int halt(int signal)
 
 	// Synchronize the filesystems
 	sync();
+
+	// Remount root as read-only and unmount other filesystems
+	cmd("mount -o remount,ro /");
+	cmd("umount -a");
 
 	// Call reboot(2)
 	switch(signal) {
