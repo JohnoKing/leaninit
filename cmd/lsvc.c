@@ -31,7 +31,7 @@ static char svc_path[119]  = "/etc/leaninit/svc/";
 static char svce_path[120] = "/etc/leaninit/svce/";
 
 // Force flag
-static char force[2]  = "n";
+static char *force    = "n";
 static bool force_svc = false;
 
 // Long options for lsvc
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 			// Force flag
 			case 'f':
 				force_svc = true;
-				memcpy(force, "f", 1);
+				force     = "f";
 				break;
 
 			// Disable
