@@ -31,7 +31,7 @@ static char svc_path[119]  = "/etc/leaninit/svc/";
 static char svce_path[120] = "/etc/leaninit/svce/";
 
 // Force flag
-static char force[1]  = "n";
+static char force[2]  = "n";
 static bool force_svc = false;
 
 // Long options for lsvc
@@ -69,7 +69,7 @@ static int usage(int ret, const char *msg, ...)
 }
 
 // Function which can enable or disable the specified service (svc)
-static int modify_svc(char *svc, int action)
+static int modify_svc(const char *svc, int action)
 {
 	// Exit if the service name is too long
 	if(strlen(svc) > 100)
@@ -169,12 +169,9 @@ static int modify_svc(char *svc, int action)
 			// Then, start it again
 			wait(0);
 			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", NULL);
-
-		// Fallback
-		default:
-			printf("Something went wrong, received action %i\n", action);
-			return 1;
 	}
+
+	return -1;
 }
 
 int main(int argc, char *argv[])
