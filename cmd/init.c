@@ -104,12 +104,12 @@ static void bootrc(void)
 	if(shrc == 0)
 		execl("/bin/sh", "/bin/sh", RC, NULL);
 
-	// Suspend init
+	// Loop that kills all zombie processes while waiting for a signal
 	for(;;) {
-		sleep(1);
-		signal(SIGUSR1, sighandle);
-		signal(SIGUSR2, sighandle);
-		signal(SIGINT,  sighandle);
+		wait(0);                     // Kill all zombie processes
+		signal(SIGUSR1, sighandle);  // Halt
+		signal(SIGUSR2, sighandle);  // Poweroff
+		signal(SIGINT,  sighandle);  // Reboot
 	}
 }
 
