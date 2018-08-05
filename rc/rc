@@ -75,7 +75,7 @@ sysctl -f /etc/sysctl.conf
 ENDEF
 
 DEFLINUX
-# Launch eudev (Linux)
+# Launch eudev (required for the X server to function)
 print "Starting udev..."
 udevd --daemon
 udevadm trigger --type=devices
@@ -84,7 +84,7 @@ udevadm settle
 ENDEF
 
 DEFBSD
-# Launch devd (FreeBSD, vidcontrol -m is required for moused to function)
+# Launch devd (vidcontrol -m is required for moused to function)
 print "Starting devd..."
 vidcontrol -m on
 fork "devd"
