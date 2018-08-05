@@ -82,8 +82,7 @@ int main(int argc, char *argv[])
 
 		// Parse the given options
 		int args;
-		int index;
-		while((args = getopt_long(argc, argv, "l?", halt_long_options, &index)) != -1) {
+		while((args = getopt_long(argc, argv, "l?", halt_long_options, NULL)) != -1) {
 			switch(args) {
 
 				// Display usage with a return status of 0
@@ -110,5 +109,5 @@ int main(int argc, char *argv[])
 	}
 
 	// Send the correct sygnal to init
-	return kill(1, signal);
+	//return kill(1, signal);
 }
