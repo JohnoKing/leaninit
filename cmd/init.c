@@ -92,7 +92,7 @@ static void sighandle(int signal)
 static void bootrc(void)
 {
 	/* Open up the tty (eliminates the need for '> /dev/tty')
-	 * close(2) CANNOT be run, at least on FreeBSD.
+	 * close(2) should not be run, at least on FreeBSD.
 	 */
 	int tty = open(DEFAULT_TTY, O_RDWR);
 	login_tty(tty);
