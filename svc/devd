@@ -1,8 +1,0 @@
-# devd (for FreeBSD)
-NAME="devd"
-DAEMON=devd
-
-# -n is passed to ensure devd runs as a daemon
-main() {
-	devd -n
-}

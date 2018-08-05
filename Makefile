@@ -28,9 +28,9 @@ CFLAGS   := -O2 -fno-math-errno -pipe
 LIBS     := -lutil
 RC       := rc rc.api rc.conf ttys
 MANPAGES := $(DESTDIR)/usr/share/man/man1/fork.1 $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 \
-			$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
-			$(DESTDIR)/usr/share/man/man8/lsvc.8 $(DESTDIR)/usr/share/man/man8/rc.api.8 $(DESTDIR)/usr/share/man/man8/svc-start.8 \
-			$(DESTDIR)/usr/share/man/man8/svc-stop.8 $(DESTDIR)/usr/share/man/man8/linit.8
+		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
+		$(DESTDIR)/usr/share/man/man8/lsvc.8 $(DESTDIR)/usr/share/man/man8/rc.api.8 $(DESTDIR)/usr/share/man/man8/svc-start.8 \
+		$(DESTDIR)/usr/share/man/man8/svc-stop.8 $(DESTDIR)/usr/share/man/man8/linit.8
 
 # Compile LeanInit
 all: base
@@ -46,11 +46,7 @@ override: base
 
 # Used by both install and override
 base:
-	mkdir -p      out
-	cp rc/rc      out/rc
-	cp rc/rc.api  out/rc.api
-	cp rc/ttys    out/ttys
-	cp rc/rc.conf out/rc.conf
+	cp -r rc out
 	cd out ;\
 	if [ `uname` = Linux ]; then \
 		$(SED) -i "/DEFBSD/,/ENDEF/d" $(RC) ;\
@@ -72,6 +68,7 @@ base:
 
 # Used by both install and override-install
 install-base:
+	if [ ! -d out ]; then echo 'Please run `make` first!'; false; fi
 	mkdir -p  $(DESTDIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
 	cp -r man $(DESTDIR)/usr/share
@@ -82,7 +79,7 @@ install-base:
 	if [ ! -r $(DESTDIR)/etc/leaninit/ttys ]; then \
 		$(INSTALL) -Dm0644 out/ttys $(DESTDIR)/etc/leaninit ;\
 	fi
-	$(INSTALL) -Dm0755 out/rc.api rc/svc-start rc/svc-stop $(DESTDIR)/etc/leaninit
+	$(INSTALL) -Dm0755 out/rc.api out/svc-start out/svc-stop $(DESTDIR)/etc/leaninit
 	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/usr/bin/fork
 	cd $(DESTDIR)/usr/share/man/man8 ;\
 	[ -r linit.8 ] || link leaninit.8 linit.8 ;\
@@ -91,7 +88,7 @@ install-base:
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || link lhalt.8 lzzz.8; fi
 
 # Install LeanInit (compatible with other init systems)
-install: all install-base
+install: install-base
 	$(INSTALL) -Dm0755 out/linit out/lhalt out/lsvc $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/sbin && ln -sf lhalt lpoweroff
@@ -99,7 +96,7 @@ install: all install-base
 	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf lhalt lzzz; fi
 
 # Install LeanInit without regard for other init systems
-override-install: override install-base
+override-install: install-base
 	cd $(DESTDIR)/usr/share/man/man5 ;\
 	link lrc.conf.5 rc.conf.5
 	cd $(DESTDIR)/usr/share/man/man8 ;\

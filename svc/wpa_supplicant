@@ -2,10 +2,7 @@
 NAME="WPA Supplicant"
 DAEMON=wpa_supplicant
 
-# WPA Supplicant is a bit stubborn, similar workaround like in HALD and moused
+# WPA Supplicant is a bit stubborn, workaround issues
 main() {
-	waitforinit devd wpa_supplicant "pkill -x wpa_supplicant" $1
-	sleep 2
-	pkill -KILL -x wpa_supplicant
 	wpa_supplicant -s -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf
 }

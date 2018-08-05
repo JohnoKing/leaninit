@@ -57,10 +57,23 @@ fi
 mount -a
 swapon -a
 
+# Remove the nologin file (if there is one)
+rm -f /var/run/nologin
+
 # Logging
 touch $LOGFILE
 mv $LOGFILE $LOGFILE.old
 echo "LeanInit is running on `uname -srm`" > $LOGFILE
+
+# sysctl(8)
+print "Loading settings with sysctl..."
+DEFLINUX
+sysctl --system
+ENDEF
+
+DEFBSD
+sysctl -f /etc/sysctl.conf
+ENDEF
 
 DEFLINUX
 # Launch eudev (Linux)
@@ -71,14 +84,15 @@ udevadm trigger --type=subsystems
 udevadm settle
 ENDEF
 
-# Load all sysctl settings
-print "Loading settings with sysctl..."
-DEFLINUX
-fork "sysctl --system"
-ENDEF
-
 DEFBSD
-fork "sysctl -f /etc/sysctl.conf"
+# Launch devd (FreeBSD)
+print "Starting devd..."
+devd
+devd -n
+
+# Kill bad daemons
+kill -s SIGKILL `ps -axc | grep " moused" | awk '{print $1}'`
+kill -s SIGKILL `ps -acx | grep " wpa_supplicant" | awk '{print $1}'`
 ENDEF
 
 DEFLINUX

@@ -34,29 +34,25 @@ fi
 . /etc/leaninit/svc/$1
 
 # Do not attempt to run if the service is not running
-if [ "`pgrep -x $DAEMON`" = "" ]; then
+if [ "`ps -acx | grep \" $DAEMON\"`" = "" ]; then
 	print "$NAME is not running"
 	exit 0
 fi
 
 # Stop $NAME
 print "Stopping $NAME..."
-pkill -x $DAEMON
+kill `ps -acx | grep " $DAEMON" | awk '{print $1}'`
 
 # Exit with error if the service failed to stop
 RET=$?
 if [ $? != 0 ] && [ "$2" != "f" ]; then
-	print "ERROR: $NAME failed to stop (pkill exited with status $RET)"
+	print "ERROR: $NAME failed to stop (kill exited with status $RET)"
 	exit $RET
 fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
-if [ "`pgrep -x $DAEMON`" != "" ] && [ "$2" = "f" ]; then
-	print "Sending $NAME SIGKILL..."
-	for s in "`pgrep -x $DAEMON`"; do
-		kill -s SIGKILL $s
-	done
-fi
+print "Sending $NAME SIGKILL..."
+kill -s SIGKILL `ps -acx | grep " $DAEMON" | awk '{print $1}'`
 
 # Finish
 print "Stopped $NAME successfully"
