@@ -109,5 +109,5 @@ int main(int argc, char *argv[])
 	}
 
 	// Send the correct sygnal to init
-	//return kill(1, signal);
+	return kill(1, signal);
 }
