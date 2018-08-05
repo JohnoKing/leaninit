@@ -51,10 +51,9 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 		echo "Turning readonly off for dataset $z"
 		zfs readonly=off $z
 	done
-else
-	mount -o remount,rw /
 fi
 mount -a
+mount -o remount,rw / || true
 swapon -a
 
 # Remove the nologin file (if there is one)
