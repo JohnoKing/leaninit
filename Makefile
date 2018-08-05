@@ -28,9 +28,9 @@ CFLAGS   := -O2 -fno-math-errno -pipe
 LIBS     := -lutil
 RC       := rc rc.api rc.conf ttys
 MANPAGES := $(DESTDIR)/usr/share/man/man1/fork.1 $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 \
-			$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
-			$(DESTDIR)/usr/share/man/man8/lsvc.8 $(DESTDIR)/usr/share/man/man8/rc.api.8 $(DESTDIR)/usr/share/man/man8/svc-start.8 \
-			$(DESTDIR)/usr/share/man/man8/svc-stop.8 $(DESTDIR)/usr/share/man/man8/linit.8
+		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
+		$(DESTDIR)/usr/share/man/man8/lsvc.8 $(DESTDIR)/usr/share/man/man8/rc.api.8 $(DESTDIR)/usr/share/man/man8/svc-start.8 \
+		$(DESTDIR)/usr/share/man/man8/svc-stop.8 $(DESTDIR)/usr/share/man/man8/linit.8
 
 # Compile LeanInit
 all: base

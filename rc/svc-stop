@@ -51,12 +51,8 @@ if [ $? != 0 ] && [ "$2" != "f" ]; then
 fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
-if [ "`pgrep -x $DAEMON`" != "" ] && [ "$2" = "f" ]; then
-	print "Sending $NAME SIGKILL..."
-	for s in "`pgrep -x $DAEMON`"; do
-		kill -s SIGKILL $s
-	done
-fi
+print "Sending $NAME SIGKILL..."
+pkill -KILL -x $DAEMON
 
 # Finish
 print "Stopped $NAME successfully"
