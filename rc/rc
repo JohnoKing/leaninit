@@ -58,7 +58,7 @@ mount -a
 swapon -a
 
 # Remove the nologin file (if there is one)
-rm -f /var/run/nologin
+rm -f /run/nologin /var/run/nologin
 
 # Logging
 touch $LOGFILE
