@@ -47,7 +47,7 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs share -a
 
 	# Turn on writes
-	for z in `zpool list -H | awk '{print $1;}'`; do
+	for z in `zpool list -H | awk '{print $1}'`; do
 		echo "Turning readonly off for dataset $z"
 		zfs readonly=off $z
 	done
