@@ -86,13 +86,16 @@ static void sighandle(int signal)
 	}
 }
 
-// Execute the init script in a seperate process
+/* Execute the init script in a seperate process.
+ * Only run if init is PID 1
+ */
 static void bootrc(void)
 {
-	// Open up the tty (eliminates the need for '> /dev/tty')
+	/* Open up the tty (eliminates the need for '> /dev/tty')
+	 * close(2) CANNOT be run, at least on FreeBSD.
+	 */
 	int tty = open(DEFAULT_TTY, O_RDWR);
 	login_tty(tty);
-	close(tty);
 
 	// Print to DEFAULT_TTY the current platform LeanInit is running on
 	struct utsname uts;
