@@ -28,8 +28,8 @@
 
 // Long options for halt
 static struct option halt_long_options[] = {
-	{ "no-wall",     no_argument, NULL, 'l' },
-	{ "help",        no_argument, NULL, '?' },
+	{ "no-wall",     no_argument, 0, 'l' },
+	{ "help",        no_argument, 0, '?' },
 };
 
 // Shows usage for halt(8)
@@ -82,7 +82,8 @@ int main(int argc, char *argv[])
 
 		// Parse the given options
 		int args;
-		while((args = getopt_long(argc, argv, "l?", halt_long_options, NULL)) != -1) {
+		int index;
+		while((args = getopt_long(argc, argv, "l?", halt_long_options, &index)) != -1) {
 			switch(args) {
 
 				// Display usage with a return status of 0
