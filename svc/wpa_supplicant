@@ -2,7 +2,7 @@
 NAME="WPA Supplicant"
 DAEMON=wpa_supplicant
 
-# WPA Supplicant is a bit stubborn, workaround issues
+# Launch wpa_supplicant
 main() {
 	wpa_supplicant -s -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf
 }
