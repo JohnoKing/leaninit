@@ -84,8 +84,9 @@ udevadm settle
 ENDEF
 
 DEFBSD
-# Launch devd (FreeBSD)
+# Launch devd (FreeBSD, vidcontrol -m is required for moused to function)
 print "Starting devd..."
+vidcontrol -m on
 fork "devd"
 ENDEF
 
