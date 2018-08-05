@@ -102,8 +102,11 @@ int main(int argc, char *argv[])
 	}
 
 	// Syslog
-	if(wall == true)
-		syslog(LOG_NOTICE, "The system is going down NOW!");
+	if(wall == true) {
+		openlog(__progname, LOG_CONS, LOG_AUTH);
+		syslog(LOG_CRIT, "The system is going down NOW!");
+		closelog();
+	}
 
 	// Send the correct sygnal to init
 	return kill(1, signal);
