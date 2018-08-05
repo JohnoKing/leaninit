@@ -71,6 +71,7 @@ static int halt(int signal)
 	return 1;
 }
 
+// Handle signals given to init
 static void sighandle(int signal)
 {
 	switch(signal) {
@@ -104,7 +105,11 @@ static void bootrc(void)
 	if(shrc == 0)
 		execl("/bin/sh", "/bin/sh", RC, (char*)0);
 
-	// Loop that kills all zombie processes while waiting for a signal
+	/*
+	 * This perpetual loop does the following:
+	 *  All zombie processes will be cleaned up using wait(2)
+	 *  Signals such as SIGINT are handled appropriately
+	 */
 	for(;;) {
 		wait(0);                     // Kill all zombie processes
 		signal(SIGUSR1, sighandle);  // Halt
@@ -113,7 +118,7 @@ static void bootrc(void)
 	}
 }
 
-// Shows usage for init(8)
+// Shows usage for init
 static int usage(void)
 {
 	printf("%s: Option not permitted\n", __progname);
@@ -136,10 +141,11 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	// When re-executed (not PID 1)
+	// Emulate some SysV-like behavior when re-executed
 	if(argc == 1)
 		return usage();
 
+	// Only runlevels 0 and 6 are supported
 	switch(*argv[1]) {
 
 		// Poweroff
