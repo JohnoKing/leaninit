@@ -188,8 +188,7 @@ int main(int argc, char *argv[])
 
 	// Get the arguments
 	int args;
-	int index;
-	while((args = getopt_long(argc, argv, "fd:e:r:q:s:?", lsvc_options, &index)) != -1) {
+	while((args = getopt_long(argc, argv, "fd:e:r:q:s:?", lsvc_options, NULL)) != -1) {
 		switch(args) {
 
 			// Force flag
