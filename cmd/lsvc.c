@@ -36,13 +36,13 @@ static bool force_svc = false;
 
 // Long options for lsvc
 static struct option lsvc_options[] = {
-	{ "disable", required_argument, NULL, 'd' },
-	{ "enable",  required_argument, NULL, 'e' },
-	{ "force",   required_argument, NULL, 'f' },
-	{ "restart", required_argument, NULL, 'r' },
-	{ "stop",    required_argument, NULL, 'q' },
-	{ "start",   required_argument, NULL, 's' },
-	{ "help",    no_argument,       NULL, '?' },
+	{ "disable", required_argument, 0, 'd' },
+	{ "enable",  required_argument, 0, 'e' },
+	{ "force",   required_argument, 0, 'f' },
+	{ "restart", required_argument, 0, 'r' },
+	{ "stop",    required_argument, 0, 'q' },
+	{ "start",   required_argument, 0, 's' },
+	{ "help",    no_argument,       0, '?' },
 };
 
 // Usage info
@@ -142,7 +142,7 @@ static int modify_svc(const char *svc, int action)
 				fclose(svce_read);
 
 			// Execute svc-start
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", (char*)0);
 
 		// Stop
 		case STOP:
@@ -152,7 +152,7 @@ static int modify_svc(const char *svc, int action)
 				fclose(svce_read);
 
 			// Execute svc-stop
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, (char*)0);
 
 		// Restart
 		case RESTART:
@@ -164,11 +164,11 @@ static int modify_svc(const char *svc, int action)
 			// First, stop the service
 			pid_t stop = fork();
 			if(stop == 0)
-				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, NULL);
+				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, (char*)0);
 
 			// Then, start it again
 			wait(0);
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", NULL);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", (char*)0);
 	}
 
 	return -1;
@@ -188,7 +188,8 @@ int main(int argc, char *argv[])
 
 	// Get the arguments
 	int args;
-	while((args = getopt_long(argc, argv, "fd:e:r:q:s:?", lsvc_options, NULL)) != -1) {
+	int index;
+	while((args = getopt_long(argc, argv, "fd:e:r:q:s:?", lsvc_options, &index)) != -1) {
 		switch(args) {
 
 			// Force flag

@@ -38,7 +38,7 @@ static void cmd(const char *cmd)
 {
 	int cfork = fork();
 	if(cfork == 0)
-		execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
+		execl("/bin/sh", "/bin/sh", "-c", cmd, (char*)0);
 	wait(0);
 }
 
@@ -102,7 +102,7 @@ static void bootrc(void)
 	// Run the init script
 	pid_t shrc = fork();
 	if(shrc == 0)
-		execl("/bin/sh", "/bin/sh", RC, NULL);
+		execl("/bin/sh", "/bin/sh", RC, (char*)0);
 
 	// Loop that kills all zombie processes while waiting for a signal
 	for(;;) {
