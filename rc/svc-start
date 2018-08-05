@@ -34,7 +34,7 @@ fi
 . /etc/leaninit/svc/$1
 
 # Do not run if the service is already running
-if [ "$2" != init ] && [ "`ps -acx | grep \" $DAEMON\"`" != "" ]; then
+if [ "$2" != init ] && [ "`psnoawk $DAEMON`" != "" ]; then
 	echo "$NAME is already running"
 	exit 0
 fi

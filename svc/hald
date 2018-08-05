@@ -11,5 +11,5 @@ main() {
 	sleep 1
 	hald --daemon=yes --verbose=yes --use-syslog
 	sleep 2
-	kill -s SIGKILL `ps -acx | grep " $DAEMON" | awk '{print $1}'`
+	kill -s SIGKILL `psawk $DAEMON`
 }

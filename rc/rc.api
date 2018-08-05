@@ -30,6 +30,15 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 . /etc/profile
 . /etc/leaninit/rc.conf
 
+# Simplify usage of ps(1)
+psawk() {
+	ps -acxo pid,comm | grep " $1" | awk '{print $1}'
+}
+
+psnoawk() {
+	ps -acxo pid,comm | grep " $1"
+}
+
 # Send output to the log as well as stdout
 print() {
 	echo "$@"
@@ -39,7 +48,7 @@ print() {
 # Wait for another service if it is enabled
 waitforinit() {
 	if [ -r /etc/leaninit/svce/$1 ] && [ "$3" = init ]; then
-		until [ "`ps -acx | grep \" $2\"`" != "" ]; do
+		until [ "`psnoawk $2`" != "" ]; do
 			sleep 1
 		done
 	fi

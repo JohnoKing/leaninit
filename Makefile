@@ -26,7 +26,7 @@ INSTALL  := install
 WFLAGS   := -Wall -Wextra -Wpedantic
 CFLAGS   := -O2 -fno-math-errno -pipe
 LIBS     := -lutil
-RC       := rc rc.api rc.conf ttys
+RC       := out/rc out/rc.api out/rc.conf out/ttys
 MANPAGES := $(DESTDIR)/usr/share/man/man1/fork.1 $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 \
 		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
 		$(DESTDIR)/usr/share/man/man8/lsvc.8 $(DESTDIR)/usr/share/man/man8/rc.api.8 $(DESTDIR)/usr/share/man/man8/svc-start.8 \
@@ -47,19 +47,18 @@ override: base
 # Used by both install and override
 base:
 	cp -r rc out
-	cd out ;\
 	if [ `uname` = Linux ]; then \
 		$(SED) -i "/DEFBSD/,/ENDEF/d" $(RC) ;\
 		$(SED) -i "/DEFLINUX/d"     $(RC) ;\
 		$(SED) -i "/ENDEF/d"        $(RC) ;\
-		$(SED) -i "s:GETTY_PROG:/sbin/agetty:g" ttys ;\
-		$(SED) -i "s:TTY:tty:g"                 ttys ;\
+		$(SED) -i "s:GETTY_PROG:/sbin/agetty:g" out/ttys ;\
+		$(SED) -i "s:TTY:tty:g"                 out/ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
 		$(SED) -i '' "/DEFLINUX/,/ENDEF/d" $(RC) ;\
 		$(SED) -i '' "/DEFBSD/d"         $(RC) ;\
 		$(SED) -i '' "/ENDEF/d"          $(RC) ;\
-		$(SED) -i '' "s:GETTY_PROG:/usr/libexec/getty:g" ttys ;\
-		$(SED) -i '' "s:TTY:ttyv:g"                      ttys ;\
+		$(SED) -i '' "s:GETTY_PROG:/usr/libexec/getty:g" out/ttys ;\
+		$(SED) -i '' "s:TTY:ttyv:g"                      out/ttys ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\

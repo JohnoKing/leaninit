@@ -34,14 +34,14 @@ fi
 . /etc/leaninit/svc/$1
 
 # Do not attempt to run if the service is not running
-if [ "`ps -acx | grep \" $DAEMON\"`" = "" ]; then
+if [ "`psnoawk $DAEMON`" = "" ]; then
 	print "$NAME is not running"
 	exit 0
 fi
 
 # Stop $NAME
 print "Stopping $NAME..."
-kill `ps -acx | grep " $DAEMON" | awk '{print $1}'`
+kill `psawk $DAEMON`
 
 # Exit with error if the service failed to stop
 RET=$?
@@ -52,7 +52,7 @@ fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
 print "Sending $NAME SIGKILL..."
-kill -s SIGKILL `ps -acx | grep " $DAEMON" | awk '{print $1}'`
+kill -s SIGKILL `psawk $DAEMON`
 
 # Finish
 print "Stopped $NAME successfully"

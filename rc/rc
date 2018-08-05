@@ -91,8 +91,8 @@ devd
 devd -n
 
 # Kill bad daemons
-kill -s SIGKILL `ps -acx | grep " moused" | awk '{print $1}'`
-kill -s SIGKILL `ps -acx | grep " wpa_supplicant" | awk '{print $1}'`
+kill -s SIGKILL `psawk moused` || true
+kill -s SIGKILL `psawk wpa_supplicant` || true
 ENDEF
 
 DEFLINUX
