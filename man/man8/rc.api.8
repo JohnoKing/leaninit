@@ -55,21 +55,22 @@ and
 This function allows scripts to have basic dependency management,
 by letting them wait for the specified service to start first.
 It will only run if
-.Em $4
+.Em $3
 is set to init (which prevents this function from running when
 manually starting services).
 
 .Nm psawk
-This function will return the pid(s) of the specified process
-(or nothing if the process could not be found).
+This function will return the pid(s) of the specified program
+(or nothing if the program isn't running).
 
 .Nm psnoawk
-This function will columns of text if the specified process is running,
-or nothing if the process wasn't found.
+This function will print columns of text containing the current
+pid(s) and process names of the specified program,
+or nothing if the program is not running.
 .Sh FILES
 .Em /etc/leaninit/rc.conf
-Provides variables and functions for
-.Nm rc
+Provides config settings for
+.Nm rc(8)
 and
 .Nm LeanInit
 scripts.
