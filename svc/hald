@@ -6,5 +6,5 @@ DAEMON=hald
 main() {
 	waitforinit hald devd $1
 	waitforinit dbus dbus-daemon $1
-	hald --daemon=yes --verbose=yes --use-syslog
+	hald --daemon=yes --use-syslog
 }
