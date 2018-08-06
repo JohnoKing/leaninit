@@ -58,7 +58,7 @@ static int usage(int ret, const char *msg, ...)
 	printf("Usage: %s [-defrqs?] service ...\n", __progname);
 	printf("  -d, --disable        Disable a service\n");
 	printf("  -e, --enable         Enable a service\n");
-	printf("  -f, --force          Force lsvc to to the specified action\n");
+	printf("  -f, --force          Force lsvc to do the specified action\n");
 	printf("  -r, --restart        Restart a service\n");
 	printf("  -q, --stop           Stop a service\n");
 	printf("  -s, --start          Start a service\n");
