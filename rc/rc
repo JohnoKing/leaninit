@@ -28,7 +28,7 @@
 GETTY=`grep getty /etc/leaninit/ttys | sed '/#/d'`
 
 # Check all the filesystems in /etc/fstab for damage, and repair them if needed
-echo "Checking all filesystems for data corruption..."
+print "Checking all filesystems for data corruption..." nolog ${LIGHT_PURPLE} ${WHITE}
 DEFLINUX
 fsck -A
 ENDEF
@@ -38,7 +38,8 @@ fsck -F
 ENDEF
 
 # Mount drives and datasets
-echo "Remounting root as read-write..."
+print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
+mount -a
 if [ "$ZFS_ENABLE" = "true" ]; then
 	# Mount everything
 	zfs mount -a
@@ -48,15 +49,16 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 
 	# Turn on writes
 	for z in `zpool list -Ho name`; do
-		echo "Turning readonly off for dataset $z"
+		print "Turning readonly off for dataset $z" nolog ${LIGHT_PURPLE} ${WHITE}
 		zfs readonly=off $z
 	done
 fi
-mount -a
 mount -o remount,rw / 2> /dev/null || true
+print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
 swapon -a
 
 # Remove the nologin file (if there is one)
+print "Removing any existing nologin files..." nolog ${LIGHT_PURPLE} ${WHITE}
 rm -f /run/nologin /var/run/nologin
 
 # Logging
@@ -65,7 +67,7 @@ mv $LOGFILE $LOGFILE.old
 echo "LeanInit is running on `uname -srm`" > $LOGFILE
 
 # sysctl(8)
-print "Loading settings with sysctl..."
+print "Launching sysctl(8)..." log ${LIGHT_BLUE} ${WHITE}
 DEFLINUX
 sysctl --system
 ENDEF
@@ -76,7 +78,7 @@ ENDEF
 
 DEFLINUX
 # Launch eudev (required for the X server to function)
-print "Starting udev..."
+print "Starting udev..." log ${LIGHT_BLUE} ${WHITE}
 udevd --daemon
 udevadm trigger --type=devices
 udevadm trigger --type=subsystems
@@ -85,21 +87,21 @@ ENDEF
 
 DEFBSD
 # Launch devd (vidcontrol -m is required for moused to function)
-print "Starting devd..."
+print "Starting devd..." log ${LIGHT_BLUE} ${WHITE}
 vidcontrol -m on
 fork "devd"
 ENDEF
 
 DEFLINUX
 # Set up network interfaces
-print "Setting up a loopback interface..."
+print "Setting up a loopback interface..." log ${LIGHT_BLUE} ${WHITE}
 ip link set up lo
-print "Setting up $INTERFACE for networking..."
+print "Setting up $INTERFACE for networking..." log ${LIGHT_BLUE} ${WHITE}
 ip link set up $INTERFACE
 
 # Load all modules specified in /etc/modules-load.d
 if [ -d /etc/modules-load.d ]; then
-	print "Loading kernel modules..."
+	print "Loading kernel modules..." log ${LIGHT_BLUE} ${WHITE}
 	for m in `cat /etc/modules-load.d/* | sed '/#/d'`; do
 		modprobe $m
 	done
@@ -108,14 +110,14 @@ ENDEF
 
 # Set the hostname
 if [ "$HOSTNAME" != "" ]; then
-	print "Setting the hostname to $HOSTNAME..."
+	print "Setting the hostname to $HOSTNAME..." log ${LIGHT_BLUE} ${WHITE}
 	fork "hostname $HOSTNAME"
 fi
 
 DEFLINUX
 # Set the keyboard layout (this requires kbd to work)
 if [ "$KEYMAP" != "" ]; then
-	print "Setting the keyboard layout to $KEYMAP..."
+	print "Setting the keyboard layout to $KEYMAP..." log ${LIGHT_BLUE} ${WHITE}
 	fork "loadkeys $KEYMAP"
 fi
 ENDEF
@@ -126,7 +128,7 @@ for sv in `ls /etc/leaninit/svce`; do
 done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys
-print "Launching gettys specified in /etc/leaninit/ttys..."
+print "Launching gettys on all ttys specified in /etc/leaninit/ttys..." log ${LIGHT_BLUE} ${WHITE}
 for tty in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
 	fork "while true; do $GETTY $GETTYMODE $tty; done"
 done

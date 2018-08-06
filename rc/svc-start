@@ -23,32 +23,38 @@
 # svc-start - used internally by rc and lsvc to start services
 #
 
+# Source rc.api
+. /etc/leaninit/rc.api
+
 # Only allow root to run this, with proper arguments
 if [ `id -u` != 0 ] || [ "$1" = "" ]; then
-	echo "This script is only meant for internal use!"
+	print "This script is only meant for internal use!" nolog ${RED} ${LIGHT_RED}
 	exit 1
 fi
 
-# Set up variables
-. /etc/leaninit/rc.api
+# Load the service's script
 . /etc/leaninit/svc/$1
 
 # Do not run if the service is already running
 if [ "$2" != init ] && [ "`psnoawk $DAEMON`" != "" ]; then
-	echo "$NAME is already running"
+	print "$NAME is already running" nolog ${LIGHT_PURPLE} ${YELLOW}
 	exit 0
 fi
 
 # Start $NAME
-print "Starting $NAME..."
+if [ "$2" != "init" ]; then
+	print "Starting $NAME (using lsvc)..." log ${BLUE} ${WHITE}
+else
+	print "Starting $NAME..." log ${LIGHT_BLUE} ${WHITE}
+fi
 main $2
 
 # Return output
 RET=$?
 if [ $RET = 0 ]; then
-	print "Started $NAME successfully"
+	print "Started $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
 else
-	print "ERROR: $NAME failed to start (exited with status $RET)"
+	print "$NAME failed to start (exited with status $RET)" log ${RED} ${LIGHT_RED}
 fi
 
 exit $RET

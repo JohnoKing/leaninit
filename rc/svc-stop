@@ -23,37 +23,44 @@
 # svc-stop - used internally by rc and lsvc to stop services
 #
 
+# Source rc.api
+. /etc/leaninit/rc.api
+
 # Only allow root to run this, with proper arguments
 if [ `id -u` != 0 ] || [ "$1" = "" ]; then
-	echo "This script is only meant for internal use!"
+	print "This script is only meant for internal use!" nolog ${RED} ${LIGHT_RED}
 	exit 1
 fi
 
-# Set up variables
-. /etc/leaninit/rc.api
+# Source the service's script
 . /etc/leaninit/svc/$1
 
 # Do not attempt to run if the service is not running
 if [ "`psnoawk $DAEMON`" = "" ]; then
-	print "$NAME is not running"
+	print "$NAME is not running" nolog ${LIGHT_PURPLE} ${YELLOW}
 	exit 0
 fi
 
 # Stop $NAME
-print "Stopping $NAME..."
+print "Stopping $NAME..." log ${BLUE} ${WHITE}
 kill `psawk $DAEMON`
 
 # Exit with error if the service failed to stop
 RET=$?
 if [ $? != 0 ] && [ "$2" != "f" ]; then
-	print "ERROR: $NAME failed to stop (kill exited with status $RET)"
+	print "$NAME failed to stop (kill exited with status $RET)" log ${RED} ${LIGHT_RED}
 	exit $RET
 fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
-print "Sending $NAME SIGKILL..."
+print "Sending $NAME SIGKILL..." log ${BLUE} ${LIGHT_GRAY}
 kill -s SIGKILL `psawk $DAEMON`
 
 # Finish
-print "Stopped $NAME successfully"
-exit 0
+if [ "`psnoawk $DAEMON`" != "" ]; then
+	print "$NAME failed to stop (did not respond to SIGKILL, may be a zombie process)" log ${RED} ${LIGHT_RED}
+	exit 1
+else
+	print "Stopped $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
+	exit 0
+fi
