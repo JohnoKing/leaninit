@@ -38,10 +38,12 @@ static bool force_svc = false;
 static struct option lsvc_options[] = {
 	{ "disable", required_argument, 0, 'd' },
 	{ "enable",  required_argument, 0, 'e' },
-	{ "force",   required_argument, 0, 'f' },
+	{ "force",   no_argument,       0, 'f' },
+	{ "info",    required_argument, 0, 'i' },
 	{ "restart", required_argument, 0, 'r' },
 	{ "stop",    required_argument, 0, 'q' },
 	{ "start",   required_argument, 0, 's' },
+	{ "status",  required_argument, 0, 'i' },
 	{ "help",    no_argument,       0, '?' },
 };
 
@@ -55,10 +57,11 @@ static int usage(int ret, const char *msg, ...)
 	va_end(vargs);
 
 	// Usage info
-	printf("Usage: %s [-defrqs?] service ...\n", __progname);
+	printf("Usage: %s [-defirqs?] service ...\n", __progname);
 	printf("  -d, --disable        Disable a service\n");
 	printf("  -e, --enable         Enable a service\n");
 	printf("  -f, --force          Force lsvc to do the specified action\n");
+	printf("  -i, --info, --status Shows a service's current status\n");
 	printf("  -r, --restart        Restart a service\n");
 	printf("  -q, --stop           Stop a service\n");
 	printf("  -s, --start          Start a service\n");
@@ -68,7 +71,32 @@ static int usage(int ret, const char *msg, ...)
 	return ret;
 }
 
-// Function which can enable or disable the specified service (svc)
+// Shows the current status of the specified service
+static int status_svc(const char *svc)
+{
+	// Get the path the service's status file
+	char status_path[126] = "/var/log/leaninit/";
+	char status[19];
+	strncat(status_path, svc, 100);
+	strncat(status_path, ".status", 100);
+
+	// Attempt to open the .status file
+	FILE *svc_status = fopen(status_path, "r");
+	if(svc_status == NULL) {
+		printf("There is no status currently for %s\n", svc);
+		return 0;
+	}
+
+	// Get the status of svc
+	fgets(status, 20, svc_status);
+	fclose(svc_status);
+	printf("The current status of %s is: %s", svc, status);
+
+	// Always return 0
+	return 0;
+}
+
+// This function can start, stop, restart, enable and disable LeanInit services
 static int modify_svc(const char *svc, int action)
 {
 	// Exit if the service name is too long
@@ -188,7 +216,7 @@ int main(int argc, char *argv[])
 
 	// Get the arguments
 	int args;
-	while((args = getopt_long(argc, argv, "fd:e:r:q:s:?", lsvc_options, NULL)) != -1) {
+	while((args = getopt_long(argc, argv, "fd:e:i:r:q:s:?", lsvc_options, NULL)) != -1) {
 		switch(args) {
 
 			// Force flag
@@ -204,6 +232,10 @@ int main(int argc, char *argv[])
 			// Enable
 			case 'e':
 				return modify_svc(optarg, ENABLE);
+
+			// Status of a service
+			case 'i':
+				return status_svc(optarg);
 
 			// Restart
 			case 'r':
