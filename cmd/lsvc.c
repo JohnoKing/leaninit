@@ -48,12 +48,12 @@ static struct option lsvc_options[] = {
 };
 
 // Usage info
-static int usage(int ret, const char *msg, ...)
+static int usage(const char *starcolor, const char *textcolor, const char *msg, ...)
 {
 	// Error message
 	va_list vargs;
 	va_start(vargs, msg);
-	printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED);
+	printf(COLOR_BOLD "%s* %s", starcolor, textcolor);
 	vprintf(msg, vargs);
 	printf(COLOR_RESET);
 	va_end(vargs);
@@ -69,8 +69,8 @@ static int usage(int ret, const char *msg, ...)
 	printf("  -s, --start          Start a service\n");
 	printf("  -?, --help           Display this text\n");
 
-	// Return the specified status
-	return ret;
+	// Return 1
+	return 1;
 }
 
 // Shows the current status of the specified service
@@ -78,7 +78,7 @@ static int status_svc(const char *svc)
 {
 	// Exit if the service name is too long
 	if(strlen(svc) > 100)
-		return usage(1, "The service name '%s' is too long!\n", svc);
+		return usage(COLOR_RED, COLOR_LIGHT_RED, "The service name '%s' is too long!\n", svc);
 
 	// Get the path the service's status file
 	char status_path[129] = "/var/log/leaninit/";
@@ -89,7 +89,7 @@ static int status_svc(const char *svc)
 	// Attempt to open the .status file
 	FILE *svc_status = fopen(status_path, "r");
 	if(svc_status == NULL) {
-		printf("* There is no current status for %s\n", svc);
+		printf(COLOR_BOLD COLOR_LIGHT_BLUE"* " COLOR_WHITE "There is no current status for %s\n" COLOR_RESET, svc);
 		return 0;
 	}
 
@@ -107,7 +107,7 @@ static int modify_svc(const char *svc, int action)
 {
 	// Exit if the service name is too long
 	if(strlen(svc) > 100)
-		return usage(1, "The service name '%s' is too long!\n", svc);
+		return usage(COLOR_RED, COLOR_LIGHT_RED, "The service name '%s' is too long!\n", svc);
 
 	// Paths and file descriptors for the service
 	strncat(svcd_path, svc, 100);
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 
 	// Show usage info if given no arguments
 	if(argc == 1)
-		return usage(1, "Too few arguments passed\n");
+		return usage(COLOR_RED, COLOR_LIGHT_RED, "Too few arguments passed\n");
 
 	// Get the arguments
 	int args;
@@ -255,16 +255,12 @@ int main(int argc, char *argv[])
 			case 's':
 				return modify_svc(optarg, START);
 
-			// Show usage (return status is 0)
+			// Show usage
 			case '?':
-				return usage(0, "");
-
-			// Fallback (return status is 1)
-			default:
-				return usage(1, "");
+				return usage(COLOR_LIGHT_BLUE, COLOR_WHITE, "");
 		}
 	}
 
 	// If we got here due to the user not passing a normal argument (e.g. 'h' without a hyphen), exit
-	return usage(1, "You must pass arguments correctly!\n");
+	return usage(COLOR_RED, COLOR_LIGHT_RED, "You must pass arguments correctly!\n");
 }
