@@ -158,7 +158,7 @@ static int single(void)
 			return halt(SIGUSR2); // Abandon to halt()
 		else {
 			fclose(defsh);
-			memcpy(shell, "/bin/sh", 8);
+			memcpy(shell, "/bin/sh", 7);
 		}
 	} else
 		fclose(optsh);
