@@ -147,11 +147,13 @@ for sv in `ls /etc/leaninit/svce`; do
 done
 
 # Wait for all services to finish starting (to prevent their output from clogging up login)
-for sv in `ls /etc/leaninit/svce`; do
-	until [ -r /var/log/leaninit/$sv.status ]; do
-		false
+if [ "$CLEANBOOT" = "true" ]; then
+	for sv in `ls /etc/leaninit/svce`; do
+		until [ -r /var/log/leaninit/$sv.status ]; do
+			false
+		done
 	done
-done
+fi
 
 # Go to finish()
 finish

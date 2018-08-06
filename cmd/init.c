@@ -113,13 +113,15 @@ static void bootrc(void)
 	/*
 	 * This perpetual loop does the following:
 	 *  All zombie processes will be cleaned up using wait(2)
-	 *  Signals such as SIGINT are handled appropriately
+	 *  Signals such as SIGINT are handled using sigaction(2)
 	 */
+	struct sigaction sigact;
+	sigact.sa_handler = sighandle;
 	for(;;) {
 		wait(0);                     // Kill all zombie processes
-		signal(SIGUSR1, sighandle);  // Halt
-		signal(SIGUSR2, sighandle);  // Poweroff
-		signal(SIGINT,  sighandle);  // Reboot
+		sigaction(SIGUSR1, &sigact, (struct sigaction*)NULL);  // Halt
+		sigaction(SIGUSR2, &sigact, (struct sigaction*)NULL);  // Poweroff
+		sigaction(SIGINT,  &sigact, (struct sigaction*)NULL);  // Reboot
 	}
 }
 
