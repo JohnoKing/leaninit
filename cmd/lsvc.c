@@ -53,7 +53,9 @@ static int usage(int ret, const char *msg, ...)
 	// Error message
 	va_list vargs;
 	va_start(vargs, msg);
+	printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED);
 	vprintf(msg, vargs);
+	printf(COLOR_RESET);
 	va_end(vargs);
 
 	// Usage info
@@ -74,6 +76,10 @@ static int usage(int ret, const char *msg, ...)
 // Shows the current status of the specified service
 static int status_svc(const char *svc)
 {
+	// Exit if the service name is too long
+	if(strlen(svc) > 100)
+		return usage(1, "The service name '%s' is too long!\n", svc);
+
 	// Get the path the service's status file
 	char status_path[129] = "/var/log/leaninit/";
 	char status[20];
@@ -90,7 +96,7 @@ static int status_svc(const char *svc)
 	// Get the status of svc
 	fgets(status, 20, svc_status);
 	fclose(svc_status);
-	printf("* The current status of %s is: %s", svc, status);
+	printf(COLOR_BOLD COLOR_LIGHT_BLUE "* " COLOR_WHITE "The current status of %s is:" "%s" COLOR_RESET, svc, status);
 
 	// Always return 0
 	return 0;
@@ -113,10 +119,10 @@ static int modify_svc(const char *svc, int action)
 	if(svc_read == NULL) {
 		if(svce_read != NULL) {
 			fclose(svce_read);
-			printf("* There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d\n", svc);
+			printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d\n" COLOR_RESET, svc);
 			return 1;
 		} else {
-			printf("* %s does not exist\n", svc);
+			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s does not exist\n" COLOR_RESET, svc);
 			return 1;
 		}
 	}
@@ -133,12 +139,12 @@ static int modify_svc(const char *svc, int action)
 				// Enable the service
 				FILE *enable = fopen(svce_path, "a");
 				fclose(enable);
-				printf("* %s has been enabled\n", svc);
+				printf(COLOR_BOLD COLOR_LIGHT_GREEN"* " COLOR_WHITE "%s has been enabled\n" COLOR_RESET, svc);
 				return 0;
 			} else {
 				// The service is already enabled
 				fclose(svce_read);
-				printf("* %s is already enabled\n", svc);
+				printf(COLOR_BOLD COLOR_LIGHT_PURPLE"* " COLOR_YELLOW "%s is already enabled\n" COLOR_RESET, svc);
 				return 0;
 			}
 
@@ -146,23 +152,23 @@ static int modify_svc(const char *svc, int action)
 		case DISABLE:
 			// Return if the service is not enabled
 			if(svce_read == NULL) {
-				printf("* %s is not enabled\n", svc);
+				printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "%s is not enabled\n" COLOR_RESET, svc);
 				return 0;
 			}
 
 			// Remove the file in /etc/leaninit.d/svc.e
 			fclose(svce_read);
 			if(unlink(svce_path) != 0) {
-				printf("* %s could not be disabled due to unlink failing with errno %s\n", svc, strerror(errno));
+				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s could not be disabled due to unlink failing with errno %s\n" COLOR_RESET, svc, strerror(errno));
 				return 1;
 			}
-			printf("* %s has been disabled\n", svc);
+			printf(COLOR_BOLD COLOR_LIGHT_GREEN "* " COLOR_WHITE "%s has been disabled\n", svc);
 			return 0;
 
 		// Start
 		case START:
 			if((svce_read == NULL) && (force_svc != true)) {
-				printf("* %s is not enabled\n", svc);
+				printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "%s is not enabled\n" COLOR_RESET, svc);
 				return 1;
 			} else if(svce_read != NULL)
 				fclose(svce_read);
@@ -173,7 +179,7 @@ static int modify_svc(const char *svc, int action)
 		// Stop
 		case STOP:
 			if((svce_read == NULL) && (force_svc != true)) {
-				printf("* %s is not enabled\n", svc);
+				printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "%s is not enabled\n" COLOR_RESET, svc);
 				return 1;
 			} else if(svce_read != NULL)
 				fclose(svce_read);
@@ -184,7 +190,7 @@ static int modify_svc(const char *svc, int action)
 		// Restart
 		case RESTART:
 			if((svce_read == NULL) && (force_svc != true)) {
-				printf("* %s is not enabled\n", svc);
+				printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "%s is not enabled\n" COLOR_RESET, svc);
 				return 1;
 			} else if(svce_read != NULL)
 				fclose(svce_read);
@@ -206,7 +212,7 @@ int main(int argc, char *argv[])
 {
 	// This must be run as root
 	if(getuid() != 0) {
-		printf("%s\n", strerror(EPERM));
+		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s\n" COLOR_RESET, strerror(EPERM));
 		return 1;
 	}
 

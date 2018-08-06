@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 			switch(args) {
 				case 's':
 					open_tty();
-					printf("Booting into single user mode...\n");
+					printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Booting into single user mode...\n" COLOR_RESET);
 					return single();
 					break;
 			}
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
-		printf("%s\n", strerror(EPERM));
+		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s\n" COLOR_RESET, strerror(EPERM));
 		return 1;
 	}
 
@@ -100,7 +100,7 @@ static void open_tty(void) {
 	// Print to DEFAULT_TTY the current platform LeanInit is running on
 	struct utsname uts;
 	uname(&uts);
-	printf("LeanInit is running on %s %s %s\n", uts.sysname, uts.release, uts.machine);
+	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s\n" COLOR_RESET, uts.sysname, uts.release, uts.machine);
 }
 
 
@@ -147,7 +147,7 @@ static int single(void)
 
 	// Use a shell of the user's choice
 	char shell[100];
-	printf("Shell to use for single user (defaults to /bin/sh)\n");
+	printf("Shell to use for single user (defaults to /bin/sh):\n");
 	scanf("%s", shell);
 
 	// Error checking
