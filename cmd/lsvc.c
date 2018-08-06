@@ -75,10 +75,10 @@ static int usage(int ret, const char *msg, ...)
 static int status_svc(const char *svc)
 {
 	// Get the path the service's status file
-	char status_path[126] = "/var/log/leaninit/";
+	char status_path[129] = "/var/log/leaninit/";
 	char status[19];
 	strncat(status_path, svc, 100);
-	strncat(status_path, ".status", 100);
+	strncat(status_path, ".status", 8);
 
 	// Attempt to open the .status file
 	FILE *svc_status = fopen(status_path, "r");
