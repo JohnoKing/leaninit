@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
 
 	// Show usage info if given no arguments
 	if(argc == 1)
-		return usage(1, "Too few arguments passed\n", __progname);
+		return usage(1, "Too few arguments passed\n");
 
 	// Get the arguments
 	int args;
