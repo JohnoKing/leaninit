@@ -1,4 +1,4 @@
-# /etc/leaninit/ttys
+# /etc/leaninit.d/ttys
 #
 # This file first has the name of the getty program to launch,
 # then lists the ttys to spawn.

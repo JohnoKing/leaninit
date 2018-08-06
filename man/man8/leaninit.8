@@ -22,7 +22,7 @@
 .Dt INIT 8
 .Os
 .Sh NAME
-.Nm linit
+.Nm leaninit
 .Nd a fast init system
 .Sh SYNOPSIS
 .Nm init
@@ -31,7 +31,7 @@
 .Sh DESCRIPTION
 LeanInit is a Research Unix/BSD-style init system developed for Linux and FreeBSD operating systems.
 The executable for LeanInit is named
-.Nm linit
+.Nm leaninit
 on normal installations, and
 .Nm init
 on override installations.
@@ -69,28 +69,28 @@ Reboot
 .Em /etc/rc
 Primary init script for override installations of LeanInit
 
-.Em /etc/leaninit/rc
+.Em /etc/leaninit.d/rc
 Primary init script for normal installations of LeanInit
 
-.Em /etc/leaninit/rc.conf
+.Em /etc/leaninit.d/rc.conf
 Provides config settings for
 .Nm rc(8)
 and LeanInit scripts
 
-.Em /etc/leaninit/rc.api
+.Em /etc/leaninit.d/rc.api
 Provides variables and functions for LeanInit scripts
 
-.Em /etc/leaninit/svc
+.Em /etc/leaninit.d/svc.d
 Folder containing scripts for starting various extra services (such as D-BUS)
 
-.Em /etc/leaninit/svce
+.Em /etc/leaninit.d/svc.e
 Location of svc files created for services enabled by
 .Nm lsvc(8).
 
-.Em /etc/leaninit/svc-start
+.Em /etc/leaninit.d/svc-start
 Internal script which starts services
 
-.Em /etc/leaninit/svc-stop
+.Em /etc/leaninit.d/svc-stop
 Internal script which stops services
 
 .Em /var/log/leaninit/leaninit.log

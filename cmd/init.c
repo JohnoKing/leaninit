@@ -28,7 +28,7 @@
 
 // Location of the init script
 #ifdef COMPAT
-#define RC "/etc/leaninit/rc"
+#define RC "/etc/leaninit.d/rc"
 #else
 #define RC "/etc/rc"
 #endif

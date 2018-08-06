@@ -15,10 +15,10 @@ of the UNIX code at all.
 ## Building and Installing
 ### Linux
 Run `make` and a LeanInit binary compatible with other init systems will
-be built, named `linit`. Running `make install` as root will install
+be built, named `leaninit`. Running `make install` as root will install
 LeanInit, without overriding other init systems.
 
-To boot into LeanInit, add `init=/sbin/linit` to your kernel command
+To boot into LeanInit, add `init=/sbin/leaninit` to your kernel command
 line. Make sure eudev and iproute2 are installed, as they are required on Linux.
 
 ### FreeBSD
@@ -26,7 +26,7 @@ Follow the same steps as on Linux to build LeanInit. The Makefile
 is compatible with both GNU and BSD Make, so you don't need to install
 `gmake` as a seperate build dependency.
 To boot from LeanInit, append the following line to `/boot/loader.conf`:
-`init_path="/sbin/linit"`
+`init_path="/sbin/leaninit"`
 
 ### Override Build
 If you wish, running `make override` and `make override-install` will
@@ -43,10 +43,10 @@ and to disable a service, use `lsvc -d yourservice`. A list of services
 LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).  
 To see extra information on `lsvc`, run `lsvc --help` to see all of the options `lsvc` accepts.
 
-### /etc/leaninit/rc.conf
-`/etc/leaninit/rc.conf` allows you to change your hostname, keyboard layout (Linux), 
+### /etc/leaninit.d/rc.conf
+`/etc/leaninit.d/rc.conf` allows you to change your hostname, keyboard layout (Linux), 
 wireless interface, and other settings.
 
-### /etc/leaninit/ttys
-`/etc/leaninit/ttys` allows you to add and remove the ttys launched on boot,
+### /etc/leaninit.d/ttys
+`/etc/leaninit.d/ttys` allows you to add and remove the ttys launched on boot,
 as well as change the getty program that will be used.

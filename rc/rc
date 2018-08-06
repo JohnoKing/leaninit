@@ -22,16 +22,16 @@
 #
 
 # Source rc.api
-. /etc/leaninit/rc.api
+. /etc/leaninit.d/rc.api
 
 # Set the $GETTY variable
-GETTY=$(grep getty /etc/leaninit/ttys | sed '/#/d')
+GETTY=$(grep getty /etc/leaninit.d/ttys | sed '/#/d')
 
 # Final operations rc does before exiting
 finish() {
-	# Open gettys on the ttys specified in /etc/leaninit/ttys
-	print "Launching gettys on all ttys specified in /etc/leaninit/ttys..." log ${LIGHT_BLUE} ${WHITE}
-	for tty in $(cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'); do
+	# Open gettys on the ttys specified in /etc/leaninit.d/ttys
+	print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${LIGHT_BLUE} ${WHITE}
+	for tty in $(cat /etc/leaninit.d/ttys | sed '/#/d' | sed '/getty/d'); do
 		fork "while true; do $GETTY $GETTYMODE $tty; done"
 	done
 
@@ -137,18 +137,18 @@ fi
 ENDEF
 
 # If there are no services enabled, go to finish()
-if [ "$(ls /etc/leaninit/svce)" = "" ]; then
+if [ "$(ls /etc/leaninit.d/svc.e)" = "" ]; then
 	finish
 fi
 
 # Start the services
-for sv in $(ls /etc/leaninit/svce); do
-	fork "/etc/leaninit/svc-start $sv init"
+for sv in $(ls /etc/leaninit.d/svc.e); do
+	fork "/etc/leaninit.d/svc-start $sv init"
 done
 
 # Wait for all services to finish starting (to prevent their output from clogging up login)
 if [ "$CLEANBOOT" = "true" ]; then
-	for sv in $(ls /etc/leaninit/svce); do
+	for sv in $(ls /etc/leaninit.d/svc.e); do
 		until [ -r /var/log/leaninit/$sv.status ]; do
 			false
 		done

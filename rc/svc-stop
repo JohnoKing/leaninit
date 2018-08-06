@@ -24,7 +24,7 @@
 #
 
 # Source rc.api
-. /etc/leaninit/rc.api
+. /etc/leaninit.d/rc.api
 
 # Only allow root to run this, with proper arguments
 if [ $(id -u) != 0 ] || [ "$1" = "" ]; then
@@ -33,7 +33,7 @@ if [ $(id -u) != 0 ] || [ "$1" = "" ]; then
 fi
 
 # Source the service's script
-. /etc/leaninit/svc/$1
+. /etc/leaninit.d/svc.d/$1
 
 # Do not attempt to run if the service is not running
 if [ "$(psnoawk $DAEMON)" = "" ]; then

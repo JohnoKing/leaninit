@@ -27,8 +27,8 @@
 #include "inc.h"
 
 // Base paths
-static char svc_path[119]  = "/etc/leaninit/svc/";
-static char svce_path[120] = "/etc/leaninit/svce/";
+static char svcd_path[123] = "/etc/leaninit.d/svc.d/";
+static char svce_path[123] = "/etc/leaninit.d/svc.e/";
 
 // Force flag
 static char *force    = "n";
@@ -103,17 +103,17 @@ static int modify_svc(const char *svc, int action)
 	if(strlen(svc) > 100)
 		return usage(1, "The service name '%s' is too long!\n", svc);
 
-	// Paths and file descriptors for the service (svc)
-	strncat(svc_path, svc, 100);
+	// Paths and file descriptors for the service
+	strncat(svcd_path, svc, 100);
 	strncat(svce_path, svc, 100);
-	FILE *svc_read  = fopen(svc_path, "r");
+	FILE *svc_read  = fopen(svcd_path, "r");
 	FILE *svce_read = fopen(svce_path, "r");
 
 	// Make sure the service actually exists
 	if(svc_read == NULL) {
 		if(svce_read != NULL) {
 			fclose(svce_read);
-			printf("There is an error in your configuration, %s appears to exist in /etc/leaninit/svce but not in /etc/leaninit/svc\n", svc);
+			printf("There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d\n", svc);
 			return 1;
 		} else {
 			printf("The service %s does not exist!\n", svc);
@@ -150,7 +150,7 @@ static int modify_svc(const char *svc, int action)
 				return 0;
 			}
 
-			// Remove the file in /etc/leaninit/svce
+			// Remove the file in /etc/leaninit.d/svc.e
 			fclose(svce_read);
 			if(unlink(svce_path) != 0) {
 				printf("The service %s could not be disabled due to unlink failing with errno %s\n", svc, strerror(errno));
@@ -167,7 +167,7 @@ static int modify_svc(const char *svc, int action)
 				fclose(svce_read);
 
 			// Execute svc-start
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", (char*)0);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-start", svc, "lsvc", (char*)0);
 
 		// Stop
 		case STOP:
@@ -177,7 +177,7 @@ static int modify_svc(const char *svc, int action)
 				fclose(svce_read);
 
 			// Execute svc-stop
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, (char*)0);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-stop", svc, force, (char*)0);
 
 		// Restart
 		case RESTART:
@@ -189,11 +189,11 @@ static int modify_svc(const char *svc, int action)
 			// First, stop the service
 			pid_t stop = fork();
 			if(stop == 0)
-				return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-stop", svc, force, (char*)0);
+				return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-stop", svc, force, (char*)0);
 
 			// Then, start it again
 			wait(0);
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit/svc-start", svc, "lsvc", (char*)0);
+			return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-start", svc, "lsvc", (char*)0);
 	}
 
 	return -1;

@@ -25,7 +25,7 @@
 .Nm lsvc
 .Nd service manager for LeanInit
 .Sh SYNOPSIS
-.Nm lsvc [-defrqs?] service
+.Nm lsvc [-defirqs?] service
 .Sh DESCRIPTION
 .Nm LSvc
 is the primary service manager for LeanInit.
@@ -37,7 +37,7 @@ and
 .Nm svc-stop(8)
 scripts, and enables and disables services by creating and deleting
 files in
-.Em /etc/leaninit/svce
+.Em /etc/leaninit.d/svc.e
 .Pp
 .Nm LSvc
 supports the following flags:
@@ -46,13 +46,13 @@ supports the following flags:
 Disables
 .Nm LeanInit
 services by removing the service's file in
-.Em /etc/leaninit/svce
+.Em /etc/leaninit.d/svc.e
 .Pp
 .Nm -e, --enable
 Enables
 .Nm LeanInit
 services by creating files for them in
-.Em /etc/leaninit/svce
+.Em /etc/leaninit.d/svc.e
 .Pp
 .Nm -i, --info, --status
 Displays the current status of the specified service.

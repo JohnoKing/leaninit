@@ -28,7 +28,7 @@
 The
 .Nm rc.api
 script is responsible for reading
-.Em /etc/leaninit/rc.conf,
+.Em /etc/leaninit.d/rc.conf,
 then providing all required
 variables and functions to
 .Nm rc(8), svc-start(8)
@@ -68,7 +68,7 @@ This function will print columns of text containing the current
 pid(s) and process names of the specified program,
 or nothing if the program is not running.
 .Sh FILES
-.Em /etc/leaninit/rc.conf
+.Em /etc/leaninit.d/rc.conf
 Provides config settings for
 .Nm rc(8)
 and

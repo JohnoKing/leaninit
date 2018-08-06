@@ -24,7 +24,7 @@
 #
 
 # Source rc.api
-. /etc/leaninit/rc.api
+. /etc/leaninit.d/rc.api
 
 # Only allow root to run this, with proper arguments
 if [ "$2" != "init" ] && [ "$2" != "lsvc" ]; then
@@ -33,7 +33,7 @@ if [ "$2" != "init" ] && [ "$2" != "lsvc" ]; then
 fi
 
 # Load the service's script
-. /etc/leaninit/svc/$1
+. /etc/leaninit.d/svc.d/$1
 
 # Do not run if the service is already running
 if [ "$2" != "init" ] && [ "$(psnoawk $DAEMON)" != "" ]; then
