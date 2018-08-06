@@ -108,6 +108,6 @@ int main(int argc, char *argv[])
 		closelog();
 	}
 
-	// Send the correct sygnal to init
+	// Send the correct signal to init
 	return kill(1, signal);
 }
