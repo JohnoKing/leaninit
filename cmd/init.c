@@ -132,7 +132,6 @@ static void bootrc(void)
 	actor.sa_handler = sighandle;
 	sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
 	sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
-	sigaction(SIGTERM, &actor, (struct sigaction*)NULL);  // Single user
 	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
 
 	// This perpetual loop kills all zombie processes
@@ -184,10 +183,6 @@ static int halt(int signal)
 	// Synchronize the filesystems
 	sync();
 
-	// Go to single user if given SIGTERM
-	if(signal == SIGTERM)
-		return single();
-
 	// Remount root as read-only and unmount other filesystems
 	cmd("mount -o remount,ro /");
 	cmd("umount -a");
@@ -219,6 +214,6 @@ static void cmd(const char *cmd)
 // Handle signals given to init
 static void sighandle(int signal)
 {
-	if(signal == SIGUSR1 || signal == SIGUSR2 || signal == SIGTERM || signal == SIGINT)
+	if(signal == SIGUSR1 || signal == SIGUSR2 || signal == SIGINT)
 		halt(signal);
 }
