@@ -1,10 +1,9 @@
-# HALD (this service file is intended for FreeBSD with devd)
+# HALD
 NAME="HALD"
 DAEMON=hald
 
 # The main function
 main() {
-	waitforinit hald devd $1
 	waitforinit dbus dbus-daemon $1
 	hald --daemon=yes --use-syslog
 }
