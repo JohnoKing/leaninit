@@ -74,17 +74,8 @@ static int halt(int signal)
 // Handle signals given to init
 static void sighandle(int signal)
 {
-	switch(signal) {
-		case SIGUSR1:       // Halt
-			halt(SIGUSR1);
-			break;
-		case SIGUSR2:       // Power-off
-			halt(SIGUSR2);
-			break;
-		case SIGINT:        // Reboot
-			halt(SIGINT);
-			break;
-	}
+	if(signal == SIGUSR1 || signal == SIGUSR2 || signal == SIGINT)
+		halt(signal);
 }
 
 /*
@@ -110,18 +101,17 @@ static void bootrc(void)
 	if(shrc == 0)
 		execl("/bin/sh", "/bin/sh", RC, (char*)0);
 
-	/*
-	 * This perpetual loop does the following:
-	 *  All zombie processes will be cleaned up using wait(2)
-	 *  Signals such as SIGINT are handled using sigaction(2)
-	 */
-	struct sigaction sigact;
-	sigact.sa_handler = sighandle;
+	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
+	struct sigaction actor;
+	memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
+	actor.sa_handler = sighandle;
+	sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
+	sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
+	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
+
+	// This perpetual loop kills all zombie processes
 	for(;;) {
 		wait(0);                     // Kill all zombie processes
-		sigaction(SIGUSR1, &sigact, (struct sigaction*)NULL);  // Halt
-		sigaction(SIGUSR2, &sigact, (struct sigaction*)NULL);  // Poweroff
-		sigaction(SIGINT,  &sigact, (struct sigaction*)NULL);  // Reboot
 	}
 }
 
