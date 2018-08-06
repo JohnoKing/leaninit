@@ -76,7 +76,7 @@ static int status_svc(const char *svc)
 {
 	// Get the path the service's status file
 	char status_path[129] = "/var/log/leaninit/";
-	char status[19];
+	char status[20];
 	strncat(status_path, svc, 100);
 	strncat(status_path, ".status", 8);
 
