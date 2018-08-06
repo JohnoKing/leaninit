@@ -28,8 +28,7 @@
 .Nm lsvc [-defrqs?] service
 .Sh DESCRIPTION
 .Nm LSvc
-is the primary service manager for LeanInit. It can be used to start,
-stop, restart, enable and disable services.
+is the primary service manager for LeanInit.
 .Pp
 .Nm LSvc
 starts, stops and restarts services using the
@@ -37,7 +36,7 @@ starts, stops and restarts services using the
 and
 .Nm svc-stop(8)
 scripts, and enables and disables services by creating and deleting
-hardlinks in
+files in
 .Em /etc/leaninit/svce
 .Pp
 .Nm LSvc
@@ -56,6 +55,9 @@ services by creating hardlinks in
 .Em /etc/leaninit/svce
 to the service's file in
 .Em /etc/leaninit/svc
+.Pp
+.Nm -i, --info, --status
+Displays the current status of the specified service.
 .Pp
 .Nm -f, --force
 Allows --start to start services that aren't enabled and the

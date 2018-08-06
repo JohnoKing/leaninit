@@ -130,16 +130,13 @@ static int modify_svc(const char *svc, int action)
 		// Enable
 		case ENABLE:
 			if(svce_read == NULL) {
-				// Make the hardlink (with error checking)
-				if(link(svc_path, svce_path) != 0) {
-					printf("The service %s could not be enabled due to the hardlink failing with errno %s\n", svc, strerror(errno));
-					return 1;
-				}
-
-				// Cleanup
+				// Enable the service
+				FILE *enable = fopen(svce_path, "a");
+				fclose(enable);
 				printf("The service %s has been enabled.\n", svc);
 				return 0;
 			} else {
+				// The service is already enabled
 				fclose(svce_read);
 				printf("The service %s is already enabled.\n", svc);
 				return 0;
@@ -147,18 +144,18 @@ static int modify_svc(const char *svc, int action)
 
 		// Disable
 		case DISABLE:
+			// Return if the service is not enabled
 			if(svce_read == NULL) {
 				printf("The service %s is not enabled.\n", svc);
 				return 0;
 			}
 
-			// Remove the hardlink (which disables the service), then exit
+			// Remove the file in /etc/leaninit/svce
 			fclose(svce_read);
-			if(unlink(svce_path) !=  0) {
+			if(unlink(svce_path) != 0) {
 				printf("The service %s could not be disabled due to unlink failing with errno %s\n", svc, strerror(errno));
 				return 1;
 			}
-
 			printf("The service %s has been disabled.\n", svc);
 			return 0;
 
