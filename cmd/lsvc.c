@@ -83,14 +83,14 @@ static int status_svc(const char *svc)
 	// Attempt to open the .status file
 	FILE *svc_status = fopen(status_path, "r");
 	if(svc_status == NULL) {
-		printf("There is no current status for %s\n", svc);
+		printf("* There is no current status for %s\n", svc);
 		return 0;
 	}
 
 	// Get the status of svc
 	fgets(status, 20, svc_status);
 	fclose(svc_status);
-	printf("The current status of %s is: %s", svc, status);
+	printf("* The current status of %s is: %s", svc, status);
 
 	// Always return 0
 	return 0;
@@ -113,10 +113,10 @@ static int modify_svc(const char *svc, int action)
 	if(svc_read == NULL) {
 		if(svce_read != NULL) {
 			fclose(svce_read);
-			printf("There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d\n", svc);
+			printf("* There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d\n", svc);
 			return 1;
 		} else {
-			printf("The service %s does not exist!\n", svc);
+			printf("* %s does not exist\n", svc);
 			return 1;
 		}
 	}
@@ -133,12 +133,12 @@ static int modify_svc(const char *svc, int action)
 				// Enable the service
 				FILE *enable = fopen(svce_path, "a");
 				fclose(enable);
-				printf("The service %s has been enabled.\n", svc);
+				printf("* %s has been enabled\n", svc);
 				return 0;
 			} else {
 				// The service is already enabled
 				fclose(svce_read);
-				printf("The service %s is already enabled.\n", svc);
+				printf("* %s is already enabled\n", svc);
 				return 0;
 			}
 
@@ -146,24 +146,25 @@ static int modify_svc(const char *svc, int action)
 		case DISABLE:
 			// Return if the service is not enabled
 			if(svce_read == NULL) {
-				printf("The service %s is not enabled.\n", svc);
+				printf("* %s is not enabled\n", svc);
 				return 0;
 			}
 
 			// Remove the file in /etc/leaninit.d/svc.e
 			fclose(svce_read);
 			if(unlink(svce_path) != 0) {
-				printf("The service %s could not be disabled due to unlink failing with errno %s\n", svc, strerror(errno));
+				printf("* %s could not be disabled due to unlink failing with errno %s\n", svc, strerror(errno));
 				return 1;
 			}
-			printf("The service %s has been disabled.\n", svc);
+			printf("* %s has been disabled\n", svc);
 			return 0;
 
 		// Start
 		case START:
-			if((svce_read == NULL) && (force_svc != true))
-				return usage(1, "The service %s is not enabled.\n", svc);
-			else if(svce_read != NULL)
+			if((svce_read == NULL) && (force_svc != true)) {
+				printf("* %s is not enabled\n", svc);
+				return 1;
+			} else if(svce_read != NULL)
 				fclose(svce_read);
 
 			// Execute svc-start
@@ -171,9 +172,10 @@ static int modify_svc(const char *svc, int action)
 
 		// Stop
 		case STOP:
-			if((svce_read == NULL) && (force_svc != true))
-				return usage(1, "The service %s is not enabled.\n", svc);
-			else if(svce_read != NULL)
+			if((svce_read == NULL) && (force_svc != true)) {
+				printf("* %s is not enabled\n", svc);
+				return 1;
+			} else if(svce_read != NULL)
 				fclose(svce_read);
 
 			// Execute svc-stop
@@ -181,9 +183,10 @@ static int modify_svc(const char *svc, int action)
 
 		// Restart
 		case RESTART:
-			if((svce_read == NULL) && (force_svc != true))
-				return usage(1, "The service %s is not enabled.\n", svc);
-			else if(svce_read != NULL)
+			if((svce_read == NULL) && (force_svc != true)) {
+				printf("* %s is not enabled\n", svc);
+				return 1;
+			} else if(svce_read != NULL)
 				fclose(svce_read);
 
 			// First, stop the service
@@ -209,7 +212,7 @@ int main(int argc, char *argv[])
 
 	// Show usage info if given no arguments
 	if(argc == 1)
-		return usage(1, "Too few arguments passed to %s!\n", __progname);
+		return usage(1, "Too few arguments passed\n", __progname);
 
 	// Get the arguments
 	int args;
@@ -257,5 +260,5 @@ int main(int argc, char *argv[])
 	}
 
 	// If we got here due to the user not passing a normal argument (e.g. 'h' without a hyphen), exit
-	return usage(1, "You must pass arguments to %s correctly!\n", __progname);
+	return usage(1, "You must pass arguments correctly!\n");
 }
