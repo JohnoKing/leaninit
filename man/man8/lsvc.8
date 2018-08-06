@@ -45,16 +45,14 @@ supports the following flags:
 .Nm -d, --disable
 Disables
 .Nm LeanInit
-services by removing the service's hardlink in
+services by removing the service's file in
 .Em /etc/leaninit/svce
 .Pp
 .Nm -e, --enable
 Enables
 .Nm LeanInit
-services by creating hardlinks in
+services by creating files for them in
 .Em /etc/leaninit/svce
-to the service's file in
-.Em /etc/leaninit/svc
 .Pp
 .Nm -i, --info, --status
 Displays the current status of the specified service.
