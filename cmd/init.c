@@ -87,12 +87,14 @@ static void sighandle(int signal)
 	}
 }
 
-/* Execute the init script in a seperate process.
+/*
+ * Execute the init script in a seperate process.
  * Only run if init is PID 1
  */
 static void bootrc(void)
 {
-	/* Open up the tty (eliminates the need for '> /dev/tty')
+	/*
+	 * Open up the tty (eliminates the need for '> /dev/tty')
 	 * close(2) should not be run, at least on FreeBSD.
 	 */
 	int tty = open(DEFAULT_TTY, O_RDWR);
