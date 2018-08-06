@@ -25,13 +25,13 @@
 . /etc/leaninit/rc.api
 
 # Set the $GETTY variable
-GETTY=`grep getty /etc/leaninit/ttys | sed '/#/d'`
+GETTY=$(grep getty /etc/leaninit/ttys | sed '/#/d')
 
 # Final operations rc does before exiting
 finish() {
 	# Open gettys on the ttys specified in /etc/leaninit/ttys
 	print "Launching gettys on all ttys specified in /etc/leaninit/ttys..." log ${LIGHT_BLUE} ${WHITE}
-	for tty in `cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'`; do
+	for tty in $(cat /etc/leaninit/ttys | sed '/#/d' | sed '/getty/d'); do
 		fork "while true; do $GETTY $GETTYMODE $tty; done"
 	done
 
@@ -60,7 +60,7 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs share -a
 
 	# Turn on writes
-	for z in `zpool list -Ho name`; do
+	for z in $(zpool list -Ho name); do
 		print "Turning readonly off for dataset $z" nolog ${LIGHT_PURPLE} ${WHITE}
 		zfs readonly=off $z
 	done
@@ -78,7 +78,7 @@ rm -f /var/log/leaninit/*.status
 # Logging
 touch $LOGFILE
 mv $LOGFILE $LOGFILE.old
-echo "LeanInit is running on `uname -srm`" > $LOGFILE
+echo "LeanInit is running on $(uname -srm)" > $LOGFILE
 
 # sysctl(8)
 print "Launching sysctl(8)..." log ${LIGHT_BLUE} ${WHITE}
@@ -116,7 +116,7 @@ ip link set up $INTERFACE
 # Load all modules specified in /etc/modules-load.d
 if [ -d /etc/modules-load.d ]; then
 	print "Loading kernel modules..." log ${LIGHT_BLUE} ${WHITE}
-	for m in `cat /etc/modules-load.d/* | sed '/#/d'`; do
+	for m in $(cat /etc/modules-load.d/* | sed '/#/d'); do
 		modprobe $m
 	done
 fi
@@ -137,18 +137,18 @@ fi
 ENDEF
 
 # If there are no services enabled, go to finish()
-if [ "`ls /etc/leaninit/svce`" = "" ]; then
+if [ "$(ls /etc/leaninit/svce)" = "" ]; then
 	finish
 fi
 
 # Start the services
-for sv in `ls /etc/leaninit/svce`; do
+for sv in $(ls /etc/leaninit/svce); do
 	fork "/etc/leaninit/svc-start $sv init"
 done
 
 # Wait for all services to finish starting (to prevent their output from clogging up login)
 if [ "$CLEANBOOT" = "true" ]; then
-	for sv in `ls /etc/leaninit/svce`; do
+	for sv in $(ls /etc/leaninit/svce); do
 		until [ -r /var/log/leaninit/$sv.status ]; do
 			false
 		done

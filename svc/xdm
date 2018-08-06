@@ -5,12 +5,12 @@ DAEMON=Xorg
 
 # The main function
 main() {
-	if [ "$DM" = "" ] || [ ! -x "`command -v $DM`" ]; then
+	if [ "$DM" = "" ] || [ ! -x "$(command -v $DM)" ]; then
 		echo 'The xdm service failed to start due to $DM being invalid!'
 		return 1
 	fi
 	waitforinit dbus dbus-daemon $1
-	until [ "`psnoawk $DAEMON`" != "" ]; do
+	until [ "$(psnoawk $DAEMON)" != "" ]; do
 		fork "$DM"
 		sleep 1
 	done

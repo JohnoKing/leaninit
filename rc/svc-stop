@@ -27,7 +27,7 @@
 . /etc/leaninit/rc.api
 
 # Only allow root to run this, with proper arguments
-if [ `id -u` != 0 ] || [ "$1" = "" ]; then
+if [ $(id -u) != 0 ] || [ "$1" = "" ]; then
 	print "This script is only meant for internal use!" nolog ${RED} ${LIGHT_RED}
 	exit 1
 fi
@@ -36,14 +36,14 @@ fi
 . /etc/leaninit/svc/$1
 
 # Do not attempt to run if the service is not running
-if [ "`psnoawk $DAEMON`" = "" ]; then
+if [ "$(psnoawk $DAEMON)" = "" ]; then
 	print "$NAME is not running" nolog ${LIGHT_PURPLE} ${YELLOW}
 	exit 0
 fi
 
 # Stop $NAME
 print "Stopping $NAME..." log ${BLUE} ${WHITE}
-kill `psawk $DAEMON`
+kill $(psawk $DAEMON)
 
 # Exit with error if the service failed to stop
 RET=$?
@@ -54,10 +54,10 @@ fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
 print "Sending $NAME SIGKILL..." log ${BLUE} ${LIGHT_GRAY}
-kill -s SIGKILL `psawk $DAEMON`
+kill -s SIGKILL $(psawk $DAEMON)
 
 # Finish
-if [ "`psnoawk $DAEMON`" != "" ]; then
+if [ "$(psnoawk $DAEMON)" != "" ]; then
 	print "$NAME failed to stop (did not respond to SIGKILL, may be a zombie process)" log ${RED} ${LIGHT_RED}
 	echo "Zombie" > /var/log/leaninit/$1.status
 	exit 1

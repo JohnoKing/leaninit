@@ -42,7 +42,7 @@ psnoawk() {
 # Wait for another service if it is enabled
 waitforinit() {
 	if [ -r /etc/leaninit/svce/$1 ] && [ "$3" = init ]; then
-		until [ "`psnoawk $2`" != "" ]; do
+		until [ "$(psnoawk $2)" != "" ]; do
 			sleep 1
 		done
 	fi

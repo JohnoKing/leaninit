@@ -9,5 +9,5 @@ main() {
 	sleep 1
 
 	# sshd must be executed with the full path to the executable
-	command `command -v sshd`
+	command $(command -v sshd)
 }
