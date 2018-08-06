@@ -28,6 +28,7 @@
 
 // Long options for halt
 static struct option halt_long_options[] = {
+	{ "force",       no_argument, 0, 'f' },
 	{ "no-wall",     no_argument, 0, 'l' },
 	{ "help",        no_argument, 0, '?' },
 };
@@ -35,7 +36,8 @@ static struct option halt_long_options[] = {
 // Shows usage for halt(8)
 static int usage(int ret)
 {
-	printf("Usage: %s [-l?]\n", __progname);
+	printf("Usage: %s [-fl?]\n", __progname);
+	printf("  -f, --force            Do not send a signal to init, just shutdown\n");
 	printf("  -l, --no-wall          Turn off wall messages\n");
 	printf("  -?, --help             Show this usage information\n");
 	return ret;
@@ -50,8 +52,9 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	bool wall = true; // For syslog(3)
-	int signal;       // For signals to init
+	bool force = false; // Skip sending a signal to init
+	bool wall  = true;  // For syslog(3)
+	int signal;         // For signals to init
 
 	// Halt
 	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0)
@@ -82,12 +85,17 @@ int main(int argc, char *argv[])
 
 		// Parse the given options
 		int args;
-		while((args = getopt_long(argc, argv, "l?", halt_long_options, NULL)) != -1) {
+		while((args = getopt_long(argc, argv, "fl?", halt_long_options, NULL)) != -1) {
 			switch(args) {
 
 				// Display usage with a return status of 0
 				case '?':
 					return usage(0);
+
+				// Force flag
+				case 'f':
+					force = true;
+					break;
 
 				// Turn off wall messages
 				case 'l':
@@ -106,6 +114,22 @@ int main(int argc, char *argv[])
 		openlog(__progname, LOG_CONS, LOG_AUTH);
 		syslog(LOG_CRIT, "The system is going down NOW!");
 		closelog();
+	}
+
+	// Skip init if force is true
+	if(force == true) {
+		sync() // Always call sync(2)
+
+		switch(signal) {
+			case SIGUSR1: // Halt
+				return reboot(SYS_HALT);
+
+			case SIGUSR2: // Poweroff
+				return reboot(SYS_POWEROFF);
+
+			case SIGINT:  // Reboot
+				return reboot(RB_AUTOBOOT);
+		}
 	}
 
 	// Send the correct signal to init

@@ -26,7 +26,7 @@
 .Nd halt, poweroff or reboot
 .Sh SYNOPSIS
 .Nm halt
-.Op Fl l?
+.Op Fl fl?
 .Sh DESCRIPTION
 .Nm Halt
 will poweroff, reboot or halt the system when executed by sending the correct signal to init.
@@ -39,10 +39,17 @@ on Linux.
 .Pp
 Halt accepts the following flags:
 .Pp
+.Nm -f, --force
+Do not send a signal to
+.Nm init(8),
+call
+.Nm reboot(2)
+directly instead.
+.Pp
 .Nm -l, --no-wall
 Do not send a message using
 .Nm syslog(3)
-before rebooting
+before rebooting.
 .Pp
 .Nm -?, --help
 Display usage information for
