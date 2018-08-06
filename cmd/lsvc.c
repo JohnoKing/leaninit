@@ -83,7 +83,7 @@ static int status_svc(const char *svc)
 	// Attempt to open the .status file
 	FILE *svc_status = fopen(status_path, "r");
 	if(svc_status == NULL) {
-		printf("There is no status currently for %s\n", svc);
+		printf("There is no current status for %s\n", svc);
 		return 0;
 	}
 
