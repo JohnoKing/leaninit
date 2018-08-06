@@ -32,11 +32,11 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
 # Simplify usage of ps(1)
 psawk() {
-	ps -Ao pid,comm | grep " $1" | awk '{print $1}'
+	ps -Ao pid,comm | sed 's/$/~/g' | grep " $1~" | awk '{print $1}'
 }
 
 psnoawk() {
-	ps -Ao pid,comm | grep " $1"
+	ps -Ao pid,comm | sed 's/$/~/g' | grep " $1~"
 }
 
 # Send output to the log as well as stdout
