@@ -53,7 +53,7 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	done
 fi
 mount -a
-mount -o remount,rw / || true
+mount -o remount,rw / 2> /dev/null || true
 swapon -a
 
 # Remove the nologin file (if there is one)

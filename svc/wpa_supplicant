@@ -5,6 +5,6 @@ DAEMON=wpa_supplicant
 # Launch wpa_supplicant
 main() {
 	waitforinit wpa_supplicant wpa_supplicant $1
-	kill -s SIGKILL `psawk wpa_supplicant`
+	kill -s SIGKILL `psawk wpa_supplicant` 2> /dev/null || true
 	wpa_supplicant -s -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf
 }
