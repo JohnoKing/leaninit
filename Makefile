@@ -67,7 +67,7 @@ base: clean
 
 # Used by both install and override-install
 install-base:
-	if [ ! -d out ]; then echo 'Please run `make` first!'; false; fi
+	if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
 	mkdir -p  $(DESTDIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
 	cp -r man $(DESTDIR)/usr/share
@@ -87,7 +87,7 @@ install-base:
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || link lhalt.8 lzzz.8; fi
 
 # Install LeanInit (compatible with other init systems)
-install: all install-base
+install: install-base
 	$(INSTALL) -Dm0755 out/linit out/lhalt out/lsvc $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/sbin && ln -sf lhalt lpoweroff
@@ -95,7 +95,7 @@ install: all install-base
 	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf lhalt lzzz; fi
 
 # Install LeanInit without regard for other init systems
-override-install: override install-base
+override-install: install-base
 	cd $(DESTDIR)/usr/share/man/man5 ;\
 	link lrc.conf.5 rc.conf.5
 	cd $(DESTDIR)/usr/share/man/man8 ;\
