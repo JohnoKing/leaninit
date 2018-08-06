@@ -45,7 +45,7 @@ will start services by calling
 .Nm svc-start(8).
 .Nm RC
 will log the output from booting the system to
-.Em /var/log/leaninit.log
+.Em /var/log/leaninit/leaninit.log
 by default.
 .Sh FILES
 .Em /etc/leaninit/rc.api
@@ -62,7 +62,7 @@ services
 .Em /etc/leaninit/svc-start
 Internal script which starts services
 
-.Em /var/log/leaninit.log
+.Em /var/log/leaninit/leaninit.log
 Default log file for LeanInit
 .Sh SEE ALSO
 rc(8), rc.conf(5), rc.api(8), lttys(5), svc-start(8), fork(1)

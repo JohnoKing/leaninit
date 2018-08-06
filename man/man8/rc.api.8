@@ -46,10 +46,10 @@ then source
 .Em /etc/profile
 
 .Nm print
-This function prints output to
+This function prints formatted output to
 .Em /dev/stdout
 and
-.Em /var/log/leaninit.log
+.Em /var/log/leaninit/leaninit.log
 
 .Nm waitforinit
 This function allows scripts to have basic dependency management,
@@ -58,6 +58,14 @@ It will only run if
 .Em $4
 is set to init (which prevents this function from running when
 manually starting services).
+
+.Nm psawk
+This function will return the pid(s) of the specified process
+(or nothing if the process could not be found).
+
+.Nm psnoawk
+This function will columns of text if the specified process is running,
+or nothing if the process wasn't found.
 .Sh FILES
 .Em /etc/leaninit/rc.conf
 Provides variables and functions for

@@ -68,7 +68,7 @@ base: clean
 # Used by both install and override-install
 install-base:
 	if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
-	mkdir -p  $(DESTDIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit
+	mkdir -p  $(DESTDIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svce $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log/leaninit
 	cp -r svc $(DESTDIR)/etc/leaninit
 	cp -r man $(DESTDIR)/usr/share
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
@@ -123,7 +123,7 @@ uninstall:
 	fi
 	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!"
 	rm -rf $(DESTDIR)/sbin/linit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/usr/share/licenses/leaninit \
-		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/usr/bin/fork $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log* $(MANPAGES)
+		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/usr/bin/fork $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit $(MANPAGES)
 
 # Clean the directory
 clean:
