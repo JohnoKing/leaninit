@@ -57,9 +57,11 @@ mount -o remount,rw / 2> /dev/null || true
 print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
 swapon -a
 
-# Remove the nologin file (if there is one)
+# Remove the nologin and .status files
 print "Removing any existing nologin files..." nolog ${LIGHT_PURPLE} ${WHITE}
 rm -f /run/nologin /var/run/nologin
+print "Removing all .status files in /var/log/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
+rm -f /var/log/leaninit/*.status
 
 # Logging
 touch $LOGFILE
@@ -125,6 +127,13 @@ ENDEF
 # Start the services
 for sv in `ls /etc/leaninit/svce`; do
 	fork "/etc/leaninit/svc-start $sv init"
+done
+
+# Wait for all services to finish starting (to prevent their output from clogging up login)
+for sv in `ls /etc/leaninit/svce`; do
+	until [ -r /var/log/leaninit/$sv.status ]; do
+		false
+	done
 done
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys

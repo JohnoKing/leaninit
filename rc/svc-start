@@ -27,7 +27,7 @@
 . /etc/leaninit/rc.api
 
 # Only allow root to run this, with proper arguments
-if [ `id -u` != 0 ] || [ "$1" = "" ]; then
+if [ "$2" != "init" ] && [ "$2" != "lsvc" ]; then
 	print "This script is only meant for internal use!" nolog ${RED} ${LIGHT_RED}
 	exit 1
 fi
@@ -36,7 +36,7 @@ fi
 . /etc/leaninit/svc/$1
 
 # Do not run if the service is already running
-if [ "$2" != init ] && [ "`psnoawk $DAEMON`" != "" ]; then
+if [ "$2" != "init" ] && [ "`psnoawk $DAEMON`" != "" ]; then
 	print "$NAME is already running" nolog ${LIGHT_PURPLE} ${YELLOW}
 	exit 0
 fi
@@ -53,8 +53,10 @@ main $2
 RET=$?
 if [ $RET = 0 ]; then
 	print "Started $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
+	echo "Success" > /var/log/leaninit/$1.status
 else
 	print "$NAME failed to start (exited with status $RET)" log ${RED} ${LIGHT_RED}
+	echo "Failure" > /var/log/leaninit/$1.status
 fi
 
 exit $RET
