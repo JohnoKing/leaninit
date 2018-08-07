@@ -36,14 +36,14 @@ fi
 . /etc/leaninit.d/svc.d/$1
 
 # Do not attempt to run if the service is not running
-if [ "$(psnoawk $DAEMON)" = "" ]; then
+if [ "$(pgrep -x $DAEMON)" = "" ]; then
 	print "$NAME is not running" nolog ${LIGHT_PURPLE} ${YELLOW}
 	exit 0
 fi
 
 # Stop $NAME
 print "Stopping $NAME..." log ${BLUE} ${WHITE}
-kill $(psawk $DAEMON)
+kill $(pgrep -x $DAEMON)
 
 # Exit with error if the service failed to stop
 RET=$?
@@ -57,11 +57,11 @@ fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
 print "Sending $NAME SIGKILL..." log ${BLUE} ${LIGHT_GRAY}
-kill -s SIGKILL $(psawk $DAEMON)
+pkill -KILL -x $DAEMON
 
 # Finish
 sleep 0.5
-if [ "$(psnoawk $DAEMON)" != "" ]; then
+if [ "$(pgrep -x $DAEMON)" != "" ]; then
 	print "$NAME failed to stop (did not respond to SIGKILL, may be a zombie process)" log ${RED} ${LIGHT_RED}
 	echo "Zombie" > /var/log/leaninit/$1.status
 	exit 1
