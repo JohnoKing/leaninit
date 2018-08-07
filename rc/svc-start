@@ -53,10 +53,10 @@ main $2
 RET=$?
 if [ $RET = 0 ]; then
 	print "Started $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
-	echo "Started" > /var/log/leaninit/$1.status
+	echo "Started" > /var/run/leaninit/$1.status
 else
 	print "$NAME failed to start (exited with status $RET)" log ${RED} ${LIGHT_RED}
-	echo "Failure" > /var/log/leaninit/$1.status
+	echo "Failure" > /var/run/leaninit/$1.status
 fi
 
 exit $RET

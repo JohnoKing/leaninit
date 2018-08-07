@@ -76,7 +76,7 @@ swapon -a
 print "Removing any existing nologin files..." nolog ${LIGHT_PURPLE} ${WHITE}
 rm -f /run/nologin /var/run/nologin
 print "Removing all .status files in /var/log/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
-rm -f /var/log/leaninit/*.status
+rm -f /var/run/leaninit/*.status
 
 # Logging
 touch $LOGFILE
@@ -152,7 +152,7 @@ done
 # Wait for all services to finish starting before launching gettys
 if [ "$CLEANBOOT" = "true" ]; then
 	for sv in $(ls /etc/leaninit.d/svc.e); do
-		until [ -r /var/log/leaninit/$sv.status ]; do
+		until [ -r /var/run/leaninit/$sv.status ]; do
 			false
 		done
 	done

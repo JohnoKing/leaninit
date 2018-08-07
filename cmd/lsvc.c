@@ -79,7 +79,7 @@ static void status_svc(const char *svc)
 		usage("The service name '%s' is too long!", svc);
 
 	// Get the path the service's status file
-	char status_path[129] = "/var/log/leaninit/";
+	char status_path[129] = "/var/run/leaninit/";
 	char status[20];
 	strncat(status_path, svc, 100);
 	strncat(status_path, ".status", 8);

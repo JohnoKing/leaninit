@@ -59,7 +59,7 @@ all: clean
 # Install LeanInit (compatible with other init systems)
 install:
 	if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
-	mkdir -p  $(DESTDIR)/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit.d/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log/leaninit
+	mkdir -p  $(DESTDIR)/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit.d/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log/leaninit $(DESTDIR)/var/run/leaninit
 	cp -r svc.d $(DESTDIR)/etc/leaninit.d
 	cp -r man $(DESTDIR)/usr/share
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
@@ -93,7 +93,7 @@ uninstall:
 	fi
 	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!"
 	rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/usr/share/licenses/leaninit \
-		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/bin/fork $(DESTDIR)/etc/leaninit.d $(DESTDIR)/var/log/leaninit $(MANPAGES)
+		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lsvc $(DESTDIR)/bin/fork $(DESTDIR)/etc/leaninit.d $(DESTDIR)/var/log/leaninit $(DESTDIR)/var/run/leaninit $(MANPAGES)
 
 # Clean the directory
 clean:
