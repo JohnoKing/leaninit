@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 		while((args = getopt(argc, argv, "s")) != -1) {
 			switch(args) {
 				case 's':
-					return single("Booting into single user mode...\n");
+					return single("Booting into single user mode...");
 			}
 		}
 
