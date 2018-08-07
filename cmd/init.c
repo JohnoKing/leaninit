@@ -47,16 +47,15 @@ int main(int argc, char *argv[])
 {
 	// PID 1
 	if(getpid() == 1) {
+		// Open DEFAULT_TTY
+		open_tty();
 
 		// Single user support
 		int args;
 		while((args = getopt(argc, argv, "s")) != -1) {
 			switch(args) {
 				case 's':
-					open_tty();
-					printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Booting into single user mode...\n" COLOR_RESET);
-					return single();
-					break;
+					return single("Booting into single user mode...\n");
 			}
 		}
 
@@ -101,6 +100,9 @@ static void open_tty(void) {
 	struct utsname uts;
 	uname(&uts);
 	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s\n" COLOR_RESET, uts.sysname, uts.release, uts.machine);
+
+	// Login as root
+	setlogin("root");
 }
 
 
@@ -115,13 +117,9 @@ static int usage(void)
 	return 1;
 }
 
-// Execute the init script in a seperate process.
+// Execute rc(8) in a seperate process.
 static void bootrc(void)
 {
-	// Run open_tty() first
-	open_tty();
-
-	// Now execute rc(8)
 	pid_t shrc = fork();
 	if(shrc == 0)
 		execl("/bin/sh", "/bin/sh", RC, (char*)0);
@@ -140,10 +138,10 @@ static void bootrc(void)
 }
 
 // Single user mode
-static int single(void)
+static int single(const char *msg)
 {
-	// Login as root
-	setlogin("root");
+	// Print msg
+	printf("%s", msg);
 
 	// Use a shell of the user's choice
 	char shell[100];
@@ -154,9 +152,10 @@ static int single(void)
 	FILE *optsh = fopen(shell, "r");
 	if(optsh == NULL) {
 		FILE *defsh = fopen("/bin/sh", "r");
-		if(defsh == NULL)
-			return halt(SIGUSR2); // Abandon to halt()
-		else {
+		if(defsh == NULL) {
+			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open /bin/sh, powering off!\n" COLOR_RESET);
+			return halt(SIGUSR2);
+		} else {
 			fclose(defsh);
 			memcpy(shell, "/bin/sh", 7);
 		}
