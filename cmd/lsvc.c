@@ -48,7 +48,7 @@ static struct option lsvc_options[] = {
 };
 
 // Usage info
-static int usage(const char *msg, ...)
+static void usage(const char *msg, ...)
 {
 	// Error message
 	va_list vargs;
@@ -67,16 +67,16 @@ static int usage(const char *msg, ...)
 	printf("  -s, --start          Start a service\n");
 	printf("  -?, --help           Display this text\n");
 
-	// Return 1
-	return 1;
+	// Exit with status 1
+	exit(1);
 }
 
 // Shows the current status of the specified service
-static int status_svc(const char *svc)
+static void status_svc(const char *svc)
 {
 	// Exit if the service name is too long
 	if(strlen(svc) > 100)
-		return usage("The service name '%s' is too long!", svc);
+		usage("The service name '%s' is too long!", svc);
 
 	// Get the path the service's status file
 	char status_path[129] = "/var/log/leaninit/";
@@ -88,24 +88,39 @@ static int status_svc(const char *svc)
 	FILE *svc_status = fopen(status_path, "r");
 	if(svc_status == NULL) {
 		printf(COLOR_BOLD COLOR_LIGHT_BLUE"* " COLOR_WHITE "There is no current status for %s" COLOR_RESET "\n", svc);
-		return 0;
+		return;
 	}
 
 	// Get the status of svc
 	fgets(status, 20, svc_status);
 	fclose(svc_status);
 	printf(COLOR_BOLD COLOR_LIGHT_BLUE "* " COLOR_WHITE "The current status of %s is:" "%s" COLOR_RESET "", svc, status);
+}
 
-	// Always return 0
-	return 0;
+// Executes svc-start(8)
+static void svc_start(const char *svc)
+{
+	int start = fork();
+	if(start == 0)
+		execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-start", svc, "lsvc", (char*)0);
+	wait(0);
+}
+
+// Executes svc-stop(8)
+static void svc_stop(const char *svc)
+{
+	int stop = fork();
+	if(stop == 0)
+		execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-start", svc, force, (char*)0);
+	wait(0);
 }
 
 // This function can start, stop, restart, enable and disable LeanInit services
-static int modify_svc(const char *svc, int action)
+static void modify_svc(const char *svc, int action)
 {
 	// Exit if the service name is too long
 	if(strlen(svc) > 100)
-		return usage("The service name '%s' is too long!", svc);
+		usage("The service name '%s' is too long!", svc);
 
 	// Paths and file descriptors for the service
 	strncat(svcd_path, svc, 100);
@@ -118,11 +133,9 @@ static int modify_svc(const char *svc, int action)
 		if(svce_read != NULL) {
 			fclose(svce_read);
 			printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d" COLOR_RESET "\n", svc);
-			return 1;
-		} else {
+		} else
 			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s does not exist" COLOR_RESET "\n", svc);
-			return 1;
-		}
+		exit(1);
 	}
 
 	// This is no longer needed
@@ -138,12 +151,12 @@ static int modify_svc(const char *svc, int action)
 				FILE *enable = fopen(svce_path, "a");
 				fclose(enable);
 				printf(COLOR_BOLD COLOR_LIGHT_GREEN"* " COLOR_WHITE "%s has been enabled" COLOR_RESET "\n", svc);
-				return 0;
+				return;
 			} else {
 				// The service is already enabled
 				fclose(svce_read);
 				printf(COLOR_BOLD COLOR_LIGHT_PURPLE"* " COLOR_YELLOW "%s is already enabled" COLOR_RESET "\n", svc);
-				return 0;
+				return;
 			}
 
 		// Disable
@@ -151,59 +164,55 @@ static int modify_svc(const char *svc, int action)
 			// Return if the service is not enabled
 			if(svce_read == NULL) {
 				printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "%s is not enabled" COLOR_RESET "\n", svc);
-				return 0;
+				return;
 			}
 
 			// Remove the file in /etc/leaninit.d/svc.e
 			fclose(svce_read);
 			if(unlink(svce_path) != 0) {
 				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s could not be disabled due to unlink failing with errno %s" COLOR_RESET "\n", svc, strerror(errno));
-				return 1;
+				exit(1);
 			}
 			printf(COLOR_BOLD COLOR_LIGHT_GREEN "* " COLOR_WHITE "%s has been disabled" COLOR_RESET "\n", svc);
-			return 0;
+			return;
 
 		// Start
 		case START:
 			if((svce_read == NULL) && (force_svc != true)) {
 				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s is not enabled" COLOR_RESET "\n", svc);
-				return 1;
+				exit(1);
 			} else if(svce_read != NULL)
 				fclose(svce_read);
 
 			// Execute svc-start
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-start", svc, "lsvc", (char*)0);
+			svc_start(svc);
+			return;
 
 		// Stop
 		case STOP:
 			if((svce_read == NULL) && (force_svc != true)) {
 				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s is not enabled" COLOR_RESET "\n", svc);
-				return 1;
+				exit(1);
 			} else if(svce_read != NULL)
 				fclose(svce_read);
 
 			// Execute svc-stop
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-stop", svc, force, (char*)0);
+			svc_stop(svc);
+			return;
 
 		// Restart
 		case RESTART:
 			if((svce_read == NULL) && (force_svc != true)) {
 				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s is not enabled" COLOR_RESET "\n", svc);
-				return 1;
+				exit(1);
 			} else if(svce_read != NULL)
 				fclose(svce_read);
 
-			// First, stop the service
-			pid_t stop = fork();
-			if(stop == 0)
-				return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-stop", svc, force, (char*)0);
-
-			// Then, start it again
-			wait(0);
-			return execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-start", svc, "lsvc", (char*)0);
+			// Execute svc-stop and svc-start
+			svc_stop(svc);
+			svc_start(svc);
+			return;
 	}
-
-	return -1;
 }
 
 int main(int argc, char *argv[])
@@ -216,7 +225,7 @@ int main(int argc, char *argv[])
 
 	// Show usage info if given no arguments
 	if(argc == 1)
-		return usage("Too few arguments passed\n");
+		usage("Too few arguments passed\n");
 
 	// Get the arguments
 	int args;
@@ -231,34 +240,40 @@ int main(int argc, char *argv[])
 
 			// Disable
 			case 'd':
-				return modify_svc(optarg, DISABLE);
+				modify_svc(optarg, DISABLE);
+				break;
 
 			// Enable
 			case 'e':
-				return modify_svc(optarg, ENABLE);
+				modify_svc(optarg, ENABLE);
+				break;
 
 			// Status of a service
 			case 'i':
-				return status_svc(optarg);
+				status_svc(optarg);
+				break;
 
 			// Restart
 			case 'r':
-				return modify_svc(optarg, RESTART);
+				modify_svc(optarg, RESTART);
+				break;
 
 			// Stop
 			case 'q':
-				return modify_svc(optarg, STOP);
+				modify_svc(optarg, STOP);
+				break;
 
 			// Start
 			case 's':
-				return modify_svc(optarg, START);
+				modify_svc(optarg, START);
+				break;
 
 			// Show usage
 			case '?':
-				return usage("");
+				usage("");
+				break;
 		}
 	}
 
-	// If we got here due to the user not passing a normal argument (e.g. 'h' without a hyphen), exit
-	return usage("You must pass arguments properly!\n");
+	return 0;
 }
