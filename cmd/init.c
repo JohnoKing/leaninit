@@ -102,8 +102,10 @@ static void open_tty(void) {
 	uname(&uts);
 	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s\n" COLOR_RESET, uts.sysname, uts.release, uts.machine);
 
-	// Login as root
+#ifdef FreeBSD
+	// Login as root (FreeBSD)
 	setlogin("root");
+#endif
 }
 
 
