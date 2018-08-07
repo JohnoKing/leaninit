@@ -111,7 +111,7 @@ static void svc_stop(const char *svc)
 {
 	int stop = fork();
 	if(stop == 0)
-		execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-start", svc, force, (char*)0);
+		execl("/bin/sh", "/bin/sh", "/etc/leaninit.d/svc-stop", svc, force, (char*)0);
 	wait(0);
 }
 

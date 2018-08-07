@@ -30,11 +30,6 @@
 .Nm 0 | 6
 .Sh DESCRIPTION
 LeanInit is a Research Unix/BSD-style init system developed for Linux and FreeBSD operating systems.
-The executable for LeanInit is named
-.Nm leaninit
-on normal installations, and
-.Nm init
-on override installations.
 When LeanInit is executed, it will first check if it is running as
 .Nm PID
 1.
@@ -66,11 +61,13 @@ Power-off
 Reboot
 .Pp
 .Sh FILES
-.Em /etc/rc
-Primary init script for override installations of LeanInit
-
 .Em /etc/leaninit.d/rc
-Primary init script for normal installations of LeanInit
+Primary init script run by LeanInit
+
+.Em /etc/rc
+Secondary init script that is run if
+.Em /etc/leaninit.d/rc
+does not exist.
 
 .Em /etc/leaninit.d/rc.conf
 Provides config settings for

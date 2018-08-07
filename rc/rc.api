@@ -44,6 +44,7 @@ waitforinit() {
 	if [ -r /etc/leaninit.d/svc.e/$1 ] && [ "$3" = init ]; then
 		until [ "$(psnoawk $2)" != "" ]; do
 			wait
+			sleep 0.2
 		done
 		if [ "$4" != "" ]; then
 			until [ -r $4 ]; do

@@ -14,9 +14,10 @@ of the UNIX code at all.
 
 ## Building and Installing
 ### Linux
-Run `make` and a LeanInit binary compatible with other init systems will
-be built, named `leaninit`. Running `make install` as root will install
-LeanInit, without overriding other init systems.
+Run `make` will compile LeanInit (compiled files are placed in `./out`).
+Running `make install` as root will install
+LeanInit, without overriding other existing init systems. 
+You can change the destination LeanInit is installed to by using `$DESTDIR`.
 
 To boot into LeanInit, add `init=/sbin/leaninit` to your kernel command
 line. Make sure eudev and iproute2 are installed, as they are required on Linux.
@@ -28,14 +29,7 @@ is compatible with both GNU and BSD Make, so you don't need to install
 To boot from LeanInit, append the following line to `/boot/loader.conf`:
 `init_path="/sbin/leaninit"`
 
-### Override Build
-If you wish, running `make override` and `make override-install` will
-build a copy of LeanInit that will override existing init systems once
-installed. This is experimental, and not a recommended method of
-installation.
-
 ## Usage
-
 ### Enabling and disabling services
 The tool for enabling and disabling services is `lsvc`.
 To enable a service, use `lsvc -e yourservice`;

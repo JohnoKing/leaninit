@@ -26,13 +26,6 @@
 
 #include "inc.h"
 
-// Location of the init script
-#ifdef COMPAT
-#define RC "/etc/leaninit.d/rc"
-#else
-#define RC "/etc/rc"
-#endif
-
 // Functions
 static int halt(int signal);
 static int single(const char *msg);
@@ -122,9 +115,27 @@ static int usage(void)
 // Execute rc(8) in a seperate process.
 static void bootrc(void)
 {
-	pid_t shrc = fork();
-	if(shrc == 0)
-		execl("/bin/sh", "/bin/sh", RC, (char*)0);
+	// Locate rc(8)
+	char rc[19];
+	FILE *defrc = fopen("/etc/leaninit.d/rc", "r");
+	if(defrc == NULL) {
+		FILE *bsdrc = fopen("/etc/rc", "r");
+		if(bsdrc == NULL)
+			single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
+		else {
+			memcpy(rc, "/etc/rc", 8);
+			fclose(bsdrc);
+		}
+	} else {
+		memcpy(rc, "/etc/leaninit.d/rc", 19);
+		fclose(defrc);
+	}
+
+	// Output a message to the console
+	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Executing %s" COLOR_RESET "\n", rc);
+
+	// Run rc(8)
+	cmd(rc);
 
 	// Call sigloop()
 	sigloop();
@@ -197,6 +208,9 @@ static int halt(int signal)
 	// Kill all processes
 	kill(-1, SIGTERM);
 	kill(-1, SIGKILL);
+
+	// Wait until kill(2) is finished
+	while(wait(0) > 0);
 
 	// Synchronize the filesystems
 	sync();
