@@ -68,7 +68,7 @@ base: clean
 # Used by both install and override-install
 install-base:
 	if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
-	mkdir -p  $(DESTDIR)/usr/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit.d/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log/leaninit
+	mkdir -p  $(DESTDIR)/bin $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit.d/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log/leaninit
 	cp -r svc.d $(DESTDIR)/etc/leaninit.d
 	cp -r man $(DESTDIR)/usr/share
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
@@ -79,7 +79,7 @@ install-base:
 		$(INSTALL) -Dm0644 out/ttys $(DESTDIR)/etc/leaninit.d ;\
 	fi
 	$(INSTALL) -Dm0755 out/rc.api out/svc-start out/svc-stop $(DESTDIR)/etc/leaninit.d
-	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/usr/bin/fork
+	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/bin/fork
 	cd $(DESTDIR)/usr/share/man/man8 ;\
 	[ -r lpoweroff.8 ] || link lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || link lhalt.8 lreboot.8 ;\
