@@ -43,7 +43,7 @@ psnoawk() {
 waitforinit() {
 	if [ -r /etc/leaninit.d/svc.e/$1 ] && [ "$3" = init ]; then
 		until [ "$(psnoawk $2)" != "" ]; do
-			false
+			sleep 0.2
 		done
 	fi
 }
