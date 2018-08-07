@@ -153,9 +153,10 @@ static int single(const char *msg)
 	if(optsh == NULL) {
 		FILE *defsh = fopen("/bin/sh", "r");
 		if(defsh == NULL) {
-			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open /bin/sh, powering off!\n" COLOR_RESET);
+			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open either %s or /bin/sh, powering off!\n" COLOR_RESET, shell);
 			return halt(SIGUSR2);
 		} else {
+			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh\n" COLOR_RESET, shell);
 			fclose(defsh);
 			memcpy(shell, "/bin/sh", 7);
 		}
