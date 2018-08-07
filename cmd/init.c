@@ -27,13 +27,12 @@
 #include "inc.h"
 
 // Functions
-static int halt(int signal);
+static void halt(int signal);
 static int single(const char *msg);
 static int usage(void);
 static void bootrc(void);
 static void cmd(const char *cmd);
 static void open_tty(void);
-static void sighandle(int signal);
 static void sigloop(void);
 
 // The main function
@@ -158,7 +157,7 @@ static int single(const char *msg)
 		FILE *defsh = fopen("/bin/sh", "r");
 		if(defsh == NULL) {
 			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open either %s or /bin/sh, powering off!" COLOR_RESET "\n", shell);
-			return halt(SIGUSR2);
+			halt(SIGUSR2);
 		} else {
 			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh" COLOR_RESET "\n", shell);
 			fclose(defsh);
@@ -192,7 +191,7 @@ static void sigloop(void)
 	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
 	struct sigaction actor;
 	memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
-	actor.sa_handler = sighandle;
+	actor.sa_handler = halt;
 	sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
 	sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
 	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
@@ -203,7 +202,7 @@ static void sigloop(void)
 }
 
 // Halts, reboots or turns off the system
-static int halt(int signal)
+static void halt(int signal)
 {
 	// Kill all processes
 	kill(-1, SIGTERM);
@@ -222,16 +221,17 @@ static int halt(int signal)
 	// Call reboot(2)
 	switch(signal) {
 		case SIGUSR1: // Halt
-			return reboot(SYS_HALT);
+			reboot(SYS_HALT);
+			break;
 
 		case SIGUSR2: // Power-off
-			return reboot(SYS_POWEROFF);
+			reboot(SYS_POWEROFF);
+			break;
 
 		case SIGINT:  // Reboot
-			return reboot(RB_AUTOBOOT);
+			reboot(RB_AUTOBOOT);
+			break;
 	}
-
-	return 1;
 }
 
 // Execute a command and wait until it finishes
@@ -241,11 +241,4 @@ static void cmd(const char *cmd)
 	if(cfork == 0)
 		execl("/bin/sh", "/bin/sh", "-c", cmd, (char*)0);
 	wait(0);
-}
-
-// Handle signals given to init
-static void sighandle(int signal)
-{
-	if(signal == SIGUSR1 || signal == SIGUSR2 || signal == SIGINT)
-		halt(signal);
 }
