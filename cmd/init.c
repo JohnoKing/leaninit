@@ -208,7 +208,7 @@ static void halt(int signal)
 	// Run rc.shutdown
 	sh("/etc/leaninit.d/rc.shutdown");
 
-	// Kill all processes
+	// Kill all remaining processes
 	kill(-1, SIGTERM);
 	kill(-1, SIGKILL);
 

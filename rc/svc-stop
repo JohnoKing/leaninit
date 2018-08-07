@@ -47,12 +47,11 @@ pkill -x $DAEMON
 
 # Exit with error if the service failed to stop
 RET=$?
-if [ $RET != 0 ] && [ "$2" != "f" ]; then
-	print "$NAME failed to stop (pkill exited with status $RET)" log ${RED} ${LIGHT_RED}
+if [ "$2" != "f" ]; then
+	if [ $RET != 0 ]; then
+		print "$NAME failed to stop (pkill exited with status $RET)" log ${RED} ${LIGHT_RED}
+	fi
 	exit $RET
-elif [ $RET = 0 ]; then
-	sleep 0.1
-	exit 0
 fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
@@ -60,7 +59,6 @@ print "Sending $NAME SIGKILL..." log ${BLUE} ${LIGHT_GRAY}
 pkill -KILL -x $DAEMON
 
 # Finish
-sleep 0.5
 if [ "$(pgrep -x $DAEMON)" != "" ]; then
 	print "$NAME failed to stop (did not respond to SIGKILL, may be a zombie process)" log ${RED} ${LIGHT_RED}
 	echo "Zombie" > /var/log/leaninit/$1.status

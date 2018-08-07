@@ -20,11 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# /etc/leaninit.d/rc.shutdown - Unmounts all file systems
+# /etc/leaninit.d/rc.shutdown - Stops all services and unmounts all file systems
 #
 
 # Load rc.api
 . /etc/leaninit.d/rc.api
+
+# Stop all services
+if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
+	for s in $(ls /etc/leaninit.d/svc.e); do
+		sh /etc/leaninit.d/svc-stop $s f
+	done
+fi
 
 # Unmount all drives
 mount -o remount,ro / || true
