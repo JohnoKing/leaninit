@@ -8,5 +8,6 @@ main() {
 	waitforinit dhcpcd dhcpcd $1
 
 	# sshd must be executed with the full path to the executable
+	ssh-keygen -A >> /dev/null
 	command $(command -v sshd)
 }
