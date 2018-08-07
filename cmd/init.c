@@ -141,7 +141,7 @@ static void bootrc(void)
 static int single(const char *msg)
 {
 	// Print msg
-	printf("%s", msg);
+	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "%s" COLOR_RESET, msg);
 
 	// Use a shell of the user's choice
 	char shell[100];
@@ -156,7 +156,7 @@ static int single(const char *msg)
 			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open either %s or /bin/sh, powering off!\n" COLOR_RESET, shell);
 			return halt(SIGUSR2);
 		} else {
-			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh\n" COLOR_RESET, shell);
+			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh\n" COLOR_WHITE, shell);
 			fclose(defsh);
 			memcpy(shell, "/bin/sh", 7);
 		}
