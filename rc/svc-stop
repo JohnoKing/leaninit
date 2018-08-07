@@ -47,9 +47,12 @@ kill $(psawk $DAEMON)
 
 # Exit with error if the service failed to stop
 RET=$?
-if [ $? != 0 ] && [ "$2" != "f" ]; then
+if [ $RET != 0 ] && [ "$2" != "f" ]; then
 	print "$NAME failed to stop (kill exited with status $RET)" log ${RED} ${LIGHT_RED}
 	exit $RET
+elif [ $RET = 0 ]; then
+	sleep 0.5
+	exit 0
 fi
 
 # Send SIGKILL if SIGTERM did not work (force only)
@@ -57,6 +60,7 @@ print "Sending $NAME SIGKILL..." log ${BLUE} ${LIGHT_GRAY}
 kill -s SIGKILL $(psawk $DAEMON)
 
 # Finish
+sleep 0.5
 if [ "$(psnoawk $DAEMON)" != "" ]; then
 	print "$NAME failed to stop (did not respond to SIGKILL, may be a zombie process)" log ${RED} ${LIGHT_RED}
 	echo "Zombie" > /var/log/leaninit/$1.status

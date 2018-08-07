@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
-		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s\n" COLOR_RESET, strerror(EPERM));
+		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s" COLOR_RESET "\n", strerror(EPERM));
 		return 1;
 	}
 
@@ -100,7 +100,7 @@ static void open_tty(void) {
 	// Print to DEFAULT_TTY the current platform LeanInit is running on
 	struct utsname uts;
 	uname(&uts);
-	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s\n" COLOR_RESET, uts.sysname, uts.release, uts.machine);
+	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s" COLOR_RESET "\n", uts.sysname, uts.release, uts.machine);
 
 #ifdef FreeBSD
 	// Login as root (FreeBSD)
@@ -134,7 +134,7 @@ static void bootrc(void)
 static int single(const char *msg)
 {
 	// Print msg
-	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "%s" COLOR_RESET, msg);
+	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "%s" COLOR_RESET "\n", msg);
 
 	// Use a shell of the user's choice
 	char shell[100];

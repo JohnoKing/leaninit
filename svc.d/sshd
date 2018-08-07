@@ -6,7 +6,6 @@ main() {
 	# Wait for internet services
 	waitforinit wpa_supplicant wpa_supplicant $1
 	waitforinit dhcpcd dhcpcd $1
-	sleep 1
 
 	# sshd must be executed with the full path to the executable
 	command $(command -v sshd)

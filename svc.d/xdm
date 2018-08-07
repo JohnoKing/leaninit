@@ -12,6 +12,6 @@ main() {
 	waitforinit dbus dbus-daemon $1
 	until [ "$(psnoawk $DAEMON)" != "" ]; do
 		fork "$DM"
-		sleep 1
+		sleep 0.5
 	done
 }

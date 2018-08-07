@@ -146,7 +146,7 @@ for sv in $(ls /etc/leaninit.d/svc.e); do
 	fork "/etc/leaninit.d/svc-start $sv init"
 done
 
-# Wait for all services to finish starting (to prevent their output from clogging up login)
+# Wait for all services to finish starting before launching gettys
 if [ "$CLEANBOOT" = "true" ]; then
 	for sv in $(ls /etc/leaninit.d/svc.e); do
 		until [ -r /var/log/leaninit/$sv.status ]; do

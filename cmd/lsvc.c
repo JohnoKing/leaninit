@@ -48,14 +48,12 @@ static struct option lsvc_options[] = {
 };
 
 // Usage info
-static int usage(const char *starcolor, const char *textcolor, const char *msg, ...)
+static int usage(const char *msg, ...)
 {
 	// Error message
 	va_list vargs;
 	va_start(vargs, msg);
-	printf(COLOR_BOLD "%s* %s", starcolor, textcolor);
 	vprintf(msg, vargs);
-	printf(COLOR_RESET);
 	va_end(vargs);
 
 	// Usage info
@@ -78,7 +76,7 @@ static int status_svc(const char *svc)
 {
 	// Exit if the service name is too long
 	if(strlen(svc) > 100)
-		return usage(COLOR_RED, COLOR_LIGHT_RED, "The service name '%s' is too long!\n", svc);
+		return usage("The service name '%s' is too long!", svc);
 
 	// Get the path the service's status file
 	char status_path[129] = "/var/log/leaninit/";
@@ -89,14 +87,14 @@ static int status_svc(const char *svc)
 	// Attempt to open the .status file
 	FILE *svc_status = fopen(status_path, "r");
 	if(svc_status == NULL) {
-		printf(COLOR_BOLD COLOR_LIGHT_BLUE"* " COLOR_WHITE "There is no current status for %s\n" COLOR_RESET, svc);
+		printf(COLOR_BOLD COLOR_LIGHT_BLUE"* " COLOR_WHITE "There is no current status for %s" COLOR_RESET "\n", svc);
 		return 0;
 	}
 
 	// Get the status of svc
 	fgets(status, 20, svc_status);
 	fclose(svc_status);
-	printf(COLOR_BOLD COLOR_LIGHT_BLUE "* " COLOR_WHITE "The current status of %s is:" "%s" COLOR_RESET, svc, status);
+	printf(COLOR_BOLD COLOR_LIGHT_BLUE "* " COLOR_WHITE "The current status of %s is:" "%s" COLOR_RESET "", svc, status);
 
 	// Always return 0
 	return 0;
@@ -107,7 +105,7 @@ static int modify_svc(const char *svc, int action)
 {
 	// Exit if the service name is too long
 	if(strlen(svc) > 100)
-		return usage(COLOR_RED, COLOR_LIGHT_RED, "The service name '%s' is too long!\n", svc);
+		return usage("The service name '%s' is too long!", svc);
 
 	// Paths and file descriptors for the service
 	strncat(svcd_path, svc, 100);
@@ -119,10 +117,10 @@ static int modify_svc(const char *svc, int action)
 	if(svc_read == NULL) {
 		if(svce_read != NULL) {
 			fclose(svce_read);
-			printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d\n" COLOR_RESET, svc);
+			printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "There is an error in your configuration, %s appears to exist in /etc/leaninit.d/svc.e but not in /etc/leaninit.d/svc.d" COLOR_RESET "\n", svc);
 			return 1;
 		} else {
-			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s does not exist\n" COLOR_RESET, svc);
+			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s does not exist" COLOR_RESET "\n", svc);
 			return 1;
 		}
 	}
@@ -139,12 +137,12 @@ static int modify_svc(const char *svc, int action)
 				// Enable the service
 				FILE *enable = fopen(svce_path, "a");
 				fclose(enable);
-				printf(COLOR_BOLD COLOR_LIGHT_GREEN"* " COLOR_WHITE "%s has been enabled\n" COLOR_RESET, svc);
+				printf(COLOR_BOLD COLOR_LIGHT_GREEN"* " COLOR_WHITE "%s has been enabled" COLOR_RESET "\n", svc);
 				return 0;
 			} else {
 				// The service is already enabled
 				fclose(svce_read);
-				printf(COLOR_BOLD COLOR_LIGHT_PURPLE"* " COLOR_YELLOW "%s is already enabled\n" COLOR_RESET, svc);
+				printf(COLOR_BOLD COLOR_LIGHT_PURPLE"* " COLOR_YELLOW "%s is already enabled" COLOR_RESET "\n", svc);
 				return 0;
 			}
 
@@ -152,23 +150,23 @@ static int modify_svc(const char *svc, int action)
 		case DISABLE:
 			// Return if the service is not enabled
 			if(svce_read == NULL) {
-				printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "%s is not enabled\n" COLOR_RESET, svc);
+				printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "%s is not enabled" COLOR_RESET "\n", svc);
 				return 0;
 			}
 
 			// Remove the file in /etc/leaninit.d/svc.e
 			fclose(svce_read);
 			if(unlink(svce_path) != 0) {
-				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s could not be disabled due to unlink failing with errno %s\n" COLOR_RESET, svc, strerror(errno));
+				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s could not be disabled due to unlink failing with errno %s" COLOR_RESET "\n", svc, strerror(errno));
 				return 1;
 			}
-			printf(COLOR_BOLD COLOR_LIGHT_GREEN "* " COLOR_WHITE "%s has been disabled\n" COLOR_RESET, svc);
+			printf(COLOR_BOLD COLOR_LIGHT_GREEN "* " COLOR_WHITE "%s has been disabled" COLOR_RESET "\n", svc);
 			return 0;
 
 		// Start
 		case START:
 			if((svce_read == NULL) && (force_svc != true)) {
-				printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "%s is not enabled\n" COLOR_RESET, svc);
+				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s is not enabled" COLOR_RESET "\n", svc);
 				return 1;
 			} else if(svce_read != NULL)
 				fclose(svce_read);
@@ -179,7 +177,7 @@ static int modify_svc(const char *svc, int action)
 		// Stop
 		case STOP:
 			if((svce_read == NULL) && (force_svc != true)) {
-				printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "%s is not enabled\n" COLOR_RESET, svc);
+				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s is not enabled" COLOR_RESET "\n", svc);
 				return 1;
 			} else if(svce_read != NULL)
 				fclose(svce_read);
@@ -190,7 +188,7 @@ static int modify_svc(const char *svc, int action)
 		// Restart
 		case RESTART:
 			if((svce_read == NULL) && (force_svc != true)) {
-				printf(COLOR_BOLD COLOR_RED"* " COLOR_LIGHT_RED "%s is not enabled\n" COLOR_RESET, svc);
+				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s is not enabled" COLOR_RESET "\n", svc);
 				return 1;
 			} else if(svce_read != NULL)
 				fclose(svce_read);
@@ -212,13 +210,13 @@ int main(int argc, char *argv[])
 {
 	// This must be run as root
 	if(getuid() != 0) {
-		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s\n" COLOR_RESET, strerror(EPERM));
+		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s" COLOR_RESET "\n", strerror(EPERM));
 		return 1;
 	}
 
 	// Show usage info if given no arguments
 	if(argc == 1)
-		return usage(COLOR_RED, COLOR_LIGHT_RED, "Too few arguments passed\n");
+		return usage("Too few arguments passed\n");
 
 	// Get the arguments
 	int args;
@@ -257,10 +255,10 @@ int main(int argc, char *argv[])
 
 			// Show usage
 			case '?':
-				return usage(COLOR_LIGHT_BLUE, COLOR_WHITE, "");
+				return usage("");
 		}
 	}
 
 	// If we got here due to the user not passing a normal argument (e.g. 'h' without a hyphen), exit
-	return usage(COLOR_RED, COLOR_LIGHT_RED, "You must pass arguments correctly!\n");
+	return usage("You must pass arguments properly!\n");
 }
