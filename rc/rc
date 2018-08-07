@@ -75,8 +75,9 @@ swapon -a
 # Remove the nologin and .status files
 print "Removing any existing nologin files..." nolog ${LIGHT_PURPLE} ${WHITE}
 rm -f /run/nologin /var/run/nologin
-print "Removing all .status files in /var/log/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
-rm -f /var/run/leaninit/*.status
+print "Resetting /var/run/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
+rm -rf /var/run/leaninit
+mkdir -p /var/run/leaninit
 
 # Logging
 touch $LOGFILE
