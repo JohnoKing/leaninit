@@ -35,7 +35,7 @@
 
 // Functions
 static int halt(int signal);
-static int single(void);
+static int single(const char *msg);
 static int usage(void);
 static void bootrc(void);
 static void cmd(const char *cmd);
