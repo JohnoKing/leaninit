@@ -58,13 +58,7 @@ fi
 print "Sending $NAME SIGKILL..." log ${BLUE} ${LIGHT_GRAY}
 pkill -KILL -x $DAEMON
 
-# Finish
-if [ "$(pgrep -x $DAEMON)" != "" ]; then
-	print "$NAME failed to stop (did not respond to SIGKILL, may be a zombie process)" log ${RED} ${LIGHT_RED}
-	echo "Zombie" > /var/run/leaninit/$1.status
-	exit 1
-else
-	print "Stopped $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
-	rm -f /var/run/leaninit/$1.status
-	exit 0
-fi
+# Exit
+print "Stopped $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
+rm -f /var/run/leaninit/$1.status
+exit 0

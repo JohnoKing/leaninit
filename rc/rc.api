@@ -39,7 +39,7 @@ waitforinit() {
 		done
 		if [ "$4" != "" ]; then
 			until [ -r $4 ]; do
-				sleep 0.2
+				false
 			done
 		fi
 	fi

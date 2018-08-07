@@ -29,7 +29,10 @@
 # Stop all services
 if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
 	for s in $(ls /etc/leaninit.d/svc.e); do
-		sh /etc/leaninit.d/svc-stop $s f
+		fork "sh /etc/leaninit.d/svc-stop $s f"
+	done
+	until [ ! -r /var/run/*.status ]; do
+		false
 	done
 fi
 
