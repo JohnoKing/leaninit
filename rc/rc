@@ -39,8 +39,8 @@ finish() {
 	exit 0
 }
 
-# Check all the filesystems in /etc/fstab for damage, and repair them if needed
-print "Checking all filesystems for data corruption..." nolog ${LIGHT_PURPLE} ${WHITE}
+# Check all the file systems in /etc/fstab for damage, and repair them if needed
+print "Checking all file systems for data corruption..." nolog ${LIGHT_PURPLE} ${WHITE}
 DEFLINUX
 fsck -A
 ENDEF
@@ -53,7 +53,7 @@ ENDEF
 print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -a
 if [ "$ZFS_ENABLE" = "true" ]; then
-	# Mount all ZFS filesystems
+	# Mount all ZFS file systems
 	for z in "$(df -t zfs | tail -n +2 | awk '{print $1}')"; do
 		zfs mount $z
 	done

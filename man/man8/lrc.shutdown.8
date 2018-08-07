@@ -18,43 +18,21 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 1, 2018
-.Dt HALT 8
+.Dd August 2, 2018
+.Dt RC.SHUTDOWN 8
 .Os
 .Sh NAME
-.Nm halt
-.Nd halt, poweroff or reboot
-.Sh SYNOPSIS
-.Nm halt
-.Op Fl fl?
+.Nm rc.shutdown
+.Nd executed by init during shutdown
 .Sh DESCRIPTION
-.Nm Halt
-will poweroff, reboot or halt the system when executed by sending the correct signal to init.
-SIGUSR1 will halt, SIGUSR2 will power-off, and SIGINT will reboot.
-LeanInit's version of
-.Nm halt
-can also send the system into hibernate when executed as
-.Nm zzz
-on Linux.
-.Pp
-Halt accepts the following flags:
-.Pp
-.Nm -f, --force
-Do not send a signal to
-.Nm init(8),
-call
-.Nm reboot(2)
-directly instead.
-.Pp
-.Nm -l, --no-wall
-Do not send a message using
-.Nm syslog(3)
-before rebooting.
-.Pp
-.Nm -?, --help
-Display usage information for
-.Nm halt(8).
+The
+.Nm rc.shutdown
+script is responsible for running
+.Nm sync(8),
+then unmounting all currently mounted file systems before init calls
+.Nm reboot(2).
+
 .Sh SEE ALSO
-init(8), rc.shutdown(8)
+halt(8), leaninit(8)
 .Sh AUTHOR
 Johnothan King

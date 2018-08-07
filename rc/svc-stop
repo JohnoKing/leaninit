@@ -43,15 +43,15 @@ fi
 
 # Stop $NAME
 print "Stopping $NAME..." log ${BLUE} ${WHITE}
-kill $(pgrep -x $DAEMON)
+pkill -x $DAEMON
 
 # Exit with error if the service failed to stop
 RET=$?
 if [ $RET != 0 ] && [ "$2" != "f" ]; then
-	print "$NAME failed to stop (kill exited with status $RET)" log ${RED} ${LIGHT_RED}
+	print "$NAME failed to stop (pkill exited with status $RET)" log ${RED} ${LIGHT_RED}
 	exit $RET
 elif [ $RET = 0 ]; then
-	sleep 0.5
+	sleep 0.1
 	exit 0
 fi
 

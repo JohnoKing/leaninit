@@ -31,7 +31,7 @@ static void halt(int signal);
 static int single(const char *msg);
 static int usage(void);
 static void bootrc(void);
-static void cmd(const char *cmd);
+static void sh(const char *cmd);
 static void open_tty(void);
 static void sigloop(void);
 
@@ -135,7 +135,7 @@ static void bootrc(void)
 	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Executing %s" COLOR_RESET "\n", rc);
 
 	// Run rc(8)
-	cmd(rc);
+	sh(rc);
 
 	// Call sigloop()
 	sigloop();
@@ -205,6 +205,9 @@ static void sigloop(void)
 // Halts, reboots or turns off the system
 static void halt(int signal)
 {
+	// Run rc.shutdown
+	sh("/etc/leaninit.d/rc.shutdown");
+
 	// Kill all processes
 	kill(-1, SIGTERM);
 	kill(-1, SIGKILL);
@@ -212,12 +215,8 @@ static void halt(int signal)
 	// Wait until kill(2) is finished
 	while(wait(0) > 0);
 
-	// Synchronize the filesystems
+	// Synchronize the file systems (hardcoded)
 	sync();
-
-	// Remount root as read-only and unmount other filesystems
-	cmd("mount -o remount,ro /");
-	cmd("umount -a");
 
 	// Call reboot(2)
 	switch(signal) {
@@ -236,10 +235,10 @@ static void halt(int signal)
 }
 
 // Execute a command and wait until it finishes
-static void cmd(const char *cmd)
+static void sh(const char *cmd)
 {
 	int cfork = fork();
 	if(cfork == 0)
-		execl("/bin/sh", "/bin/sh", "-c", cmd, (char*)0);
+		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
 	wait(0);
 }

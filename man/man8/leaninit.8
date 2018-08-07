@@ -77,6 +77,11 @@ and LeanInit scripts
 .Em /etc/leaninit.d/rc.api
 Provides variables and functions for LeanInit scripts
 
+.Em /etc/leaninit.d/rc.shutdown
+Unmounts and runs sync(8) on all file systems during shutdown,
+before LeanInit calls
+.Nm reboot(2).
+
 .Em /etc/leaninit.d/svc.d
 Folder containing scripts for starting various extra services (such as D-BUS)
 

@@ -26,7 +26,7 @@ INSTALL  := install
 WFLAGS   := -Wall -Wextra -Wpedantic
 CFLAGS   := -O2 -fno-math-errno -pipe
 LIBS     := -lutil
-RC       := out/rc out/rc.api out/rc.conf out/ttys
+RC       := out/rc out/rc.api out/rc.shutdown out/rc.conf out/ttys
 MANPAGES := $(DESTDIR)/usr/share/man/man1/fork.1 $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 \
 		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
 		$(DESTDIR)/usr/share/man/man8/lsvc.8 $(DESTDIR)/usr/share/man/man8/rc.api.8 $(DESTDIR)/usr/share/man/man8/svc-start.8 \
@@ -69,7 +69,7 @@ install:
 	if [ ! -r $(DESTDIR)/etc/leaninit.d/ttys ]; then \
 		$(INSTALL) -Dm0644 out/ttys $(DESTDIR)/etc/leaninit.d ;\
 	fi
-	$(INSTALL) -Dm0755 out/rc.api out/svc-start out/svc-stop $(DESTDIR)/etc/leaninit.d
+	$(INSTALL) -Dm0755 out/rc.api out/rc.shutdown out/svc-start out/svc-stop $(DESTDIR)/etc/leaninit.d
 	$(INSTALL) -Dm0755 out/fork $(DESTDIR)/bin/fork
 	cd $(DESTDIR)/usr/share/man/man8 ;\
 	[ -r lpoweroff.8 ] || link lhalt.8 lpoweroff.8 ;\
