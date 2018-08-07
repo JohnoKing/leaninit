@@ -30,8 +30,8 @@ The
 script is responsible for reading
 .Em /etc/leaninit.d/rc.conf,
 then providing all required
-variables and functions to
-.Nm rc(8), svc-start(8)
+variables and functions to LeanInit's various scripts, including
+.Nm rc(8), rc.shutdown(8), svc-start(8)
 and
 .Nm svc-stop(8).
 .Pp
@@ -83,6 +83,6 @@ Print colored output to
 print "General informative message..." ${BLUE} ${WHITE}
 
 .Sh SEE ALSO
-rc(8), rc.conf(5), svc-start(8), svc-stop(8), fork(1)
+rc(8), rc.shutdown(8), rc.conf(5), svc-start(8), svc-stop(8), fork(1)
 .Sh AUTHOR
 Johnothan King
