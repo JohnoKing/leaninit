@@ -41,6 +41,5 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs unshare -a
 fi
 
-# Sync, then exit with return of 0
-sync
+# Exit
 exit 0

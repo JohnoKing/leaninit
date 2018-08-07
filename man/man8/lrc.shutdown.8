@@ -27,9 +27,8 @@
 .Sh DESCRIPTION
 The
 .Nm rc.shutdown
-script is responsible for running
-.Nm sync(8),
-then unmounting all currently mounted file systems before init calls
+script is responsible for killing all LeanInit services and
+unmounting all file systems before init calls
 .Nm reboot(2).
 
 .Sh SEE ALSO
