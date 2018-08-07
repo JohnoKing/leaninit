@@ -49,7 +49,13 @@ then source
 This function prints formatted output to
 .Em /dev/stdout
 and
-.Em /var/log/leaninit/leaninit.log
+.Em /var/log/leaninit/leaninit.log  
+$2 defines the * color and $3 defines the text color.
+
+.Em $COLOR
+.Nm rc.api
+provides ANSI color and format variables, intended for use with
+.Nm print().
 
 .Nm waitforinit
 This function allows scripts to have basic dependency management,
@@ -66,6 +72,16 @@ Provides config settings for
 and
 .Nm LeanInit
 scripts.
+.Sh EXAMPLES
+Wait for D-Bus to launch:
+
+waitforinit dbus dbus-daemon $1
+
+Print colored output to
+.Em /dev/tty:
+
+print "General informative message..." ${BLUE} ${WHITE}
+
 .Sh SEE ALSO
 rc(8), rc.conf(5), svc-start(8), svc-stop(8), fork(1)
 .Sh AUTHOR
