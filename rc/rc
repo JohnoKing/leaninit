@@ -54,7 +54,7 @@ print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -a
 if [ "$ZFS_ENABLE" = "true" ]; then
 	# Mount all ZFS filesystems
-	for z in "$(df -t zfs | awk '{print $1}' | sed '/Filesystem/d')"; do
+	for z in "$(df -t zfs | tail -n +2 | awk '{print $1}')"; do
 		zfs mount $z
 	done
 	zfs mount -a
