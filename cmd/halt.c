@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 
 	// Skip init if force is true
 	if(force == true) {
-		sync() // Always call sync(2)
+		sync(); // Always call sync(2)
 
 		switch(signal) {
 			case SIGUSR1: // Halt
