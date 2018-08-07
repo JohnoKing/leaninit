@@ -162,7 +162,7 @@ static int modify_svc(const char *svc, int action)
 				printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s could not be disabled due to unlink failing with errno %s\n" COLOR_RESET, svc, strerror(errno));
 				return 1;
 			}
-			printf(COLOR_BOLD COLOR_LIGHT_GREEN "* " COLOR_WHITE "%s has been disabled\n", svc);
+			printf(COLOR_BOLD COLOR_LIGHT_GREEN "* " COLOR_WHITE "%s has been disabled\n" COLOR_RESET, svc);
 			return 0;
 
 		// Start

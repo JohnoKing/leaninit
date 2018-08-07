@@ -61,7 +61,7 @@
 #define RESTART 14
 
 // Colors
-#define COLOR_RESET        "\x1b[0m"
+#define COLOR_RESET        "\x1b[m"
 #define COLOR_BOLD         "\x1b[1m"
 #define COLOR_FAINT        "\x1b[2m"
 #define COLOR_ITALIC       "\x1b[3m"
