@@ -5,7 +5,7 @@ _A fast init system_
 ## What is this
 This is a small init system that I made for myself, written from scratch.
 I was motivated to make this init system, because when I was cleaning up
-[v7init](https://github.com/JohnoKing/v7init) (my port of the UNIX V7 init system to Linux), I found there was so much useless
+[v7init](https://gitlab.com/JohnoKing/v7init) (my port of the UNIX V7 init system to Linux), I found there was so much useless
 code I would be better off rewriting an init system from scratch, using a
 whole new code base. In addition to allowing me to write a much faster init
 system, I could put it under the much more permissive MIT license, rather
@@ -34,7 +34,7 @@ To boot from LeanInit, append the following line to `/boot/loader.conf`:
 The tool for enabling and disabling services is `lsvc`.
 To enable a service, use `lsvc -e yourservice`;
 and to disable a service, use `lsvc -d yourservice`. A list of services
-LeanInit includes scripts for can be found [here](https://github.com/JohnoKing/leaninit/tree/master/svc).  
+LeanInit includes scripts for can be found [here](https://gitlab.com/JohnoKing/leaninit/tree/master/svc.d)
 To see extra information on `lsvc`, run `lsvc --help` to see all of the options `lsvc` accepts.
 
 ### /etc/leaninit.d/rc.conf
