@@ -41,6 +41,7 @@ static void bootrc(void);
 static void cmd(const char *cmd);
 static void open_tty(void);
 static void sighandle(int signal);
+static void sigloop(void);
 
 // The main function
 int main(int argc, char *argv[])
@@ -112,7 +113,6 @@ static int usage(void)
 	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [mode] ...\n", __progname);
 	printf("  0         Poweroff\n");
-	printf("  1         Single user mode\n");
 	printf("  6         Reboot\n");
 	return 1;
 }
@@ -124,17 +124,8 @@ static void bootrc(void)
 	if(shrc == 0)
 		execl("/bin/sh", "/bin/sh", RC, (char*)0);
 
-	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
-	struct sigaction actor;
-	memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
-	actor.sa_handler = sighandle;
-	sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
-	sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
-	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
-
-	// This perpetual loop kills all zombie processes
-	for(;;)
-		wait(0);
+	// Call sigloop()
+	sigloop();
 }
 
 // Single user mode
@@ -153,10 +144,10 @@ static int single(const char *msg)
 	if(optsh == NULL) {
 		FILE *defsh = fopen("/bin/sh", "r");
 		if(defsh == NULL) {
-			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open either %s or /bin/sh, powering off!\n" COLOR_RESET, shell);
+			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open either %s or /bin/sh, powering off!" COLOR_RESET "\n", shell);
 			return halt(SIGUSR2);
 		} else {
-			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh\n" COLOR_WHITE, shell);
+			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh" COLOR_RESET "\n", shell);
 			fclose(defsh);
 			memcpy(shell, "/bin/sh", 7);
 		}
@@ -165,12 +156,37 @@ static int single(const char *msg)
 
 	// Fork the shell into a seperate process
 	int rescue = fork();
-	if(rescue == 0)
-		return execl(shell, shell, (char*)0);
+	if(rescue == 0) {
+		int subshell = fork();
+		if(subshell == 0)
+			return execl(shell, shell, (char*)0);
 
-	// Shutdown when done
-	wait(0);
-	return halt(SIGUSR2);
+		// Power-off when the shell exits
+		wait(0);
+		return kill(1, SIGUSR2);
+	}
+
+	// Call sigloop()
+	sigloop();
+
+	// Never reached
+	return 1;
+}
+
+// Catch signals while killing zombie processes
+static void sigloop(void)
+{
+	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
+	struct sigaction actor;
+	memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
+	actor.sa_handler = sighandle;
+	sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
+	sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
+	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
+
+	// This perpetual loop kills all zombie processes
+	for(;;)
+		wait(0);
 }
 
 // Halts, reboots or turns off the system
