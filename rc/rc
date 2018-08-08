@@ -121,8 +121,10 @@ DEFLINUX
 # Set up network interfaces
 print "Setting up a loopback interface..." log ${LIGHT_BLUE} ${WHITE}
 ip link set up lo
-print "Setting up $INTERFACE for networking..." log ${LIGHT_BLUE} ${WHITE}
-ip link set up $INTERFACE
+for n in $INTERFACE; do
+	print "Setting up $n for networking..." log $(LIGHT_BLUE} $(WHITE}
+	ip link set up $n
+done
 
 # Load all modules specified in /etc/modules-load.d
 if [ -d /etc/modules-load.d ]; then
