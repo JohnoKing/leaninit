@@ -54,6 +54,16 @@ print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -a
 mount -o remount,rw / 2> /dev/null || true
 
+DEFLINUX
+# Load all modules specified in /etc/modules-load.d
+if [ -r /etc/modules-load.d/* ]; then
+	print "Loading kernel modules..." log ${LIGHT_BLUE} ${WHITE}
+	for m in "$(cat /etc/modules-load.d/* | sed '/#/d')"; do
+		modprobe $m
+	done
+fi
+ENDEF
+
 # Mount all ZFS file systems
 if [ "$ZFS_ENABLE" = "true" ]; then
 
@@ -121,16 +131,10 @@ DEFLINUX
 # Set up network interfaces
 print "Setting up a loopback interface..." log ${LIGHT_BLUE} ${WHITE}
 ip link set up lo
-for n in $INTERFACE; do
-	print "Setting up $n for networking..." log $(LIGHT_BLUE} $(WHITE}
-	ip link set up $n
-done
-
-# Load all modules specified in /etc/modules-load.d
-if [ -d /etc/modules-load.d ]; then
-	print "Loading kernel modules..." log ${LIGHT_BLUE} ${WHITE}
-	for m in $(cat /etc/modules-load.d/* | sed '/#/d'); do
-		modprobe $m
+if [ "$INTERFACE" != "" ]; then
+	for n in "$INTERFACE"; do
+		print "Setting up $n for networking..." log ${LIGHT_BLUE} ${WHITE}
+		ip link set up $n
 	done
 fi
 ENDEF
