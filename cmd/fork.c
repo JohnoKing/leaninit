@@ -22,6 +22,7 @@
 
 /*
  * fork - daemonizes any given command
+ * This command is not dependent on LeanInit (it can be used seperately).
  */
 
 #include <stdio.h>

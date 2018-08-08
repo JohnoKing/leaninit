@@ -31,7 +31,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
@@ -53,13 +52,6 @@
 #define SYS_HALT     RB_HALT
 #define DEFAULT_TTY  "/dev/ttyv0"
 #endif
-
-// Macros for service actions
-#define ENABLE  10
-#define DISABLE 11
-#define STOP    12
-#define START   13
-#define RESTART 14
 
 // Colors
 #define COLOR_RESET        "\x1b[m"
