@@ -1,0 +1,13 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# avahi
+NAME="Bluetooth daemon"
+DAEMON=bluetoothd
+
+main() {
+	waitforinit dbus dbus-daemon
+	fork "bluetoothd"
+}
+
+run bluetoothd $1 $2
