@@ -54,6 +54,10 @@ print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -a
 mount -o remount,rw / 2> /dev/null || true
 
+# Support cgroups
+print "Mounting /sys/fs/cgroup..." nolog ${LIGHT_PURPLE} ${WHITE}
+mount -t tmpfs cgroup /sys/fs/cgroup
+
 DEFLINUX
 # Load all modules specified in /etc/modules-load.d
 if [ -r /etc/modules-load.d/* ]; then

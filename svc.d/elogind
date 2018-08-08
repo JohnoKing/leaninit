@@ -1,0 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# elogind
+NAME="elogind"
+DAEMON=elogind
+
+main() {
+	fork "/usr/libexec/elogind/elogind"
+}
+
+run elogind $1 $2
