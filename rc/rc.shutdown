@@ -24,7 +24,7 @@
 #
 
 # Load rc.svc
-. /etc/leaninit.d/rc.svc
+. /etc/leaninit.d/rc.conf
 
 # Stop all services
 if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
