@@ -31,7 +31,7 @@ if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
 	for s in $(ls /etc/leaninit.d/svc.e); do
 		fork "sh /etc/leaninit.d/svc-stop $s f"
 	done
-	until [ ! -r /var/run/*.status ]; do
+	until [ ! -r /var/run/leaninit/*.status ]; do
 		false
 	done
 fi
