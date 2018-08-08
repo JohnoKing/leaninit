@@ -49,14 +49,20 @@ DEFBSD
 fsck -F
 ENDEF
 
-# Mount drives and datasets
+# Mount all drives
 print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -a
+mount -o remount,rw / 2> /dev/null || true
+
+# Mount all ZFS file systems
 if [ "$ZFS_ENABLE" = "true" ]; then
-	# Mount all ZFS file systems
+
+	# Done for compatibility with beadm(1)
 	for z in "$(df -t zfs | tail -n +2 | awk '{print $1}')"; do
 		zfs mount $z
 	done
+
+	# mount -a equivalent
 	zfs mount -a
 
 	# ZFS NFS
@@ -68,7 +74,8 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 		zfs readonly=off $z
 	done
 fi
-mount -o remount,rw / 2> /dev/null || true
+
+# Swap
 print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
 swapon -a
 
@@ -159,5 +166,5 @@ if [ "$CLEANBOOT" = "true" ]; then
 	done
 fi
 
-# Go to finish()
+# Finish
 finish
