@@ -19,21 +19,41 @@
 .\" SOFTWARE.
 .\"
 .Dd August 2, 2018
-.Dt SVC-STOP 8
+.Dt LSVC 8
 .Os
 .Sh NAME
-.Nm svc-stop
-.Nd used internally by LeanInit
+.Nm lservice
+.Nd service manager for LeanInit
 .Sh SYNOPSIS
-.Nm /etc/leaninit.d/svc-stop service doforce
+.Nm service service-name action
 .Sh DESCRIPTION
-The
-.Nm svc-stop
-script is used internally by
-.Nm lsvc(8)
-for stopping services.
-It is not intended to be used directly by users.
+LeanInit's service utility can do the following actions:
+
+.Nm start
+Start a service
+
+.Nm stop
+Stop a service
+
+.Nm restart
+Restart a service
+
+.Nm enable
+Enable a service
+
+.Nm disable
+Disable a service
+
+.Nm status
+Show a service's current status
+
+.Sh EXAMPLES
+Enable D-Bus:
+service dbus enable
+
+Show the current status of ntpd:
+service ntpd status
 .Sh SEE ALSO
-lsvc(8), rc.api(8), svc-start(8)
+rc(8), rc.svc(8), svc-start(8), svc-stop(8)
 .Sh AUTHOR
 Johnothan King

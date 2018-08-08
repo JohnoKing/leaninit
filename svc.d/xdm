@@ -1,5 +1,7 @@
-# Service for the X Server
-# Set the required service variables
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# Service for X Server Display Managers
 NAME=$XDMNAME
 DAEMON=Xorg
 
@@ -12,3 +14,5 @@ main() {
 	waitforinit dbus dbus-daemon $1
 	fork "$DM"
 }
+
+run xdm $1 $2

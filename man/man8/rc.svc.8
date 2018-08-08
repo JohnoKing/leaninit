@@ -22,28 +22,29 @@
 .Dt RC.API 8
 .Os
 .Sh NAME
-.Nm rc.api
+.Nm rc.svc
 .Nd provides functions and variables to LeanInit scripts
 .Sh DESCRIPTION
 The
-.Nm rc.api
+.Nm rc.svc
 script is responsible for reading
 .Em /etc/leaninit.d/rc.conf,
 then providing all required
 variables and functions to LeanInit's various scripts, including
-.Nm rc(8), rc.shutdown(8), svc-start(8)
-and
-.Nm svc-stop(8).
+.Nm rc(8), rc.shutdown(8) and scripts located in
+.Em /etc/leaninit.d/svc.d
 .Pp
-.Nm RC.API
-provides the following functions and variables:
+
+The following functions and variables are provided by
+.Nm rc.svc:
 
 .Em $PATH
-.Nm rc.api
+.Nm rc.svc
 will set the path to
 .Em /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin,
 then source
 .Em /etc/profile
+
 
 .Nm print
 This function prints formatted output to
@@ -53,10 +54,12 @@ and
 
 $2 defines the * color and $3 defines the text color.
 
+
 .Em $COLOR
-.Nm rc.api
+.Nm rc.svc
 provides ANSI color and format variables, intended for use with
 .Nm print().
+
 
 .Nm waitforinit
 This function allows scripts to have basic dependency management,
@@ -66,6 +69,13 @@ It will only run if
 is set to init (which prevents this function from running when
 manually starting services).
 
+
+.Nm run
+This function is used to run scripts with standard arguments such as 'start' and 'stop'.
+It is should be passed
+.Em $3
+for usage with
+.Nm rc(8).
 .Sh FILES
 .Em /etc/leaninit.d/rc.conf
 Provides config settings for
@@ -84,6 +94,6 @@ Print colored output to
 print "General informative message..." ${BLUE} ${WHITE}
 
 .Sh SEE ALSO
-rc(8), rc.shutdown(8), rc.conf(5), svc-start(8), svc-stop(8), fork(1)
+rc(8), rc.shutdown(8), rc.conf(5), fork(1)
 .Sh AUTHOR
 Johnothan King

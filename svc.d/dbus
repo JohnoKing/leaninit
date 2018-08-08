@@ -1,10 +1,14 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # D-Bus (required by many other services)
 NAME="D-Bus"
 DAEMON=dbus-daemon
 
-# The main function
 main() {
 	mkdir -p /run/dbus      # Linux /run
 	rm -f /var/run/dbus/pid # FreeBSD PID file
 	dbus-daemon --system
 }
+
+run dbus $1 $2

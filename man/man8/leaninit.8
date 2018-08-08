@@ -29,7 +29,7 @@
 .Oo
 .Nm 0 | 6
 .Sh DESCRIPTION
-LeanInit is a Research Unix/BSD-style init system developed for Linux and FreeBSD operating systems.
+LeanInit is a BSD-style init system developed for Linux and FreeBSD operating systems.
 When LeanInit is executed, it will first check if it is running as
 .Nm PID
 1.
@@ -44,14 +44,14 @@ on Linux and
 .Em /dev/ttyv0
 on FreeBSD. It will then output basic system information
 to the initial tty and run
-.Nm rc(8)
+.Nm lrc(8)
 as a child process. After
-.Nm rc(8)
+.Nm lrc(8)
 is executed, LeanInit will suspend its own execution until it receives a signal.
 .Pp
 If it is not
 .Nm PID
-1, however, LeanInit will instead read from argv to emulate a few System V-like options.
+1, LeanInit will instead emulate a few System V-like options.
 The following options available are:
 .Pp
 .Nm 0
@@ -59,6 +59,10 @@ Power-off
 
 .Nm 6
 Reboot
+
+Passing -s to LeanInit before booting  will cause it to start the
+system in single user mode. Switching to single user mode by running 'init 1'
+is currently not possible.
 .Pp
 .Sh FILES
 .Em /etc/leaninit.d/rc
@@ -71,39 +75,31 @@ does not exist.
 
 .Em /etc/leaninit.d/rc.conf
 Provides config settings for
-.Nm rc(8)
+.Nm lrc(8)
 and LeanInit scripts
 
-.Em /etc/leaninit.d/rc.api
+.Em /etc/leaninit.d/rc.svc
 Provides variables and functions for LeanInit scripts
 
 .Em /etc/leaninit.d/rc.shutdown
-Unmounts and runs sync(8) on all file systems during shutdown,
+Stops all services and unmounts
+on all file systems during shutdown,
 before LeanInit calls
 .Nm reboot(2).
 
 .Em /etc/leaninit.d/svc.d
-Folder containing scripts for starting various extra services (such as D-BUS)
+Folder containing scripts for starting various services (such as D-BUS).
 
 .Em /etc/leaninit.d/svc.e
-Location of svc files created for services enabled by
-.Nm lsvc(8).
-
-.Em /etc/leaninit.d/svc-start
-Internal script which starts services
-
-.Em /etc/leaninit.d/svc-stop
-Internal script which stops services
+Location of all files read to determine if a service is enabled.
 
 .Em /var/log/leaninit/leaninit.log
-Default log file for LeanInit
-
-.Em /var/log/leaninit/leaninit.log.old
-Log file from the previous instance of LeanInit
+Default log file for LeanInit, used by
+.Nm rc.svc(8).
 
 .Em /var/run/leaninit
 Default location for LeanInit's .status and PID files
 .Sh SEE ALSO
-lsvc(8), halt(8), rc(8), rc.conf(5), rc.api(8), lttys(5), svc-start(8), svc-stop(8)
+lhalt(8), lrc(8), lrc.conf(5), lrc.shutdown(8), lservice(8), rc.svc(8), lttys(5), fork(1)
 .Sh AUTHOR
 Johnothan King

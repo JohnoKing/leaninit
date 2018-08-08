@@ -1,8 +1,14 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # dhcpcd (for Linux)
 NAME="dhcpcd"
 DAEMON=dhcpcd
 
-# The main function
 main() {
-	dhcpcd $INTERFACE
+	for i in $INTERFACE; do
+		dhcpcd $INTERFACE
+	done
 }
+
+run dhcpcd $1 $2

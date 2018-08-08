@@ -1,3 +1,6 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # Service for cron
 NAME="cron"
 DAEMON=cron
@@ -5,3 +8,5 @@ DAEMON=cron
 main() {
 	cron -s
 }
+
+run cron $1 $2

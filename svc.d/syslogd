@@ -1,8 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # Daemon for syslog(3)
 NAME="SyslogD"
 DAEMON=syslogd
 
-# The main function
 main() {
 	syslogd -ss
 }
+
+run syslogd $1 $2

@@ -1,8 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # Linux NetworkManager
 NAME="NetworkManager"
 DAEMON=NetworkManager
 
-# The main function
 main() {
 	NetworkManager
 }
+
+run NetworkManager $1 $2

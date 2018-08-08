@@ -23,13 +23,13 @@
 # /etc/leaninit.d/rc.shutdown - Stops all services and unmounts all file systems
 #
 
-# Load rc.api
-. /etc/leaninit.d/rc.api
+# Load rc.svc
+. /etc/leaninit.d/rc.svc
 
 # Stop all services
 if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
 	for s in $(ls /etc/leaninit.d/svc.e); do
-		fork "sh /etc/leaninit.d/svc-stop $s f"
+		fork "sh /etc/leaninit.d/svc.d/$s stop"
 	done
 	until [ ! -r /var/run/leaninit/*.status ]; do
 		false

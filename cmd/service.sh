@@ -20,45 +20,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# svc-stop - used internally by rc and lsvc to stop services
+# /etc/leaninit.d/rc.svc - Functions and variables for execution of LeanInit scrips
 #
 
-# Source rc.api
-. /etc/leaninit.d/rc.api
-
-# Only allow root to run this, with proper arguments
-if [ $(id -u) != 0 ] || [ "$1" = "" ]; then
-	print "This script is only meant for internal use!" nolog ${RED} ${LIGHT_RED}
+# Usage info
+usage() {
+	echo "Usage: service service-name action ..."
+	echo "Potential actions:"
+	echo "  start"
+	echo "  stop"
+	echo "  restart"
+	echo "  enable"
+	echo "  disable"
+	echo "  status"
 	exit 1
+}
+
+# Exit when not given proper arguments
+if [ "$2" = "" ] || [ ! -r "/etc/leaninit.d/svc.d/$1" ]; then
+	usage
 fi
 
-# Source the service's script
-. /etc/leaninit.d/svc.d/$1
-
-# Do not attempt to run if the service is not running
-if [ "$(pgrep -x $DAEMON)" = "" ]; then
-	print "$NAME is not running" nolog ${LIGHT_PURPLE} ${YELLOW}
-	exit 0
-fi
-
-# Stop $NAME
-print "Stopping $NAME..." log ${BLUE} ${WHITE}
-pkill -x $DAEMON
-
-# Exit with error if the service failed to stop
-RET=$?
-if [ "$2" != "f" ]; then
-	if [ $RET != 0 ]; then
-		print "$NAME failed to stop (pkill exited with status $RET)" log ${RED} ${LIGHT_RED}
-	fi
-	exit $RET
-fi
-
-# Send SIGKILL if SIGTERM did not work (force only)
-print "Sending $NAME SIGKILL..." log ${BLUE} ${LIGHT_GRAY}
-pkill -KILL -x $DAEMON
-
-# Exit
-print "Stopped $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
-rm -f /var/run/leaninit/$1.status
-exit 0
+# Execute the service directly
+exec /etc/leaninit.d/svc.d/$1 $2

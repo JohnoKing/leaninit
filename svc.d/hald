@@ -1,9 +1,13 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # HALD
 NAME="HALD"
 DAEMON=hald
 
-# The main function
 main() {
 	waitforinit dbus dbus-daemon $1
 	hald --daemon=yes --use-syslog
 }
+
+run hald $1 $2

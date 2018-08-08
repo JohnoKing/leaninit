@@ -1,0 +1,189 @@
+#!/bin/sh
+#
+# Copyright (c) 2018 Johnothan King. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# /etc/leaninit.d/rc.svc - Functions and variables for execution of LeanInit scrips
+#
+
+# Just in case, set a PATH variable in case /etc/profile does not contain one
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
+# Load /etc/profile and /etc/leaninit.d/rc.conf
+. /etc/profile
+. /etc/leaninit.d/rc.conf
+
+# Format Variables
+RESET='\033[0m'
+BOLD='\033[1m'
+FAINT='\033[2m'
+ITALIC='\033[3m'
+UNDERLINE='\033[4m'
+
+# Color Variables
+BLACK='\033[30m'
+RED='\033[31m'
+GREEN='\033[32m'
+BROWN='\033[33m'
+BLUE='\033[34m'
+PURPLE='\033[35m'
+CYAN='\033[36m'
+LIGHT_GRAY='\033[37m'
+GRAY='\033[1;30m'
+LIGHT_RED='\033[1;31m'
+LIGHT_GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+LIGHT_BLUE='\033[1;34m'
+LIGHT_PURPLE='\033[1;35m'
+LIGHT_CYAN='\033[1;36m'
+WHITE='\033[1;37m'
+
+# Wait for another service if it is enabled
+waitforinit() {
+	if [ -r /etc/leaninit.d/svc.e/$1 ] && [ "$3" = init ]; then
+		until [ "$(pgrep -x $2)" != "" ]; do
+			wait
+			sleep 0.2
+		done
+		if [ "$4" != "" ]; then
+			until [ -r $4 ]; do
+				false
+			done
+		fi
+	fi
+}
+
+# Print output properly (use this instead of echo)
+print() {
+	printf "${BOLD}${3}%s ${4}%s${RESET}\n" "*" "${1}"
+	if [ "$2" != "nolog" ]; then
+		echo "$1" >> $LOGFILE
+	fi
+}
+
+# Reserved for run()
+__start() {
+	# Return if the service is active
+	if [ -r /var/run/leaninit/$1.status ]; then
+		print "$NAME is already running" nolog ${LIGHT_PURPLE} ${YELLOW}
+		return 0
+	fi
+
+	# Run main()
+	print "Starting $NAME..." log ${BLUE} ${WHITE}
+	main $2
+
+	# Finish by creating the service's .status file
+	RET=$?
+	if [ $RET = 0 ]; then
+		print "Started $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
+		echo "Started" > /var/run/leaninit/$1.status
+	else
+		print "$NAME failed to start (exited with status $RET)" log ${RED} ${LIGHT_RED}
+		echo "Failure" > /var/run/leaninit/$1.status
+	fi
+}
+
+__stop() {
+	# Return if the service is not active
+	if [ ! -r /var/run/leaninit/$1.status ]; then
+		print "$NAME is not running" nolog ${LIGHT_PURPLE} ${YELLOW}
+		return 0
+	fi
+
+	# Stop $NAME
+	print "Stopping $NAME..." log ${BLUE} ${WHITE}
+	pkill -x $DAEMON
+	pkill -KILL -x $DAEMON
+
+	# Remove the .status file for the service
+	print "Stopped $NAME successfully" log ${LIGHT_GREEN} ${WHITE}
+	rm -f /var/run/leaninit/$1.status
+}
+
+# Run function for directly executing init scripts
+run() {
+	# Checks for root
+	if [ "$(id -u)" != 0 ]; then
+		print "This must be run as root!" nolog ${RED} ${LIGHT_RED}
+		exit 1
+	fi
+
+	# Must be given an argument
+	if [ "$2" = "" ]; then
+		echo "Usage: $1 [enable|disable|start|stop|restart|status]"
+		exit 1
+	fi
+
+	# Handle arguments
+	case $2 in
+		enable)
+			if [ -r /etc/leaninit.d/svc.e/$1 ]; then
+				print "$NAME is already enabled" nolog ${LIGHT_PURPLE} ${YELLOW}
+			else
+				touch /etc/leaninit.d/svc.e/$1
+				RET=$?
+				if [ $RET != 0 ]; then
+					print "Could not enable $NAME" log ${RED} ${LIGHT_RED}
+				else
+					print "$NAME has been enabled" log ${BLUE} ${WHITE}
+				fi
+			fi
+			;;
+		disable)
+			if [ ! -r /etc/leaninit.d/svc.e/$1 ]; then
+				print "$NAME is already disabled" nolog ${LIGHT_PURPLE} ${YELLOW}
+			else
+				rm /etc/leaninit.d/svc.e/$1
+				RET=$?
+				if [ $RET != 0 ]; then
+					print "Could not disable $NAME" log ${RED} ${LIGHT_RED}
+				else
+					print "$NAME has been disabled" log ${BLUE} ${WHITE}
+				fi
+			fi
+			;;
+		start)
+			__start $1 $3 ;;
+		stop)
+			__stop $1 ;;
+		restart)
+			__stop $1
+			__start $1 $3 ;;
+		status)
+			RET=0
+			if [ ! -r /var/run/leaninit/$3.status ]; then
+				print "There is no current status for $NAME" nolog ${LIGHT_BLUE} ${WHITE}
+			else
+				print "$NAME has the status of: $(cat /var/run/leaninit/$3.status)" nolog ${LIGHT_BLUE} ${WHITE}
+			fi ;;
+		*)
+			echo "Illegal command - $2"
+			echo "Valid commands:"
+			echo "  enable"
+			echo "  disable"
+			echo "  start"
+			echo "  stop"
+			echo "  restart"
+			echo "  status"
+			exit 1 ;;
+	esac
+	exit $RET
+}

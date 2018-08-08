@@ -21,8 +21,8 @@
 # SOFTWARE.
 #
 
-# Source rc.api
-. /etc/leaninit.d/rc.api
+# Source rc.svc
+. /etc/leaninit.d/rc.svc
 
 # Set the $GETTY variable
 GETTY=$(grep getty /etc/leaninit.d/ttys | sed '/#/d')
@@ -156,7 +156,7 @@ fi
 
 # Start the services
 for sv in $(ls /etc/leaninit.d/svc.e); do
-	fork "/etc/leaninit.d/svc-start $sv init"
+	fork "/etc/leaninit.d/svc.d/$sv start init"
 done
 
 # Wait for all services to finish starting before launching gettys

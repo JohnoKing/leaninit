@@ -1,10 +1,14 @@
-# ConsoleKit service
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# Service for ConsoleKit
 NAME="ConsoleKit"
 DAEMON=console-kit-daemon
 
-# The main function
 main() {
 	# D-Bus is required to run ConsoleKit
 	waitforinit dbus dbus-daemon $1
 	console-kit-daemon
 }
+
+run consolekit $1 $2

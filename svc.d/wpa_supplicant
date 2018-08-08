@@ -1,11 +1,15 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # WPA Supplicant service (intended for FreeBSD, may also work on Linux)
 NAME="WPA Supplicant"
 DAEMON=wpa_supplicant
 
-# Launch wpa_supplicant
 main() {
 	waitforinit wpa_supplicant wpa_supplicant $1
 	sleep 0.5
 	pkill -KILL -x wpa_supplicant
 	wpa_supplicant -s -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf -P /var/run/leaninit/wpa.pid
 }
+
+run wpa_supplicant $1 $2

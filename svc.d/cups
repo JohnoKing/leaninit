@@ -1,6 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# Service for CUPS
 NAME="CUPS"
-DAEMON="cupsd"
+DAEMON=cupsd
 
 main() {
 	cupsd
 }
+
+run cups $1 $2

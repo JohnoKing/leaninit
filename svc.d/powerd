@@ -1,8 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # CPU frequency control (FreeBSD)
 NAME="PowerD"
 DAEMON=powerd
 
-# The main function
 main() {
 	powerd
 }
+
+run powerd $1 $2

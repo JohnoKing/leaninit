@@ -1,3 +1,6 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # Secure SHell Daemon
 NAME="SSH"
 DAEMON=sshd
@@ -11,3 +14,5 @@ main() {
 	ssh-keygen -A >> /dev/null
 	command $(command -v sshd)
 }
+
+run sshd $1 $2

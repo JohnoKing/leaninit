@@ -30,12 +30,8 @@ To boot from LeanInit, append the following line to `/boot/loader.conf`:
 `init_path="/sbin/leaninit"`
 
 ## Usage
-### Enabling and disabling services
-The tool for enabling and disabling services is `lsvc`.
-To enable a service, use `lsvc -e yourservice`;
-and to disable a service, use `lsvc -d yourservice`. A list of services
-LeanInit includes scripts for can be found [here](https://gitlab.com/JohnoKing/leaninit/tree/master/svc.d)
-To see extra information on `lsvc`, run `lsvc --help` to see all of the options `lsvc` accepts.
+Most information on LeanInit is located in it's man pages. 
+To read the main man page, run `man leaninit`.
 
 ### /etc/leaninit.d/rc.conf
 `/etc/leaninit.d/rc.conf` allows you to change your hostname, keyboard layout (Linux), 

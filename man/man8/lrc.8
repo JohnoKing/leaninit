@@ -33,22 +33,17 @@ services in
 .Em /etc/leaninit.d/svce
 using
 .Nm fork(1),
-and starting a
+and starting
 .Nm getty(8)
 on all ttys listed in
 .Em /etc/leaninit.d/ttys.
 .Pp
-Like
-.Nm lsvc(8),
-.Nm rc
-will start services by calling
-.Nm svc-start(8).
 .Nm RC
 will log the output from booting the system to
 .Em /var/log/leaninit/leaninit.log
 by default.
 .Sh FILES
-.Em /etc/leaninit.d/rc.api
+.Em /etc/leaninit.d/rc.svc
 Provides variables and functions to
 .Nm rc
 
@@ -59,12 +54,9 @@ and
 .Nm LeanInit
 services
 
-.Em /etc/leaninit.d/svc-start
-Internal script which starts services
-
 .Em /var/log/leaninit/leaninit.log
 Default log file for LeanInit
 .Sh SEE ALSO
-rc(8), rc.conf(5), rc.api(8), lttys(5), svc-start(8), fork(1)
+rc(8), rc.conf(5), rc.svc(8), lttys(5), fork(1)
 .Sh AUTHOR
 Johnothan King

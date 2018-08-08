@@ -1,3 +1,6 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
 # Network Time Protocol Daemon
 NAME="ntpd"
 DAEMON=ntpd
@@ -8,3 +11,5 @@ main() {
 	waitforinit dhcpcd dhcpcd $1
 	ntpd
 }
+
+run ntpd $1 $2
