@@ -64,11 +64,11 @@ provides ANSI color and format variables, intended for use with
 .Nm waitforinit
 This function allows scripts to have basic dependency management,
 by letting them wait for the specified service to start first.
-It will only run if
+If
 .Em $3
-is set to init (which prevents this function from running when
-manually starting services).
-
+is set,
+.Nm waitforinit
+will also wait for the file defined by $3 to exist.
 
 .Nm run
 This function is used to run scripts with standard arguments such as 'start' and 'stop'.

@@ -55,6 +55,9 @@ mount -a
 mount -o remount,rw / 2> /dev/null || true
 
 DEFLINUX
+# Mount securityfs
+mount -t securityfs securityfs /sys/kernel/security
+
 # Support cgroups
 print "Mounting /sys/fs/cgroup..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -t tmpfs cgroup /sys/fs/cgroup

@@ -11,7 +11,7 @@ main() {
 		echo 'The xdm service failed to start due to $DM being invalid!'
 		return 1
 	fi
-	waitforinit dbus dbus-daemon $1
+	waitforinit dbus dbus-daemon
 	fork "$DM"
 }
 

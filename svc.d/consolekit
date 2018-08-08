@@ -7,7 +7,7 @@ DAEMON=console-kit-daemon
 
 main() {
 	# D-Bus is required to run ConsoleKit
-	waitforinit dbus dbus-daemon $1
+	waitforinit dbus dbus-daemon
 	console-kit-daemon
 }
 
