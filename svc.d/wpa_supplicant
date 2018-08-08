@@ -9,7 +9,7 @@ main() {
 	waitforinit wpa_supplicant wpa_supplicant $1
 	sleep 0.5
 	pkill -KILL -x wpa_supplicant
-	wpa_supplicant -s -B -Dbsd -i${INTERFACE} -c/etc/wpa_supplicant.conf -P /var/run/leaninit/wpa.pid
+	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P /var/run/leaninit/wpa.pid
 }
 
 run wpa_supplicant $1 $2

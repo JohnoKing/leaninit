@@ -6,8 +6,8 @@ NAME="dhcpcd"
 DAEMON=dhcpcd
 
 main() {
-	for i in $INTERFACE; do
-		dhcpcd $INTERFACE
+	for i in $NETFACE; do
+		dhcpcd $NETFACE
 	done
 }
 
