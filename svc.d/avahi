@@ -1,0 +1,13 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# avahi
+NAME="Avahi"
+DAEMON=avahi-daemon
+
+main() {
+	waitforinit dbus dbus-daemon
+	fork "avahi-daemon"
+}
+
+run avahi $1 $2
