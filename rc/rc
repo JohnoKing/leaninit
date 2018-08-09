@@ -168,8 +168,7 @@ fi
 
 # Start the services
 for sv in $(ls /etc/leaninit.d/svc.e); do
-	echo "$sv:" >> $LOGFILE
-	fork "INIT=true /etc/leaninit.d/svc.d/$sv start >> $LOGFILE"
+	fork "INIT=true /etc/leaninit.d/svc.d/$sv start"
 done
 
 # Finish

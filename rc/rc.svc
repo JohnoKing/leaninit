@@ -88,7 +88,7 @@ __start() {
 
 	# Run main()
 	print "Starting $NAME..." log ${BLUE} ${WHITE}
-	main $2
+	main $2 >> /var/log/leaninit/leaninit.log
 
 	# Finish by creating the service's .status file
 	RET=$?
