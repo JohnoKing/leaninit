@@ -57,7 +57,7 @@ WHITE='\033[1;37m'
 
 # Wait for another service if it is enabled
 waitforinit() {
-	if [ -r /etc/leaninit.d/svc.e/$1 ]; then
+	if [ -r /etc/leaninit.d/svc.e/$1 ] && [ "$INIT" = "true" ]; then
 		until [ "$(pgrep -x $2)" != "" ]; do
 			wait
 			sleep 0.2
