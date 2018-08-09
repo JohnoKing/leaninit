@@ -13,6 +13,9 @@ main() {
 		false
 	done
 	/usr/libexec/elogind/elogind-uaccess-command /dev
+	for fs in $(df -t tmpfs | tail -n +2 | awk '{print $2}'); do
+		/usr/libexec/elogind/elogind-uaccess-command $fs
+	done
 }
 
 run elogind $1 $2
