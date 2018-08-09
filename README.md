@@ -3,7 +3,7 @@ LeanInit
 _A fast init system_
 
 ## What is this
-This is a small init system that I made for myself, written from scratch.
+This is a somewhat small init system that I made for myself, written from scratch.
 I was motivated to make this init system, because when I was cleaning up
 [v7init](https://gitlab.com/JohnoKing/v7init) (my port of the UNIX V7 init system to Linux), I found there was so much useless
 code I would be better off rewriting an init system from scratch, using a
