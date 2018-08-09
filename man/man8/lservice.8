@@ -18,8 +18,8 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 2, 2018
-.Dt LSVC 8
+.Dd August 8, 2018
+.Dt SERVICE 8
 .Os
 .Sh NAME
 .Nm lservice
@@ -30,22 +30,26 @@
 LeanInit's service utility can do the following actions:
 
 .Nm start
-Start a service
+Start a service. Equivalent to '/etc/leaninit.d/svc.d/svcname start'.
 
 .Nm stop
-Stop a service
+Stop a service. Equivalent to '/etc/leaninit.d/svc.d/svcname stop'.
 
 .Nm restart
-Restart a service
+Restart a service, or start it if it isn't running.
+Equivalent to '/etc/leaninit.d/svc.d/svcname restart'.
 
 .Nm enable
-Enable a service
+Enable a service by creating a file for it in /etc/leaninit/svc.e.
+Equivalent to '/etc/leaninit.d/svc.d/svcname enable' or 'touch /etc/leaninit.d/svc.e/svcname'.
 
 .Nm disable
-Disable a service
+Disable a service by removing its file in /etc/leaninit/svc.d.
+Equivalent to '/etc/leaninit.d/svc.d/svcname disable' or 'rm /etc/leaninit.d/svc.e/svcname'.
 
 .Nm status
-Show a service's current status
+Show a service's current status.
+Equivalent to '/etc/leaninit.d/svc.d/svcname status' or 'cat /var/run/leaninit/svcname.status'.
 
 .Sh EXAMPLES
 Enable D-Bus:
@@ -53,6 +57,9 @@ service dbus enable
 
 Show the current status of ntpd:
 service ntpd status
+
+Restart the X Server:
+service xdm restart
 .Sh SEE ALSO
 rc(8), rc.svc(8), svc-start(8), svc-stop(8)
 .Sh AUTHOR
