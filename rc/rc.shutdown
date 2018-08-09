@@ -40,11 +40,12 @@ fi
 
 # Unmount all drives
 mount -o remount,ro / || true
-umount -a
 if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs umount -a
 	zfs unshare -a
 fi
+umount -A
+swapoff -a
 
 # Exit
 exit 0
