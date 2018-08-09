@@ -115,6 +115,8 @@ echo "LeanInit is running on $(uname -srm)" > $LOGFILE
 print "Launching sysctl(8)..." log ${LIGHT_BLUE} ${WHITE}
 DEFLINUX
 sysctl --system
+sysctl fs.protected_hardlinks=1 # This should always be set to 1
+sysctl fs.protected_symlinks=1
 ENDEF
 
 DEFBSD
