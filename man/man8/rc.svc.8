@@ -69,11 +69,14 @@ If
 is set,
 .Nm waitforinit
 will also wait for the file defined by $3 to exist.
+This function will only run if
+.Em $INIT
+is set to true (this prevents it from running when manually starting services unless you pass INIT=true to the service).
 
 .Nm run
 This function is used to run scripts with standard arguments such as 'start' and 'stop'.
 It is should be passed
-.Em $3
+.Em $2
 for usage with
 .Nm rc(8).
 .Sh FILES
