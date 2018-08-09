@@ -63,12 +63,13 @@ mount -t securityfs securityfs /sys/kernel/security
 print "Mounting /sys/fs/cgroup..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -t tmpfs cgroup /sys/fs/cgroup
 
-# Load all modules specified in /etc/modules-load.d
+# Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -r /etc/modules-load.d/* ]; then
 	print "Loading kernel modules..." log ${LIGHT_BLUE} ${WHITE}
 	for m in "$(cat /etc/modules-load.d/* | sed '/#/d')"; do
 		modprobe $m
 	done
+	modprobe -a "$(kmod static-nodes | grep 'Module' | sed 's/Module://g')"
 fi
 ENDEF
 
@@ -97,6 +98,18 @@ fi
 print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
 swapon -a
 
+# sysctl(8)
+print "Launching sysctl(8)..." log ${LIGHT_BLUE} ${WHITE}
+DEFLINUX
+sysctl --system
+sysctl fs.protected_hardlinks=1 # This should always be set to 1
+sysctl fs.protected_symlinks=1
+ENDEF
+
+DEFBSD
+sysctl -f /etc/sysctl.conf
+ENDEF
+
 # Remove the nologin and .status files
 print "Removing any existing nologin files..." nolog ${LIGHT_PURPLE} ${WHITE}
 rm -f /run/nologin /var/run/nologin
@@ -110,18 +123,6 @@ mv $LOGFILE $LOGFILE.old
 mv $LOGFILE.2 $LOGFILE.old.2
 mv $LOGFILE.3 $LOGFILE.old.3
 echo "LeanInit is running on $(uname -srm)" > $LOGFILE
-
-# sysctl(8)
-print "Launching sysctl(8)..." log ${LIGHT_BLUE} ${WHITE}
-DEFLINUX
-sysctl --system
-sysctl fs.protected_hardlinks=1 # This should always be set to 1
-sysctl fs.protected_symlinks=1
-ENDEF
-
-DEFBSD
-sysctl -f /etc/sysctl.conf
-ENDEF
 
 DEFLINUX
 # Launch eudev (required for the X server to function)
