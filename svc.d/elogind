@@ -3,10 +3,16 @@
 
 # elogind
 NAME="elogind"
-DAEMON=elogind
+DAEMON=elogind-daemon
 
 main() {
-	fork "/usr/libexec/elogind/elogind"
+	waitforinit dbus dbus-daemon
+	sleep 0.5
+	/usr/libexec/elogind/elogind --daemon
+	until [ "$(pgrep -x elogind-daemon)" != ""]; do
+		false
+	done
+	/usr/libexec/elogind/elogind-uaccess-command /dev
 }
 
 run elogind $1 $2
