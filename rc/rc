@@ -168,17 +168,9 @@ fi
 
 # Start the services
 for sv in $(ls /etc/leaninit.d/svc.e); do
-	fork "INIT=true /etc/leaninit.d/svc.d/$sv start"
+	echo "$sv:" >> $LOGFILE
+	fork "INIT=true /etc/leaninit.d/svc.d/$sv start >> $LOGFILE"
 done
-
-# Wait for all services to finish starting before launching gettys
-if [ "$CLEANBOOT" = "true" ]; then
-	for sv in $(ls /etc/leaninit.d/svc.e); do
-		until [ -r /var/run/leaninit/$sv.status ]; do
-			false
-		done
-	done
-fi
 
 # Finish
 finish
