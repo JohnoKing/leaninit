@@ -156,6 +156,12 @@ if [ "$HOSTNAME" != "" ]; then
 fi
 
 DEFLINUX
+# Set the timezone
+if [ "$TIMEZONE" != "" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
+	print "Setting the timezone to $TIMEZONE..." nolog ${LIGHT_BLUE} ${WHITE}
+	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+fi
+
 # Set the keyboard layout (this requires kbd to work)
 if [ "$KEYMAP" != "" ]; then
 	print "Setting the keyboard layout to $KEYMAP..." log ${LIGHT_BLUE} ${WHITE}
