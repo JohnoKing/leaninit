@@ -65,6 +65,9 @@ waitforinit() {
 		if [ "$3" != "" ]; then
 			until [ -r $3 ]; do
 				false
+				if [ "$(cat /var/run/leaninit/$1.status)" = "Failure" ]; then
+					return 1
+				fi
 			done
 		fi
 	fi
