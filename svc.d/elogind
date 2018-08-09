@@ -9,11 +9,11 @@ main() {
 	waitforinit dbus dbus-daemon
 	sleep 0.5
 	/usr/libexec/elogind/elogind --daemon
-	until [ "$(pgrep -x elogind-daemon)" != ""]; do
+	until [ "$(pgrep -x elogind-daemon)" != "" ]; do
 		false
 	done
 	/usr/libexec/elogind/elogind-uaccess-command /dev
-	for fs in $(df -t tmpfs | tail -n +2 | awk '{print $2}'); do
+	for fs in $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
 		/usr/libexec/elogind/elogind-uaccess-command $fs
 	done
 }
