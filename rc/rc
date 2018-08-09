@@ -105,8 +105,10 @@ rm -rf /var/run/leaninit
 mkdir -p /var/run/leaninit
 
 # Logging
-touch $LOGFILE
+touch $LOGFILE $LOGFILE.2 $LOGFILE.3
 mv $LOGFILE $LOGFILE.old
+mv $LOGFILE.2 $LOGFILE.old.2
+mv $LOGFILE.3 $LOGFILE.old.3
 echo "LeanInit is running on $(uname -srm)" > $LOGFILE
 
 # sysctl(8)
