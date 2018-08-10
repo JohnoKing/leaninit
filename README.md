@@ -30,7 +30,7 @@ To boot from LeanInit, append the following line to `/boot/loader.conf`:
 `init_path="/sbin/leaninit"`
 
 ## Usage
-Most information on LeanInit is located in it's man pages. 
+Most information on LeanInit is located in its man pages. 
 To read the main man page, run `man leaninit`.
 
 ### /etc/leaninit.d/rc.conf
