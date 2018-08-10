@@ -43,6 +43,16 @@ int main(int argc, char *argv[])
 		// Open DEFAULT_TTY
 		open_tty();
 
+		// Print to DEFAULT_TTY the current platform LeanInit is running on
+		struct utsname uts;
+		uname(&uts);
+		printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s" COLOR_RESET "\n", uts.sysname, uts.release, uts.machine);
+
+#ifdef FreeBSD
+		// Login as root (FreeBSD)
+		setlogin("root");
+#endif
+
 		// Single user support
 		int args;
 		while((args = getopt(argc, argv, "s")) != -1) {
@@ -83,22 +93,11 @@ int main(int argc, char *argv[])
 	}
 }
 
-// Open DEFAULT_TTY
+// Open DEFAULT_TTY (close(2) should not be run)
 static void open_tty(void)
 {
-	// close(2) should not be run
 	int tty = open(DEFAULT_TTY, O_RDWR);
 	login_tty(tty);
-
-	// Print to DEFAULT_TTY the current platform LeanInit is running on
-	struct utsname uts;
-	uname(&uts);
-	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s" COLOR_RESET "\n", uts.sysname, uts.release, uts.machine);
-
-#ifdef FreeBSD
-	// Login as root (FreeBSD)
-	setlogin("root");
-#endif
 }
 
 
