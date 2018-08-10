@@ -53,7 +53,7 @@ mount -t tmpfs cgroup /sys/fs/cgroup
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -r /etc/modules-load.d/* ]; then
-	print "Loading kernel modules..." log ${LIGHT_BLUE} ${WHITE}
+	print "Loading kernel modules..." log ${BLUE} ${WHITE}
 	for m in "$(cat /etc/modules-load.d/* | sed '/#/d')"; do
 		modprobe $m
 	done
@@ -87,7 +87,7 @@ print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
 swapon -a
 
 # sysctl(8)
-print "Launching sysctl(8)..." log ${LIGHT_BLUE} ${WHITE}
+print "Launching sysctl(8)..." log ${BLUE} ${WHITE}
 DEFLINUX
 sysctl --system
 sysctl fs.protected_hardlinks=1 # This should always be set to 1
@@ -118,7 +118,7 @@ echo "LeanInit is running on $(uname -srm)" > $LOGFILE
 
 DEFLINUX
 # Launch eudev (required for the X server to function)
-print "Starting udev..." log ${LIGHT_BLUE} ${WHITE}
+print "Starting udev..." log ${BLUE} ${WHITE}
 udevd --daemon
 udevadm trigger --type=devices
 udevadm trigger --type=subsystems
@@ -127,18 +127,18 @@ ENDEF
 
 DEFBSD
 # Launch devd (vidcontrol -m is required for moused to function)
-print "Starting devd..." log ${LIGHT_BLUE} ${WHITE}
+print "Starting devd..." log ${BLUE} ${WHITE}
 vidcontrol -m on
 fork "devd"
 ENDEF
 
 DEFLINUX
 # Set up network interfaces
-print "Setting up a loopback interface..." log ${LIGHT_BLUE} ${WHITE}
+print "Setting up a loopback interface..." log ${BLUE} ${WHITE}
 ip link set up lo
 if [ "$INTERFACE" != "" ]; then
 	for n in "$INTERFACE"; do
-		print "Setting up $n for networking..." log ${LIGHT_BLUE} ${WHITE}
+		print "Setting up $n for networking..." log ${BLUE} ${WHITE}
 		ip link set up $n
 	done
 fi
@@ -146,20 +146,20 @@ ENDEF
 
 # Set the hostname
 if [ "$HOSTNAME" != "" ]; then
-	print "Setting the hostname to $HOSTNAME..." log ${LIGHT_BLUE} ${WHITE}
+	print "Setting the hostname to $HOSTNAME..." nolog ${LIGHT_PURPLE} ${WHITE}
 	fork "hostname $HOSTNAME"
 fi
 
 # Set the timezone
 if [ "$TIMEZONE" != "" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
-	print "Setting the timezone to $TIMEZONE..." nolog ${LIGHT_BLUE} ${WHITE}
+	print "Setting the timezone to $TIMEZONE..." nolog ${LIGHT_PURPLE} ${WHITE}
 	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 fi
 
 DEFLINUX
 # Set the keyboard layout (this requires kbd to work)
 if [ "$KEYMAP" != "" ]; then
-	print "Setting the keyboard layout to $KEYMAP..." log ${LIGHT_BLUE} ${WHITE}
+	print "Setting the keyboard layout to $KEYMAP..." log ${BLUE} ${WHITE}
 	fork "loadkeys $KEYMAP"
 fi
 ENDEF
@@ -175,7 +175,7 @@ for sv in $(ls /etc/leaninit.d/svc.e); do
 done
 
 # Open gettys on the ttys specified in /etc/leaninit.d/ttys
-print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${LIGHT_BLUE} ${WHITE}
+print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
 for tty in $(cat /etc/leaninit.d/ttys | sed '/#/d' | sed '/getty/d'); do
 	fork "while true; do $GETTY $GETTYMODE $tty; done"
 done

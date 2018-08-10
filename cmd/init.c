@@ -148,7 +148,7 @@ static int single(const char *msg)
 
 	// Use a shell of the user's choice
 	char shell[100];
-	printf("Shell to use for single user (defaults to /bin/sh):\n");
+	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Shell to use for single user (defaults to /bin/sh):" COLOR_RESET "\n");
 	scanf("%s", shell);
 
 	// Error checking

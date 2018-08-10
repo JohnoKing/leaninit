@@ -60,9 +60,29 @@ Power-off
 .Nm 6
 Reboot
 
-Passing -s to LeanInit before booting  will cause it to start the
+Passing -s to LeanInit before booting will cause it to start the
 system in single user mode. Switching to single user mode by running 'init 1'
 is currently not possible.
+
+LeanInit outputs text with the following color coding:
+
+.Nm Cyan star and White text:
+A message from the LeanInit binary
+
+.Nm Light Purple star and White text:
+A generic message that is not logged
+
+.Nm Blue star and White text:
+A generic message that is logged
+
+.Nm Light Green star and White text:
+A message that indicates an attempted action succeeded
+
+.Nm Light Purple star and Yellow text:
+A warning message
+
+.Nm Red star and Red text:
+An error message
 .Pp
 .Sh FILES
 .Em /etc/leaninit.d/rc

@@ -172,9 +172,9 @@ run() {
 		status)
 			RET=0
 			if [ ! -r /var/run/leaninit/$3.status ]; then
-				print "There is no current status for $NAME" nolog ${LIGHT_BLUE} ${WHITE}
+				print "There is no current status for $NAME" nolog ${LIGHT_PURPLE} ${WHITE}
 			else
-				print "$NAME has the status of: $(cat /var/run/leaninit/$3.status)" nolog ${LIGHT_BLUE} ${WHITE}
+				print "$NAME has the status of: $(cat /var/run/leaninit/$3.status)" nolog ${LIGHT_PURPLE} ${WHITE}
 			fi ;;
 		*)
 			echo "Illegal command - $2"
