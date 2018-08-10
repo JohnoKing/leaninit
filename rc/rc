@@ -27,18 +27,6 @@
 # Set the $GETTY variable
 GETTY=$(grep getty /etc/leaninit.d/ttys | sed '/#/d')
 
-# Final operations rc does before exiting
-finish() {
-	# Open gettys on the ttys specified in /etc/leaninit.d/ttys
-	print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${LIGHT_BLUE} ${WHITE}
-	for tty in $(cat /etc/leaninit.d/ttys | sed '/#/d' | sed '/getty/d'); do
-		fork "while true; do $GETTY $GETTYMODE $tty; done"
-	done
-
-	# Return to init
-	exit 0
-}
-
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog ${LIGHT_PURPLE} ${WHITE}
 DEFLINUX
@@ -107,7 +95,11 @@ sysctl fs.protected_symlinks=1
 ENDEF
 
 DEFBSD
-sysctl -f /etc/sysctl.conf
+for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
+	if [ -r $s ]; then
+		sysctl -f /etc/sysctl.conf
+	fi
+done
 ENDEF
 
 # Remove the nologin and .status files
@@ -182,5 +174,11 @@ for sv in $(ls /etc/leaninit.d/svc.e); do
 	fork "INIT=true /etc/leaninit.d/svc.d/$sv start"
 done
 
-# Finish
-finish
+# Open gettys on the ttys specified in /etc/leaninit.d/ttys
+print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${LIGHT_BLUE} ${WHITE}
+for tty in $(cat /etc/leaninit.d/ttys | sed '/#/d' | sed '/getty/d'); do
+	fork "while true; do $GETTY $GETTYMODE $tty; done"
+done
+
+# Return to init
+exit 0
