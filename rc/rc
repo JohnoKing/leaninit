@@ -25,7 +25,7 @@
 . /etc/leaninit.d/rc.svc
 
 # Set the $GETTY variable
-GETTY=$(grep $MMAP getty /etc/leaninit.d/ttys | grep -v $MMAP '#')
+GETTY=$(grep getty /etc/leaninit.d/ttys | grep -v '#')
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog ${LIGHT_PURPLE} ${WHITE}
@@ -54,7 +54,7 @@ mount -t tmpfs cgroup /sys/fs/cgroup
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -r /etc/modules-load.d/* ]; then
 	print "Loading kernel modules..." log ${BLUE} ${WHITE}
-	for m in "$(cat /etc/modules-load.d/* | grep -v $MMAP '#')"; do
+	for m in "$(cat /etc/modules-load.d/* | grep -v '#')"; do
 		modprobe $m
 	done
 	modprobe -a "$(kmod static-nodes | awk '/Module:/ {print $2}')"
@@ -176,7 +176,7 @@ done
 
 # Open gettys on the ttys specified in /etc/leaninit.d/ttys
 print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
-for tty in $(grep -Ev $MMAP '#|getty' /etc/leaninit.d/ttys); do
+for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
 	fork "while true; do $GETTY $GETTYMODE $tty; done"
 done
 
