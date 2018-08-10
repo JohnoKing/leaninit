@@ -57,7 +57,7 @@ if [ -r /etc/modules-load.d/* ]; then
 	for m in "$(cat /etc/modules-load.d/* | grep -v $MMAP '#')"; do
 		modprobe $m
 	done
-	modprobe -a "$(kmod static-nodes | awk '/Module:/ {gsub("Module:", ""); print}')"
+	modprobe -a "$(kmod static-nodes | awk '/Module:/ {print $2}')"
 fi
 ENDEF
 
