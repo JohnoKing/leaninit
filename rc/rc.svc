@@ -110,8 +110,10 @@ __stop() {
 
 	# Stop $NAME
 	print "Stopping $NAME..." log ${BLUE} ${WHITE}
-	pkill -x $DAEMON
-	pkill -KILL -x $DAEMON
+	for d in $DAEMON; do
+		pkill -x $d
+		pkill -KILL -x $d
+	done
 
 	# Remove the .status file for the service
 	print "Stopped $NAME successfully" log ${LIGHT_GREEN} ${WHITE}

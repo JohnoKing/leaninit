@@ -3,7 +3,7 @@
 
 # Service for X Server Display Managers
 NAME=$XDMNAME
-DAEMON=Xorg
+DAEMON="$DM Xorg"
 
 # The main function
 main() {
