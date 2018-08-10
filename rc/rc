@@ -53,7 +53,7 @@ mount -t tmpfs cgroup /sys/fs/cgroup
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -r /etc/modules-load.d/* ]; then
-	print "Loading kernel modules..." log ${BLUE} ${WHITE}
+	print "Loading kernel modules..." nolog ${LIGHT_PURPLE} ${WHITE}
 	for m in "$(cat /etc/modules-load.d/* | grep -v '#')"; do
 		modprobe $m
 	done
@@ -63,6 +63,7 @@ ENDEF
 
 # Mount all ZFS file systems
 if [ "$ZFS_ENABLE" = "true" ]; then
+	print "Mounting all ZFS file systems..." nolog ${LIGHT_PURPLE} ${WHITE}
 
 	# Done for compatibility with beadm(1)
 	for z in "$(df -t zfs | tail -n +2 | awk '{print $1}')"; do
