@@ -112,7 +112,6 @@ __stop() {
 	fi
 
 	# Stop $DAEMON
-	wait
 	until pkill -0 -x $DAEMON; do
 		sleep 7
 		print "Killing $NAME with SIGKILL" log ${LIGHT_PURPLE} ${YELLOW}
