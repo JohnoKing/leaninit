@@ -69,7 +69,7 @@ if [ -r /etc/modules-load.d/* ]; then
 	for m in "$(cat /etc/modules-load.d/* | sed '/#/d')"; do
 		modprobe $m
 	done
-	modprobe -a "$(kmod static-nodes | grep 'Module' | sed 's/Module://g')"
+	modprobe -a "$(kmod static-nodes | grep 'Module:' | sed 's/Module://g')"
 fi
 ENDEF
 
