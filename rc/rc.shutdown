@@ -33,7 +33,9 @@ if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
 	done
 	for st in $(ls /etc/leaninit.d/svc.e); do
 		until [ ! -r /var/run/leaninit/$st.status ]; do
-			false
+			sleep 3
+			print "Waiting for removal of $st.status failed" log ${RED} ${LIGHT_RED}
+			break
 		done
 	done
 fi

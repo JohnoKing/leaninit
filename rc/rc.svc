@@ -59,12 +59,15 @@ WHITE='\033[1;37m'
 waitforinit() {
 	if [ -r /etc/leaninit.d/svc.e/$1 ] && [ "$INIT" = "true" ]; then
 		until [ "$(pgrep -x $2)" != "" ]; do
-			wait
-			sleep 0.2
+			sleep 7
+			print "Failed to start $2..." log ${RED} ${LIGHT_RED}
+			break
 		done
 		if [ "$3" != "" ]; then
 			until [ -r $3 ]; do
-				false
+				sleep 7
+				print "Failed to wait for file $3..." log ${RED} ${LIGHT_RED}
+				break
 			done
 		fi
 	fi
@@ -108,11 +111,12 @@ __stop() {
 		return 0
 	fi
 
-	# Stop $NAME
-	print "Stopping $NAME..." log ${BLUE} ${WHITE}
-	for d in $DAEMON; do
-		pkill -x $d
-		pkill -KILL -x $d
+	# Stop $DAEMON
+	until pkill -0 -x $DAEMON; do
+		sleep 7
+		print "Killing $NAME with SIGKILL" log ${LIGHT_PURPLE} ${YELLOW}
+		pkill -KILL -x $DAEMON
+		break
 	done
 
 	# Remove the .status file for the service
