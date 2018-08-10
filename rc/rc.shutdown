@@ -40,6 +40,11 @@ if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
 	done
 fi
 
+DEFLINUX
+# Stop udev
+udevadm control --exit
+ENDEF
+
 # Unmount all drives
 mount -o remount,ro / || true
 if [ "$ZFS_ENABLE" = "true" ]; then
