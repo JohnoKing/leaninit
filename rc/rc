@@ -86,6 +86,13 @@ fi
 print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
 swapon -a
 
+# Logging
+touch $LOGFILE $LOGFILE.2 $LOGFILE.3
+mv $LOGFILE $LOGFILE.old
+mv $LOGFILE.2 $LOGFILE.old.2
+mv $LOGFILE.3 $LOGFILE.old.3
+echo "LeanInit is running on $(uname -srm)" > $LOGFILE
+
 # sysctl(8)
 print "Launching sysctl(8)..." log ${BLUE} ${WHITE}
 DEFLINUX
@@ -108,13 +115,6 @@ rm -f /run/nologin /var/run/nologin
 print "Resetting /var/run/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
 rm -rf /var/run/leaninit
 mkdir -p /var/run/leaninit
-
-# Logging
-touch $LOGFILE $LOGFILE.2 $LOGFILE.3
-mv $LOGFILE $LOGFILE.old
-mv $LOGFILE.2 $LOGFILE.old.2
-mv $LOGFILE.3 $LOGFILE.old.3
-echo "LeanInit is running on $(uname -srm)" > $LOGFILE
 
 DEFLINUX
 # Launch eudev (required for the X server to function)
