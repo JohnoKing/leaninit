@@ -112,7 +112,7 @@ ENDEF
 
 # Remove the nologin and .status files
 print "Removing any existing nologin files..." nolog ${LIGHT_PURPLE} ${WHITE}
-rm -f /run/nologin /var/run/nologin
+rm -f /etc/nologin /run/nologin /var/run/nologin
 print "Resetting /var/run/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
 rm -rf /var/run/leaninit
 mkdir -p /var/run/leaninit
