@@ -179,8 +179,14 @@ ENDEF
 if [ "$DBUS_ENABLE" = "true" ]; then
 	mkdir -p /run/dbus
 	rm -f /var/run/dbus/pid
-	print "Starting D-Bus" log ${BLUE} ${WHITE}
+	print "Starting D-Bus..." log ${BLUE} ${WHITE}
 	dbus-daemon --system
+	until [ "$(pgrep -x dbus-daemon)" != "" ]; do
+		sleep 7
+		print "Failed to start D-Bus..." log ${RED} ${LIGHT_RED}
+		echo "Failure" > /var/run/leaninit/dbus.status
+		break
+	done
 fi
 
 # If there are no services enabled, go to finish()

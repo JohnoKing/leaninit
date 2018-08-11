@@ -86,6 +86,9 @@ dbus_req() {
 	if [ "$DBUS_ENABLE" != "true" ]; then
 		print "Could not start $NAME due to D-Bus being disabled..." ${RED} ${LIGHT_RED}
 		exit 1
+	elif [ -r /var/run/leaninit/dbus.status ]; then
+		print "Could not start $NAME due to D-Bus failing to launch..." ${RED} ${LIGHT_RED}
+		exit 1
 	fi
 }
 
