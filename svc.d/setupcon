@@ -1,0 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# Service for setupcon(1)
+NAME="Console Setup"
+DAEMON=setupcon
+
+main() {
+	setupcon
+}
+
+run setupcon $1 $2
