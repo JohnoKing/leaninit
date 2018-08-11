@@ -29,33 +29,33 @@ GETTY=$(grep getty /etc/leaninit.d/ttys | grep -v '#')
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog ${LIGHT_PURPLE} ${WHITE}
-DEFLINUX
-fsck -A
-ENDEF
-
 DEFBSD
 fsck -F
 ENDEF
-
-# Mount all drives
-print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
-chmod 0666 /dev/null
-mount -a
-mount -o remount,rw / 2> /dev/null || true
-
 DEFLINUX
-# Mount /proc and /sys
-print "Mounting /proc..." nolog ${LIGHT_PURPLE} ${WHITE}
-mount -t proc proc /proc 2> /dev/null
-mount -t sysfs sysfs /sys 2> /dev/null
+fsck -A
 
-# Mount securityfs
-print "Mounting securityfs..." nolog ${LIGHT_PURPLE} ${WHITE}
-mount -t securityfs securityfs /sys/kernel/security
+# Mount pseudo file systems
+print "Mounting pseudo file systems..." nolog ${LIGHT_PURPLE} ${WHITE}
+grep -q ' /dev '                 /etc/mtab || mount -o nosuid -t udev devtmpfs /dev
+grep -q ' /dev/shm '             /etc/mtab || mount -o noexec,nosuid,nodev,mode=0620 -t tmpfs tmpfs /dev/shm
+grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts
+grep -q ' /proc '                /etc/mtab || mount -o noexec,nosuid,nodev -t proc proc /proc
+grep -q ' /sys '                 /etc/mtab || mount -o noexec,nosuid,nodev -t sysfs sysfs /sys
+grep -q ' /sys/kernel/security ' /etc/mtab || mount -t securityfs securityfs /sys/kernel/security
+grep -q ' /sys/fs/pstore '       /etc/mtab || mount -t pstore pstore /sys/fs/pstore
+grep -q ' /sys/fs/cgroup '       /etc/mtab || mount -t tmpfs cgroup /sys/fs/cgroup
 
-# Support cgroups
-print "Mounting /sys/fs/cgroup..." nolog ${LIGHT_PURPLE} ${WHITE}
-mount -t tmpfs cgroup /sys/fs/cgroup
+# Launch either udev or mdev
+if [ "$DEV" = "udev" ]; then
+	print "Starting udev..." log ${BLUE} ${WHITE}
+	$DEVEXEC --daemon
+	udevadm trigger --type=devices
+	udevadm trigger --type=subsystems
+	udevadm settle
+elif [ "$DEV" = "mdev" ]; then
+	$DEVEXEC -s
+fi
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -r /etc/modules-load.d/* ]; then
@@ -66,6 +66,11 @@ if [ -r /etc/modules-load.d/* ]; then
 	modprobe -a "$(kmod static-nodes | awk '/Module:/ {print $2}')"
 fi
 ENDEF
+
+# Mount all drives
+print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
+mount -a
+mount -o remount,rw / 2> /dev/null || true
 
 # Mount all ZFS file systems
 if [ "$ZFS_ENABLE" = "true" ]; then
@@ -122,19 +127,6 @@ rm -f /etc/nologin /run/nologin /var/run/nologin
 print "Resetting /var/run/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
 rm -rf /var/run/leaninit
 mkdir -p /var/run/leaninit
-
-DEFLINUX
-# Launch udev or mdev
-if [ "$DEV" = "udev" ]; then
-	print "Starting udev..." log ${BLUE} ${WHITE}
-	$DEVEXEC --daemon
-	udevadm trigger --type=devices
-	udevadm trigger --type=subsystems
-	udevadm settle
-elif [ "$DEV" = "mdev" ]; then
-	$DEVEXEC -s
-fi
-ENDEF
 
 DEFBSD
 # Launch devd (vidcontrol -m is required for moused to function)
