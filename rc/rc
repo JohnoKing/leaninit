@@ -37,10 +37,11 @@ fsck -A
 
 # Mount pseudo file systems
 print "Mounting pseudo file systems..." nolog ${LIGHT_PURPLE} ${WHITE}
-mkdir -p /dev/shm /dev/pts /proc
+mkdir -p /run/shm /dev/pts /proc
 grep -q ' /dev '                 /etc/mtab || mount -o nosuid -t udev devtmpfs /dev
-grep -q ' /dev/shm '             /etc/mtab || mount -o noexec,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm
 grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts
+grep -q ' /run '                 /etc/mtab || mount -o noexec,nosuid -t tmpfs tmpfs /run
+grep -q ' /run/shm '             /etc/mtab || mount -o noexec,nosuid,mode=1777 -t tmpfs tmpfs /run/shm
 grep -q ' /proc '                /etc/mtab || mount -o noexec,nosuid,nodev -t proc proc /proc
 grep -q ' /sys '                 /etc/mtab || mount -o noexec,nosuid,nodev -t sysfs sysfs /sys
 grep -q ' /sys/kernel/security ' /etc/mtab || mount -t securityfs securityfs /sys/kernel/security
