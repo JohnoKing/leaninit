@@ -60,12 +60,9 @@ elif [ "$DEV" = "mdev" ]; then
 fi
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
-if [ -r /etc/modules-load.d/* ]; then
+if [ -d /etc/modules-load.d ] && [ "$(ls /etc/modules-load.d)" != "" ]; then
 	print "Loading kernel modules..." nolog ${LIGHT_PURPLE} ${WHITE}
-	for m in "$(cat /etc/modules-load.d/* | grep -v '#')"; do
-		modprobe $m
-	done
-	modprobe -a "$(kmod static-nodes | awk '/Module:/ {print $2}')"
+	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
 fi
 ENDEF
 
