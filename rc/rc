@@ -46,6 +46,7 @@ rm -rf /tmp/*
 mkdir -p /run/shm /dev/pts
 grep -q ' /dev '                 /etc/mtab || mount -o nosuid -t udev devtmpfs /dev
 grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts
+grep -q ' /dev/mqueue '          /etc/mtab || mount -t mqueue none /dev/mqueue
 grep -q ' /run '                 /etc/mtab || mount -o noexec,nosuid -t tmpfs tmpfs /run
 grep -q ' /run/shm '             /etc/mtab || mount -o noexec,nosuid,mode=1777 -t tmpfs tmpfs /run/shm
 grep -q ' /proc '                /etc/mtab || mount -o noexec,nosuid,nodev -t proc proc /proc
@@ -64,6 +65,7 @@ if [ "$DEV" = "udev" ]; then
 	udevadm settle
 elif [ "$DEV" = "mdev" ]; then
 	$DEVEXEC -s
+	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
