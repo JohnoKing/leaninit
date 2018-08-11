@@ -12,7 +12,7 @@ main() {
 		return 1
 	else
 		[ -x /usr/libexec/elogind/elogind ] && fork "/usr/libexec/elogind/elogind"
-		fork "$(command -v elogind)" 2> /dev/null
+		fork "$(command -v elogind) 2> /dev/null"
 	fi
 	until [ "$(pgrep -x elogind-daemon)" != "" ]; do
 		sleep 1
