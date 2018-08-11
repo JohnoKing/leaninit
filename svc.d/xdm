@@ -13,7 +13,7 @@ main() {
 	fi
 	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
 	dbus_req
-	fork "$DM"
+	$DM &
 }
 
 run xdm $1 $2

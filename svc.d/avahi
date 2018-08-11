@@ -7,7 +7,7 @@ DAEMON=avahi-daemon
 
 main() {
 	dbus_req
-	fork "avahi-daemon"
+	avahi-daemon &
 }
 
 run avahi $1 $2
