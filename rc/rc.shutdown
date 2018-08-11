@@ -27,10 +27,18 @@
 . /etc/leaninit.d/rc.conf
 
 # Kill any remaining processes
+DEFLINUX
 until pkill -TERM --inverse -s0,1; do
 	sleep 7
 	pkill -KILL --inverse -s0,1
 	break
+ENDEF
+DEFBSD
+until pkill -TERM -v -s0,1; do
+	sleep 7
+	pkill -KILL -v -s0,1
+	break
+ENDEF
 done
 
 DEFLINUX
