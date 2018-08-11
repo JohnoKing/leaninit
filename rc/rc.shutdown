@@ -26,24 +26,18 @@
 # Load rc.svc
 . /etc/leaninit.d/rc.conf
 
-# Stop all services
-if [ "$(ls /etc/leaninit.d/svc.e)" != "" ]; then
-	for s in $(ls /etc/leaninit.d/svc.e); do
-		fork "sh /etc/leaninit.d/svc.d/$s stop"
-	done
-	wait
-	for st in $(ls /etc/leaninit.d/svc.e); do
-		until [ ! -r /var/run/leaninit/$st.status ]; do
-			sleep 3
-			print "Waiting for removal of $st.status failed" log ${RED} ${LIGHT_RED}
-			break
-		done
-	done
-fi
+# Kill any remaining processes
+until pkill -TERM --inverse -s0,1; do
+	sleep 7
+	pkill -KILL --inverse -s0,1
+	break
+done
 
 DEFLINUX
 # Stop udev
-udevadm control --exit
+if [ "$DEV" = "udev" ]; then
+	udevadm control --exit
+fi
 ENDEF
 
 # Unmount all drives

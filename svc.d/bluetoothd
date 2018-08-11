@@ -6,7 +6,7 @@ NAME="Bluetooth daemon"
 DAEMON=bluetoothd
 
 main() {
-	waitforinit dbus dbus-daemon
+	dbus_req
 	fork "bluetoothd"
 }
 

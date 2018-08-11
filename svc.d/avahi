@@ -6,7 +6,7 @@ NAME="Avahi"
 DAEMON=avahi-daemon
 
 main() {
-	waitforinit dbus dbus-daemon
+	dbus_req
 	fork "avahi-daemon"
 }
 

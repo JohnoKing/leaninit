@@ -6,7 +6,7 @@ NAME="HALD"
 DAEMON=hald
 
 main() {
-	waitforinit dbus dbus-daemon
+	dbus_req
 	hald --daemon=yes --use-syslog
 }
 

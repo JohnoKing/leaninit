@@ -6,7 +6,7 @@ NAME="elogind"
 DAEMON=elogind-daemon
 
 main() {
-	waitforinit dbus dbus-daemon
+	dbus_req
 	sleep 0.5
 	/usr/libexec/elogind/elogind --daemon
 	until [ "$(pgrep -x elogind-daemon)" != "" ]; do

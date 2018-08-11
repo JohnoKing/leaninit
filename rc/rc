@@ -39,10 +39,16 @@ ENDEF
 
 # Mount all drives
 print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
+chmod 0666 /dev/null
 mount -a
 mount -o remount,rw / 2> /dev/null || true
 
 DEFLINUX
+# Mount /proc and /sys
+print "Mounting /proc..." nolog ${LIGHT_PURPLE} ${WHITE}
+mount -t proc proc /proc 2> /dev/null
+mount -t sysfs sysfs /sys 2> /dev/null
+
 # Mount securityfs
 print "Mounting securityfs..." nolog ${LIGHT_PURPLE} ${WHITE}
 mount -t securityfs securityfs /sys/kernel/security
@@ -118,12 +124,16 @@ rm -rf /var/run/leaninit
 mkdir -p /var/run/leaninit
 
 DEFLINUX
-# Launch eudev (required for the X server to function)
-print "Starting udev..." log ${BLUE} ${WHITE}
-udevd --daemon
-udevadm trigger --type=devices
-udevadm trigger --type=subsystems
-udevadm settle
+# Launch udev or mdev
+if [ "$DEV" = "udev" ]; then
+	print "Starting udev..." log ${BLUE} ${WHITE}
+	$DEVEXEC --daemon
+	udevadm trigger --type=devices
+	udevadm trigger --type=subsystems
+	udevadm settle
+elif [ "$DEV" = "mdev" ]; then
+	$DEVEXEC -s
+fi
 ENDEF
 
 DEFBSD
@@ -164,6 +174,14 @@ if [ "$KEYMAP" != "" ]; then
 	fork "loadkeys $KEYMAP"
 fi
 ENDEF
+
+# D-Bus support
+if [ "$DBUS_ENABLE" = "true" ]; then
+	mkdir -p /run/dbus
+	rm -f /var/run/dbus/pid
+	print "Starting D-Bus" log ${BLUE} ${WHITE}
+	dbus-daemon --system
+fi
 
 # If there are no services enabled, go to finish()
 if [ "$(ls /etc/leaninit.d/svc.e)" = "" ]; then

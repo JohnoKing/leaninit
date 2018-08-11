@@ -6,8 +6,7 @@ NAME="ConsoleKit"
 DAEMON=console-kit-daemon
 
 main() {
-	# D-Bus is required to run ConsoleKit
-	waitforinit dbus dbus-daemon
+	dbus_req
 	console-kit-daemon
 }
 

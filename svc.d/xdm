@@ -12,7 +12,7 @@ main() {
 		return 1
 	fi
 	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
-	waitforinit dbus dbus-daemon
+	dbus_req
 	fork "$DM"
 }
 

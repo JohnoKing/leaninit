@@ -28,8 +28,8 @@
 
 // Functions
 static void halt(int signal);
-static int single(const char *msg);
-static int usage(void);
+static int  single(const char *msg);
+static int  usage(void);
 static void bootrc(void);
 static void sh(const char *cmd);
 static void open_tty(void);
@@ -207,13 +207,6 @@ static void halt(int signal)
 	// Run rc.shutdown
 	sh("/etc/leaninit.d/rc.shutdown");
 
-	// Kill all remaining processes
-	kill(-1, SIGTERM);
-	kill(-1, SIGKILL);
-
-	// Wait until kill(2) is finished
-	while(wait(0) > 0);
-
 	// Synchronize the file systems (hardcoded)
 	sync();
 
@@ -237,7 +230,9 @@ static void halt(int signal)
 static void sh(const char *cmd)
 {
 	int cfork = fork();
-	if(cfork == 0)
+	if(cfork == 0) {
+		setsid();
 		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
-	wait(0);
+	} else
+		waitpid(cfork, NULL, 0);
 }

@@ -81,6 +81,14 @@ print() {
 	fi
 }
 
+# Used by services that require D-Bus
+dbus_req() {
+	if [ "$DBUS_ENABLE" != "true" ]; then
+		print "Could not start $NAME due to D-Bus being disabled..." ${RED} ${LIGHT_RED}
+		exit 1
+	fi
+}
+
 # Reserved for run()
 __start() {
 	# Return if the service is active

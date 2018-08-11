@@ -6,7 +6,7 @@ NAME="NetworkManager"
 DAEMON=NetworkManager
 
 main() {
-	waitforinit dbus dbus-daemon
+	dbus_req
 	NetworkManager
 }
 
