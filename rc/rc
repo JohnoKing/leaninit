@@ -146,11 +146,11 @@ ENDEF
 DEFLINUX
 # Set up network interfaces
 print "Setting up a loopback interface..." log ${BLUE} ${WHITE}
-ip link set up lo
+ip link set up dev lo
 if [ "$INTERFACE" != "" ]; then
 	for n in "$INTERFACE"; do
 		print "Setting up $n for networking..." log ${BLUE} ${WHITE}
-		ip link set up $n
+		ip link set up dev $n
 	done
 fi
 ENDEF
