@@ -8,7 +8,7 @@ DAEMON=elogind-daemon
 main() {
 	dbus_req
 	sleep 0.5
-	/usr/libexec/elogind/elogind --daemon
+	fork "/usr/libexec/elogind/elogind"
 	until [ "$(pgrep -x elogind-daemon)" != "" ]; do
 		false
 	done
