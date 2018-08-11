@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 // Open DEFAULT_TTY (close(2) should not be run)
 static void open_tty(void)
 {
-	int tty = open(DEFAULT_TTY, O_RDWR);
+	int tty = open(DEFAULT_TTY, O_RDWR | O_NONBLOCK);
 	login_tty(tty);
 }
 
