@@ -7,12 +7,13 @@ DAEMON=elogind-daemon
 
 main() {
 	dbus_req
-	if [ "$(command -v elogind)" = "" ] && [ ! -x /usr/libexec/elogind/elogind ]; then
+	if [ "$(command -v elogind)" != "" ]; then
+		elogind &
+	elif [ -x /usr/libexec/elogind/elogind ]; then
+		/usr/libexec/elogind/elogind &
+	else
 		print "Could not start elogind..." ${RED} ${LIGHT_RED}
 		return 1
-	else
-		[ -x /usr/libexec/elogind/elogind ] && /usr/libexec/elogind/elogind &
-		[ "$(command -v elogind)" != "" ] && elogind &
 	fi
 	until [ "$(pgrep -x elogind-daemon)" != "" ]; do
 		sleep 1
