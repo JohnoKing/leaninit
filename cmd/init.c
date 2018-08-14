@@ -170,14 +170,13 @@ static void single(const char *msg)
 		fclose(optsh);
 
 	// Fork the shell into a seperate process
-	if(fork() == 0) {
-		if(fork() == 0)
-			execl(shell, shell, (char*)0);
+	int single = fork();
+	if(single == 0)
+		execl(shell, shell, (char*)0);
 
-		// Power-off when the shell exits
-		wait(0);
-		kill(1, SIGUSR2);
-	}
+	// Power-off when the shell exits
+	waitpid(single, NULL, 0);
+	halt(SIGUSR2);
 }
 
 // Catch signals while killing zombie processes
