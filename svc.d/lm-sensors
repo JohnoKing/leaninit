@@ -1,0 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# lm-sensors
+NAME="lm-sensors"
+DAEMON=sensors
+
+main() {
+	sensors -s
+}
+
+run lm-sensors $1 $2
