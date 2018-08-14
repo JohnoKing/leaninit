@@ -60,8 +60,7 @@ grep -q ' /tmp '                 /etc/mtab || mount -o noatime,noexec,nosuid,nod
 if [ "$DEV" = "udev" ]; then
 	print "Starting udev..." log ${BLUE} ${WHITE}
 	$DEVEXEC --daemon
-	udevadm trigger --type=devices
-	udevadm trigger --type=subsystems
+	udevadm trigger --action=add
 	udevadm settle
 elif [ "$DEV" = "mdev" ]; then
 	$DEVEXEC -s
