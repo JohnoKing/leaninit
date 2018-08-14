@@ -45,22 +45,23 @@ DEFLINUX
 # Stop udev
 if [ "$DEV" = "udev" ]; then
 	udevadm control --exit
-fi
+fi &
 ENDEF
 
 # Unmount all drives
-mount -o remount,ro / || true
+mount -o remount,ro / &
 if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs umount -a
 	zfs unshare -a
-fi
+fi &
 DEFBSD
-umount -A
+umount -A &
 ENDEF
 DEFLINUX
-umount -a
+umount -a &
 ENDEF
-swapoff -a
+swapoff -a &
 
 # Exit
+wait
 exit 0

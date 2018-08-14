@@ -37,24 +37,26 @@ fsck -A
 
 # Mount all drives
 print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
-mount -a
-mount -o remount,rw / 2> /dev/null || true
+mount -a &
+mount -o remount,rw / 2> /dev/null &
 
 # Mount pseudo file systems
 print "Mounting pseudo file systems..." nolog ${LIGHT_PURPLE} ${WHITE}
 rm -rf /tmp/*
-mkdir -p /run/shm /dev/pts
-grep -q ' /dev '                 /etc/mtab || mount -o nosuid -t udev devtmpfs /dev
-grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts
-grep -q ' /dev/mqueue '          /etc/mtab || mount -t mqueue none /dev/mqueue
-grep -q ' /run '                 /etc/mtab || mount -o noexec,nosuid -t tmpfs tmpfs /run
-grep -q ' /run/shm '             /etc/mtab || mount -o noexec,nosuid,mode=1777 -t tmpfs tmpfs /run/shm
-grep -q ' /proc '                /etc/mtab || mount -o noexec,nosuid,nodev -t proc proc /proc
-grep -q ' /sys '                 /etc/mtab || mount -o noexec,nosuid,nodev -t sysfs sysfs /sys
-grep -q ' /sys/kernel/security ' /etc/mtab || mount -t securityfs securityfs /sys/kernel/security
-grep -q ' /sys/fs/pstore '       /etc/mtab || mount -t pstore pstore /sys/fs/pstore
-grep -q ' /sys/fs/cgroup '       /etc/mtab || mount -t tmpfs cgroup /sys/fs/cgroup
-grep -q ' /tmp '                 /etc/mtab || mount -o noatime,noexec,nosuid,nodev,mode=1777 -t tmpfs tmpfs /tmp
+grep -q ' /dev '                 /etc/mtab || mount -o nosuid -t udev devtmpfs /dev &
+grep -q ' /proc '                /etc/mtab || mount -o noexec,nosuid,nodev -t proc proc /proc &
+grep -q ' /sys '                 /etc/mtab || mount -o noexec,nosuid,nodev -t sysfs sysfs /sys &
+grep -q ' /tmp '                 /etc/mtab || mount -o noatime,noexec,nosuid,nodev,mode=1777 -t tmpfs tmpfs /tmp &
+grep -q ' /run '                 /etc/mtab || mount -o noexec,nosuid -t tmpfs tmpfs /run &
+wait
+mkdir -p /dev/pts /run/shm
+grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts &
+grep -q ' /dev/mqueue '          /etc/mtab || mount -t mqueue none /dev/mqueue &
+grep -q ' /run/shm '             /etc/mtab || mount -o noexec,nosuid,mode=1777 -t tmpfs tmpfs /run/shm &
+grep -q ' /sys/kernel/security ' /etc/mtab || mount -t securityfs securityfs /sys/kernel/security &
+grep -q ' /sys/fs/pstore '       /etc/mtab || mount -t pstore pstore /sys/fs/pstore &
+grep -q ' /sys/fs/cgroup '       /etc/mtab || mount -t tmpfs cgroup /sys/fs/cgroup &
+wait
 
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
@@ -65,13 +67,14 @@ if [ "$DEV" = "udev" ]; then
 elif [ "$DEV" = "mdev" ]; then
 	$DEVEXEC -s
 	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
-fi
+fi &
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -d /etc/modules-load.d ] && [ "$(ls /etc/modules-load.d)" != "" ]; then
 	print "Loading kernel modules..." nolog ${LIGHT_PURPLE} ${WHITE}
 	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
-fi
+fi &
+wait
 ENDEF
 
 # Mount all ZFS file systems
@@ -94,11 +97,12 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 		print "Turning readonly off for dataset $z" nolog ${LIGHT_PURPLE} ${WHITE}
 		zfs readonly=off $z
 	done
-fi
+fi &
 
 # Swap
 print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
-swapon -a
+swapon -a &
+wait
 
 # Logging
 touch $LOGFILE $LOGFILE.2 $LOGFILE.3
@@ -124,10 +128,8 @@ done
 ENDEF
 
 # Remove the nologin and .status files
-print "Removing any existing nologin files..." nolog ${LIGHT_PURPLE} ${WHITE}
-rm -f /etc/nologin /run/nologin /var/run/nologin
-print "Resetting /var/run/leaninit" nolog ${LIGHT_PURPLE} ${WHITE}
-rm -rf /var/run/leaninit
+print "Removing any existing nologin files and resetting /var/run/leaninit..." nolog ${LIGHT_PURPLE} ${WHITE}
+rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
 
 DEFBSD
@@ -140,11 +142,11 @@ ENDEF
 DEFLINUX
 # Set up network interfaces
 print "Setting up a loopback interface..." log ${BLUE} ${WHITE}
-ip link set up dev lo
+ip link set up dev lo &
 if [ "$INTERFACE" != "" ]; then
 	for n in "$INTERFACE"; do
 		print "Setting up $n for networking..." log ${BLUE} ${WHITE}
-		ip link set up dev $n
+		ip link set up dev $n &
 	done
 fi
 ENDEF
@@ -152,13 +154,13 @@ ENDEF
 # Set the hostname
 if [ "$HOSTNAME" != "" ]; then
 	print "Setting the hostname to $HOSTNAME..." nolog ${LIGHT_PURPLE} ${WHITE}
-	hostname $HOSTNAME
+	hostname $HOSTNAME &
 fi
 
 # Set the timezone
 if [ "$TIMEZONE" != "" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
 	print "Setting the timezone to $TIMEZONE..." nolog ${LIGHT_PURPLE} ${WHITE}
-	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime &
 fi
 
 DEFLINUX
@@ -181,7 +183,10 @@ if [ "$DBUS_ENABLE" = "true" ]; then
 		echo "Failure" > /var/run/leaninit/dbus.status
 		break
 	done
-fi
+fi &
+
+# Wait for all jobs
+wait
 
 # If there are no services enabled, go to finish()
 if [ "$(ls /etc/leaninit.d/svc.e)" = "" ]; then
