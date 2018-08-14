@@ -24,11 +24,9 @@
 #include <sys/reboot.h>
 #include <sys/utsname.h>
 #include <sys/wait.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <signal.h>
-#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>

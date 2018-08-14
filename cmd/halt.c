@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
 	// halt(8) can only be run by root
 	if(getuid() != 0) {
-		printf("%s\n", strerror(EPERM));
+		printf("Permission denied\n"));
 		return 1;
 	}
 

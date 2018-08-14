@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
-		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "%s" COLOR_RESET "\n", strerror(EPERM));
+		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Permission denied" COLOR_RESET "\n");
 		return 1;
 	}
 
