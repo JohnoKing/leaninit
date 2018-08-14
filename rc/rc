@@ -199,5 +199,12 @@ for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
 	sh -c "while true; do $GETTY $GETTYMODE $tty; done" &
 done
 
+# Run rc.local (when present)
+for r in /etc/leaninit.d/rc.local /etc/rc.local; do
+	if [ -x $r ]; then
+		sh $r
+	fi
+done
+
 # Return to init
 exit 0
