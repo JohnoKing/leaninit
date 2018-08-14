@@ -54,7 +54,12 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs umount -a
 	zfs unshare -a
 fi
+DEFBSD
 umount -A
+ENDEF
+DEFLINUX
+umount -a
+ENDEF
 swapoff -a
 
 # Exit
