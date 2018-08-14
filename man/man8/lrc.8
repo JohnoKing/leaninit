@@ -35,12 +35,24 @@ and starting a
 .Nm getty(8)
 on all ttys listed in
 .Em /etc/leaninit.d/ttys.
+If either
+.Em /etc/rc.local
+or
+.Em /etc/leaninit.d/rc.local
+exist and are executable, then
+.Nm rc
+will run them after it finishes its own execution.
 .Pp
 .Nm RC
 will log the output from booting the system to
 .Em /var/log/leaninit/leaninit.log
 by default.
 .Sh FILES
+.Em /etc/rc.local
+Optional script run by
+.Nm rc
+if it exists.
+
 .Em /etc/leaninit.d/rc.svc
 Provides variables and functions to
 .Nm rc
