@@ -60,11 +60,12 @@ wait
 
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
-	print "Starting udev..." log ${BLUE} ${WHITE}
+	print "Starting udev..." nolog ${LIGHT_PURPLE} ${WHITE}
 	$DEVEXEC --daemon
 	udevadm trigger --action=add
 	udevadm settle
 elif [ "$DEV" = "mdev" ]; then
+	print "Starting mdev..." nolog ${LIGHT_PURPLE} ${WHITE}
 	$DEVEXEC -s
 	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi &
@@ -109,7 +110,7 @@ touch $LOGFILE $LOGFILE.2 $LOGFILE.3
 mv $LOGFILE $LOGFILE.old
 mv $LOGFILE.2 $LOGFILE.old.2
 mv $LOGFILE.3 $LOGFILE.old.3
-echo "LeanInit is running on $(uname -srm)" > $LOGFILE
+echo "LeanInit has started logging on $(uname -srm)" > $LOGFILE
 
 # sysctl(8)
 print "Launching sysctl(8)..." log ${BLUE} ${WHITE}
@@ -136,7 +137,7 @@ DEFBSD
 # Launch devd (vidcontrol -m is required for moused to function)
 print "Starting devd..." log ${BLUE} ${WHITE}
 vidcontrol -m on
-devd &
+devd -n &
 ENDEF
 
 DEFLINUX
