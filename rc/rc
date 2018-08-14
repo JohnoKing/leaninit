@@ -202,7 +202,7 @@ done
 # Run rc.local (when present)
 for r in /etc/leaninit.d/rc.local /etc/rc.local; do
 	if [ -x $r ]; then
-		sh $r
+		sh $r &
 	fi
 done
 
