@@ -222,7 +222,7 @@ static void halt(int signal)
 	}
 }
 
-// Execute a command and wait until it finishes
+// Execute a command and return its pid
 static int sh(const char *cmd)
 {
 	int cfork = fork();
