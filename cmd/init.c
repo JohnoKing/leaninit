@@ -27,13 +27,13 @@
 #include "inc.h"
 
 // Functions
-static void halt(int signal);
-static int  single(const char *msg);
-static int  usage(void);
 static void bootrc(void);
-static void sh(const char *cmd);
+static void halt(int signal);
 static void open_tty(void);
 static void sigloop(void);
+static void single(const char *msg);
+static int  sh(const char *cmd);
+static int  usage(void);
 
 // The main function
 int main(int argc, char *argv[])
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 		while((args = getopt(argc, argv, "s")) != -1) {
 			switch(args) {
 				case 's':
-					return single("Booting into single user mode...");
+					single("Booting into single user mode...");
 			}
 		}
 
@@ -141,7 +141,7 @@ static void bootrc(void)
 }
 
 // Single user mode
-static int single(const char *msg)
+static void single(const char *msg)
 {
 	// Print msg
 	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "%s" COLOR_RESET "\n", msg);
@@ -167,22 +167,17 @@ static int single(const char *msg)
 		fclose(optsh);
 
 	// Fork the shell into a seperate process
-	int rescue = fork();
-	if(rescue == 0) {
-		int subshell = fork();
-		if(subshell == 0)
-			return execl(shell, shell, (char*)0);
+	if(fork() == 0) {
+		if(fork() == 0)
+			execl(shell, shell, (char*)0);
 
 		// Power-off when the shell exits
 		wait(0);
-		return kill(1, SIGUSR2);
+		kill(1, SIGUSR2);
 	}
 
 	// Call sigloop()
 	sigloop();
-
-	// Never reached
-	return 1;
 }
 
 // Catch signals while killing zombie processes
@@ -205,7 +200,8 @@ static void sigloop(void)
 static void halt(int signal)
 {
 	// Run rc.shutdown
-	sh("/etc/leaninit.d/rc.shutdown");
+	int final = sh("/etc/leaninit.d/rc.shutdown");
+	waitpid(final, NULL, 0);
 
 	// Synchronize the file systems (hardcoded)
 	sync();
@@ -227,12 +223,13 @@ static void halt(int signal)
 }
 
 // Execute a command and wait until it finishes
-static void sh(const char *cmd)
+static int sh(const char *cmd)
 {
 	int cfork = fork();
 	if(cfork == 0) {
 		setsid();
 		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
-	} else
-		waitpid(cfork, NULL, 0);
+	}
+
+	return cfork;
 }
