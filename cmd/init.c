@@ -180,7 +180,7 @@ static void single(const char *msg)
 }
 
 // Catch signals while killing zombie processes
-static void *sigloop(void *earg)
+__attribute((noreturn))static void *sigloop(void *earg)
 {
 	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
 	struct sigaction actor;
