@@ -25,7 +25,7 @@ SED      := sed
 INSTALL  := install
 WFLAGS   := -Wall -Wextra -Wpedantic
 CFLAGS   := -O2 -fno-math-errno -fomit-frame-pointer -pipe
-LIBS     := -lutil
+LIBS     := -lpthread -lutil
 RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
 		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8

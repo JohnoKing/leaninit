@@ -30,7 +30,7 @@
 static void bootrc(void);
 static void halt(int signal);
 static void open_tty(void);
-static void sigloop(void);
+static void *sigloop(void *earg);
 static void single(const char *msg);
 static int  sh(const char *cmd);
 static int  usage(void);
@@ -53,17 +53,23 @@ int main(int argc, char *argv[])
 		setlogin("root");
 #endif
 
+		// Start the infinite loop in a seperate thread
+		pthread_t loop;
+		pthread_create(&loop, NULL, sigloop, 0);
+
 		// Single user support
 		int args;
 		while((args = getopt(argc, argv, "s")) != -1) {
 			switch(args) {
 				case 's':
 					single("Booting into single user mode...");
+					return pthread_join(loop, NULL);
 			}
 		}
 
 		// Proceed with standard boot
 		bootrc();
+		return pthread_join(loop, NULL);
 	}
 
 	// Prevent anyone but root from running this
@@ -135,9 +141,6 @@ static void bootrc(void)
 
 	// Run rc(8)
 	sh(rc);
-
-	// Call sigloop()
-	sigloop();
 }
 
 // Single user mode
@@ -161,7 +164,7 @@ static void single(const char *msg)
 		} else {
 			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh" COLOR_RESET "\n", shell);
 			fclose(defsh);
-			memcpy(shell, "/bin/sh", 7);
+			strncpy(shell, "/bin/sh", 7);
 		}
 	} else
 		fclose(optsh);
@@ -175,13 +178,10 @@ static void single(const char *msg)
 		wait(0);
 		kill(1, SIGUSR2);
 	}
-
-	// Call sigloop()
-	sigloop();
 }
 
 // Catch signals while killing zombie processes
-static void sigloop(void)
+static void *sigloop(void *earg)
 {
 	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
 	struct sigaction actor;
@@ -192,6 +192,7 @@ static void sigloop(void)
 	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
 
 	// This perpetual loop kills all zombie processes
+	free(earg);
 	for(;;)
 		wait(0);
 }
