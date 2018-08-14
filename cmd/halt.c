@@ -57,26 +57,26 @@ int main(int argc, char *argv[])
 	int signal;         // For signals to init
 
 	// Halt
-	if(strncmp(__progname, "halt", 4) == 0 || strncmp(__progname, "lhalt", 5) == 0)
+	if(strstr(__progname, "halt") != 0)
 		signal = SIGUSR1;
 
 	// Poweroff
-	else if(strncmp(__progname, "poweroff", 8) == 0 || strncmp(__progname, "lpoweroff", 9) == 0)
+	else if(strstr(__progname, "poweroff") != 0)
 		signal = SIGUSR2;
 
 	// Reboot
-	else if(strncmp(__progname, "reboot", 6) == 0 || strncmp(__progname, "lreboot", 7) == 0)
+	else if(strstr(__progname, "reboot") != 0)
 		signal = SIGINT;
 
 #ifdef Linux
 	// Hibernate
-	else if(strncmp(__progname, "zzz", 3) == 0 || strncmp(__progname, "lzzz", 4) == 0)
+	else if(strstr(__progname, "zzz") != 0)
 		return reboot(RB_SW_SUSPEND);
 #endif
 
 	// Not valid
 	else {
-		printf("Halt cannot be run as %s\n", __progname);
+		printf(COLOR_RED "* " COLOR_LIGHT_RED "You cannot run halt as %s" COLOR_RESET "\n", __progname);
 		return 1;
 	}
 
