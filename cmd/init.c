@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 // Open DEFAULT_TTY (close(2) should not be run)
 static void open_tty(void)
 {
-	int tty = open(DEFAULT_TTY, O_RDWR | O_NONBLOCK);
+	int tty = open(DEFAULT_TTY, O_RDWR);
 	login_tty(tty);
 }
 
@@ -148,7 +148,7 @@ static void single(const char *msg)
 
 	// Use a shell of the user's choice
 	char shell[100];
-	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Shell to use for single user (defaults to /bin/sh):" COLOR_RESET "\n");
+	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Shell to use for single user (defaults to /bin/sh):" COLOR_RESET " ");
 	scanf("%s", shell);
 
 	// Error checking
