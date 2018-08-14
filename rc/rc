@@ -193,17 +193,17 @@ for sv in $(ls /etc/leaninit.d/svc.e); do
 	INIT=true /etc/leaninit.d/svc.d/$sv start &
 done
 
-# Open gettys on the ttys specified in /etc/leaninit.d/ttys
-print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
-for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
-	sh -c "while true; do $GETTY $GETTYMODE $tty; done" &
-done
-
 # Run rc.local (when present)
 for r in /etc/leaninit.d/rc.local /etc/rc.local; do
 	if [ -x $r ]; then
 		sh $r &
 	fi
+done
+
+# Open gettys on the ttys specified in /etc/leaninit.d/ttys
+print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
+for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
+	sh -c "while true; do $GETTY $GETTYMODE $tty; done" &
 done
 
 # Return to init
