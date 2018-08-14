@@ -49,14 +49,15 @@ grep -q ' /sys '                 /etc/mtab || mount -o noexec,nosuid,nodev -t sy
 grep -q ' /tmp '                 /etc/mtab || mount -o noatime,noexec,nosuid,nodev,mode=1777 -t tmpfs tmpfs /tmp &
 grep -q ' /run '                 /etc/mtab || mount -o noexec,nosuid -t tmpfs tmpfs /run &
 wait
-mkdir -p /dev/pts /run/shm
+mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm
 grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts &
 grep -q ' /dev/mqueue '          /etc/mtab || mount -t mqueue none /dev/mqueue &
-grep -q ' /run/shm '             /etc/mtab || mount -o noexec,nosuid,mode=1777 -t tmpfs tmpfs /run/shm &
+grep -q ' /run/shm '             /etc/mtab || mount -n -o noexec,nosuid,nodev -t tmpfs tmpfs /run/shm &
 grep -q ' /sys/kernel/security ' /etc/mtab || mount -t securityfs securityfs /sys/kernel/security &
 grep -q ' /sys/fs/pstore '       /etc/mtab || mount -t pstore pstore /sys/fs/pstore &
 grep -q ' /sys/fs/cgroup '       /etc/mtab || mount -t tmpfs cgroup /sys/fs/cgroup &
 wait
+mount --bind /run/shm /dev/shm
 
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
