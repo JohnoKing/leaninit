@@ -6,6 +6,7 @@ NAME="CUPS"
 DAEMON=cupsd
 
 main() {
+	waitforinit avahi avahi-daemon
 	cupsd
 }
 

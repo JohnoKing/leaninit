@@ -13,6 +13,8 @@ main() {
 	fi
 	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
 	dbus_req
+	waitforinit consolekit console-kit-daemon
+	waitforinit elogind elogind
 	$DM &
 }
 
