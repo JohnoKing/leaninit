@@ -164,7 +164,7 @@ static void single(const char *msg)
 		} else {
 			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh" COLOR_RESET "\n", shell);
 			fclose(defsh);
-			strncpy(shell, "/bin/sh", 7);
+			memcpy(shell, "/bin/sh", 8);
 		}
 	} else
 		fclose(optsh);
