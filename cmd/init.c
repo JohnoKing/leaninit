@@ -167,12 +167,11 @@ static void single(const char *msg)
 	// Fork the shell into a seperate process
 	int single = fork();
 	if(single == 0) {
+		setsid();
 #ifdef FreeBSD
 		// Login as root (FreeBSD)
 		setlogin("root");
 #endif
-
-		setsid();
 		execl(shell, shell, (char*)0);
 	}
 
