@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 		// Launch the getty
 		int getty = fork();
 		if(getty == 0) {
+
 			// The tty must exist
 			int tty = open(argv[1], O_RDWR | O_NOCTTY);
 			if(tty < 0)
@@ -53,16 +54,15 @@ int main(int argc, char *argv[])
 			login_tty(tty);
 			ioctl(tty, TIOCSCTTY, 1);
 
+			// Attempt to run the getty
 			return execl("/bin/sh", "/bin/sh", "-mc", argv[2], (char*)0);
 		}
 
 		// Prevent getty spamming
 		waitpid(getty, &status, 0);
-		if(status != 0) {
-			printf("The child process exited with a status of %d\n", status);
+		if(WEXITSTATUS(status) != 0) {
+			printf("The child process exited with a status of %d\n", WEXITSTATUS(status));
 			return status;
 		}
 	}
-
-	return 0;
 }
