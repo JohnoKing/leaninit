@@ -27,10 +27,10 @@
 #include "inc.h"
 
 // Functions
-static void bootrc(void);
-static void halt(int signal);
-static void open_tty(void);
 static void *sigloop(void *earg);
+static void bootrc(void);
+static void sighandle(int signal);
+static void open_tty(void);
 static void single(const char *msg);
 static int  sh(const char *cmd);
 static int  usage(void);
@@ -160,7 +160,7 @@ static void single(const char *msg)
 		FILE *defsh = fopen("/bin/sh", "r");
 		if(defsh == NULL) {
 			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open either %s or /bin/sh, powering off!" COLOR_RESET "\n", shell);
-			halt(SIGUSR2);
+			sighandle(SIGUSR2);
 		} else {
 			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh" COLOR_RESET "\n", shell);
 			fclose(defsh);
@@ -176,7 +176,7 @@ static void single(const char *msg)
 
 	// Poweroff when the shell exits
 	waitpid(single, NULL, 0);
-	halt(SIGUSR2);
+	sighandle(SIGUSR2);
 }
 
 // Catch signals while killing zombie processes
@@ -185,7 +185,7 @@ __attribute((noreturn))static void *sigloop(void *earg)
 	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
 	struct sigaction actor;
 	memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
-	actor.sa_handler = halt;
+	actor.sa_handler = sighandle;     // Set the handler to sighandle()
 	sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
 	sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
 	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
@@ -197,7 +197,7 @@ __attribute((noreturn))static void *sigloop(void *earg)
 }
 
 // Halts, reboots or turns off the system
-static void halt(int signal)
+static void sighandle(int signal)
 {
 	// Run rc.shutdown
 	int final = sh("/etc/leaninit.d/rc.shutdown");
