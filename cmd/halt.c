@@ -36,7 +36,7 @@ static struct option halt_long_options[] = {
 // Shows usage for halt(8)
 static int usage(int ret)
 {
-	printf("Usage: %s [-fl?]\n", __progname);
+	printf("Usage: %s [-fhlpr?]\n", __progname);
 	printf("  -f, --force            Do not send a signal to init, just shutdown\n");
 	printf("  -h, --halt             Forces halt, even when called as poweroff or reboot\n");
 	printf("  -l, --no-wall          Turn off wall messages\n");
