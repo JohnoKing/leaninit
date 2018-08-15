@@ -99,6 +99,10 @@ static void open_tty(void)
 {
 	int tty = open(DEFAULT_TTY, O_RDWR);
 	login_tty(tty);
+#ifdef FreeBSD
+	// Login as root (FreeBSD)
+	setlogin("root");
+#endif
 }
 
 
@@ -167,11 +171,7 @@ static void single(const char *msg)
 	// Fork the shell into a seperate process
 	int single = fork();
 	if(single == 0) {
-		setsid();
-#ifdef FreeBSD
-		// Login as root (FreeBSD)
-		setlogin("root");
-#endif
+		open_tty();
 		execl(shell, shell, (char*)0);
 	}
 
@@ -228,7 +228,7 @@ static int sh(const char *cmd)
 {
 	int cfork = fork();
 	if(cfork == 0) {
-		setsid();
+		open_tty();
 		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
 	}
 
