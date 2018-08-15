@@ -30,7 +30,6 @@
 static void *sigloop(void *earg);
 static void bootrc(void);
 static void sighandle(int signal);
-static void open_tty(void);
 static void single(const char *msg);
 static int  sh(const char *cmd);
 static int  usage(void);
@@ -40,8 +39,15 @@ int main(int argc, char *argv[])
 {
 	// PID 1
 	if(getpid() == 1) {
+
 		// Open DEFAULT_TTY
-		open_tty();
+		int tty = open(DEFAULT_TTY, O_RDWR);
+		login_tty(tty);
+
+#ifdef FreeBSD
+		// Login as root (FreeBSD)
+		setlogin("root");
+#endif
 
 		// Print to DEFAULT_TTY the current platform LeanInit is running on
 		struct utsname uts;
@@ -93,18 +99,6 @@ int main(int argc, char *argv[])
 			return usage();
 	}
 }
-
-// Open DEFAULT_TTY (close(2) should not be run)
-static void open_tty(void)
-{
-	int tty = open(DEFAULT_TTY, O_RDWR);
-	login_tty(tty);
-#ifdef FreeBSD
-	// Login as root (FreeBSD)
-	setlogin("root");
-#endif
-}
-
 
 // Shows usage for init
 static int usage(void)
@@ -170,10 +164,8 @@ static void single(const char *msg)
 
 	// Fork the shell into a seperate process
 	int single = fork();
-	if(single == 0) {
-		open_tty();
+	if(single == 0)
 		execl(shell, shell, (char*)0);
-	}
 
 	// Poweroff when the shell exits
 	waitpid(single, NULL, 0);
@@ -227,10 +219,8 @@ static void sighandle(int signal)
 static int sh(const char *cmd)
 {
 	int cfork = fork();
-	if(cfork == 0) {
-		open_tty();
+	if(cfork == 0)
 		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
-	}
 
 	return cfork;
 }
