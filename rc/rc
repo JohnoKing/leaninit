@@ -210,7 +210,7 @@ done
 # Open gettys on the ttys specified in /etc/leaninit.d/ttys
 print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
 for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
-	while true; do $GETTY $GETTYMODE $tty; done &
+	rungetty "/dev/$tty" "$GETTY $GETTYMODE $tty" &
 done
 
 # Return to init

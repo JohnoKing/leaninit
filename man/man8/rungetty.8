@@ -18,35 +18,33 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 2, 2018
-.Dt LTTYS 5
+.Dd August 15, 2018
+.Dt RUNGETTY 8
 .Os
 .Sh NAME
-.Em /etc/leaninit.d/ttys
+.Nm rungetty
+.Nd launch gettys with job control
+.Sh SYNOPSIS
+.Nm rungetty ttypath 'getty' ...
 .Sh DESCRIPTION
-.Em /etc/leaninit.d/ttys
-is the file
+.Nm Rungetty
+launches 'getty' on ttypath with job control. It is run by
 .Nm rc(8)
-reads from for two things:
-.Pp
-1. The
-.Nm getty(8)
-program that should be used.
+after all services have been run.
+.Nm Rungetty
+will respawn the getty unless an error occurs.
+.Sh EXAMPLES
+Launch
+.Nm agetty(8)
+on tty8 (Linux):
+rungetty /dev/tty8 "/sbin/agetty 38400 tty8"
 
-2. The ttys to launch said getty on.
-.Pp
-The
-.Nm ttys
-file may have comments using '#', however,
-all comments must be on their own line.
-.Sh EXAMPLE
-# This sets the getty program to /sbin/getty
- /sbin/getty
-.Pp
-# This will cause the getty program to be launched on /dev/console and /dev/tty2
- console
- tty2
+Launch
+.Nm getty(8)
+on /dev/ttyv4 as a seperate process (FreeBSD):
+rungetty /dev/ttyv4 "/usr/libexec/getty Pc ttyv4" &
+
 .Sh SEE ALSO
-getty(8), rc(8), rungetty(8)
+getty(8), rc(8), lttys(5)
 .Sh AUTHOR
 Johnothan King

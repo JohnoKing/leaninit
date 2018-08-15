@@ -21,6 +21,7 @@
  */
 
 // Include files
+#include <sys/ioctl.h>
 #include <sys/reboot.h>
 #include <sys/utsname.h>
 #include <sys/wait.h>
