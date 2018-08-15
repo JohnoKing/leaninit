@@ -174,7 +174,7 @@ static void single(const char *msg)
 	if(single == 0)
 		execl(shell, shell, (char*)0);
 
-	// Power-off when the shell exits
+	// Poweroff when the shell exits
 	waitpid(single, NULL, 0);
 	halt(SIGUSR2);
 }
@@ -212,7 +212,7 @@ static void halt(int signal)
 			reboot(SYS_HALT);
 			break;
 
-		case SIGUSR2: // Power-off
+		case SIGUSR2: // Poweroff
 			reboot(SYS_POWEROFF);
 			break;
 
