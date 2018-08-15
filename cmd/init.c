@@ -141,11 +141,6 @@ static void bootrc(void)
 
 	// Run rc(8)
 	sh(rc);
-
-	if(fork() == 0) {
-		login_tty(open("/dev/tty8", O_RDWR));
-		execl("/bin/sh", "/bin/sh", "-c", "while true; do /sbin/agetty 38400 tty8 linux; done", (char*)0);
-	}
 }
 
 // Single user mode
