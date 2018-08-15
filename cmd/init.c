@@ -186,7 +186,7 @@ __attribute((noreturn))static void *sigloop(void *earg)
 	// This perpetual loop kills all zombie processes
 	free(earg);
 	for(;;)
-		wait(0);
+		waitpid(-1, NULL, 0);
 }
 
 // Halts, reboots or turns off the system
