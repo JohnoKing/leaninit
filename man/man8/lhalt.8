@@ -26,11 +26,11 @@
 .Nd halt, poweroff or reboot
 .Sh SYNOPSIS
 .Nm halt
-.Op Fl fl?
+.Op Fl fhlpr?
 .Sh DESCRIPTION
 .Nm Halt
 will poweroff, reboot or halt the system when executed by sending the correct signal to init.
-SIGUSR1 will halt, SIGUSR2 will power-off, and SIGINT will reboot.
+SIGUSR1 will halt, SIGUSR2 will poweroff, and SIGINT will reboot.
 LeanInit's version of
 .Nm halt
 can also send the system into hibernate when executed as
@@ -46,15 +46,39 @@ call
 .Nm reboot(2)
 directly instead.
 .Pp
+.Nm -h, --halt
+Forces halt, even when
+.Nm lhalt
+is called as
+.Nm poweroff
+or
+.Nm reboot.
+.Pp
 .Nm -l, --no-wall
 Do not send a message using
 .Nm syslog(3)
 before rebooting.
 .Pp
+.Nm -p, --poweroff
+Forces poweroff, even when
+.Nm lhalt
+is called as
+.Nm halt
+or
+.Nm reboot.
+.Pp
+.Nm -r, --reboot
+Forces reboot, even when
+.Nm lhalt
+is called as
+.Nm halt
+or
+.Nm poweroff.
+.Pp
 .Nm -?, --help
 Display usage information for
 .Nm halt(8).
 .Sh SEE ALSO
-init(8), rc.shutdown(8)
+init(8), rc.shutdown(8), reboot(2)
 .Sh AUTHOR
 Johnothan King
