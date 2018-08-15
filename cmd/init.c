@@ -219,8 +219,10 @@ static void sighandle(int signal)
 static int sh(const char *cmd)
 {
 	int cfork = fork();
-	if(cfork == 0)
+	if(cfork == 0) {
+		setsid();
 		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
+	}
 
 	return cfork;
 }
