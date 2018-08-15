@@ -28,8 +28,8 @@
 
 // Long options for halt
 static struct option halt_long_options[] = {
-	{ "halt",     no_argument, 0, 'h' },
 	{ "force",    no_argument, 0, 'f' },
+	{ "halt",     no_argument, 0, 'h' },
 	{ "no-wall",  no_argument, 0, 'l' },
 	{ "poweroff", no_argument, 0, 'p' },
 	{ "reboot",   no_argument, 0, 'r' },
