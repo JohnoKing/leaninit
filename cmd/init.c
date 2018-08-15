@@ -48,11 +48,6 @@ int main(int argc, char *argv[])
 		uname(&uts);
 		printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s" COLOR_RESET "\n", uts.sysname, uts.release, uts.machine);
 
-#ifdef FreeBSD
-		// Login as root (FreeBSD)
-		setlogin("root");
-#endif
-
 		// Start the infinite loop in a seperate thread
 		pthread_t loop;
 		pthread_create(&loop, NULL, sigloop, 0);
@@ -171,8 +166,15 @@ static void single(const char *msg)
 
 	// Fork the shell into a seperate process
 	int single = fork();
-	if(single == 0)
+	if(single == 0) {
+#ifdef FreeBSD
+		// Login as root (FreeBSD)
+		setlogin("root");
+#endif
+
+		setsid();
 		execl(shell, shell, (char*)0);
+	}
 
 	// Poweroff when the shell exits
 	waitpid(single, NULL, 0);
