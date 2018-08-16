@@ -164,8 +164,16 @@ static void single(const char *msg)
 
 	// Fork the shell into a seperate process
 	int single = fork();
-	if(single == 0)
+	if(single == 0) {
+
+		// Open DEFAULT_TTY for this child process
+		int ctty = open(DEFAULT_TTY, O_RDWR | O_NOCTTY);
+		login_tty(ctty);
+		ioctl(ctty, TIOCSCTTY, 1);
+
+		// Run the shell
 		execl(shell, shell, (char*)0);
+	}
 
 	// Poweroff when the shell exits
 	waitpid(single, NULL, 0);
