@@ -36,19 +36,6 @@ static struct option halt_long_options[] = {
 	{ "help",     no_argument, 0, '?' },
 };
 
-// Shows usage for halt(8)
-static int usage(int ret)
-{
-	printf("Usage: %s [-fhlpr?]\n", __progname);
-	printf("  -f, --force            Do not send a signal to init, just shutdown\n");
-	printf("  -h, --halt             Forces halt, even when called as poweroff or reboot\n");
-	printf("  -l, --no-wall          Turn off wall messages\n");
-	printf("  -p, --poweroff         Forces poweroff, even when called as halt or reboot\n");
-	printf("  -r, --reboot           Forces reboot, even when called as halt or poweroff\n");
-	printf("  -?, --help             Show this usage information\n");
-	return ret;
-}
-
 // Main function for halt
 int main(int argc, char *argv[])
 {
@@ -86,47 +73,46 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	// When given arguments
-	if(argc != 1) {
+	// Parse any given options
+	int args;
+	while((args = getopt_long(argc, argv, "fhlpr?", halt_long_options, NULL)) != -1) {
+		switch(args) {
 
-		// Parse the given options
-		int args;
-		while((args = getopt_long(argc, argv, "fhlpr?", halt_long_options, NULL)) != -1) {
-			switch(args) {
+			// Display usage info
+			case '?':
+				printf("Usage: %s [-fhlpr?]\n", __progname);
+				printf("  -f, --force            Do not send a signal to init, just shutdown\n");
+				printf("  -h, --halt             Forces halt, even when called as poweroff or reboot\n");
+				printf("  -l, --no-wall          Turn off wall messages\n");
+				printf("  -p, --poweroff         Forces poweroff, even when called as halt or reboot\n");
+				printf("  -r, --reboot           Forces reboot, even when called as halt or poweroff\n");
+				printf("  -?, --help             Show this usage information\n");
+				return 1;
 
-				// Display usage with a return status of 0
-				case '?':
-					return usage(0);
+			// --force
+			case 'f':
+				force = true;
+				break;
 
-				// --force
-				case 'f':
-					force = true;
-					break;
+			// Force halt
+			case 'h':
+				signal = SIGUSR1;
+				break;
 
-				// Force halt
-				case 'h':
-					signal = SIGUSR1;
-					break;
+			// Turn off wall messages
+			case 'l':
+				wall = false;
+				break;
 
-				// Turn off wall messages
-				case 'l':
-					wall = false;
-					break;
+			// Force poweroff
+			case 'p':
+				signal = SIGUSR2;
+				break;
 
-				// Force poweroff
-				case 'p':
-					signal = SIGUSR2;
-					break;
-
-				// Force reboot
-				case 'r':
-					signal = SIGINT;
-					break;
-
-				// Show usage, but with a return status of 1
-				default:
-					return usage(1);
-			}
+			// Force reboot
+			case 'r':
+				signal = SIGINT;
+				break;
 		}
 	}
 
