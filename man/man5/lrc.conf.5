@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 2, 2018
+.Dd August 17, 2018
 .Dt RC 8
 .Os
 .Sh NAME
@@ -40,16 +40,28 @@ Changes the hostname using
 .Nm hostname(1).
 Commented out by default.
 
+.Em TIMEZONE:
+Changes the timezone by forcefully making a symlink. Commented out by default.
+
 .Em KEYMAP:
-Linux only setting that changes the keyboard layout. Commented out by default.
+Changes the keyboard layout (Linux only). Commented out by default.
 
 .Em ZFS_ENABLE:
 Allows you to configure support for ZFS.
 Enabled by default on FreeBSD, disabled by default on Linux.
 
-.Em INTERFACE:
-Sets the default networking interface used for services.
-Set to wlan0 by default.
+.Em NETFACE:
+Sets the networking interface(s) used for services.
+Set to wlan0 (and eth0 on Linux) by default.
+
+.Em NETDRIVER:
+Sets the driver to use for the networking interfaces.
+Set to 'wext' on Linux and 'bsd' on FreeBSD.
+
+.Em DBUS_ENABLE
+Enables support for
+.Nm D-Bus.
+Set to true by default.
 
 .Em XDMNAME:
 Sets the name of the Display Manager used by the xdm service.
@@ -58,7 +70,9 @@ Sets the name of the Display Manager used by the xdm service.
 Sets the executable for the Display Manager used by the xdm service.
 
 .Em LOGFILE:
-Sets the file LeanInit uses for logging. Set to
+Sets the file
+.Nm LeanInit
+uses for logging. Set to
 .Em /var/log/leaninit/leaninit.log
 by default.
 
@@ -67,6 +81,20 @@ Sets the mode used when launching the
 .Nm getty(8)
 program.
 Set to '38400' on Linux and 'Pc' on FreeBSD.
+
+.Em DEV
+Allows you to choose between either udev or mdev (Linux only). Set to udev by default.
+
+.Em DEVEXEC
+Sets the location of udev or mdev. Set to
+.Em /sbin/udevd
+for udev and
+.Em /sbin/mdev
+for mdev.
+
+.Em DEBUG
+Allows you to turn debug mode on or off (currently just waits for all services to start before launching gettys).
+Debug mode is disabled by default.
 .Sh SEE ALSO
 rc(8), rc.svc(8), lttys(5)
 .Sh AUTHOR

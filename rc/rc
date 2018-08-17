@@ -28,7 +28,7 @@
 GETTY=$(grep getty /etc/leaninit.d/ttys | grep -v '#')
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
-print "Checking all file systems for data corruption..." nolog ${LIGHT_PURPLE} ${WHITE}
+print "Checking all file systems for data corruption..." nolog ${PURPLE} ${WHITE}
 DEFBSD
 fsck -F
 ENDEF
@@ -36,12 +36,12 @@ DEFLINUX
 fsck -A
 
 # Mount all drives
-print "Mounting all drives..." nolog ${LIGHT_PURPLE} ${WHITE}
+print "Mounting all drives..." nolog ${PURPLE} ${WHITE}
 mount -a &
 mount -o remount,rw / 2> /dev/null &
 
 # Mount pseudo file systems
-print "Mounting pseudo file systems..." nolog ${LIGHT_PURPLE} ${WHITE}
+print "Mounting pseudo file systems..." nolog ${PURPLE} ${WHITE}
 rm -rf /tmp/*
 grep -q ' /dev '                 /etc/mtab || mount -o nosuid -t udev devtmpfs /dev &
 grep -q ' /proc '                /etc/mtab || mount -o noexec,nosuid,nodev -t proc proc /proc &
@@ -62,18 +62,18 @@ chmod 0666 /dev/null &
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -d /etc/modules-load.d ] && [ "$(ls /etc/modules-load.d)" != "" ]; then
-	print "Loading kernel modules..." nolog ${LIGHT_PURPLE} ${WHITE}
+	print "Loading kernel modules..." nolog ${PURPLE} ${WHITE}
 	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
 fi &
 
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
-	print "Starting udev..." nolog ${LIGHT_PURPLE} ${WHITE}
+	print "Starting udev..." nolog ${PURPLE} ${WHITE}
 	$DEVEXEC --daemon
 	udevadm trigger --action=add
 	udevadm settle
 elif [ "$DEV" = "mdev" ]; then
-	print "Starting mdev..." nolog ${LIGHT_PURPLE} ${WHITE}
+	print "Starting mdev..." nolog ${PURPLE} ${WHITE}
 	$DEVEXEC -s
 	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi &
@@ -82,7 +82,7 @@ ENDEF
 
 # Mount all ZFS file systems
 if [ "$ZFS_ENABLE" = "true" ]; then
-	print "Mounting all ZFS file systems..." nolog ${LIGHT_PURPLE} ${WHITE}
+	print "Mounting all ZFS file systems..." nolog ${PURPLE} ${WHITE}
 
 	# Done for compatibility with beadm(1)
 	for z in "$(df -t zfs | tail -n +2 | awk '{print $1}')"; do
@@ -97,13 +97,13 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 
 	# Turn on writes
 	for z in $(zpool list -Ho name); do
-		print "Turning readonly off for dataset $z" nolog ${LIGHT_PURPLE} ${WHITE}
+		print "Turning readonly off for dataset $z" nolog ${PURPLE} ${WHITE}
 		zfs readonly=off $z
 	done
 fi &
 
 # Swap
-print "Turning on all swap partitions..." nolog ${LIGHT_PURPLE} ${WHITE}
+print "Turning on all swap partitions..." nolog ${PURPLE} ${WHITE}
 swapon -a &
 wait
 
@@ -131,7 +131,7 @@ done
 ENDEF
 
 # Remove the nologin and .status files
-print "Removing any existing nologin files and resetting /var/run/leaninit..." nolog ${LIGHT_PURPLE} ${WHITE}
+print "Removing any existing nologin files and resetting /var/run/leaninit..." nolog ${PURPLE} ${WHITE}
 rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
 
@@ -146,8 +146,8 @@ DEFLINUX
 # Set up network interfaces
 print "Setting up a loopback interface..." log ${BLUE} ${WHITE}
 ip link set up dev lo &
-if [ "$INTERFACE" != "" ]; then
-	for n in "$INTERFACE"; do
+if [ "$NETFACE" != "" ]; then
+	for n in "$NETFACE"; do
 		print "Setting up $n for networking..." log ${BLUE} ${WHITE}
 		ip link set up dev $n &
 	done
@@ -156,13 +156,13 @@ ENDEF
 
 # Set the hostname
 if [ "$HOSTNAME" != "" ]; then
-	print "Setting the hostname to $HOSTNAME..." nolog ${LIGHT_PURPLE} ${WHITE}
+	print "Setting the hostname to $HOSTNAME..." nolog ${PURPLE} ${WHITE}
 	hostname $HOSTNAME &
 fi
 
 # Set the timezone
 if [ "$TIMEZONE" != "" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
-	print "Setting the timezone to $TIMEZONE..." nolog ${LIGHT_PURPLE} ${WHITE}
+	print "Setting the timezone to $TIMEZONE..." nolog ${PURPLE} ${WHITE}
 	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime &
 fi
 
@@ -182,7 +182,7 @@ if [ "$DBUS_ENABLE" = "true" ]; then
 	dbus-daemon --fork --system
 	until [ "$(pgrep -x dbus-daemon)" != "" ]; do
 		sleep 7
-		print "Failed to start D-Bus..." log ${RED} ${LIGHT_RED}
+		print "Failed to start D-Bus..." log ${RED}
 		echo "Failure" > /var/run/leaninit/dbus.status
 		break
 	done
@@ -207,6 +207,11 @@ for r in /etc/leaninit.d/rc.local /etc/rc.local; do
 		sh $r &
 	fi
 done
+
+# Wait for all services to start (debug mode)
+if [ "$DEBUG" = "true" ]; then
+	wait
+fi
 
 # Open gettys on the ttys specified in /etc/leaninit.d/ttys
 print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}

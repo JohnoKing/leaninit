@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 		// Print to DEFAULT_TTY the current platform LeanInit is running on
 		struct utsname uts;
 		uname(&uts);
-		printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "LeanInit is running on %s %s %s" COLOR_RESET "\n", uts.sysname, uts.release, uts.machine);
+		printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
 		// Start the infinite loop in a seperate thread
 		pthread_t loop;
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
-		printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Permission denied" COLOR_RESET "\n");
+		printf(RED "* Permission denied" RESET "\n");
 		return 1;
 	}
 
@@ -130,7 +130,7 @@ static void bootrc(void)
 	}
 
 	// Output a message to the console
-	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Executing %s" COLOR_RESET "\n", rc);
+	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
 
 	// Run rc(8)
 	sh(rc);
@@ -140,11 +140,11 @@ static void bootrc(void)
 static void single(const char *msg)
 {
 	// Print msg
-	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "%s" COLOR_RESET "\n", msg);
+	printf(CYAN "* " WHITE "%s" RESET "\n", msg);
 
 	// Use a shell of the user's choice
 	char shell[100];
-	printf(COLOR_BOLD COLOR_CYAN "* " COLOR_WHITE "Shell to use for single user (defaults to /bin/sh):" COLOR_RESET " ");
+	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
 	scanf("%s", shell);
 
 	// Error checking
@@ -152,10 +152,10 @@ static void single(const char *msg)
 	if(optsh == NULL) {
 		FILE *defsh = fopen("/bin/sh", "r");
 		if(defsh == NULL) {
-			printf(COLOR_BOLD COLOR_RED "* " COLOR_LIGHT_RED "Could not open either %s or /bin/sh, powering off!" COLOR_RESET "\n", shell);
+			printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
 			sighandle(SIGUSR2);
 		} else {
-			printf(COLOR_BOLD COLOR_LIGHT_PURPLE "* " COLOR_YELLOW "Could not open %s, defaulting to /bin/sh" COLOR_RESET "\n", shell);
+			printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
 			fclose(defsh);
 			memcpy(shell, "/bin/sh", 8);
 		}

@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 		// Prevent getty spamming
 		waitpid(getty, &status, 0);
 		if(WEXITSTATUS(status) != 0) {
-			printf("The child process exited with a status of %d\n", WEXITSTATUS(status));
+			printf(RED "* The child process exited with a status of %d" RESET "\n", WEXITSTATUS(status));
 			return status;
 		}
 	}

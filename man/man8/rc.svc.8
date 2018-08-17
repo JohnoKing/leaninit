@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 15, 2018
+.Dd August 17, 2018
 .Dt RC.API 8
 .Os
 .Sh NAME
@@ -30,8 +30,11 @@ The
 script is responsible for reading
 .Em /etc/leaninit.d/rc.conf,
 then providing all required
-variables and functions to LeanInit's various scripts, including
-.Nm rc(8), rc.shutdown(8) and scripts located in
+variables and functions to
+.Nm LeanInit's
+various scripts, including
+.Nm rc(8), rc.shutdown(8)
+and scripts located in
 .Em /etc/leaninit.d/svc.d
 .Pp
 
@@ -42,23 +45,36 @@ The following functions and variables are provided by
 .Nm rc.svc
 will set the path to
 .Em /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin,
-then source
+then load
 .Em /etc/profile
 
 
 .Nm print
 This function prints formatted output to
-.Em /dev/stdout
-and
-.Em /var/log/leaninit/leaninit.log
+.Em stdout.
 
-$2 defines the * color and $3 defines the text color.
+If $2 is set to 'log', then the output from print will be logged to the log file.
+$3 defines the ANSI color of at least the star and $4 (if set) defines the color of the text.
 
+The following color variables (in bold form) are provided by
+.Nm rc.svc:
 
-.Em $COLOR
-.Nm rc.svc
-provides ANSI color and format variables, intended for use with
-.Nm print().
+.Em $RESET
+Resets the text format (advised when using custom colors)
+
+.Em $RED
+
+.Em $BLUE
+
+.Em $YELLOW
+
+.Em $GREEN
+
+.Em $PURPLE
+
+.Em $CYAN
+
+.Em $WHITE
 
 
 .Nm waitforinit
@@ -73,9 +89,10 @@ This function will only run if
 .Em $INIT
 is set to true (this prevents it from running when manually starting services unless you pass INIT=true to the service).
 
+
 .Nm run
 This function is used to run scripts with standard arguments such as 'start' and 'stop'.
-It is should be passed
+It should be passed
 .Em $2
 for usage with
 .Nm rc(8).
@@ -91,10 +108,11 @@ Wait for HALD to launch:
 
 waitforinit hald hald $1
 
-Print colored output to
-.Em /dev/tty:
+Print colored output with a blue star and white text to
+.Em /dev/tty
+and the log file:
 
-print "General informative message..." ${BLUE} ${WHITE}
+print "General informative message..." log ${BLUE} ${WHITE}
 
 .Sh SEE ALSO
 rc(8), rc.shutdown(8), rc.conf(5)

@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 15, 2018
+.Dd August 17, 2018
 .Dt INIT 8
 .Os
 .Sh NAME
@@ -29,14 +29,19 @@
 .Oo
 .Nm 0 | 6
 .Sh DESCRIPTION
-LeanInit is a BSD-style init system developed for Linux and FreeBSD operating systems.
-When LeanInit is executed, it will first check if it is running as
+.Nm LeanInit
+is a BSD-style init system that is developed for Linux and FreeBSD.
+When
+.Nm LeanInit
+is executed, it will detect if it is running as
 .Nm PID
 1.
 .Pp
 If it is
 .Nm PID
-1, LeanInit will run
+1,
+.Nm LeanInit
+will run
 .Nm login_tty(3)
 to open the initial tty,
 .Em /dev/tty1
@@ -47,11 +52,15 @@ to the initial tty and run
 .Nm lrc(8)
 as a child process. After
 .Nm lrc(8)
-is executed, LeanInit will suspend its own execution until it receives a signal.
+is executed,
+.Nm LeanInit
+will suspend its own execution until it receives a signal.
 .Pp
 If it is not
 .Nm PID
-1, LeanInit will instead emulate the following System V runlevels:
+1,
+.Nm LeanInit
+will instead emulate the following System V runlevels:
 .Pp
 .Nm 0
 Poweroff
@@ -59,25 +68,30 @@ Poweroff
 .Nm 6
 Reboot
 
-Passing -s to LeanInit before booting will cause it to start the
+Passing -s to
+.Nm LeanInit
+before booting will cause it to start the
 system in single user mode. Switching to single user mode by running 'init 1'
 is currently not possible.
 
-LeanInit outputs text with the following color coding:
+.Nm LeanInit
+outputs text with the following color coding:
 
 .Nm Cyan star and White text:
-A message from the LeanInit binary
+A message from the
+.Nm LeanInit
+binary
 
-.Nm Light Purple star and White text:
+.Nm Purple star and White text:
 A generic message that is not logged
 
 .Nm Blue star and White text:
 A generic message that is logged
 
-.Nm Light Green star and White text:
+.Nm Green star and White text:
 A message that indicates a successful action
 
-.Nm Light Purple star and Yellow text:
+.Nm Purple star and Yellow text:
 A warning message
 
 .Nm Red star and Red text:
@@ -85,7 +99,8 @@ An error message
 .Pp
 .Sh FILES
 .Em /etc/leaninit.d/rc
-Primary init script run by LeanInit
+Primary init script run by
+.Nm LeanInit
 
 .Em /etc/rc
 Secondary init script that is run if
@@ -95,16 +110,18 @@ does not exist.
 .Em /etc/leaninit.d/rc.conf
 Provides config settings for
 .Nm lrc(8)
-and LeanInit scripts
+and
+.Nm LeanInit
+scripts
 
 .Em /etc/leaninit.d/rc.svc
-Provides variables and functions for LeanInit scripts
+Provides variables and functions for
+.Nm LeanInit
+scripts
 
 .Em /etc/leaninit.d/rc.shutdown
-Stops all services and unmounts
-on all file systems during shutdown,
-before LeanInit calls
-.Nm reboot(2).
+Stops all processes and unmounts
+all file systems before reboot.
 
 .Em /etc/leaninit.d/svc.d
 Folder containing scripts for starting various services (such as D-BUS).
@@ -113,7 +130,9 @@ Folder containing scripts for starting various services (such as D-BUS).
 Location of all files used to determine which services are enabled.
 
 .Em /var/log/leaninit/leaninit.log
-Default log file for LeanInit, used by
+Default log file for
+.Nm LeanInit,
+used by
 .Nm rc.svc(8).
 
 .Em /var/run/leaninit

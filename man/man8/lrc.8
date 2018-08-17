@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 15, 2018
+.Dd August 17, 2018
 .Dt RC 8
 .Os
 .Sh NAME
@@ -41,9 +41,9 @@ If either
 .Em /etc/rc.local
 or
 .Em /etc/leaninit.d/rc.local
-exist and are executable, then
+exist and are executable,
 .Nm rc
-will run them after it finishes its own execution.
+will run them before it launches gettys.
 .Pp
 .Nm RC
 will log the output from booting the system to
@@ -67,7 +67,8 @@ and
 services
 
 .Em /var/log/leaninit/leaninit.log
-Default log file for LeanInit
+Default log file for
+.Nm LeanInit
 .Sh SEE ALSO
 rc(8), rc.conf(5), rc.svc(8), rungetty(8), lttys(5)
 .Sh AUTHOR

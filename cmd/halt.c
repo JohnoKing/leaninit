@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 
 	// Not valid
 	else {
-		printf(COLOR_RED "* " COLOR_LIGHT_RED "You cannot run halt as %s" COLOR_RESET "\n", __progname);
+		printf(RED "* You cannot run halt as %s" RESET "\n", __progname);
 		return 1;
 	}
 
