@@ -45,9 +45,9 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	bool force = false; // Skip sending a signal to init
-	bool wall  = true;  // For syslog(3)
-	int signal;         // For signals to init
+	int force = 1; // If this is 0, skip sending a signal to init
+	int wall  = 0; // For syslog(3)
+	int signal;    // For signals to init
 
 	// Halt
 	if(strstr(__progname, "halt") != 0)
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
 			// --force
 			case 'f':
-				force = true;
+				force = 0;
 				break;
 
 			// Force halt
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 
 			// Turn off wall messages
 			case 'l':
-				wall = false;
+				wall = 1;
 				break;
 
 			// Force poweroff
@@ -117,14 +117,14 @@ int main(int argc, char *argv[])
 	}
 
 	// Syslog
-	if(wall == true) {
+	if(wall == 0) {
 		openlog(__progname, LOG_CONS, LOG_AUTH);
 		syslog(LOG_CRIT, "The system is going down NOW!");
 		closelog();
 	}
 
 	// Skip init if force is true
-	if(force == true) {
+	if(force == 0) {
 		sync(); // Always call sync(2)
 
 		switch(signal) {
