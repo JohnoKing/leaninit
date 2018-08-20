@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	int status;
 	for(;;) {
 		// Launch the getty
-		int getty = fork();
+		pid_t getty = fork();
 		if(getty == 0) {
 
 			// The tty must exist

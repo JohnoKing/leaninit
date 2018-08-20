@@ -27,12 +27,12 @@
 #include "inc.h"
 
 // Functions
-static void *sigloop(void *earg);
-static void bootrc(void);
-static void sighandle(int signal);
-static void single(const char *msg);
-static int  sh(const char *cmd);
-static int  usage(void);
+static pid_t sh(const char *cmd);
+static void  *sigloop(void *earg);
+static void  bootrc(void);
+static void  sighandle(int signal);
+static void  single(const char *msg);
+static int   usage(void);
 
 // The main function
 int main(int argc, char *argv[])
@@ -163,7 +163,7 @@ static void single(const char *msg)
 		fclose(optsh);
 
 	// Fork the shell into a seperate process
-	int single = fork();
+	pid_t single = fork();
 	if(single == 0)
 		execl(shell, shell, (char*)0);
 
@@ -193,7 +193,7 @@ __attribute((noreturn))static void *sigloop(void *earg)
 static void sighandle(int signal)
 {
 	// Run rc.shutdown
-	int final = sh("/etc/leaninit.d/rc.shutdown");
+	pid_t final = sh("/etc/leaninit.d/rc.shutdown");
 	waitpid(final, NULL, 0);
 
 	// Synchronize the file systems (hardcoded)
@@ -216,9 +216,9 @@ static void sighandle(int signal)
 }
 
 // Execute a command and return its pid
-static int sh(const char *cmd)
+static pid_t sh(const char *cmd)
 {
-	int cfork = fork();
+	pid_t cfork = fork();
 	if(cfork == 0) {
 		setsid();
 		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
