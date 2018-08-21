@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
 			// The tty must exist
 			int tty = open(argv[1], O_RDWR | O_NOCTTY);
-			if(tty < 0)
+			if(isatty(tty) == 0)
 				return usage();
 
 			// Set the tty as the controlling terminal
