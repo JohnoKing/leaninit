@@ -7,7 +7,7 @@ DAEMON=elogind-daemon
 
 main() {
 	dbus_req
-	if [ "$(command -v elogind)" != "" ]; then
+	if [ -n "$(command -v elogind)" ]; then
 		elogind &
 	elif [ -x /usr/libexec/elogind/elogind ]; then
 		/usr/libexec/elogind/elogind &

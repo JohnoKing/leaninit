@@ -61,7 +61,7 @@ mount --bind /run/shm /dev/shm &
 chmod 0666 /dev/null &
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
-if [ -d /etc/modules-load.d ] && [ "$(ls /etc/modules-load.d)" != "" ]; then
+if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
 	print "Loading kernel modules..." nolog ${PURPLE} ${WHITE}
 	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
 fi &
@@ -96,7 +96,7 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs share -a
 
 	# Turn on writes
-	for z in $(zpool list -Ho name); do
+	for z in "$(zpool list -Ho name)"; do
 		print "Turning readonly off for dataset $z" nolog ${PURPLE} ${WHITE}
 		zfs readonly=off $z
 	done
@@ -146,7 +146,7 @@ DEFLINUX
 # Set up network interfaces
 print "Setting up a loopback interface..." log ${BLUE} ${WHITE}
 ip link set up dev lo &
-if [ "$NETFACE" != "" ]; then
+if [ -n "$NETFACE" ]; then
 	for n in "$NETFACE"; do
 		print "Setting up $n for networking..." log ${BLUE} ${WHITE}
 		ip link set up dev $n &
@@ -155,20 +155,20 @@ fi
 ENDEF
 
 # Set the hostname
-if [ "$HOSTNAME" != "" ]; then
+if [ -n "$HOSTNAME" ]; then
 	print "Setting the hostname to $HOSTNAME..." nolog ${PURPLE} ${WHITE}
 	hostname $HOSTNAME &
 fi
 
 # Set the timezone
-if [ "$TIMEZONE" != "" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
+if [ -n "$TIMEZONE" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
 	print "Setting the timezone to $TIMEZONE..." nolog ${PURPLE} ${WHITE}
 	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime &
 fi
 
 DEFLINUX
 # Set the keyboard layout (this requires kbd to work)
-if [ "$KEYMAP" != "" ]; then
+if [ -n "$KEYMAP" ]; then
 	print "Setting the keyboard layout to $KEYMAP..." log ${BLUE} ${WHITE}
 	loadkeys $KEYMAP &
 fi
@@ -191,8 +191,32 @@ fi &
 # Wait for all jobs
 wait
 
+# This function launches gettys then exits
+finish() {
+	# Run rc.local (when present)
+	for r in /etc/leaninit.d/rc.local /etc/rc.local; do
+		if [ -x $r ]; then
+			sh $r &
+		fi
+	done
+
+	# Wait for all services to start before launching gettys (debug mode)
+	if [ "$DEBUG" = "true" ]; then
+		wait
+	fi
+
+	# Open gettys on the ttys specified in /etc/leaninit.d/ttys
+	print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
+	for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
+		rungetty "/dev/$tty" "$GETTY $GETTYMODE $tty" &
+	done
+
+	# Return to init
+	exit 0
+}
+
 # If there are no services enabled, go to finish()
-if [ "$(ls /etc/leaninit.d/svc.e)" = "" ]; then
+if [ ! -n "$(ls /etc/leaninit.d/svc.e)" ]; then
 	finish
 fi
 
@@ -201,23 +225,4 @@ for sv in $(ls /etc/leaninit.d/svc.e); do
 	INIT=true /etc/leaninit.d/svc.d/$sv start &
 done
 
-# Run rc.local (when present)
-for r in /etc/leaninit.d/rc.local /etc/rc.local; do
-	if [ -x $r ]; then
-		sh $r &
-	fi
-done
-
-# Wait for all services to start (debug mode)
-if [ "$DEBUG" = "true" ]; then
-	wait
-fi
-
-# Open gettys on the ttys specified in /etc/leaninit.d/ttys
-print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
-for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
-	rungetty "/dev/$tty" "$GETTY $GETTYMODE $tty" &
-done
-
-# Return to init
-exit 0
+finish

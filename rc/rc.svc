@@ -48,7 +48,7 @@ waitforinit() {
 			print "Failed to start $2..." log ${RED}
 			break
 		done
-		if [ "$3" != "" ]; then
+		if [ -n "$3" ]; then
 			until [ -r $3 ]; do
 				sleep 7
 				print "Failed to wait for file $3..." log ${RED}
@@ -129,7 +129,7 @@ run() {
 	fi
 
 	# Must be given an argument
-	if [ "$2" = "" ]; then
+	if [ ! -n "$2" ]; then
 		echo "Usage: $1 [enable|disable|start|stop|restart|status]"
 		exit 1
 	fi

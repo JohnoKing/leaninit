@@ -23,9 +23,12 @@
 # /etc/leaninit.d/rc.svc - Functions and variables for execution of LeanInit scrips
 #
 
+# Load rc.svc
+. /etc/leaninit.d/rc.svc
+
 # Usage info
 usage() {
-	echo "Usage: service service-name action ..."
+	echo "Usage: $0 service-name action ..."
 	echo "Potential actions:"
 	echo "  start"
 	echo "  stop"
@@ -37,7 +40,10 @@ usage() {
 }
 
 # Exit when not given proper arguments
-if [ "$2" = "" ] || [ ! -r "/etc/leaninit.d/svc.d/$1" ]; then
+if [ ! -n "$2" ]; then
+	usage
+elif [ ! -r "/etc/leaninit.d/svc.d/$1" ]; then
+	print "The service '$1' does not exist" nolog $RED
 	usage
 fi
 
