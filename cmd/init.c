@@ -115,19 +115,19 @@ static void bootrc(void)
 {
 	// Locate rc(8)
 	char rc[19];
-	FILE *defrc = fopen("/etc/leaninit.d/rc", "r");
-	if(defrc == NULL) {
-		FILE *bsdrc = fopen("/etc/rc", "r");
-		if(bsdrc == NULL)
+	FILE *shrc = fopen("/etc/leaninit.d/rc", "r");
+	if(shrc == NULL) {
+		shrc = fopen("/etc/rc", "r");
+		if(shrc == NULL) {
 			single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
-		else {
+			return;
+		} else
 			memcpy(rc, "/etc/rc", 8);
-			fclose(bsdrc);
-		}
-	} else {
+	} else
 		memcpy(rc, "/etc/leaninit.d/rc", 19);
-		fclose(defrc);
-	}
+
+	// Close the file descriptor
+	fclose(shrc);
 
 	// Output a message to the console
 	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
@@ -147,20 +147,22 @@ static void single(const char *msg)
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
 	scanf("%s", shell);
 
-	// Error checking
-	FILE *optsh = fopen(shell, "r");
-	if(optsh == NULL) {
-		FILE *defsh = fopen("/bin/sh", "r");
-		if(defsh == NULL) {
+	// Make sure that the shell exists
+	FILE *binsh = fopen(shell, "r");
+	if(binsh == NULL) {
+		binsh = fopen("/bin/sh", "r");
+		if(binsh == NULL) {
 			printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
 			sighandle(SIGUSR2);
+			return;
 		} else {
 			printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
-			fclose(defsh);
 			memcpy(shell, "/bin/sh", 8);
 		}
-	} else
-		fclose(optsh);
+	}
+
+	// Close the file descriptor
+	fclose(binsh);
 
 	// Fork the shell into a seperate process
 	pid_t single = fork();

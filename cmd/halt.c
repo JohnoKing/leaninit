@@ -26,16 +26,6 @@
 
 #include "inc.h"
 
-// Long options for halt
-static struct option halt_long_options[] = {
-	{ "force",    no_argument, 0, 'f' },
-	{ "halt",     no_argument, 0, 'h' },
-	{ "no-wall",  no_argument, 0, 'l' },
-	{ "poweroff", no_argument, 0, 'p' },
-	{ "reboot",   no_argument, 0, 'r' },
-	{ "help",     no_argument, 0, '?' },
-};
-
 // Main function for halt
 int main(int argc, char *argv[])
 {
@@ -45,6 +35,17 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	// Long options for halt
+	static struct option halt_long_options[] = {
+		{ "force",    no_argument, 0, 'f' },
+		{ "halt",     no_argument, 0, 'h' },
+		{ "no-wall",  no_argument, 0, 'l' },
+		{ "poweroff", no_argument, 0, 'p' },
+		{ "reboot",   no_argument, 0, 'r' },
+		{ "help",     no_argument, 0, '?' },
+	};
+
+	// Int variables
 	int force = 1; // If this is 0, skip sending a signal to init
 	int wall  = 0; // For syslog(3)
 	int signal;    // For signals to init
