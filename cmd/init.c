@@ -69,12 +69,9 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		// Start zloop in a seperate thread
-		pthread_t loop;
+		// Start zloop() and initmode() in seperate threads
+		pthread_t loop, runrc;
 		pthread_create(&loop, NULL, zloop, 0);
-
-		// Start single/multi-user mode in a seperate thread
-		pthread_t runrc;
 		pthread_create(&runrc, NULL, initmode, 0);
 
 		// Handle relevant signals while ignoring others
