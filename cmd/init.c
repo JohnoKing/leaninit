@@ -198,23 +198,23 @@ static void single(const char *msg)
 		binsh = fopen(shell, "r");
 
 	// If the given shell is invalid, check for the existence of /bin/sh
-	if(binsh == NULL)
-		binsh = fopen("/bin/sh", "r");
-
 	if(binsh == NULL) {
-		if(len == 0)
-			printf(RED "* Could not open /bin/sh, powering off!" RESET "\n");
-		else
-			printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
+		binsh = fopen("/bin/sh", "r");
+		if(binsh == NULL) {
+			if(len == 0)
+				printf(RED "* Could not open /bin/sh, powering off!" RESET "\n");
+			else
+				printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
 
-		kill(1, SIGUSR2);
-		return;
+			kill(1, SIGUSR2);
+			return;
 
-	// Output a warning
-	} else {
-		if(len != 0)
-			printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
-		memcpy(shell, "/bin/sh", 8);
+		// Output a warning
+		} else {
+			if(len != 0)
+				printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
+			memcpy(shell, "/bin/sh", 8);
+		}
 	}
 
 	// Close the file descriptor
