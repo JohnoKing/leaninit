@@ -59,18 +59,6 @@ int main(int argc, char *argv[])
 		uname(&uts);
 		printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
-		// Start the infinite loop in a seperate thread
-		pthread_t loop;
-		pthread_create(&loop, NULL, zloop, 0);
-
-		// Initialize actor (for signal handling)
-		struct sigaction actor;
-		memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
-		actor.sa_handler = sighandle;     // Set the handler to sighandle()
-		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
-		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
-		sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
-
 		// Single user support
 		int args;
 		while((args = getopt(argc, argv, "s")) != -1) {
@@ -81,12 +69,22 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		// Start single/multi-user in a seperate thread
+		// Start zloop in a seperate thread
+		pthread_t loop;
+		pthread_create(&loop, NULL, zloop, 0);
+
+		// Start single/multi-user mode in a seperate thread
 		pthread_t runrc;
 		pthread_create(&runrc, NULL, initrc, 0);
 
-		// Wait for LeanInit to receive a signal
-		pause();
+		// Handle relevant signals while ignoring others
+		struct sigaction actor;
+		memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
+		actor.sa_handler = sighandle;     // Set the handler to sighandle()
+		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
+		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
+		sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
+		pause(); // Wait for a signal to be sent to init
 
 		// Run rc.shutdown
 		pid_t final = sh("/etc/leaninit.d/rc.shutdown");
@@ -146,7 +144,7 @@ static int usage(void)
 // Run either bootrc() or single() depending on the mode
 __attribute((noreturn)) static void *initrc(void *unused)
 {
-	// Free unused pointer from memory
+	// Free the unused pointer from memory
 	free(unused);
 
 	// Run single-user if single_user == 0, otherwise run multi-user
