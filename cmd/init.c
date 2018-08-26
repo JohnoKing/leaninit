@@ -29,7 +29,7 @@
 // Functions
 static pid_t sh(const char *cmd);
 static void  *zloop(void *unused);
-static void  *initrc(void *unused);
+static void  *initmode(void *ptr);
 static void  bootrc(void);
 static void  sighandle(int signal);
 static void  single(const char *msg);
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
 		// Start single/multi-user mode in a seperate thread
 		pthread_t runrc;
-		pthread_create(&runrc, NULL, initrc, 0);
+		pthread_create(&runrc, NULL, initmode, 0);
 
 		// Handle relevant signals while ignoring others
 		struct sigaction actor;
@@ -142,16 +142,15 @@ static int usage(void)
 }
 
 // Run either bootrc() or single() depending on the mode
-__attribute((noreturn)) static void *initrc(void *unused)
+static void *initmode(void *ptr)
 {
-	// Free the unused pointer from memory
-	free(unused);
-
 	// Run single-user if single_user == 0, otherwise run multi-user
 	if(single_user == 0)
 		single("Booting into single user mode...");
 	else
 		bootrc();
+
+	pthread_exit(ptr);
 }
 
 // Execute rc(8) in a seperate process.
@@ -189,20 +188,33 @@ static void single(const char *msg)
 	// Use a shell of the user's choice
 	char shell[100];
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-	scanf("%s", shell);
 
-	// Make sure that the shell exists
-	FILE *binsh = fopen(shell, "r");
-	if(binsh == NULL) {
+	// Obtain user input
+	FILE *binsh;
+	int len = scanf("%s", shell);
+	if(len == 0)
+		binsh = NULL;
+	else
+		binsh = fopen(shell, "r");
+
+	// If the given shell is invalid, check for the existence of /bin/sh
+	if(binsh == NULL)
 		binsh = fopen("/bin/sh", "r");
-		if(binsh == NULL) {
+
+	if(binsh == NULL) {
+		if(len == 0)
+			printf(RED "* Could not open /bin/sh, powering off!" RESET "\n");
+		else
 			printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
-			kill(1, SIGUSR2);
-			return;
-		} else {
+
+		kill(1, SIGUSR2);
+		return;
+
+	// Output a warning
+	} else {
+		if(len != 0)
 			printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
-			memcpy(shell, "/bin/sh", 8);
-		}
+		memcpy(shell, "/bin/sh", 8);
 	}
 
 	// Close the file descriptor
