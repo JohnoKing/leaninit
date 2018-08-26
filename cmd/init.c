@@ -28,11 +28,16 @@
 
 // Functions
 static pid_t sh(const char *cmd);
-static void  *sigloop(void *earg);
+static void  *zloop(void *unused);
+static void  *initrc(void *unused);
 static void  bootrc(void);
 static void  sighandle(int signal);
 static void  single(const char *msg);
 static int   usage(void);
+
+// Universal variables
+static int current_signal = 0;
+static int single_user = 1;
 
 // The main function
 int main(int argc, char *argv[])
@@ -56,21 +61,49 @@ int main(int argc, char *argv[])
 
 		// Start the infinite loop in a seperate thread
 		pthread_t loop;
-		pthread_create(&loop, NULL, sigloop, 0);
+		pthread_create(&loop, NULL, zloop, 0);
+
+		// Initialize actor (for signal handling)
+		struct sigaction actor;
+		memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
+		actor.sa_handler = sighandle;     // Set the handler to sighandle()
+		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
+		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
+		sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
 
 		// Single user support
 		int args;
 		while((args = getopt(argc, argv, "s")) != -1) {
 			switch(args) {
 				case 's':
-					single("Booting into single user mode...");
-					return pthread_join(loop, NULL);
+					single_user = 0;
+					break;
 			}
 		}
 
-		// Proceed with standard boot
-		bootrc();
-		return pthread_join(loop, NULL);
+		// Start single/multi-user in a seperate thread
+		pthread_t runrc;
+		pthread_create(&runrc, NULL, initrc, 0);
+
+		// Wait for LeanInit to receive a signal
+		pause();
+
+		// Run rc.shutdown
+		pid_t final = sh("/etc/leaninit.d/rc.shutdown");
+		waitpid(final, NULL, 0);
+
+		// Synchronize all file systems
+		sync();
+
+		// Call reboot(2)
+		switch(current_signal) {
+			case SIGUSR1: // Halt
+				return reboot(SYS_HALT);
+			case SIGUSR2: // Poweroff
+				return reboot(SYS_POWEROFF);
+			case SIGINT:  // Reboot
+				return reboot(RB_AUTOBOOT);
+		}
 	}
 
 	// Prevent anyone but root from running this
@@ -108,6 +141,19 @@ static int usage(void)
 	printf("  0         Poweroff\n");
 	printf("  6         Reboot\n");
 	return 1;
+}
+
+// Run either bootrc() or single() depending on the mode
+__attribute((noreturn)) static void *initrc(void *unused)
+{
+	// Free unused pointer from memory
+	free(unused);
+
+	// Run single-user if single_user == 0, otherwise run multi-user
+	if(single_user == 0)
+		single("Booting into single user mode...");
+	else
+		bootrc();
 }
 
 // Execute rc(8) in a seperate process.
@@ -153,7 +199,7 @@ static void single(const char *msg)
 		binsh = fopen("/bin/sh", "r");
 		if(binsh == NULL) {
 			printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
-			sighandle(SIGUSR2);
+			kill(1, SIGUSR2);
 			return;
 		} else {
 			printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
@@ -171,22 +217,13 @@ static void single(const char *msg)
 
 	// Poweroff when the shell exits
 	waitpid(single, NULL, 0);
-	sighandle(SIGUSR2);
+	kill(1, SIGUSR2);
 }
 
-// Catch signals while killing zombie processes
-__attribute((noreturn))static void *sigloop(void *earg)
+// This perpetual loop kills all zombie processes
+__attribute((noreturn)) static void *zloop(void *unused)
 {
-	// Handle SIGUSR1, SIGUSR2 and SIGINT with sigaction(2)
-	struct sigaction actor;
-	memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
-	actor.sa_handler = sighandle;     // Set the handler to sighandle()
-	sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
-	sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
-	sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
-
-	// This perpetual loop kills all zombie processes
-	free(earg);
+	free(unused);
 	for(;;)
 		waitpid(-1, NULL, 0);
 }
@@ -194,27 +231,8 @@ __attribute((noreturn))static void *sigloop(void *earg)
 // Halts, reboots or turns off the system
 static void sighandle(int signal)
 {
-	// Run rc.shutdown
-	pid_t final = sh("/etc/leaninit.d/rc.shutdown");
-	waitpid(final, NULL, 0);
-
-	// Synchronize the file systems (hardcoded)
-	sync();
-
-	// Call reboot(2)
-	switch(signal) {
-		case SIGUSR1: // Halt
-			reboot(SYS_HALT);
-			break;
-
-		case SIGUSR2: // Poweroff
-			reboot(SYS_POWEROFF);
-			break;
-
-		case SIGINT:  // Reboot
-			reboot(RB_AUTOBOOT);
-			break;
-	}
+	current_signal = signal;
+	return;
 }
 
 // Execute a command and return its pid
