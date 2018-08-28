@@ -26,18 +26,135 @@
 
 #include "inc.h"
 
-// Functions
-static pid_t sh(const char *cmd);
-static void  *zloop(void *unused);
-static void  *initmode(void *ptr);
-static void  bootrc(void);
-static void  sighandle(int signal);
-static void  single(const char *msg);
-static int   usage(void);
-
 // Universal variables
 static int current_signal = 0;
 static int single_user = 1;
+
+// Shows usage for init
+static int usage(void)
+{
+	printf("%s: Option not permitted\n", __progname);
+	printf("Usage: %s [mode] ...\n", __progname);
+	printf("  0         Poweroff\n");
+	printf("  6         Reboot\n");
+	return 1;
+}
+
+// Execute a command and return its pid
+static pid_t sh(const char *cmd)
+{
+	pid_t cfork = fork();
+	if(cfork == 0) {
+		setsid();
+		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
+	}
+
+	return cfork;
+}
+
+// Single user mode
+static void single(const char *msg)
+{
+	// Print msg
+	printf(CYAN "* " WHITE "%s" RESET "\n", msg);
+
+	// Use a shell of the user's choice
+	char shell[100];
+	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
+
+	// Obtain user input
+	FILE *binsh;
+	int len = scanf("%s", shell);
+	if(len == 0)
+		binsh = NULL;
+	else
+		binsh = fopen(shell, "r");
+
+	// If the given shell is invalid, check for the existence of /bin/sh
+	if(binsh == NULL) {
+		binsh = fopen("/bin/sh", "r");
+		if(binsh == NULL) {
+			if(len == 0)
+				printf(RED "* Could not open /bin/sh, powering off!" RESET "\n");
+			else
+				printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
+
+			kill(1, SIGUSR2);
+			return;
+
+		// Output a warning
+		} else {
+			if(len != 0)
+				printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
+			memcpy(shell, "/bin/sh", 8);
+		}
+	}
+
+	// Close the file descriptor
+	fclose(binsh);
+
+	// Fork the shell into a seperate process
+	pid_t single = fork();
+	if(single == 0)
+		execl(shell, shell, (char*)0);
+
+	// Poweroff when the shell exits
+	waitpid(single, NULL, 0);
+	kill(1, SIGUSR2);
+}
+
+// Execute rc(8) (multi-user)
+static void bootrc(void)
+{
+	// Locate rc(8)
+	char rc[19];
+	FILE *shrc = fopen("/etc/leaninit.d/rc", "r");
+	if(shrc == NULL) {
+		shrc = fopen("/etc/rc", "r");
+		if(shrc == NULL) {
+			single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
+			return;
+		} else
+			memcpy(rc, "/etc/rc", 8);
+	} else
+		memcpy(rc, "/etc/leaninit.d/rc", 19);
+
+	// Close the file descriptor
+	fclose(shrc);
+
+	// Output a message to the console
+	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
+
+	// Run rc(8)
+	sh(rc);
+}
+
+// Run either bootrc() or single() depending on the mode
+static void *initmode(void *ptr)
+{
+	// Run single-user if single_user == 0, otherwise run multi-user
+	if(single_user == 0)
+		single("Booting into single user mode...");
+	else
+		bootrc();
+
+	pthread_exit(ptr);
+}
+
+// This perpetual loop kills all zombie processes
+__attribute((noreturn)) static void *zloop(void *unused)
+{
+	free(unused);
+	for(;;)
+		waitpid(-1, NULL, 0);
+}
+
+// Halts, reboots or turns off the system
+static void sighandle(int signal)
+{
+	current_signal = signal;
+	return;
+}
 
 // The main function
 int main(int argc, char *argv[])
@@ -49,10 +166,10 @@ int main(int argc, char *argv[])
 		int tty = open(DEFAULT_TTY, O_RDWR);
 		login_tty(tty);
 
-#ifdef FreeBSD
+#		ifdef FreeBSD
 		// Login as root (FreeBSD)
 		setlogin("root");
-#endif
+#		endif
 
 		// Print to DEFAULT_TTY the current platform LeanInit is running on
 		struct utsname uts;
@@ -126,130 +243,4 @@ int main(int argc, char *argv[])
 		default:
 			return usage();
 	}
-}
-
-// Shows usage for init
-static int usage(void)
-{
-	printf("%s: Option not permitted\n", __progname);
-	printf("Usage: %s [mode] ...\n", __progname);
-	printf("  0         Poweroff\n");
-	printf("  6         Reboot\n");
-	return 1;
-}
-
-// Run either bootrc() or single() depending on the mode
-static void *initmode(void *ptr)
-{
-	// Run single-user if single_user == 0, otherwise run multi-user
-	if(single_user == 0)
-		single("Booting into single user mode...");
-	else
-		bootrc();
-
-	pthread_exit(ptr);
-}
-
-// Execute rc(8) in a seperate process.
-static void bootrc(void)
-{
-	// Locate rc(8)
-	char rc[19];
-	FILE *shrc = fopen("/etc/leaninit.d/rc", "r");
-	if(shrc == NULL) {
-		shrc = fopen("/etc/rc", "r");
-		if(shrc == NULL) {
-			single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
-			return;
-		} else
-			memcpy(rc, "/etc/rc", 8);
-	} else
-		memcpy(rc, "/etc/leaninit.d/rc", 19);
-
-	// Close the file descriptor
-	fclose(shrc);
-
-	// Output a message to the console
-	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
-
-	// Run rc(8)
-	sh(rc);
-}
-
-// Single user mode
-static void single(const char *msg)
-{
-	// Print msg
-	printf(CYAN "* " WHITE "%s" RESET "\n", msg);
-
-	// Use a shell of the user's choice
-	char shell[100];
-	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-
-	// Obtain user input
-	FILE *binsh;
-	int len = scanf("%s", shell);
-	if(len == 0)
-		binsh = NULL;
-	else
-		binsh = fopen(shell, "r");
-
-	// If the given shell is invalid, check for the existence of /bin/sh
-	if(binsh == NULL) {
-		binsh = fopen("/bin/sh", "r");
-		if(binsh == NULL) {
-			if(len == 0)
-				printf(RED "* Could not open /bin/sh, powering off!" RESET "\n");
-			else
-				printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
-
-			kill(1, SIGUSR2);
-			return;
-
-		// Output a warning
-		} else {
-			if(len != 0)
-				printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
-			memcpy(shell, "/bin/sh", 8);
-		}
-	}
-
-	// Close the file descriptor
-	fclose(binsh);
-
-	// Fork the shell into a seperate process
-	pid_t single = fork();
-	if(single == 0)
-		execl(shell, shell, (char*)0);
-
-	// Poweroff when the shell exits
-	waitpid(single, NULL, 0);
-	kill(1, SIGUSR2);
-}
-
-// This perpetual loop kills all zombie processes
-__attribute((noreturn)) static void *zloop(void *unused)
-{
-	free(unused);
-	for(;;)
-		waitpid(-1, NULL, 0);
-}
-
-// Halts, reboots or turns off the system
-static void sighandle(int signal)
-{
-	current_signal = signal;
-	return;
-}
-
-// Execute a command and return its pid
-static pid_t sh(const char *cmd)
-{
-	pid_t cfork = fork();
-	if(cfork == 0) {
-		setsid();
-		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
-	}
-
-	return cfork;
 }

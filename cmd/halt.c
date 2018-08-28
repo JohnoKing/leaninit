@@ -62,11 +62,11 @@ int main(int argc, char *argv[])
 	else if(strstr(__progname, "reboot") != 0)
 		signal = SIGINT;
 
-#ifdef Linux
+#	ifdef Linux
 	// Hibernate
 	else if(strstr(__progname, "zzz") != 0)
 		return reboot(RB_SW_SUSPEND);
-#endif
+#	endif
 
 	// Not valid
 	else {
