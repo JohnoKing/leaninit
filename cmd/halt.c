@@ -131,10 +131,8 @@ int main(int argc, char *argv[])
 		switch(signal) {
 			case SIGUSR1: // Halt
 				return reboot(SYS_HALT);
-
 			case SIGUSR2: // Poweroff
 				return reboot(SYS_POWEROFF);
-
 			case SIGINT:  // Reboot
 				return reboot(RB_AUTOBOOT);
 		}
