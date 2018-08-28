@@ -166,8 +166,8 @@ int main(int argc, char *argv[])
 		int tty = open(DEFAULT_TTY, O_RDWR);
 		login_tty(tty);
 
-#		ifdef FreeBSD
 		// Login as root (FreeBSD)
+#		ifdef FreeBSD
 		setlogin("root");
 #		endif
 
