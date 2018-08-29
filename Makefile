@@ -85,7 +85,7 @@ uninstall:
 		echo "You must be root to uninstall LeanInit!" ;\
 		false ;\
 	fi
-	if [ ! -r $(DESTDIR)/sbin/leaninit ]; then \
+	if [ ! -x $(DESTDIR)/sbin/leaninit ]; then \
 		echo "Failed to detect an installation of LeanInit, exiting..." ;\
 		false ;\
 	fi
