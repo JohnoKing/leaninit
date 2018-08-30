@@ -85,9 +85,12 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	print "Mounting all ZFS file systems..." nolog ${PURPLE} ${WHITE}
 
 	# Done for compatibility with beadm(1)
-	for z in "$(df -t zfs | tail -n +2 | awk '{print $1}')"; do
-		zfs mount $z
-	done
+	__LIST="$(df -t zfs | tail -n +2 | awk '{print $1}')"
+	if [ -n "$__LIST" ]; then
+		for z in $__LIST; do
+			zfs mount $z
+		done
+	fi
 
 	# mount -a equivalent
 	zfs mount -a
@@ -96,10 +99,13 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs share -a
 
 	# Turn on writes
-	for z in "$(zpool list -Ho name)"; do
-		print "Turning readonly off for dataset $z" nolog ${PURPLE} ${WHITE}
-		zfs readonly=off $z
-	done
+	__LIST="$(zpool list -Ho name)"
+	if [ -n "$__LIST" ]; then
+		for z in $__LIST; do
+			print "Turning readonly off for dataset $z" nolog ${PURPLE} ${WHITE}
+			zfs readonly=off $z
+		done
+	fi
 fi &
 
 # Swap
@@ -147,7 +153,7 @@ DEFLINUX
 print "Setting up a loopback interface..." log ${BLUE} ${WHITE}
 ip link set up dev lo &
 if [ -n "$NETFACE" ]; then
-	for n in "$NETFACE"; do
+	for n in $NETFACE; do
 		print "Setting up $n for networking..." log ${BLUE} ${WHITE}
 		ip link set up dev $n &
 	done
@@ -191,38 +197,31 @@ fi &
 # Wait for all jobs
 wait
 
-# This function launches gettys then exits
-finish() {
-	# Run rc.local (when present)
-	for r in /etc/leaninit.d/rc.local /etc/rc.local; do
-		if [ -x $r ]; then
-			sh $r &
-		fi
+# Start all enabled services
+__LIST="$(ls /etc/leaninit.d/svc.e)"
+if [ -n "$__LIST" ]; then
+	for sv in $__LIST; do
+		INIT=true /etc/leaninit.d/svc.d/$sv start &
 	done
-
-	# Wait for all services to start before launching gettys (debug mode)
-	if [ "$DEBUG" = "true" ]; then
-		wait
-	fi
-
-	# Open gettys on the ttys specified in /etc/leaninit.d/ttys
-	print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
-	for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
-		rungetty "/dev/$tty" "$GETTY $GETTYMODE $tty" &
-	done
-
-	# Return to init
-	exit 0
-}
-
-# If there are no services enabled, go to finish()
-if [ ! -n "$(ls /etc/leaninit.d/svc.e)" ]; then
-	finish
 fi
 
-# Start the services
-for sv in $(ls /etc/leaninit.d/svc.e); do
-	INIT=true /etc/leaninit.d/svc.d/$sv start &
+# Run rc.local (when present)
+for r in /etc/leaninit.d/rc.local /etc/rc.local; do
+	if [ -x $r ]; then
+		sh $r &
+	fi
 done
 
-finish
+# Wait for all services to start before launching gettys (debug mode)
+if [ "$DEBUG" = "true" ]; then
+	wait
+fi
+
+# Open gettys on the ttys specified in /etc/leaninit.d/ttys
+print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
+for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
+	rungetty "/dev/$tty" "$GETTY $GETTYMODE $tty" &
+done
+
+# Return to init
+exit 0

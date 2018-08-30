@@ -43,7 +43,7 @@ WHITE='\033[1;37m'
 # Wait for another service if it is enabled
 waitforinit() {
 	if [ -r /etc/leaninit.d/svc.e/$1 ] && [ "$INIT" = "true" ]; then
-		until [ "$(pgrep -x $2)" != "" ]; do
+		until [ -n "$(pgrep -x $2)" ]; do
 			sleep 7
 			print "Failed to start $2..." log ${RED}
 			break
