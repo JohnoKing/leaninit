@@ -99,7 +99,7 @@ static void single(const char *msg)
 		execl(shell, shell, (char*)0);
 
 	// Poweroff when the shell exits
-	waitpid(single, NULL, 0);
+	waitpid(single, (int*)0, 0);
 	kill(1, SIGUSR2);
 }
 
@@ -146,7 +146,7 @@ __attribute((noreturn)) static void *zloop(void *unused)
 {
 	free(unused);
 	for(;;)
-		wait(NULL);
+		wait((int*)0);
 }
 
 // Halts, reboots or turns off the system
@@ -188,8 +188,8 @@ int main(int argc, char *argv[])
 
 		// Start zloop() and initmode() in seperate threads
 		pthread_t loop, runrc;
-		pthread_create(&loop, NULL, zloop, 0);
-		pthread_create(&runrc, NULL, initmode, 0);
+		pthread_create(&loop, (pthread_attr_t*)NULL, zloop, 0);
+		pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
 
 		// Handle relevant signals while ignoring others
 		struct sigaction actor;
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
 
 		// Run rc.shutdown
 		pid_t final = sh("/etc/leaninit.d/rc.shutdown");
-		waitpid(final, NULL, 0);
+		waitpid(final, (int*)0, 0);
 
 		// Synchronize all file systems
 		sync();
