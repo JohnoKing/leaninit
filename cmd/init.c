@@ -40,16 +40,16 @@ static int usage(void)
 	return 1;
 }
 
-// Execute a command and return its pid
-static pid_t sh(const char *cmd)
+// Execute a script
+static void sh(const char *cmd)
 {
-	pid_t cfork = fork();
-	if(cfork == 0) {
+	pid_t child = fork();
+	if(child == 0) {
 		setsid();
 		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
 	}
 
-	return cfork;
+	waitpid(child, (int*)0, 0);
 }
 
 // Single user mode
@@ -201,8 +201,7 @@ int main(int argc, char *argv[])
 		pause(); // Wait for a signal to be sent to init
 
 		// Run rc.shutdown
-		pid_t final = sh("/etc/leaninit.d/rc.shutdown");
-		waitpid(final, (int*)0, 0);
+		sh("/etc/leaninit.d/rc.shutdown");
 
 		// Synchronize all file systems
 		sync();
