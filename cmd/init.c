@@ -146,7 +146,7 @@ __attribute((noreturn)) static void *zloop(void *unused)
 {
 	free(unused);
 	for(;;)
-		waitpid(-1, NULL, 0);
+		wait(NULL);
 }
 
 // Halts, reboots or turns off the system
