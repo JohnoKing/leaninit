@@ -60,10 +60,11 @@ static void single(const char *msg)
 	printf(CYAN "* " WHITE "%s" RESET "\n", msg);
 
 	// Use a shell of the user's choice
-	char shell[100];
+	char shell[101];
 	FILE *binsh;
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-	if(scanf("%s", shell) == 0)
+	int len = scanf("%s", shell);
+	if(len < 3 || len > 100)
 		binsh = NULL;
 	else
 		binsh = fopen(shell, "r");
