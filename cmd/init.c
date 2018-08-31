@@ -226,27 +226,21 @@ int main(int argc, char *argv[])
 					// Switch to single-user
 					case SIGTERM:
 						single_user = 0;
-						pthread_kill(runrc, SIGTERM);
-						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
 						break;
 
 					// Switch to multi-user
 					case SIGILL:
 						single_user = 1;
-						pthread_kill(runrc, SIGTERM);
-						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
-						break;
-
-					// Reload everything
-					case SIGHUP:
-						pthread_kill(runrc, SIGTERM);
-						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
 						break;
 
 					// Reboot
 					case SIGINT:
 						return reboot(RB_AUTOBOOT);
 				}
+
+				// Reload
+				pthread_kill(runrc, SIGTERM);
+				pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
 			}
 		}
 	}

@@ -23,7 +23,7 @@
 CC       := cc
 SED      := sed
 INSTALL  := install
-WFLAGS   := -Wall -Wextra -Wpedantic
+WFLAGS   := -Wall -Wextra -Wpedantic -Wno-unused-result
 CFLAGS   := -O2 -fno-math-errno -fomit-frame-pointer -pipe
 LIBS     := -lpthread -lutil
 RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice
