@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 	if(argc == 1)
 		return usage();
 
-	// Only runlevels 0 and 6 are supported
+	// Runlevel support
 	switch(*argv[1]) {
 
 		// Poweroff
