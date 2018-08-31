@@ -27,7 +27,7 @@
 .Sh SYNOPSIS
 .Nm init
 .Oo
-.Nm 0 | 6
+.Nm 0 | 2 | 3 | 4 | 5 | 6
 .Sh DESCRIPTION
 .Nm LeanInit
 is a BSD-style init system that is developed for Linux and FreeBSD.
@@ -60,14 +60,17 @@ If it is not
 .Nm PID
 1,
 .Nm LeanInit
-will instead emulate the following System V runlevels:
+will instead emulate the following runlevels:
 .Pp
 .Nm 0
 Poweroff
 
+.Nm 2, 3, 4, 5
+Switch to multi-user mode
+
 .Nm 6
 Reboot
-
+.Pp
 Passing -s to
 .Nm LeanInit
 before booting will cause it to start the

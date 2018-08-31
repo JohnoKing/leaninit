@@ -28,15 +28,16 @@
 
 // Universal variables
 static int current_signal = 0;
-static int single_user = 1;
+static int single_user    = 1;
 
 // Shows usage for init
 static int usage(void)
 {
 	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [mode] ...\n", __progname);
-	printf("  0         Poweroff\n");
-	printf("  6         Reboot\n");
+	printf("  0           Poweroff\n");
+	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
+	printf("  6           Reboot\n");
 	return 1;
 }
 
@@ -60,12 +61,9 @@ static void single(const char *msg)
 
 	// Use a shell of the user's choice
 	char shell[100];
-	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-
-	// Obtain user input
 	FILE *binsh;
-	int len = scanf("%s", shell);
-	if(len == 0)
+	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
+	if(scanf("%s", shell) == 0)
 		binsh = NULL;
 	else
 		binsh = fopen(shell, "r");
@@ -74,18 +72,13 @@ static void single(const char *msg)
 	if(binsh == NULL) {
 		binsh = fopen("/bin/sh", "r");
 		if(binsh == NULL) {
-			if(len == 0)
-				printf(RED "* Could not open /bin/sh, powering off!" RESET "\n");
-			else
-				printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
-
+			printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
 			kill(1, SIGUSR2);
 			return;
 
 		// Output a warning
 		} else {
-			if(len != 0)
-				printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
+			printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
 			memcpy(shell, "/bin/sh", 8);
 		}
 	}
@@ -97,10 +90,11 @@ static void single(const char *msg)
 	pid_t single = fork();
 	if(single == 0)
 		execl(shell, shell, (char*)0);
-
-	// Poweroff when the shell exits
 	waitpid(single, (int*)0, 0);
-	kill(1, SIGUSR2);
+
+	// Poweroff when the shell exits (avoids conflicting with 'init 5')
+	if(single_user == 0)
+		kill(1, SIGUSR2);
 }
 
 // Execute rc(8) (multi-user)
@@ -195,25 +189,52 @@ int main(int argc, char *argv[])
 		struct sigaction actor;
 		memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
 		actor.sa_handler = sighandle;     // Set the handler to sighandle()
-		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL);  // Halt
-		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL);  // Poweroff
-		sigaction(SIGINT,  &actor, (struct sigaction*)NULL);  // Reboot
-		pause(); // Wait for a signal to be sent to init
+		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL); // Halt
+		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL); // Poweroff
+		sigaction(SIGILL,  &actor, (struct sigaction*)NULL); // Multi-user
+		sigaction(SIGINT,  &actor, (struct sigaction*)NULL); // Reboot
 
-		// Run rc.shutdown
-		sh("/etc/leaninit.d/rc.shutdown");
+		// Signal handling loop
+		for(;;) {
+			// Wait for a signal to be sent to init
+			pause();
 
-		// Synchronize all file systems
-		sync();
+			// Cancel when the runlevel is the currently running one
+			if((current_signal == SIGILL) && (single_user == 1))
+				printf(PURPLE "* " YELLOW "LeanInit is already in multi-user mode..." RESET "\n");
 
-		// Call reboot(2)
-		switch(current_signal) {
-			case SIGUSR1: // Halt
-				return reboot(SYS_HALT);
-			case SIGUSR2: // Poweroff
-				return reboot(SYS_POWEROFF);
-			case SIGINT:  // Reboot
-				return reboot(RB_AUTOBOOT);
+			// Switch the current runlevel
+			else {
+				// Run rc.shutdown
+				sh("/etc/leaninit.d/rc.shutdown");
+				kill(-1, SIGKILL);
+
+				// Synchronize all file systems
+				sync();
+
+				// Call reboot(2)
+				switch(current_signal) {
+
+					// Halt
+					case SIGUSR1:
+						return reboot(SYS_HALT);
+
+					// Poweroff
+					case SIGUSR2:
+						return reboot(SYS_POWEROFF);
+
+					// Switch to multi-user
+					case SIGILL:
+						single_user = 1;
+						pthread_kill(runrc, SIGTERM);
+						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
+						break;
+
+					// Reboot
+					case SIGINT:
+						return reboot(RB_AUTOBOOT);
+				}
+			}
 		}
 	}
 
@@ -233,6 +254,13 @@ int main(int argc, char *argv[])
 		// Poweroff
 		case '0':
 			return kill(1, SIGUSR2);
+
+		// Multi-user
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+			return kill(1, SIGILL);
 
 		// Reboot
 		case '6':
