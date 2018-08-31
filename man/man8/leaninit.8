@@ -25,7 +25,7 @@
 .Nm leaninit
 .Nd a fast init system
 .Sh SYNOPSIS
-.Nm init [ 0 | 2 | 3 | 4 | 5 | 6 ]
+.Nm init [ 0 | 1 | 2 | 3 | 4 | 5 | 6 | S | s | Q | q ]
 .Sh DESCRIPTION
 .Nm LeanInit
 is a BSD-style init system that is developed for Linux and FreeBSD.
@@ -61,25 +61,58 @@ If it is not
 will instead emulate the following runlevels:
 .Pp
 .Nm 0
-Poweroff
+Turns off the system
+
+.Nm 1, S, s
+Switches
+.Nm LeanInit
+into single-user mode
 
 .Nm 2, 3, 4, 5
-Switch to multi-user mode
+Switches
+.Nm LeanInit
+into multi-user mode
+
+.Nm Q, q
+Restarts the current runlevel
 
 .Nm 6
-Reboot
-.Pp
+Reboots the system
+
 Passing -s to
 .Nm LeanInit
 before booting will cause it to start the
-system in single user mode. Switching to single user mode by running 'init 1'
-is currently not possible.
+system in single user mode.
+.Sh SIGNALS
+When
+.Nm LeanInit
+is sent a signal using
+.Nm kill(1),
+it will act as follows:
 
+.Nm SIGHUP
+Restarts the current runlevel.
+
+.Nm SIGTERM
+Sends the system into single-user mode.
+
+.Nm SIGILL
+Sends the system into multi-user mode.
+
+.Nm SIGUSR1
+Halts the system.
+
+.Nm SIGUSR2
+Turns off the system.
+
+.Nm SIGINT
+Reboots the system.
+.Sh OUTPUT
 .Nm LeanInit
 outputs text with the following color coding:
 
 .Nm Cyan star and White text:
-A message from the
+A generic message from the
 .Nm LeanInit
 binary
 
@@ -139,6 +172,6 @@ used by
 .Em /var/run/leaninit
 Default location for LeanInit's .status and PID files
 .Sh SEE ALSO
-lhalt(8), lrc(8), lrc.conf(5), lrc.shutdown(8), lservice(8), rc.svc(8), rungetty(8), lttys(5)
+lhalt(8), lrc(8), lrc.conf(5), lrc.shutdown(8), lservice(8), rc.svc(8), rungetty(8), lttys(5), kill(1), signal(7)
 .Sh AUTHOR
 Johnothan King
