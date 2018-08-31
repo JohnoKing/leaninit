@@ -36,7 +36,7 @@ static int usage(void)
 	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [mode] ...\n", __progname);
 	printf("  0           Poweroff\n");
-//	printf("  1, S, s     Switch to single-user mode\n");
+	printf("  1, S, s     Switch to single-user mode\n");
 	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
 	printf("  Q, q        Reloads the current runlevel\n");
 	printf("  6           Reboot\n");
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 		actor.sa_handler = sighandle;     // Set the handler to sighandle()
 		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL); // Halt
 		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL); // Poweroff
-//		sigaction(SIGTERM, &actor, (struct sigaction*)NULL); // Single-user
+		sigaction(SIGTERM, &actor, (struct sigaction*)NULL); // Single-user
 		sigaction(SIGILL,  &actor, (struct sigaction*)NULL); // Multi-user
 		sigaction(SIGHUP,  &actor, (struct sigaction*)NULL); // Reloads everything
 		sigaction(SIGINT,  &actor, (struct sigaction*)NULL); // Reboot
@@ -204,6 +204,11 @@ int main(int argc, char *argv[])
 				sh("/etc/leaninit.d/rc.shutdown");
 				kill(-1, SIGKILL);
 
+				// Re-open DEFAULT_TTY
+				close(tty);
+				tty = open(DEFAULT_TTY, O_RDWR);
+				login_tty(tty);
+
 				// Synchronize all file systems
 				sync();
 
@@ -218,13 +223,13 @@ int main(int argc, char *argv[])
 					case SIGUSR2:
 						return reboot(SYS_POWEROFF);
 
-/*					// Switch to single-user
+					// Switch to single-user
 					case SIGTERM:
 						single_user = 0;
 						pthread_kill(runrc, SIGTERM);
 						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
 						break;
-*/
+
 					// Switch to multi-user
 					case SIGILL:
 						single_user = 1;
@@ -263,12 +268,12 @@ int main(int argc, char *argv[])
 		case '0':
 			return kill(1, SIGUSR2);
 
-/*		// Single-user
+		// Single-user
 		case '1':
 		case 'S':
 		case 's':
 			return kill(1, SIGTERM);
-*/
+
 		// Multi-user
 		case '2':
 		case '3':
