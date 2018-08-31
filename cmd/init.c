@@ -102,19 +102,15 @@ static void bootrc(void)
 {
 	// Locate rc(8)
 	char rc[19];
-	FILE *shrc = fopen("/etc/leaninit.d/rc", "r");
-	if(shrc == NULL) {
-		shrc = fopen("/etc/rc", "r");
-		if(shrc == NULL) {
+	if(access("/etc/leaninit.d/rc", X_OK) != 0) {
+		if(access("/etc/rc", X_OK) != 0) {
+			single_user = 0;
 			single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
 			return;
 		} else
 			memcpy(rc, "/etc/rc", 8);
 	} else
 		memcpy(rc, "/etc/leaninit.d/rc", 19);
-
-	// Close the file descriptor
-	fclose(shrc);
 
 	// Output a message to the console
 	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
