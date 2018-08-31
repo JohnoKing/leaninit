@@ -3,7 +3,7 @@
 
 # lm-sensors
 NAME="lm-sensors"
-DAEMON=sensors
+DAEMON=none
 
 main() {
 	sensors -s
