@@ -18,4 +18,9 @@ main() {
 	$DM &
 }
 
+# Kill the X server manually
+stop() {
+	pkill -x Xorg
+}
+
 run xdm $1 $2

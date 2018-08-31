@@ -10,4 +10,9 @@ main() {
 	hald --daemon=yes --use-syslog
 }
 
+# Kill all hald related processes
+stop() {
+	pkill hald
+}
+
 run hald $1 $2
