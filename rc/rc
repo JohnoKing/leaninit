@@ -65,6 +65,7 @@ if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
 	print "Loading kernel modules..." nolog ${PURPLE} ${WHITE}
 	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
 fi &
+__JOB="$(job -p %+)"
 
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
@@ -77,7 +78,6 @@ elif [ "$DEV" = "mdev" ]; then
 	$DEVEXEC -s
 	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi &
-wait
 ENDEF
 
 # Mount all ZFS file systems
@@ -107,11 +107,11 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 		done
 	fi
 fi &
+wait "$(jobs -p %+)" "$__JOB"
 
 # Swap
 print "Turning on all swap partitions..." nolog ${PURPLE} ${WHITE}
 swapon -a &
-wait
 
 # Logging
 touch $LOGFILE $LOGFILE.2 $LOGFILE.3
