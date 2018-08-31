@@ -3,7 +3,11 @@
 
 # elogind
 NAME="elogind"
-DAEMON=elogind-daemon
+if [ -n "$(pgrep -x elogind-daemon)" ]; then
+	DAEMON=elogind-daemon
+else
+	DAEMON=elogind
+fi
 
 main() {
 	dbus_req
