@@ -3,7 +3,7 @@
 
 # Service for setupcon(1)
 NAME="Console Setup"
-DAEMON=setupcon
+DAEMON=none
 
 main() {
 	setupcon
