@@ -36,7 +36,9 @@ static int usage(void)
 	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [mode] ...\n", __progname);
 	printf("  0           Poweroff\n");
+//	printf("  1, S, s     Switch to single-user mode\n");
 	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
+	printf("  Q, q        Reloads the current runlevel\n");
 	printf("  6           Reboot\n");
 	return 1;
 }
@@ -61,31 +63,22 @@ static void single(const char *msg)
 
 	// Use a shell of the user's choice
 	char shell[101];
-	FILE *binsh;
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-	int len = scanf("%s", shell);
-	if(len < 3 || len > 100)
-		binsh = NULL;
-	else
-		binsh = fopen(shell, "r");
+	scanf("%s", shell);
 
 	// If the given shell is invalid, check for the existence of /bin/sh
-	if(binsh == NULL) {
-		binsh = fopen("/bin/sh", "r");
-		if(binsh == NULL) {
-			printf(RED "* Could not open either %s or /bin/sh, powering off!" RESET "\n", shell);
+	if(access(shell, X_OK) != 0) {
+		if(access("/bin/sh", X_OK) != 0) {
+			printf(RED "* Could not execute %s or /bin/sh, powering off!" RESET "\n", shell);
 			kill(1, SIGUSR2);
 			return;
 
 		// Output a warning
 		} else {
-			printf(PURPLE "* " YELLOW "Could not open %s, defaulting to /bin/sh" RESET "\n", shell);
+			printf(PURPLE "* " YELLOW "Could not execute %s, defaulting to /bin/sh" RESET "\n", shell);
 			memcpy(shell, "/bin/sh", 8);
 		}
 	}
-
-	// Close the file descriptor
-	fclose(binsh);
 
 	// Fork the shell into a seperate process
 	pid_t single = fork();
@@ -188,7 +181,9 @@ int main(int argc, char *argv[])
 		actor.sa_handler = sighandle;     // Set the handler to sighandle()
 		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL); // Halt
 		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL); // Poweroff
+//		sigaction(SIGTERM, &actor, (struct sigaction*)NULL); // Single-user
 		sigaction(SIGILL,  &actor, (struct sigaction*)NULL); // Multi-user
+		sigaction(SIGHUP,  &actor, (struct sigaction*)NULL); // Reloads everything
 		sigaction(SIGINT,  &actor, (struct sigaction*)NULL); // Reboot
 
 		// Signal handling loop
@@ -196,9 +191,12 @@ int main(int argc, char *argv[])
 			// Wait for a signal to be sent to init
 			pause();
 
-			// Cancel when the runlevel is the currently running one
-			if((current_signal == SIGILL) && (single_user == 1))
+			// Cancel when the runlevel is already the currently running one
+			if(current_signal == SIGILL && single_user == 1)
 				printf(PURPLE "* " YELLOW "LeanInit is already in multi-user mode..." RESET "\n");
+
+			else if(current_signal == SIGTERM && single_user == 0)
+				printf(PURPLE "* " YELLOW "LeanInit is already in single-user mode..." RESET "\n");
 
 			// Switch the current runlevel
 			else {
@@ -220,9 +218,22 @@ int main(int argc, char *argv[])
 					case SIGUSR2:
 						return reboot(SYS_POWEROFF);
 
+/*					// Switch to single-user
+					case SIGTERM:
+						single_user = 0;
+						pthread_kill(runrc, SIGTERM);
+						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
+						break;
+*/
 					// Switch to multi-user
 					case SIGILL:
 						single_user = 1;
+						pthread_kill(runrc, SIGTERM);
+						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
+						break;
+
+					// Reload everything
+					case SIGHUP:
 						pthread_kill(runrc, SIGTERM);
 						pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
 						break;
@@ -252,12 +263,23 @@ int main(int argc, char *argv[])
 		case '0':
 			return kill(1, SIGUSR2);
 
+/*		// Single-user
+		case '1':
+		case 'S':
+		case 's':
+			return kill(1, SIGTERM);
+*/
 		// Multi-user
 		case '2':
 		case '3':
 		case '4':
 		case '5':
 			return kill(1, SIGILL);
+
+		// Reload everything
+		case 'Q':
+		case 'q':
+			return kill(1, SIGHUP);
 
 		// Reboot
 		case '6':
