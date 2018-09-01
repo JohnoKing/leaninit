@@ -80,6 +80,11 @@ static void single(const char *msg)
 		}
 	}
 
+	// Login as root
+	setenv("LOGNAME", "root", 1);
+	setenv("USER", "root", 1);
+	setenv("HOME", "/root", 1);
+
 	// Fork the shell into a seperate process
 	pid_t single = fork();
 	if(single == 0)
@@ -149,11 +154,6 @@ int main(int argc, char *argv[])
 		// Open DEFAULT_TTY
 		int tty = open(DEFAULT_TTY, O_RDWR);
 		login_tty(tty);
-
-		// Login as root (FreeBSD)
-#		ifdef FreeBSD
-		setlogin("root");
-#		endif
 
 		// Print to DEFAULT_TTY the current platform LeanInit is running on
 		struct utsname uts;
