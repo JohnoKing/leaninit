@@ -33,6 +33,13 @@ if [ -n "$__LIST" ]; then
 		lservice $svc stop &
 	done
 fi
+
+DEFLINUX
+# Stop udev
+if [ "$DEV" = "udev" ]; then
+	udevadm control --exit
+fi &
+ENDEF
 wait
 
 # Kill any remaining processes
@@ -49,13 +56,6 @@ until pkill -TERM -v -s0,1; do
 	break
 ENDEF
 done
-
-DEFLINUX
-# Stop udev
-if [ "$DEV" = "udev" ]; then
-	udevadm control --exit
-fi &
-ENDEF
 
 # Unmount all drives
 mount -o remount,ro / &
