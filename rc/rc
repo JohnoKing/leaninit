@@ -52,13 +52,12 @@ wait
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm
 grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts &
 grep -q ' /dev/mqueue '          /etc/mtab || mount -t mqueue none /dev/mqueue &
-grep -q ' /run/shm '             /etc/mtab || mount -n -o noexec,nosuid,nodev -t tmpfs tmpfs /run/shm &
 grep -q ' /sys/kernel/security ' /etc/mtab || mount -t securityfs securityfs /sys/kernel/security &
 grep -q ' /sys/fs/pstore '       /etc/mtab || mount -t pstore pstore /sys/fs/pstore &
 grep -q ' /sys/fs/cgroup '       /etc/mtab || mount -t tmpfs cgroup /sys/fs/cgroup &
-wait
+grep -q ' /run/shm '             /etc/mtab || mount -n -o noexec,nosuid,nodev -t tmpfs tmpfs /run/shm &
+wait "$(jobs -p %+)"
 mount --bind /run/shm /dev/shm &
-chmod 0666 /dev/null &
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
@@ -123,15 +122,12 @@ echo "LeanInit has started logging on $(uname -srm)" > $LOGFILE
 # sysctl(8)
 print "Launching sysctl(8)..." log ${BLUE} ${WHITE}
 DEFLINUX
-sysctl --system
-sysctl fs.protected_hardlinks=1 # This should always be set to 1
-sysctl fs.protected_symlinks=1
+sysctl --system &
 ENDEF
-
 DEFBSD
 for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 	if [ -r $s ]; then
-		sysctl -f /etc/sysctl.conf
+		sysctl -f /etc/sysctl.conf &
 	fi
 done
 ENDEF
