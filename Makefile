@@ -75,9 +75,9 @@ install:
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || link lhalt.8 lzzz.8; fi
 	$(INSTALL) -Dm0755 out/leaninit out/lhalt out/lservice out/rungetty $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit.d
-	cd $(DESTDIR)/sbin && ln -sf lhalt lpoweroff
-	cd $(DESTDIR)/sbin && ln -sf lhalt lreboot
-	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin && ln -sf lhalt lzzz; fi
+	cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
+	cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
+	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
 
 # Uninstall (only works with normal installations)
 uninstall:
