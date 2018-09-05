@@ -91,7 +91,7 @@ static void single(const char *msg)
 		execl(shell, shell, (char*)0);
 	waitpid(single, (int*)0, 0);
 
-	// Poweroff when the shell exits (avoids conflicting with 'init 5')
+	// Poweroff when the shell exits (avoids conflicting with multi-user)
 	if(single_user == 0)
 		kill(1, SIGUSR2);
 }
