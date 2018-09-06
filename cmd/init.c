@@ -58,7 +58,8 @@ static void sh(const char *cmd)
 // Single user mode
 static void single(const char *msg)
 {
-	// Print msg
+	// Start single user mode as runlevel 1
+	setenv("RUNLEVEL", "1", 1);
 	printf(CYAN "* " WHITE "%s" RESET "\n", msg);
 
 	// Use a shell of the user's choice
@@ -99,6 +100,9 @@ static void single(const char *msg)
 // Execute rc(8) (multi-user)
 static void bootrc(void)
 {
+	// Start multi user mode as runlevel 5
+	setenv("RUNLEVEL", "5", 1);
+
 	// Locate rc(8)
 	char rc[19];
 	if(access("/etc/leaninit.d/rc", X_OK) != 0) {
@@ -226,10 +230,12 @@ int main(int argc, char *argv[])
 					// Switch to single-user
 					case SIGTERM:
 						single_user = 0;
+						setenv("PREVLEVEL", "5", 1);
 						break;
 
 					// Switch to multi-user
 					case SIGILL:
+						setenv("PREVLEVEL", "1", 1);
 						single_user = 1;
 						break;
 
