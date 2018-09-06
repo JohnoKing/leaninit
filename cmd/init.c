@@ -81,9 +81,9 @@ static void single(const char *msg)
 	}
 
 	// Login as root
-	setenv("LOGNAME", "root", 1);
-	setenv("USER", "root", 1);
-	setenv("HOME", "/root", 1);
+	setenv("HOME",    "/root", 1);
+	setenv("LOGNAME", "root",  1);
+	setenv("USER",    "root",  1);
 
 	// Fork the shell into a seperate process
 	pid_t single = fork();
