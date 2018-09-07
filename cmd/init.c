@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
 
 		// Start zloop() and initmode() in seperate threads
 		pthread_t loop, runrc;
-		pthread_create(&loop, (pthread_attr_t*)NULL, zloop, 0);
+		pthread_create(&loop,  (pthread_attr_t*)NULL, zloop,    0);
 		pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
 
 		// Handle relevant signals while ignoring others
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 
 			// Cancel when the runlevel is already the currently running one
 			if(current_signal == SIGILL && single_user == 1)
-				printf(PURPLE "* " YELLOW "LeanInit is already in multi-user mode..." RESET "\n");
+				printf(PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
 
 			else if(current_signal == SIGTERM && single_user == 0)
 				printf(PURPLE "* " YELLOW "LeanInit is already in single-user mode..." RESET "\n");

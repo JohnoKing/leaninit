@@ -50,21 +50,14 @@ int main(int argc, char *argv[])
 	int wall  = 0; // For syslog(3)
 	int signal;    // For signals to init
 
-	// Halt
-	if(strstr(__progname, "halt") != 0)
+	if(strstr(__progname,      "halt")     != 0) // Halt
 		signal = SIGUSR1;
-
-	// Poweroff
-	else if(strstr(__progname, "poweroff") != 0)
+	else if(strstr(__progname, "poweroff") != 0) // Poweroff
 		signal = SIGUSR2;
-
-	// Reboot
-	else if(strstr(__progname, "reboot") != 0)
+	else if(strstr(__progname, "reboot")   != 0) // Reboot
 		signal = SIGINT;
-
-	// Hibernate
 #	ifdef Linux
-	else if(strstr(__progname, "zzz") != 0)
+	else if(strstr(__progname, "zzz")      != 0) // Hibernate
 		return reboot(RB_SW_SUSPEND);
 #	endif
 
@@ -81,7 +74,7 @@ int main(int argc, char *argv[])
 
 			// Display usage info
 			case '?':
-				printf("Usage: %s [-fhlpr?]\n", __progname);
+				printf("Usage: %s [-fhlpr?]\n",  __progname);
 				printf("  -f, --force            Do not send a signal to init, just shutdown\n");
 				printf("  -h, --halt             Forces halt, even when called as poweroff or reboot\n");
 				printf("  -l, --no-wall          Turn off wall messages\n");
