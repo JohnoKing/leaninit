@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
 				// Synchronize all file systems
 				sync();
 
-				// Call reboot(2)
+				// Handle the given signal properly
 				switch(current_signal) {
 
 					// Halt
@@ -226,6 +226,10 @@ int main(int argc, char *argv[])
 					// Poweroff
 					case SIGUSR2:
 						return reboot(SYS_POWEROFF);
+
+					// Reboot
+					case SIGINT:
+						return reboot(RB_AUTOBOOT);
 
 					// Switch to single-user
 					case SIGTERM:
@@ -238,10 +242,6 @@ int main(int argc, char *argv[])
 						setenv("PREVLEVEL", "1", 1);
 						single_user = 1;
 						break;
-
-					// Reboot
-					case SIGINT:
-						return reboot(RB_AUTOBOOT);
 				}
 
 				// Reload
