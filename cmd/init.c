@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Emulate some SysV-like behavior when re-executed
-	if(argc == 1)
+	if(argc < 2)
 		return usage();
 
 	// Runlevel support
