@@ -126,12 +126,13 @@ static void bootrc(void)
 static void *initmode(void *ptr)
 {
 	// Run single-user if single_user == 0, otherwise run multi-user
+	free(ptr);
 	if(single_user == 0)
 		single("Booting into single user mode...");
 	else
 		bootrc();
 
-	pthread_exit(ptr);
+	pthread_exit((void*)0);
 }
 
 // This perpetual loop kills all zombie processes
