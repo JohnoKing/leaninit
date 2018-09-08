@@ -29,6 +29,7 @@
 .Sh DESCRIPTION
 .Nm LeanInit
 is a BSD-style init system that is developed for Linux and FreeBSD.
+.Pp
 When
 .Nm LeanInit
 is executed, it will detect if it is running as
@@ -39,46 +40,35 @@ If it is
 .Nm PID
 1,
 .Nm LeanInit
-will run
+will open
+.Em /dev/console
+using
 .Nm login_tty(3)
-to open the initial tty,
-.Em /dev/tty1
-on Linux and
-.Em /dev/ttyv0
-on FreeBSD. It will then output basic system information
-to the initial tty and run
+then launch two threads, one to kill all zombie processes, the other to run
 .Nm lrc(8)
-as a child process. After
-.Nm lrc(8)
-is executed,
-.Nm LeanInit
-will suspend its own execution until it receives a signal.
+in multi-user mode or a shell in single-user mode.
 .Pp
 If it is not
 .Nm PID
 1,
 .Nm LeanInit
-will instead emulate the following runlevels:
+will instead do the following:
 .Pp
 .Nm 0
-Turns off the system
+Turn off the system
 
 .Nm 1, S, s
-Switches
-.Nm LeanInit
-into single-user mode
+Switch the runlevel to single-user (1)
 
 .Nm 2, 3, 4, 5
-Switches
-.Nm LeanInit
-into multi-user mode
+Switch the runlevel to multi-user (5)
 
 .Nm Q, q
-Restarts the current runlevel
+Restart the current runlevel
 
 .Nm 6
-Reboots the system
-
+Reboot the system
+.Pp
 Passing -s to
 .Nm LeanInit
 before booting will cause it to start the
