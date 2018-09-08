@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 17, 2018
+.Dd September 8, 2018
 .Dt HALT 8
 .Os
 .Sh NAME
@@ -29,8 +29,14 @@
 .Op Fl fhlpr?
 .Sh DESCRIPTION
 .Nm Halt
-will poweroff, reboot or halt the system when executed by sending the correct signal to init.
-SIGUSR1 will halt, SIGUSR2 will poweroff, and SIGINT will reboot.
+will poweroff, reboot or halt the system when executed by sending the following signals to init:
+
+Halt: SIGUSR1
+
+Poweroff: SIGUSR2
+
+Reboot: SIGINT
+
 .Nm LeanInit's
 version of
 .Nm halt
