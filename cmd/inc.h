@@ -44,13 +44,11 @@
 #ifdef Linux
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_HALT     RB_HALT_SYSTEM
-#define DEFAULT_TTY  "/dev/tty1"
 #endif
 
 #ifdef FreeBSD
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_HALT     RB_HALT
-#define DEFAULT_TTY  "/dev/ttyv0"
 #endif
 
 // Colors

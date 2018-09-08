@@ -156,11 +156,11 @@ int main(int argc, char *argv[])
 	// PID 1
 	if(getpid() == 1) {
 
-		// Open DEFAULT_TTY
-		int tty = open(DEFAULT_TTY, O_RDWR);
+		// Open the console
+		int tty = open("/dev/console", O_RDWR);
 		login_tty(tty);
 
-		// Print to DEFAULT_TTY the current platform LeanInit is running on
+		// Print the current platform LeanInit is running on
 		struct utsname uts;
 		uname(&uts);
 		printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
@@ -209,9 +209,9 @@ int main(int argc, char *argv[])
 				sh("/etc/leaninit.d/rc.shutdown");
 				kill(-1, SIGKILL);
 
-				// Re-open DEFAULT_TTY
+				// Re-open /dev/console
 				close(tty);
-				tty = open(DEFAULT_TTY, O_RDWR);
+				tty = open("/dev/console", O_RDWR);
 				login_tty(tty);
 
 				// Synchronize all file systems
