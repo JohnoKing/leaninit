@@ -20,32 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# service - Utility used to run init scripts
+# runlevel - Prints the current and previous runlevels (or unknown if there is none available).
+#    This script uses the $RUNLEVEL and $PREVLEVEL variables to determine the current runlevel.
 #
 
-# Load rc.svc
-. /etc/leaninit.d/rc.svc
-
-# Usage info
-usage() {
-	echo "Usage: $0 service-name action ..."
-	echo "Potential actions:"
-	echo "  start"
-	echo "  stop"
-	echo "  restart"
-	echo "  enable"
-	echo "  disable"
-	echo "  status"
+if [ ! -n "$PREVLEVEL" ] && [ ! -n "$RUNLEVEL" ]; then
+	echo "unknown"
 	exit 1
-}
-
-# Exit when not given proper arguments
-if [ ! -n "$2" ]; then
-	usage
-elif [ ! -r "/etc/leaninit.d/svc.d/$1" ]; then
-	print "The service '$1' does not exist" nolog $RED
-	usage
 fi
 
-# Execute the service directly
-exec /etc/leaninit.d/svc.d/$1 $2
+if [ -n "$PREVLEVEL ]; then
+	__PREVLEVEL=$PREVLEVEL
+else
+	__PREVLEVEL=N
+fi
+
+if [ -n "$RUNLEVEL ]; then
+	__RUNLEVEL=$RUNLEVEL
+else
+	__RUNLEVEL=N
+fi
+
+# Print the previous and current runlevels
+echo "$__PREVLEVEL $__RUNLEVEL"
+exit 0

@@ -26,14 +26,15 @@ INSTALL  := install
 WFLAGS   := -Wall -Wextra -Wpedantic -Wno-unused-result
 CFLAGS   := -O2 -fno-math-errno -fomit-frame-pointer -pipe
 LIBS     := -lpthread -lutil
-RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice
+RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice out/lrunlevel
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
-		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8
+		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 $(DESTDIR)/usr/share/man/man8/lrunlevel.8
 
 # Compile LeanInit
 all: clean
 	cp -r rc out
-	cp cmd/service.sh out/lservice
+	cp cmd/service.sh  out/lservice
+	cp cmd/runlevel.sh out/lrunlevel
 	if [ `uname` = Linux ]; then \
 		$(SED) -i "/DEFBSD/,/ENDEF/d" $(RC) ;\
 		$(SED) -i "/DEFLINUX/d"       $(RC) ;\
@@ -73,7 +74,7 @@ install:
 	[ -r lpoweroff.8 ] || link lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || link lhalt.8 lreboot.8 ;\
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || link lhalt.8 lzzz.8; fi
-	$(INSTALL) -Dm0755 out/leaninit out/lhalt out/lservice out/rungetty $(DESTDIR)/sbin
+	$(INSTALL) -Dm0755 out/leaninit out/lhalt out/lservice out/lrunlevel out/rungetty $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit.d
 	cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
@@ -91,7 +92,7 @@ uninstall:
 	fi
 	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!"
 	rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/sbin/rungetty $(DESTDIR)/usr/share/licenses/leaninit \
-		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/etc/leaninit.d $(DESTDIR)/var/log/leaninit $(DESTDIR)/var/run/leaninit $(MANPAGES)
+		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/sbin/lrunlevel $(DESTDIR)/etc/leaninit.d $(DESTDIR)/var/log/leaninit $(DESTDIR)/var/run/leaninit $(MANPAGES)
 
 # Clean the directory
 clean:
