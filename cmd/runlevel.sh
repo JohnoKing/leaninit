@@ -29,13 +29,13 @@ if [ ! -n "$PREVLEVEL" ] && [ ! -n "$RUNLEVEL" ]; then
 	exit 1
 fi
 
-if [ -n "$PREVLEVEL ]; then
+if [ -n "$PREVLEVEL" ]; then
 	__PREVLEVEL=$PREVLEVEL
 else
 	__PREVLEVEL=N
 fi
 
-if [ -n "$RUNLEVEL ]; then
+if [ -n "$RUNLEVEL" ]; then
 	__RUNLEVEL=$RUNLEVEL
 else
 	__RUNLEVEL=N
