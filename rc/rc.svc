@@ -57,7 +57,7 @@ waitforinit() {
 			break
 		done
 		if [ -n "$3" ]; then
-			until [ -r $3 ]; do
+			until [ -r "$3" ]; do
 				sleep 7
 				print "Failed to wait for file $3..." log ${RED}
 				break
