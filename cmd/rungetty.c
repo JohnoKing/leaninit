@@ -26,7 +26,7 @@
 
 #include "inc.h"
 
-static int usage(void)
+static unsigned int usage(void)
 {
 	printf("Usage: %s tty command & ...\n", __progname);
 	return 1;
