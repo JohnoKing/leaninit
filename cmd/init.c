@@ -31,7 +31,7 @@ static unsigned int single_user = 1;
 static int current_signal       = 0;
 
 // Shows usage for init
-static unsigned int usage(void)
+static int usage(void)
 {
 	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [mode] ...\n", __progname);
