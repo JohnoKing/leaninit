@@ -234,8 +234,8 @@ int main(int argc, char *argv[])
 
 					// Switch to single-user
 					case SIGTERM:
-						single_user = 0;
 						setenv("PREVLEVEL", "5", 1);
+						single_user = 0;
 						break;
 
 					// Switch to multi-user
