@@ -246,6 +246,7 @@ int main(int argc, char *argv[])
 				}
 
 				// Reload
+				pthread_kill(runrc, SIGTERM);
 				pthread_join(runrc, NULL);
 				pthread_create(&runrc, NULL, initmode, NULL);
 			}
