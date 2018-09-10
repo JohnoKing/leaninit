@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 			ioctl(tty, TIOCSCTTY, 1);
 
 			// Attempt to run the getty
-			return execl("/bin/sh", "/bin/sh", "-mc", argv[2], (char*)0);
+			return execl("/bin/sh", "/bin/sh", "-mc", argv[2], NULL);
 		}
 
 		// Prevent getty spamming

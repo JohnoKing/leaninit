@@ -49,10 +49,10 @@ static void sh(const char *cmd)
 	pid_t child = fork();
 	if(child == 0) {
 		setsid();
-		execl("/bin/sh", "/bin/sh", cmd, (char*)0);
+		execl("/bin/sh", "/bin/sh", cmd, NULL);
 	}
 
-	waitpid(child, (int*)0, 0);
+	waitpid(child, NULL, 0);
 }
 
 // Single user mode
@@ -89,8 +89,8 @@ static void single(const char *msg)
 	// Fork the shell into a seperate process
 	pid_t single = fork();
 	if(single == 0)
-		execl(shell, shell, (char*)0);
-	waitpid(single, (int*)0, 0);
+		execl(shell, shell, NULL);
+	waitpid(single, NULL, 0);
 
 	// Poweroff when the shell exits (avoids conflicting with multi-user)
 	if(single_user == 0)
@@ -132,15 +132,15 @@ static void *initmode(void *ptr)
 	else
 		bootrc();
 
-	pthread_exit((void*)0);
+	return NULL;
 }
 
 // This perpetual loop kills all zombie processes
-__attribute((noreturn)) static void *zloop(void *unused)
+__attribute((noreturn)) static void *zloop(void *ptr)
 {
-	free(unused);
+	free(ptr);
 	for(;;)
-		wait((int*)0);
+		wait(NULL);
 }
 
 // Halts, reboots or turns off the system
@@ -177,19 +177,19 @@ int main(int argc, char *argv[])
 
 		// Start zloop() and initmode() in seperate threads
 		pthread_t loop, runrc;
-		pthread_create(&loop,  (pthread_attr_t*)NULL, zloop,    0);
-		pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
+		pthread_create(&loop,  NULL, zloop,    NULL);
+		pthread_create(&runrc, NULL, initmode, NULL);
 
 		// Handle relevant signals while ignoring others
 		struct sigaction actor;
 		memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
 		actor.sa_handler = sighandle;     // Set the handler to sighandle()
-		sigaction(SIGUSR1, &actor, (struct sigaction*)NULL); // Halt
-		sigaction(SIGUSR2, &actor, (struct sigaction*)NULL); // Poweroff
-		sigaction(SIGTERM, &actor, (struct sigaction*)NULL); // Single-user
-		sigaction(SIGILL,  &actor, (struct sigaction*)NULL); // Multi-user
-		sigaction(SIGHUP,  &actor, (struct sigaction*)NULL); // Reloads everything
-		sigaction(SIGINT,  &actor, (struct sigaction*)NULL); // Reboot
+		sigaction(SIGUSR1, &actor, NULL); // Halt
+		sigaction(SIGUSR2, &actor, NULL); // Poweroff
+		sigaction(SIGTERM, &actor, NULL); // Single-user
+		sigaction(SIGILL,  &actor, NULL); // Multi-user
+		sigaction(SIGHUP,  &actor, NULL); // Reloads everything
+		sigaction(SIGINT,  &actor, NULL); // Reboot
 
 		// Signal handling loop
 		for(;;) {
@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
 
 				// Reload
 				pthread_kill(runrc, SIGTERM);
-				pthread_create(&runrc, (pthread_attr_t*)NULL, initmode, 0);
+				pthread_create(&runrc, NULL, initmode, NULL);
 			}
 		}
 	}
