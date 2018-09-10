@@ -123,10 +123,9 @@ static void bootrc(void)
 }
 
 // Run either bootrc() or single() depending on the mode
-static void *initmode(void *ptr)
+static void *initmode(__attribute((unused)) void *ptr)
 {
 	// Run single-user if single_user == 0, otherwise run multi-user
-	free(ptr);
 	if(single_user == 0)
 		single("Booting into single user mode...");
 	else
@@ -136,9 +135,8 @@ static void *initmode(void *ptr)
 }
 
 // This perpetual loop kills all zombie processes
-__attribute((noreturn)) static void *zloop(void *ptr)
+__attribute((noreturn)) static void *zloop(__attribute((unused)) void *ptr)
 {
-	free(ptr);
 	for(;;)
 		wait(NULL);
 }
