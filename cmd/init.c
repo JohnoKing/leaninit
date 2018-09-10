@@ -34,11 +34,11 @@ static int current_signal       = 0;
 static int usage(void)
 {
 	printf("%s: Option not permitted\n", __progname);
-	printf("Usage: %s [mode] ...\n", __progname);
+	printf("Usage: %s [runlevel] ...\n", __progname);
 	printf("  0           Poweroff\n");
 	printf("  1, S, s     Switch to single-user mode\n");
 	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
-	printf("  Q, q        Reloads the current runlevel\n");
+	printf("  Q, q        Reload the current runlevel\n");
 	printf("  6           Reboot\n");
 	return 1;
 }
