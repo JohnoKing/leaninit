@@ -50,6 +50,7 @@ static void sh(const char *cmd)
 	if(child == 0) {
 		setsid();
 		execl("/bin/sh", "/bin/sh", cmd, NULL);
+		return;
 	}
 
 	waitpid(child, NULL, 0);
@@ -88,8 +89,10 @@ static void single(const char *msg)
 
 	// Fork the shell into a seperate process
 	pid_t single = fork();
-	if(single == 0)
+	if(single == 0) {
 		execl(shell, shell, NULL);
+		return;
+	}
 	waitpid(single, NULL, 0);
 
 	// Poweroff when the shell exits (avoids conflicting with multi-user)
@@ -115,10 +118,8 @@ static void bootrc(void)
 	} else
 		memcpy(rc, "/etc/leaninit.d/rc", 19);
 
-	// Output a message to the console
-	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
-
 	// Run rc(8)
+	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
 	sh(rc);
 }
 
