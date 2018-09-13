@@ -7,6 +7,9 @@ DAEMON=cron
 
 main() {
 	cron -s
+	if [ $? != 0 ]; then
+		cron
+	fi
 }
 
 run cron $1 $2
