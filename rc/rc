@@ -75,7 +75,7 @@ elif [ "$DEV" = "mdev" ]; then
 	$DEVEXEC -s
 	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi &
-wait $(job -p %-)
+wait $(jobs -p %-)
 ENDEF
 
 # Mount all ZFS file systems
