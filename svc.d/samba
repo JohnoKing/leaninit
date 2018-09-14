@@ -1,0 +1,17 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# Samba
+NAME="Samba"
+DAEMON=smbd
+
+main() {
+	# Wait for internet services
+	waitforinit wpa_supplicant wpa_supplicant /var/run/leaninit/wpa.pid
+	waitforinit dhcpcd dhcpcd
+
+	# Run the daemon
+	smbd -D
+}
+
+run samba $1 $2
