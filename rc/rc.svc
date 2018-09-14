@@ -23,12 +23,12 @@
 # /etc/leaninit.d/rc.svc - Functions and variables for execution of LeanInit scrips
 #
 
-# Just in case, set a PATH variable in case /etc/profile does not contain one
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-
 # Load /etc/profile and /etc/leaninit.d/rc.conf
 . /etc/profile
 . /etc/leaninit.d/rc.conf
+
+# Set a consistent PATH variable
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
 # Color variables
 RESET='\033[0m'
