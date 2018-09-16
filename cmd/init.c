@@ -92,7 +92,7 @@ static void single(const char *msg)
 }
 
 // Execute rc(8) (multi-user)
-static void bootrc(void)
+static void multi(void)
 {
 	// Start multi user mode as runlevel 5
 	setenv("RUNLEVEL", "5", 1);
@@ -114,14 +114,14 @@ static void bootrc(void)
 	sh(rc);
 }
 
-// Run either bootrc() or single() depending on the mode
-static void *initmode(__attribute((unused)) void *ptr)
+// Run either single() or multi depending on the runlevel
+static void *chlvl(__attribute((unused)) void *ptr)
 {
 	// Run single-user if single_user == 0, otherwise run multi-user
 	if(single_user == 0)
 		single("Booting into single user mode...");
 	else
-		bootrc();
+		multi();
 
 	return NULL;
 }
@@ -165,10 +165,10 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		// Start zloop() and initmode() in seperate threads
+		// Start zloop() and chlvl() in seperate threads
 		pthread_t loop, runrc;
-		pthread_create(&loop,  NULL, zloop,    NULL);
-		pthread_create(&runrc, NULL, initmode, NULL);
+		pthread_create(&loop,  NULL, zloop, NULL);
+		pthread_create(&runrc, NULL, chlvl, NULL);
 
 		// Handle relevant signals while ignoring others
 		struct sigaction actor;
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
 				// Reload
 				pthread_kill(runrc, SIGTERM);
 				pthread_join(runrc, NULL);
-				pthread_create(&runrc, NULL, initmode, NULL);
+				pthread_create(&runrc, NULL, chlvl, NULL);
 			}
 		}
 	}
