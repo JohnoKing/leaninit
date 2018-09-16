@@ -17,8 +17,7 @@ main() {
 	elif [ -x /usr/libexec/elogind/elogind ]; then
 		/usr/libexec/elogind/elogind &
 	else
-		print "Could not start elogind..." log ${RED}
-		exit 1
+		return 1
 	fi
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
 		/usr/libexec/elogind/elogind-uaccess-command /dev

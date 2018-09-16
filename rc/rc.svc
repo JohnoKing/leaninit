@@ -78,6 +78,10 @@ __waitfor_loop_proc() {
 			exit 1
 		fi
 	done
+	if [ -n "$3" ] && [ "$(cat $1)" = "Failure" ]; then
+		print "$3" log ${RED}
+		exit 1
+	fi
 }
 
 # Wait for either a file, process, or service for up to seven seconds
@@ -95,7 +99,7 @@ waitfor() {
 				echo "Usage: waitfor type name..."
 				return 1
 			fi
-			__waitfor_loop_proc "$(pgrep -x $2)" "$NAME failed to start because the process $2 failed to start"
+			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start"
 			;;
 		service)
 			if [ ! -n "$2" ]; then
@@ -110,7 +114,7 @@ waitfor() {
 					exit 1
 				fi
 			fi
-			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start"
+			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start" "$NAME failed to start because the service $2 failed to start"
 			;;
 		dbus)
 			if [ "$DBUS_ENABLE" != "true" ]; then
@@ -158,6 +162,9 @@ __start() {
 		if [ -n "$TYPE" ]; then
 			echo "$1" > "/var/run/leaninit/$TYPE.type"
 		fi
+	else
+		print "$NAME failed to start" log ${RED}
+		echo "Failure" > "/var/run/leaninit/$1.status"
 	fi
 }
 
