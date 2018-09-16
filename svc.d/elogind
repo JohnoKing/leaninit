@@ -20,7 +20,6 @@ main() {
 		print "Could not start elogind..." ${RED} ${LIGHT_RED}
 		exit 1
 	fi
-	sleep 1
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
 		/usr/libexec/elogind/elogind-uaccess-command /dev
 		for fs in $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
