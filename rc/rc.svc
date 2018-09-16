@@ -40,6 +40,11 @@ PURPLE='\033[1;35m'
 CYAN='\033[1;36m'
 WHITE='\033[1;37m'
 
+# Make sure $LOGFILE is set
+if [ ! -n "$LOGFILE" ]; then
+	LOGFILE=/var/log/leaninit.log
+fi
+
 # Execute if exists
 exifex() {
 	type $1 >> /dev/null
@@ -48,69 +53,117 @@ exifex() {
 	fi
 }
 
-# Wait for another service if it is enabled
-waitforinit() {
-	if [ -r /etc/leaninit.d/svc.e/$1 ] && [ "$INIT" = "true" ]; then
-		until [ -n "$(pgrep -x $2)" ]; do
-			sleep 7
-			print "Failed to start $2..." log ${RED}
-			break
-		done
-		if [ -n "$3" ]; then
-			until [ -r "$3" ]; do
-				sleep 7
-				print "Failed to wait for file $3..." log ${RED}
-				break
-			done
+# Used internally by waitfor
+__waitfor_loop_file() {
+	__TIMER=0
+	while true; do
+		if [ -r "$1" ]; then break; fi
+		sleep 0.1
+		__TIMER=$(expr $TIMER + 1)
+		if [ $__TIMER = 70 ]; then
+			print "$2" log ${RED}
+			exit 1
 		fi
-	fi
+	done
+}
+
+__waitfor_loop_proc() {
+	__TIMER=0
+	while true; do
+		if [ -n "$(pgrep -x $1)" ]; then break; fi
+		sleep 0.1
+		__TIMER=$(expr $TIMER + 1)
+		if [ $__TIMER = 70 ]; then
+			print "$2" log ${RED}
+			exit 1
+		fi
+	done
+}
+
+# Wait for either a file, process, or service for up to seven seconds
+waitfor() {
+	case "$1" in
+		file)
+			if [ ! -n "$2" ]; then
+				echo "Usage: waitfor type name..."
+				return 1
+			fi
+			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created"
+			;;
+		process)
+			if [ ! -n "$2" ]; then
+				echo "Usage: waitfor type name..."
+				return 1
+			fi
+			__waitfor_loop_proc "$(pgrep -x $2)" "$NAME failed to start because the process $2 failed to start"
+			;;
+		service)
+			if [ ! -n "$2" ]; then
+				echo "Usage: waitfor type name..."
+				return 1
+			fi
+			if [ ! -r "/etc/leaninit.d/svc.e/$2" ]; then
+				if [ "$3" = "optional" ]; then
+					return 0
+				else
+					print "$NAME failed to start because the service $2 is not enabled" log ${RED}
+					exit 1
+				fi
+			fi
+			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start"
+			;;
+		dbus)
+			if [ "$DBUS_ENABLE" != "true" ]; then
+				print "$NAME could not start because D-Bus is disabled..." log ${RED}
+				exit 1
+			elif [ -r /var/run/leaninit/dbus-failure ]; then
+				print "$NAME could not start because D-Bus failed to launch..." log ${RED}
+				exit 1
+			fi
+			;;
+		*)
+			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because no currently running services satisfy the type $1"
+			;;
+	esac
 }
 
 # Print output properly (use this instead of echo)
 print() {
 	printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
 	if [ "$2" = "log" ]; then
-		echo "$1" >> $LOGFILE
-	fi
-}
-
-# Used by services that require D-Bus
-dbus_req() {
-	if [ "$DBUS_ENABLE" != "true" ]; then
-		print "Could not start $NAME due to D-Bus being disabled..." ${RED}
-		exit 1
-	elif [ -r /var/run/leaninit/dbus.status ]; then
-		print "Could not start $NAME due to D-Bus failing to launch..." ${RED}
-		exit 1
+		echo "$1" >> "$LOGFILE"
 	fi
 }
 
 # Reserved for run()
 __start() {
 	# Return if the service is active
-	if [ -r /var/run/leaninit/$1.status ]; then
+	if [ -r "/var/run/leaninit/$1.status" ]; then
 		print "$NAME is already running" nolog ${PURPLE} ${YELLOW}
 		return 0
+	elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
+		print "$(cat /var/run/leaninit/$TYPE.type) is currently running and conflicts with $NAME" nolog ${RED}
+		exit 1
 	fi
 
 	# Run main()
 	print "Starting $NAME..." log ${BLUE} ${WHITE}
-	main $2 1> $LOGFILE.2 2> $LOGFILE.3
+	main 2> "$LOGFILE.2"
 
-	# Finish by creating the service's .status file
+	# Finish by creating the service's .status and .type files
 	RET=$?
 	if [ $RET = 0 ]; then
 		print "Started $NAME successfully" log ${GREEN} ${WHITE}
-		echo "Started" > /var/run/leaninit/$1.status
-	else
-		print "$NAME failed to start (exited with status $RET)" log ${RED}
-		echo "Failure" > /var/run/leaninit/$1.status
+		echo "Started" > "/var/run/leaninit/$1.status"
+		if [ -n "$TYPE" ]; then
+			echo "$1" > "/var/run/leaninit/$TYPE.type"
+		fi
 	fi
 }
 
 __stop() {
 	# Return if the service is not active
-	if [ ! -r /var/run/leaninit/$1.status ]; then
+	if [ ! -r "/var/run/leaninit/$1.status" ]; then
 		print "$NAME is not running" nolog ${PURPLE} ${YELLOW}
 		return 0
 	fi
@@ -129,9 +182,14 @@ __stop() {
 	# Execute stop()
 	exifex stop
 
-	# Remove the .status file for the service
+	# Remove the .status and .type files for the service
+	rm -f "/var/run/leaninit/$1.status"
+	if [ -n "$TYPE" ]; then
+		rm -f "/var/run/leaninit/$TYPE.type"
+	fi
+
+	# Finish
 	print "Stopped $NAME successfully" log ${GREEN} ${WHITE}
-	rm -f /var/run/leaninit/$1.status
 }
 
 # Run function for directly executing init scripts
@@ -151,10 +209,10 @@ run() {
 	# Handle arguments
 	case $2 in
 		enable)
-			if [ -r /etc/leaninit.d/svc.e/$1 ]; then
+			if [ -r "/etc/leaninit.d/svc.e/$1" ]; then
 				print "$NAME is already enabled" nolog ${PURPLE} ${YELLOW}
 			else
-				touch /etc/leaninit.d/svc.e/$1
+				touch "/etc/leaninit.d/svc.e/$1"
 				RET=$?
 				if [ $RET != 0 ]; then
 					print "Could not enable $NAME" log ${RED}
@@ -163,10 +221,10 @@ run() {
 				fi
 			fi ;;
 		disable)
-			if [ ! -r /etc/leaninit.d/svc.e/$1 ]; then
+			if [ ! -r "/etc/leaninit.d/svc.e/$1" ]; then
 				print "$NAME is already disabled" nolog ${PURPLE} ${YELLOW}
 			else
-				rm /etc/leaninit.d/svc.e/$1
+				rm "/etc/leaninit.d/svc.e/$1"
 				RET=$?
 				if [ $RET != 0 ]; then
 					print "Could not disable $NAME" log ${RED}
@@ -175,18 +233,18 @@ run() {
 				fi
 			fi ;;
 		start)
-			__start $1 $3 ;;
+			__start $1 ;;
 		stop)
 			__stop $1 ;;
 		restart)
 			__stop $1
-			__start $1 $3 ;;
+			__start $1 ;;
 		status)
 			RET=0
-			if [ ! -r /var/run/leaninit/$3.status ]; then
+			if [ ! -r "/var/run/leaninit/$1.status" ]; then
 				print "There is no current status for $NAME" nolog ${PURPLE} ${WHITE}
 			else
-				print "$NAME has the status of: $(cat /var/run/leaninit/$3.status)" nolog ${PURPLE} ${WHITE}
+				print "$NAME has the status of: $(cat /var/run/leaninit/$1.status)" nolog ${PURPLE} ${WHITE}
 			fi ;;
 		*)
 			echo "Illegal command - $2"

@@ -4,9 +4,10 @@
 # Linux NetworkManager
 NAME="NetworkManager"
 DAEMON=NetworkManager
+TYPE=networking
 
 main() {
-	dbus_req
+	waitfor dbus
 	NetworkManager
 }
 

@@ -6,7 +6,6 @@ NAME="ACPI Daemon"
 DAEMON=acpid
 
 main() {
-	dbus_req
 	acpid
 }
 

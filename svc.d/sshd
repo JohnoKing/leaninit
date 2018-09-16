@@ -7,8 +7,7 @@ DAEMON=sshd
 
 main() {
 	# Wait for internet services
-	waitforinit wpa_supplicant wpa_supplicant /var/run/leaninit/wpa.pid
-	waitforinit dhcpcd dhcpcd
+	waitfor networking
 
 	# sshd must be executed with the full path to the executable
 	ssh-keygen -A >> /dev/null

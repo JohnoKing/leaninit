@@ -222,17 +222,14 @@ int main(int argc, char *argv[])
 
 					// Halt
 					case SIGUSR1:
-						printf(CYAN "* " WHITE "The system will now halt!" RESET "\n");
 						return reboot(SYS_HALT);
 
 					// Poweroff
 					case SIGUSR2:
-						printf(CYAN "* " WHITE "The system will now poweroff!" RESET "\n");
 						return reboot(SYS_POWEROFF);
 
 					// Reboot
 					case SIGINT:
-						printf(CYAN "* " WHITE "The system will now reboot!" RESET "\n");
 						return reboot(RB_AUTOBOOT);
 
 					// Switch to single-user

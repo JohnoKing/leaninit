@@ -4,9 +4,10 @@
 # avahi
 NAME="Bluetooth daemon"
 DAEMON=bluetoothd
+TYPE=bluetooth
 
 main() {
-	dbus_req
+	waitfor dbus
 	bluetoothd &
 }
 

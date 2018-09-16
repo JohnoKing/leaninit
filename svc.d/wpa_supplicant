@@ -4,9 +4,10 @@
 # WPA Supplicant service (intended for FreeBSD, may also work on Linux)
 NAME="WPA Supplicant"
 DAEMON=wpa_supplicant
+TYPE=networking
 
 main() {
-	waitforinit wpa_supplicant wpa_supplicant
+	waitfor process wpa_supplicant
 	sleep 0.5
 	pkill -KILL -x wpa_supplicant
 	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P /var/run/leaninit/wpa.pid

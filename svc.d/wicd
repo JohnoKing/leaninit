@@ -4,9 +4,10 @@
 # Linux NetworkManager
 NAME="Wicd"
 DAEMON=wicd
+TYPE=networking
 
 main() {
-	dbus_req
+	waitfor dbus
 	wicd
 }
 

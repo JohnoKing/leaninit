@@ -4,9 +4,10 @@
 # Service for ConsoleKit
 NAME="ConsoleKit"
 DAEMON=console-kit-daemon
+TYPE=login-daemon
 
 main() {
-	dbus_req
+	waitfor dbus
 	console-kit-daemon
 }
 

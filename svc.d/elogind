@@ -3,6 +3,7 @@
 
 # elogind
 NAME="elogind"
+TYPE=login-daemon
 if [ -n "$(pgrep -x elogind-daemon)" ]; then
 	DAEMON=elogind-daemon
 else
@@ -10,14 +11,14 @@ else
 fi
 
 main() {
-	dbus_req
+	waitfor dbus
 	if [ -n "$(command -v elogind)" ]; then
 		elogind &
 	elif [ -x /usr/libexec/elogind/elogind ]; then
 		/usr/libexec/elogind/elogind &
 	else
 		print "Could not start elogind..." ${RED} ${LIGHT_RED}
-		return 1
+		exit 1
 	fi
 	sleep 1
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then

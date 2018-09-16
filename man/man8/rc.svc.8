@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd September 8, 2018
+.Dd September 16, 2018
 .Dt RC.API 8
 .Os
 .Sh NAME
@@ -82,17 +82,34 @@ Resets the text format (advised when using custom colors)
 .Em $WHITE
 
 
-.Nm waitforinit
-This function allows scripts to have basic dependency management,
-by letting them wait for the specified service to start first.
-If
-.Em $3
-is set,
-.Nm waitforinit
-will also wait for the file defined by $3 to exist.
-This function will only run if
-.Em $INIT
-is set to true (this prevents it from running when manually starting services unless you pass INIT=true to the service).
+.Nm waitfor type name [optional]...
+
+.Nm waitfor
+This function allows scripts to have dependency management
+by letting them wait for a specified 'type' before proceeding.
+.Nm Waitfor
+will wait for a maximum of seven seconds when called,
+and will stop when the required condition is true.
+If a full seven seconds have elapsed,
+.Nm waitfor
+will cause the running script to exit with a return status of one.
+
+.Nm file
+This type will wait for the specified file to be created.
+
+.Nm process
+This type will wait for the specified process to start.
+
+.Nm service
+This type will wait for the specified service to start.
+Appending 'optional' as a third argument will cause waitfor to simply return if the service does not exist.
+
+.Nm dbus
+This type will return with zero if D-Bus is enabled and has started successfully,
+otherwise it will kill the script with return status one.
+
+.Nm other
+Other types will cause waitfor to look for '/var/run/leaninit/TYPENAME.type', in a similar manner to the 'file' and 'service' types.
 
 
 .Nm run
@@ -111,7 +128,11 @@ scripts.
 .Sh EXAMPLES
 Wait for HALD to launch:
 
-waitforinit hald hald $1
+waitfor service hald
+
+Wait for a networking service to launch:
+
+waitfor networking
 
 Print colored output with a blue star and white text to
 .Em /dev/tty

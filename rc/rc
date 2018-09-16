@@ -111,11 +111,10 @@ print "Turning on all swap partitions..." nolog ${PURPLE} ${WHITE}
 swapon -a &
 
 # Logging
-touch $LOGFILE $LOGFILE.2 $LOGFILE.3
-mv $LOGFILE $LOGFILE.old
-mv $LOGFILE.2 $LOGFILE.old.2
-mv $LOGFILE.3 $LOGFILE.old.3
-echo "LeanInit has started logging on $(uname -srm)" > $LOGFILE
+touch "$LOGFILE" "$LOGFILE.2"
+mv "$LOGFILE"    "$LOGFILE.old"
+mv "$LOGFILE.2"  "$LOGFILE.old.2"
+echo "LeanInit has started logging on $(uname -srm)" > "$LOGFILE"
 
 # sysctl(8)
 print "Launching sysctl(8)..." log ${BLUE} ${WHITE}
@@ -183,7 +182,7 @@ if [ "$DBUS_ENABLE" = "true" ]; then
 	until [ -n "$(pgrep -x dbus-daemon)" ]; do
 		sleep 7
 		print "Failed to start D-Bus..." log ${RED}
-		echo "Failure" > /var/run/leaninit/dbus.status
+		touch /var/run/leaninit/dbus-failure
 		break
 	done
 fi &

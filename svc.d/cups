@@ -4,9 +4,10 @@
 # Service for CUPS
 NAME="CUPS"
 DAEMON=cupsd
+TYPE=printing-daemon
 
 main() {
-	waitforinit avahi avahi-daemon
+	waitfor service avahi
 	cupsd
 }
 

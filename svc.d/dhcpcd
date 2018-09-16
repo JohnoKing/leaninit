@@ -4,6 +4,7 @@
 # dhcpcd (for Linux)
 NAME="dhcpcd"
 DAEMON=dhcpcd
+TYPE=networking
 
 main() {
 	for i in $NETFACE; do
