@@ -13,9 +13,9 @@ fi
 main() {
 	waitfor dbus
 	if [ -n "$(command -v elogind)" ]; then
-		elogind &
+		elogind -D
 	elif [ -x /usr/libexec/elogind/elogind ]; then
-		/usr/libexec/elogind/elogind &
+		/usr/libexec/elogind/elogind -D
 	else
 		return 1
 	fi
