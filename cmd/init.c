@@ -93,11 +93,6 @@ static void single(const char *msg)
 		execl(shell, shell, NULL);
 		return;
 	}
-	waitpid(single, NULL, 0);
-
-	// Poweroff when the shell exits (avoids conflicting with multi-user)
-	if(single_user == 0)
-		kill(1, SIGUSR2);
 }
 
 // Execute rc(8) (multi-user)
