@@ -27,7 +27,7 @@
 . /etc/leaninit.d/rc.conf
 
 # Stop all services
-__LIST="$(ls /etc/leaninit.d/svc.e)"
+__LIST="$(ls /etc/leaninit.d/svc.d)"
 if [ -n "$__LIST" ]; then
 	for svc in $__LIST; do
 		lservice $svc stop &
@@ -37,6 +37,7 @@ fi
 DEFLINUX
 # Stop udev
 if [ "$DEV" = "udev" ]; then
+	print "Stopping udev..." log ${BLUE} ${WHITE}
 	udevadm control --exit
 fi &
 ENDEF
@@ -44,20 +45,23 @@ wait
 
 # Kill any remaining processes
 DEFLINUX
-until pkill -TERM --inverse -s0,1; do
-	sleep 7
-	pkill -KILL --inverse -s0,1
+__INVERSE="--inverse"
 ENDEF
 DEFBSD
-until pkill -TERM -v -s0,1; do
-	sleep 7
-	pkill -KILL -v -s0,1
+__INVERSE="-v"
 ENDEF
+print "Sending all remaining processes SIGTERM..." log ${BLUE} ${WHITE}
+until pkill -TERM $__INVERSE -s0,1; do
+	sleep 7
+	print "Sending all remaining processes SIGKILL..." log ${BLUE} ${WHITE}
+	pkill -KILL $__INVERSE -s0,1
 	break
 done
 
 # Unmount all drives
+print "Remounting root as read-only..." log ${BLUE} ${WHITE}
 mount -o remount,ro / &
+print "Unmounting all drives..." nolog ${PURPLE} ${WHITE}
 if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs umount -a
 	zfs unshare -a
@@ -68,6 +72,7 @@ ENDEF
 DEFLINUX
 umount -a &
 ENDEF
+print "Turning off swap..." nolog ${PURPLE} ${WHITE}
 swapoff -a &
 
 # Exit
