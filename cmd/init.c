@@ -195,6 +195,10 @@ int main(int argc, char *argv[])
 
 			// Switch the current runlevel
 			else {
+				// Synchronize all file systems (Pass 1)
+				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
+				sync();
+
 				// Run rc.shutdown
 				sh("/etc/leaninit.d/rc.shutdown");
 				kill(-1, SIGKILL);
@@ -204,8 +208,8 @@ int main(int argc, char *argv[])
 				tty = open("/dev/console", O_RDWR);
 				login_tty(tty);
 
-				// Synchronize all file systems
-				printf(CYAN "* " WHITE "Synchronizing all file systems..." RESET "\n");
+				// Synchronize file systems again (Pass 2)
+				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 2)..." RESET "\n");
 				sync();
 
 				// Handle the given signal properly
@@ -213,14 +217,17 @@ int main(int argc, char *argv[])
 
 					// Halt
 					case SIGUSR1:
+						printf(CYAN "* " WHITE "The system will now halt!" RESET "\n");
 						return reboot(SYS_HALT);
 
 					// Poweroff
 					case SIGUSR2:
+						printf(CYAN "* " WHITE "The system will now poweroff!" RESET "\n");
 						return reboot(SYS_POWEROFF);
 
 					// Reboot
 					case SIGINT:
+						printf(CYAN "* " WHITE "The system will now reboot!" RESET "\n");
 						return reboot(RB_AUTOBOOT);
 
 					// Switch to single-user
