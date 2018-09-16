@@ -50,7 +50,6 @@ static void sh(const char *cmd)
 	if(child == 0) {
 		setsid();
 		execl("/bin/sh", "/bin/sh", cmd, NULL);
-		return;
 	}
 
 	waitpid(child, NULL, 0);
@@ -88,11 +87,8 @@ static void single(const char *msg)
 	setenv("USER",    "root",  1);
 
 	// Fork the shell into a seperate process
-	pid_t single = fork();
-	if(single == 0) {
+	if(fork() == 0)
 		execl(shell, shell, NULL);
-		return;
-	}
 }
 
 // Execute rc(8) (multi-user)
