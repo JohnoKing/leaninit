@@ -21,6 +21,7 @@ main() {
 # Kill the X server manually
 stop() {
 	pkill -x Xorg
+	pkill -x $DM
 }
 
 run xdm $1 $2
