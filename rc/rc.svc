@@ -65,6 +65,10 @@ __waitfor_loop_file() {
 			exit 1
 		fi
 	done
+	if [ -n "$3" ] && [ "$(cat $1)" = "Failure" ]; then
+		print "$3" log ${RED}
+		exit 1
+	fi
 }
 
 __waitfor_loop_proc() {
@@ -74,14 +78,14 @@ __waitfor_loop_proc() {
 		sleep 0.1
 		__TIMER=$(expr $TIMER + 1)
 		if [ $__TIMER = 70 ]; then
-			print "$2" log ${RED}
-			exit 1
+			if [ "$3" != "return" ]; then
+				print "$2" log ${RED}
+				exit 1
+			else
+				return 1
+			fi
 		fi
 	done
-	if [ -n "$3" ] && [ "$(cat $1)" = "Failure" ]; then
-		print "$3" log ${RED}
-		exit 1
-	fi
 }
 
 # Wait for either a file, process, or service for up to seven seconds
@@ -99,7 +103,7 @@ waitfor() {
 				echo "Usage: waitfor type name..."
 				return 1
 			fi
-			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start"
+			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start" "$3"
 			;;
 		service)
 			if [ ! -n "$2" ]; then
@@ -129,6 +133,7 @@ waitfor() {
 			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because no currently running services satisfy the type $1"
 			;;
 	esac
+	return $?
 }
 
 # Print output properly (use this instead of echo)

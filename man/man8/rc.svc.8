@@ -98,7 +98,7 @@ will cause the running script to exit with a return status of one.
 This type will wait for the specified file to be created.
 
 .Nm process
-This type will wait for the specified process to start.
+This type will wait for the specified process to start. Appending 'return' as a third argument will cause waitfor to return an exit status rather than killing the script.
 
 .Nm service
 This type will wait for the specified service to start.
