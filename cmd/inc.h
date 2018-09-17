@@ -42,11 +42,12 @@
 
 // OS specific macros
 #ifdef Linux
+#define CONSOLE      "/dev/tty1"
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_HALT     RB_HALT_SYSTEM
 #endif
-
 #ifdef FreeBSD
+#define CONSOLE      "/dev/ttyv0"
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_HALT     RB_HALT
 #endif

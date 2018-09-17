@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 	if(getpid() == 1) {
 
 		// Open the console
-		int tty = open("/dev/console", O_RDWR);
+		int tty = open(CONSOLE, O_RDWR);
 		login_tty(tty);
 
 		// Print the current platform LeanInit is running on
@@ -203,9 +203,9 @@ int main(int argc, char *argv[])
 				sh("/etc/leaninit.d/rc.shutdown");
 				kill(-1, SIGKILL);
 
-				// Re-open /dev/console
+				// Reopen the console
 				close(tty);
-				tty = open("/dev/console", O_RDWR);
+				tty = open(CONSOLE, O_RDWR);
 				login_tty(tty);
 
 				// Synchronize file systems again (Pass 2)
