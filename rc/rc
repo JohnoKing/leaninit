@@ -138,7 +138,7 @@ DEFBSD
 # Launch devd (vidcontrol -m is required for moused to function)
 print "Starting devd..." log ${BLUE} ${WHITE}
 vidcontrol -m on
-devd -n &
+devd -n
 ENDEF
 
 DEFLINUX
