@@ -94,7 +94,7 @@ static void single(const char *msg)
 // Execute rc(8) (multi-user)
 static void multi(void)
 {
-	// Start multi user mode as runlevel 5
+	// Start multi-user mode as runlevel 5
 	setenv("RUNLEVEL", "5", 1);
 
 	// Locate rc(8)
@@ -114,7 +114,7 @@ static void multi(void)
 	sh(rc);
 }
 
-// Run either single() or multi depending on the runlevel
+// Run either single() or multi() depending on the runlevel
 static void *chlvl(__attribute((unused)) void *ptr)
 {
 	// Run single-user if single_user == 0, otherwise run multi-user
