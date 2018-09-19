@@ -182,10 +182,10 @@ __stop() {
 
 	# Stop $DAEMON
 	if [ "$DAEMON" != "none" ]; then
-		print "Sending $NAME SIGTERM" log ${BLUE} ${WHITE}
+		print "Sending $NAME SIGTERM..." log ${BLUE} ${WHITE}
 		until pkill -0 -x $DAEMON; do
 			sleep 7
-			print "Sending $NAME SIGKILL" log ${PURPLE} ${YELLOW}
+			print "Sending $NAME SIGKILL..." log ${PURPLE} ${YELLOW}
 			pkill -KILL -x $DAEMON
 			break
 		done

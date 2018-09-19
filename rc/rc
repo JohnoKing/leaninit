@@ -100,7 +100,7 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	__LIST="$(zpool list -Ho name)"
 	if [ -n "$__LIST" ]; then
 		for z in $__LIST; do
-			print "Turning readonly off for dataset $z" nolog ${PURPLE} ${WHITE}
+			print "Turning readonly off for dataset $z..." nolog ${PURPLE} ${WHITE}
 			zfs readonly=off $z
 		done
 	fi
@@ -184,7 +184,7 @@ if [ "$DBUS_ENABLE" = "true" ]; then
 	fi
 	waitfor process dbus-daemon return
 	if [ $? != 0 ]; then
-		print "Failed to start D-Bus..." log ${RED}
+		print "Failed to start D-Bus" log ${RED}
 		touch /var/run/leaninit/dbus-failure
 	fi
 fi &
