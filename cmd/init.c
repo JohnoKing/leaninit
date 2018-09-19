@@ -81,11 +81,6 @@ static void single(const char *msg)
 		}
 	}
 
-	// Login as root
-	setenv("HOME",    "/root", 1);
-	setenv("LOGNAME", "root",  1);
-	setenv("USER",    "root",  1);
-
 	// Fork the shell into a seperate process
 	if(fork() == 0)
 		execl(shell, shell, NULL);
@@ -149,6 +144,11 @@ int main(int argc, char *argv[])
 		// Open the console
 		int tty = open(CONSOLE, O_RDWR);
 		login_tty(tty);
+
+		// Login as root
+		setenv("HOME",    "/root", 1);
+		setenv("LOGNAME", "root",  1);
+		setenv("USER",    "root",  1);
 
 		// Print the current platform LeanInit is running on
 		struct utsname uts;
