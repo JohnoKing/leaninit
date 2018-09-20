@@ -9,4 +9,8 @@ main() {
 	setupcon
 }
 
+reload() {
+	setupcon
+}
+
 run setupcon "$@"

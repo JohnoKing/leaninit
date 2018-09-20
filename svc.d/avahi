@@ -10,4 +10,8 @@ main() {
 	avahi-daemon &
 }
 
+reload() {
+	avahi-daemon --reload
+}
+
 run avahi "$@"

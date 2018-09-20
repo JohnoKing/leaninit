@@ -9,4 +9,8 @@ main() {
 	syslogd -ss
 }
 
+reload() {
+	pkill -HUP -x syslogd
+}
+
 run syslogd "$@"

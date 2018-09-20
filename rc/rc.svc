@@ -203,10 +203,29 @@ __stop() {
 	print "Stopped $NAME successfully" log ${GREEN} ${WHITE}
 }
 
+__reload() {
+	print "Reloading $NAME..." log ${BLUE} ${WHITE}
+	reload
+	RET=$?
+	if [ $RET = 0 ]; then
+		print "Successfully reloaded $NAME" log ${GREEN} ${WHITE}
+	else
+		print "Failed to reload $NAME" log ${RED}
+	fi
+	exit $RET
+}
+
 __oscheck() {
 	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
 		print "$NAME could not be ${1}d because the target OS ($TARGET) does not match the current OS ($(uname))" log ${RED}
 		exit 1
+	fi
+}
+
+__svccheck() {
+	if [ ! -r "/var/run/leaninit/$1.status" ]; then
+		print "$NAME is not running" nolog ${PURPLE} ${YELLOW}
+		exit 0
 	fi
 }
 
@@ -220,7 +239,7 @@ run() {
 
 	# Must be given an argument
 	if [ ! -n "$2" ]; then
-		echo "Usage: $1 [enable|disable|start|stop|restart|status]"
+		echo "Usage: $1 [enable|disable|start|stop|restart|force-reload|reload|status]"
 		exit 1
 	fi
 
@@ -244,8 +263,8 @@ run() {
 				print "Could not enable $NAME" log ${RED}
 				exit 1
 			fi
-			exifex enable
 			print "$NAME has been enabled" log ${BLUE} ${WHITE}
+			exifex enable
 			exit 0
 			;;
 		disable)
@@ -272,6 +291,25 @@ run() {
 		restart)
 			__stop $1
 			__start $1 ;;
+		reload)
+			__svccheck $1
+			type reload >> /dev/null
+			if [ $? = 0 ]; then
+				__reload
+			else
+				print "Could not reload $NAME" log ${RED}
+				exit 1
+			fi ;;
+		force-reload)
+			__svccheck $1
+			type reload >> /dev/null
+			if [ $? = 0 ]; then
+				__reload
+			else
+				print "Forcing $NAME to restart..." log ${BLUE} ${WHITE}
+				__stop $1
+				__start $1
+			fi ;;
 		status)
 			RET=0
 			if [ ! -r "/var/run/leaninit/$1.status" ]; then
@@ -287,6 +325,8 @@ run() {
 			echo "  start"
 			echo "  stop"
 			echo "  restart"
+			echo "  force-reload"
+			echo "  reload"
 			echo "  status"
 			exit 1 ;;
 	esac

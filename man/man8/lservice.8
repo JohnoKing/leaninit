@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 17, 2018
+.Dd September 20, 2018
 .Dt SERVICE 8
 .Os
 .Sh NAME
@@ -26,6 +26,7 @@
 .Nd service manager for LeanInit
 .Sh SYNOPSIS
 .Nm service service-name action
+.Nm service --status-all
 .Sh DESCRIPTION
 .Nm LeanInit's
 service utility can do the following actions:
@@ -48,9 +49,18 @@ Equivalent to '/etc/leaninit.d/svc.d/svcname enable' or 'touch /etc/leaninit.d/s
 Disable a service by removing its file in /etc/leaninit/svc.d.
 Equivalent to '/etc/leaninit.d/svc.d/svcname disable' or 'rm /etc/leaninit.d/svc.e/svcname'.
 
+.Nm force-reload
+This will reload services that support reloading and restart services that do not support reloading.
+
+.Nm reload
+Reload a service without restarting it (the service must support reloading for this to work).
+
 .Nm status
 Show a service's current status.
 Equivalent to '/etc/leaninit.d/svc.d/svcname status' or 'cat /var/run/leaninit/svcname.status'.
+
+.Nm --status-all
+Show the current statuses of all LeanInit services.
 
 .Sh EXAMPLES
 Enable SSH:

@@ -30,14 +30,25 @@
 usage() {
 	echo "Usage: $0 service-name action ..."
 	echo "Potential actions:"
+	echo "  enable"
+	echo "  disable"
 	echo "  start"
 	echo "  stop"
 	echo "  restart"
-	echo "  enable"
-	echo "  disable"
+	echo "  force-reload"
+	echo "  reload"
 	echo "  status"
+	echo "  --status-all"
 	exit 1
 }
+
+# Show the statuses of all services when passed --status-all
+if [ "$1" = "--status-all" ]; then
+	for svc in $(ls /etc/leaninit.d/svc.d); do
+		/etc/leaninit.d/svc.d/$svc status
+	done
+	exit 0
+fi
 
 # Exit when not given proper arguments
 if [ ! -n "$2" ]; then

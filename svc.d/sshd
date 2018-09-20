@@ -14,4 +14,8 @@ main() {
 	command $(command -v sshd)
 }
 
+reload() {
+	pkill -HUP -x sshd
+}
+
 run sshd "$@"
