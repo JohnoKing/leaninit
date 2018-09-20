@@ -180,7 +180,9 @@ wait
 __LIST="$(ls /etc/leaninit.d/svc.e)"
 if [ -n "$__LIST" ]; then
 	for sv in $__LIST; do
-		INIT=true /etc/leaninit.d/svc.d/$sv start &
+		if [ -x "/etc/leaninit.d/svc.d/$sv" ]; then
+			/etc/leaninit.d/svc.d/$sv start &
+		fi
 	done
 fi
 
