@@ -245,6 +245,7 @@ run() {
 				print "Could not enable $NAME" log ${RED}
 				exit 1
 			fi
+			exifex enable
 			print "$NAME has been enabled" log ${BLUE} ${WHITE}
 			exit 0
 			;;
@@ -262,6 +263,7 @@ run() {
 				else
 					print "$NAME has been disabled" log ${BLUE} ${WHITE}
 				fi
+				exifex disable
 			fi ;;
 		start)
 			__start $1 ;;

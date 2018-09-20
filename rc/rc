@@ -207,16 +207,10 @@ for r in /etc/leaninit.d/rc.local /etc/rc.local; do
 	fi
 done
 
-# Wait for all services to start before launching gettys (debug mode)
+# Wait for all services to start (debug mode)
 if [ "$DEBUG" = "true" ]; then
 	wait
 fi
-
-# Open gettys on the ttys specified in /etc/leaninit.d/ttys
-print "Launching gettys on all ttys specified in /etc/leaninit.d/ttys..." log ${BLUE} ${WHITE}
-for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
-	rungetty "/dev/$tty" "$GETTY $GETTYMODE $tty" &
-done
 
 # Return to init
 exit 0

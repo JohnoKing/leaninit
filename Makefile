@@ -79,6 +79,7 @@ install:
 	cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
+	if [ ! -r $(DESTDIR)/etc/leaninit.d/svc.e/getty.type ]; then touch $(DESTDIR)/etc/leaninit.d/svc.e/rungetty && echo rungetty > $(DESTDIR)/etc/leaninit.d/svc.e/getty.type; fi
 
 # Uninstall (only works with normal installations)
 uninstall:
