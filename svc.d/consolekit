@@ -7,7 +7,7 @@ DAEMON=console-kit-daemon
 TYPE=login-daemon
 
 main() {
-	waitfor dbus
+	waitfor service dbus
 	console-kit-daemon
 }
 

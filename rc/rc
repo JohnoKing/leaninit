@@ -173,22 +173,6 @@ if [ -n "$KEYMAP" ]; then
 fi &
 ENDEF
 
-# D-Bus support
-if [ "$DBUS_ENABLE" = "true" ]; then
-	mkdir -p /run/dbus
-	rm -f /var/run/dbus/pid
-	print "Starting D-Bus..." log ${BLUE} ${WHITE}
-	dbus-daemon --fork --system
-	if [ ! -r /etc/machine-id ]; then
-		dbus-uuidgen > /etc/machine-id
-	fi
-	waitfor process dbus-daemon return
-	if [ $? != 0 ]; then
-		print "Failed to start D-Bus" log ${RED}
-		touch /var/run/leaninit/dbus-failure
-	fi
-fi &
-
 # Wait for all jobs
 wait
 

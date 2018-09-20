@@ -1,0 +1,19 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# D-Bus (required by many other services)
+NAME="D-Bus"
+DAEMON=dbus-daemon
+
+# Launch D-Bus
+main() {
+	mkdir -p /run/dbus
+	rm -f /var/run/dbus/pid
+	dbus-daemon --fork --system
+	if [ ! -r /etc/machine-id ]; then
+		dbus-uuidgen > /etc/machine-id
+	fi
+	waitfor process dbus-daemon return
+}
+
+run dbus $1 $2

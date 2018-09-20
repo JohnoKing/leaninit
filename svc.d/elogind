@@ -11,7 +11,7 @@ else
 fi
 
 main() {
-	waitfor dbus
+	waitfor service dbus
 	if [ -n "$(command -v elogind)" ]; then
 		elogind -D
 	elif [ -x /usr/libexec/elogind/elogind ]; then

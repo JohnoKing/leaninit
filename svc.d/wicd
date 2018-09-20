@@ -7,7 +7,7 @@ DAEMON=wicd
 TYPE=networking
 
 main() {
-	waitfor dbus
+	waitfor service dbus
 	wicd
 }
 

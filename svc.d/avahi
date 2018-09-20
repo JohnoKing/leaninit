@@ -6,7 +6,7 @@ NAME="Avahi"
 DAEMON=avahi-daemon
 
 main() {
-	waitfor dbus
+	waitfor service dbus
 	avahi-daemon &
 }
 

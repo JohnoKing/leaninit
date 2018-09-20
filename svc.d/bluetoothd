@@ -7,7 +7,7 @@ DAEMON=bluetoothd
 TYPE=bluetooth
 
 main() {
-	waitfor dbus
+	waitfor service dbus
 	bluetoothd &
 }
 

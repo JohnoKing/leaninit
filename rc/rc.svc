@@ -120,15 +120,6 @@ waitfor() {
 			fi
 			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start" "$NAME failed to start because the service $2 failed to start"
 			;;
-		dbus)
-			if [ "$DBUS_ENABLE" != "true" ]; then
-				print "$NAME could not start because D-Bus is disabled..." log ${RED}
-				exit 1
-			elif [ -r /var/run/leaninit/dbus-failure ]; then
-				print "$NAME could not start because D-Bus failed to launch..." log ${RED}
-				exit 1
-			fi
-			;;
 		*)
 			if [ ! -r "/etc/leaninit.d/svc.e/$1.type" ]; then
 				if  [ "$2" != optional ]; then

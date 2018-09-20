@@ -7,7 +7,7 @@ DAEMON=NetworkManager
 TYPE=networking
 
 main() {
-	waitfor dbus
+	waitfor service dbus
 	NetworkManager
 }
 
