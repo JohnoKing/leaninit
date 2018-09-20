@@ -13,7 +13,7 @@ main() {
 		return 1
 	fi
 	waitfor dbus
-	waitfor login-daemon
+	waitfor login-daemon optional
 	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
 	$DM &
 }
