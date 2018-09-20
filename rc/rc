@@ -153,21 +153,21 @@ ENDEF
 # Set the hostname
 if [ -n "$HOSTNAME" ]; then
 	print "Setting the hostname to $HOSTNAME..." nolog ${PURPLE} ${WHITE}
-	hostname $HOSTNAME
-fi &
+	hostname $HOSTNAME &
+fi
 
 # Set the timezone
 if [ -n "$TIMEZONE" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
 	print "Setting the timezone to $TIMEZONE..." nolog ${PURPLE} ${WHITE}
-	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
-fi &
+	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime &
+fi
 
 DEFLINUX
 # Set the keyboard layout (this requires kbd to work)
 if [ -n "$KEYMAP" ]; then
 	print "Setting the keyboard layout to $KEYMAP..." log ${BLUE} ${WHITE}
-	loadkeys $KEYMAP
-fi &
+	loadkeys $KEYMAP &
+fi
 ENDEF
 
 # Wait for all jobs
