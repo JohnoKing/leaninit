@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd September 16, 2018
+.Dd September 20, 2018
 .Dt RC.API 8
 .Os
 .Sh NAME
@@ -104,12 +104,9 @@ This type will wait for the specified process to start. Appending 'return' as a 
 This type will wait for the specified service to start.
 Appending 'optional' as a third argument will cause waitfor to simply return if the service does not exist.
 
-.Nm dbus
-This type will return with zero if D-Bus is enabled and has started successfully,
-otherwise it will kill the script with return status one.
-
 .Nm other
 Other types will cause waitfor to look for '/var/run/leaninit/TYPENAME.type', in a similar manner to the 'file' and 'service' types.
+Appending 'optional' as a third argument will cause waitfor to simply return if the type does not exist.
 
 
 .Nm run
