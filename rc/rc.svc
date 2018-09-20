@@ -45,6 +45,14 @@ if [ ! -n "$LOGFILE" ]; then
 	LOGFILE=/var/log/leaninit.log
 fi
 
+# Check for uid 0
+__rootcheck() {
+	if [ "$(id -u)" != "0" ]; then
+		print "This must be run as root!" nolog ${RED}
+		exit 1
+	fi
+}
+
 # Execute if exists
 exifex() {
 	type $1 >> /dev/null
@@ -146,6 +154,7 @@ print() {
 # Reserved for run()
 __start() {
 	# Return if the service is active
+	__rootcheck
 	if [ -r "/var/run/leaninit/$1.status" ]; then
 		print "$NAME is already running" nolog ${PURPLE} ${YELLOW}
 		return 0
@@ -174,6 +183,7 @@ __start() {
 
 __stop() {
 	# Return if the service is not active
+	__rootcheck
 	if [ ! -r "/var/run/leaninit/$1.status" ]; then
 		print "$NAME is not running" nolog ${PURPLE} ${YELLOW}
 		return 0
@@ -231,11 +241,6 @@ __svccheck() {
 
 # Run function for directly executing init scripts
 run() {
-	# Checks for root
-	if [ "$(id -u)" != 0 ]; then
-		print "This must be run as root!" nolog ${RED}
-		exit 1
-	fi
 
 	# Must be given an argument
 	if [ ! -n "$2" ]; then
@@ -246,6 +251,7 @@ run() {
 	# Handle arguments
 	case $2 in
 		enable)
+			__rootcheck
 			__oscheck enable
 			if [ -r "/etc/leaninit.d/svc.e/$1" ]; then
 				print "$NAME is already enabled" nolog ${PURPLE} ${YELLOW}
@@ -268,6 +274,7 @@ run() {
 			exit 0
 			;;
 		disable)
+			__rootcheck
 			__oscheck disable
 			if [ ! -r "/etc/leaninit.d/svc.e/$1" ]; then
 				print "$NAME is already disabled" nolog ${PURPLE} ${YELLOW}
@@ -292,6 +299,7 @@ run() {
 			__stop $1
 			__start $1 ;;
 		reload)
+			__rootcheck
 			__svccheck $1
 			type reload >> /dev/null
 			if [ $? = 0 ]; then
@@ -301,6 +309,7 @@ run() {
 				exit 1
 			fi ;;
 		force-reload)
+			__rootcheck
 			__svccheck $1
 			type reload >> /dev/null
 			if [ $? = 0 ]; then
