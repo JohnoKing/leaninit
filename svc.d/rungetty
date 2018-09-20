@@ -1,13 +1,14 @@
 #!/bin/sh
 . /etc/leaninit.d/rc.svc
 
-# Launch gettys (optional)
+# Launch gettys
 NAME="Rungetty"
 DAEMON=rungetty
 TYPE=getty
 
 # Open gettys on the ttys specified in /etc/leaninit.d/ttys
 main() {
+	GETTY=$(grep getty /etc/leaninit.d/ttys | grep -v '#')
 	for tty in $(grep -Ev '#|getty' /etc/leaninit.d/ttys); do
 		rungetty "/dev/$tty" "$GETTY $GETTYMODE $tty" &
 	done

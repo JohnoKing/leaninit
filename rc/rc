@@ -24,9 +24,6 @@
 # Source rc.svc
 . /etc/leaninit.d/rc.svc
 
-# Set the $GETTY variable
-GETTY=$(grep getty /etc/leaninit.d/ttys | grep -v '#')
-
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog ${PURPLE} ${WHITE}
 DEFBSD
