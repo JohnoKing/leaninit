@@ -11,4 +11,4 @@ main() {
 	cupsd
 }
 
-run cups $1 $2
+run cups "$@"

@@ -28,4 +28,4 @@ main() {
 	fi
 }
 
-run elogind $1 $2
+run elogind "$@"

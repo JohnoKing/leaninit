@@ -16,4 +16,4 @@ main() {
 	waitfor process dbus-daemon return
 }
 
-run dbus $1 $2
+run dbus "$@"

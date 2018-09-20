@@ -11,4 +11,4 @@ main() {
 	wicd
 }
 
-run wicd $1 $2
+run wicd "$@"

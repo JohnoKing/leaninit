@@ -11,4 +11,4 @@ main() {
 	NetworkManager
 }
 
-run NetworkManager $1 $2
+run NetworkManager "$@"

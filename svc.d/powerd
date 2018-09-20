@@ -9,4 +9,4 @@ main() {
 	powerd
 }
 
-run powerd $1 $2
+run powerd "$@"

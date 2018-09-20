@@ -9,4 +9,4 @@ main() {
 	setupcon
 }
 
-run setupcon $1 $2
+run setupcon "$@"

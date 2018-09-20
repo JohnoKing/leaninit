@@ -10,4 +10,4 @@ main() {
 	avahi-daemon &
 }
 
-run avahi $1 $2
+run avahi "$@"

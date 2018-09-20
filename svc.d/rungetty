@@ -20,4 +20,4 @@ disable() {
 	print "To re-enable $NAME after executing the above command, run 'rm /etc/leaninit.d/svc.e/getty.type && lservice rungetty enable' as root" nolog ${PURPLE} ${WHITE}
 }
 
-run rungetty $1 $2
+run rungetty "$@"

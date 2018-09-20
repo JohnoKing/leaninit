@@ -24,4 +24,4 @@ stop() {
 	pkill -x $DM
 }
 
-run xdm $1 $2
+run xdm "$@"

@@ -14,4 +14,4 @@ main() {
 	command $(command -v sshd)
 }
 
-run sshd $1 $2
+run sshd "$@"

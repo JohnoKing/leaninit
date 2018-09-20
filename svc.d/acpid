@@ -10,4 +10,4 @@ main() {
 	acpid
 }
 
-run acpid $1 $2
+run acpid "$@"

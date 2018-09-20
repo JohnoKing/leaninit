@@ -11,4 +11,4 @@ main() {
 	smbd -D
 }
 
-run samba $1 $2
+run samba "$@"

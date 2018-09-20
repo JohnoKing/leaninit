@@ -10,4 +10,4 @@ main() {
 	ntpd
 }
 
-run ntpd $1 $2
+run ntpd "$@"

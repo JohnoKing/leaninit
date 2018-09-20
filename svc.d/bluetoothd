@@ -11,4 +11,4 @@ main() {
 	bluetoothd &
 }
 
-run bluetoothd $1 $2
+run bluetoothd "$@"

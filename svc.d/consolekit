@@ -11,4 +11,4 @@ main() {
 	console-kit-daemon
 }
 
-run consolekit $1 $2
+run consolekit "$@"

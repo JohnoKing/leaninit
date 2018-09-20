@@ -9,4 +9,4 @@ main() {
 	syslogd -ss
 }
 
-run syslogd $1 $2
+run syslogd "$@"

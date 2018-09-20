@@ -9,4 +9,4 @@ main() {
 	sensors -s
 }
 
-run lm-sensors $1 $2
+run lm-sensors "$@"

@@ -15,4 +15,4 @@ stop() {
 	pkill hald
 }
 
-run hald $1 $2
+run hald "$@"
