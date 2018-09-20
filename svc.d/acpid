@@ -6,6 +6,7 @@ NAME="ACPI Daemon"
 DAEMON=acpid
 
 main() {
+	waitfor service dbus optional
 	acpid
 }
 
