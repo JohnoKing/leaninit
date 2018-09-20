@@ -4,6 +4,7 @@
 # elogind
 NAME="elogind"
 TYPE=login-daemon
+TARGET=Linux
 if [ -n "$(pgrep -x elogind-daemon)" ]; then
 	DAEMON=elogind-daemon
 else

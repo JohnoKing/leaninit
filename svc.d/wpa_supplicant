@@ -1,10 +1,11 @@
 #!/bin/sh
 . /etc/leaninit.d/rc.svc
 
-# WPA Supplicant service (intended for FreeBSD, may also work on Linux)
+# WPA Supplicant service (for FreeBSD)
 NAME="WPA Supplicant"
 DAEMON=wpa_supplicant
 TYPE=networking
+TARGET=FreeBSD
 
 main() {
 	waitfor process wpa_supplicant

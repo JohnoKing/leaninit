@@ -5,6 +5,7 @@
 NAME="Wicd"
 DAEMON=wicd
 TYPE=networking
+TARGET=Linux
 
 main() {
 	waitfor service dbus

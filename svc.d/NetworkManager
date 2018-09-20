@@ -5,6 +5,7 @@
 NAME="NetworkManager"
 DAEMON=NetworkManager
 TYPE=networking
+TARGET=Linux
 
 main() {
 	waitfor service dbus

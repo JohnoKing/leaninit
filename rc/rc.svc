@@ -203,6 +203,13 @@ __stop() {
 	print "Stopped $NAME successfully" log ${GREEN} ${WHITE}
 }
 
+__oscheck() {
+	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
+		print "$NAME could not be ${1}d because the target OS ($TARGET) does not match the current OS ($(uname))" log ${RED}
+		exit 1
+	fi
+}
+
 # Run function for directly executing init scripts
 run() {
 	# Checks for root
@@ -220,6 +227,7 @@ run() {
 	# Handle arguments
 	case $2 in
 		enable)
+			__oscheck enable
 			if [ -r "/etc/leaninit.d/svc.e/$1" ]; then
 				print "$NAME is already enabled" nolog ${PURPLE} ${YELLOW}
 				exit 0
@@ -241,6 +249,7 @@ run() {
 			exit 0
 			;;
 		disable)
+			__oscheck disable
 			if [ ! -r "/etc/leaninit.d/svc.e/$1" ]; then
 				print "$NAME is already disabled" nolog ${PURPLE} ${YELLOW}
 			else

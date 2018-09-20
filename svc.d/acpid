@@ -4,6 +4,7 @@
 # Service for acpid (either BusyBox or other implementation)
 NAME="ACPI Daemon"
 DAEMON=acpid
+TARGET=Linux
 
 main() {
 	waitfor service dbus optional

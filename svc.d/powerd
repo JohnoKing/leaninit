@@ -4,6 +4,7 @@
 # CPU frequency control (FreeBSD)
 NAME="PowerD"
 DAEMON=powerd
+TARGET=FreeBSD
 
 main() {
 	powerd

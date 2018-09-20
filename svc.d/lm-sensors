@@ -2,8 +2,9 @@
 . /etc/leaninit.d/rc.svc
 
 # lm-sensors
-NAME="lm-sensors"
+NAME="Linux Monitoring Sensors"
 DAEMON=none
+TARGET=Linux
 
 main() {
 	sensors -s
