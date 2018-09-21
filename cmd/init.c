@@ -166,9 +166,9 @@ int main(int argc, char *argv[])
 		}
 
 		// Start zloop() and chlvl() in seperate threads
-		pthread_t loop, runrc;
-		pthread_create(&loop,  NULL, zloop, NULL);
-		pthread_create(&runrc, NULL, chlvl, NULL);
+		pthread_t loop, runlvl;
+		pthread_create(&loop,   NULL, zloop, NULL);
+		pthread_create(&runlvl, NULL, chlvl, NULL);
 
 		// Handle relevant signals while ignoring others
 		struct sigaction actor;
@@ -199,9 +199,11 @@ int main(int argc, char *argv[])
 				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
 				sync();
 
-				// Run rc.shutdown
+				// Run rc.shutdown and kill the runlevel thread
 				sh("/etc/leaninit.d/rc.shutdown");
 				kill(-1, SIGKILL);
+				pthread_kill(runlvl, SIGKILL);
+				pthread_join(runlvl, NULL);
 
 				// Reopen the console
 				close(tty);
@@ -243,10 +245,8 @@ int main(int argc, char *argv[])
 						break;
 				}
 
-				// Reload
-				pthread_kill(runrc, SIGTERM);
-				pthread_join(runrc, NULL);
-				pthread_create(&runrc, NULL, chlvl, NULL);
+				// Reload the runlevel thread
+				pthread_create(&runlvl, NULL, chlvl, NULL);
 			}
 		}
 	}
