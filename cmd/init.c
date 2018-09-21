@@ -232,9 +232,9 @@ int main(int argc, char *argv[])
 				// Kill all remaining processes
 				printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
 				kill(-1, SIGTERM);
+				pthread_kill(runlvl, SIGKILL);
 				pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 				unsigned int timer = 0;
-				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
 				while(timer != 70) {
 					usleep(100000);
@@ -243,8 +243,8 @@ int main(int argc, char *argv[])
 					pthread_mutex_unlock(&mutex);
 					timer++;
 				}
-				pthread_mutex_destroy(&mutex);
 				kill(-1, SIGKILL);
+				pthread_mutex_destroy(&mutex);
 
 				// Reopen the console
 				open_tty(0);
