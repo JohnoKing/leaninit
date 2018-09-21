@@ -221,11 +221,12 @@ int main(int argc, char *argv[])
 				// Run rc.shutdown and kill the runlevel thread
 				if(single_user != 0)
 					sh("/etc/leaninit.d/rc.shutdown");
+				printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
+				kill(-1, SIGTERM);
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
-				kill(-1, SIGTERM);
 				unsigned int timer = 0;
-				while(timer != 70) {
+				while(timer != 10) {
 					usleep(100000);
 					if(kill(-1, 0) != 0) break;
 					timer++;
