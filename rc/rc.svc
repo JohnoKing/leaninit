@@ -45,6 +45,22 @@ if [ ! -n "$LOGFILE" ]; then
 	LOGFILE=/var/log/leaninit.log
 fi
 
+# Execute if exists
+exifex() {
+	type $1 >> /dev/null
+	if [ $? = 0 ]; then
+		$*
+	fi
+}
+
+# Print output to stdout with formatting and to a log file (use this instead of echo)
+print() {
+	printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
+	if [ "$2" = "log" ]; then
+		echo "$1" >> "$LOGFILE"
+	fi
+}
+
 # Check for uid 0
 __rootcheck() {
 	if [ "$(id -u)" != "0" ]; then
@@ -53,11 +69,19 @@ __rootcheck() {
 	fi
 }
 
-# Execute if exists
-exifex() {
-	type $1 >> /dev/null
-	if [ $? = 0 ]; then
-		$*
+# Used for checking $TARGET
+__oscheck() {
+	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
+		print "$NAME could not be ${1}d because the target OS ($TARGET) does not match the current OS ($(uname))" log ${RED}
+		__fail 5
+	fi
+}
+
+# Checks for $__svcname.status
+__svccheck() {
+	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+		print "$NAME is not running" nolog ${RED}
+		exit 7
 	fi
 }
 
@@ -67,18 +91,19 @@ __fail() {
 	exit $1
 }
 
-# Get the current status of a service
-__status() {
-	if [ -r "/etc/leaninit.d/svc.e/$__svcname" ]; then
-		STAT=enabled
-	else
-		STAT=disabled
-	fi
-	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
-		print "$NAME ($STAT) is not running" nolog ${PURPLE} ${WHITE}
-	else
-		print "$NAME ($STAT) has the status of: $(cat /var/run/leaninit/$__svcname.status)" nolog ${PURPLE} ${WHITE}
-	fi
+# Show init script usage info
+__usage() {
+	echo "Usage: /etc/leaninit.d/svc.d/$__svcname [enable|disable|start|stop|restart|try-restart|force-reload|reload|status]"
+	echo "Valid actions:"
+	echo "  enable"
+	echo "  disable"
+	echo "  start"
+	echo "  stop"
+	echo "  restart"
+	echo "  force-reload"
+	echo "  reload"
+	echo "  status"
+	exit 1
 }
 
 # Wait for a file
@@ -162,14 +187,6 @@ waitfor() {
 			;;
 	esac
 	return $?
-}
-
-# Print output properly (use this instead of echo)
-print() {
-	printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
-	if [ "$2" = "log" ]; then
-		echo "$1" >> "$LOGFILE"
-	fi
 }
 
 # Start a service
@@ -260,35 +277,18 @@ __reload() {
 	return $RET
 }
 
-# Used for checking $TARGET
-__oscheck() {
-	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
-		print "$NAME could not be ${1}d because the target OS ($TARGET) does not match the current OS ($(uname))" log ${RED}
-		__fail 5
+# Get the current status of a service
+__status() {
+	if [ -r "/etc/leaninit.d/svc.e/$__svcname" ]; then
+		STAT=enabled
+	else
+		STAT=disabled
 	fi
-}
-
-# Checks for $__svcname.status
-__svccheck() {
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
-		print "$NAME is not running" nolog ${RED}
-		exit 7
+		print "$NAME ($STAT) is not running" nolog ${PURPLE} ${WHITE}
+	else
+		print "$NAME ($STAT) has the status of: $(cat /var/run/leaninit/$__svcname.status)" nolog ${PURPLE} ${WHITE}
 	fi
-}
-
-# Show init script usage info
-__usage() {
-	echo "Usage: /etc/leaninit.d/svc.d/$__svcname [enable|disable|start|stop|restart|try-restart|force-reload|reload|status]"
-	echo "Valid actions:"
-	echo "  enable"
-	echo "  disable"
-	echo "  start"
-	echo "  stop"
-	echo "  restart"
-	echo "  force-reload"
-	echo "  reload"
-	echo "  status"
-	exit 1
 }
 
 # Run function for directly executing init scripts
