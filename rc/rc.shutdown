@@ -37,8 +37,8 @@ fi
 DEFLINUX
 # Stop udev
 if [ "$DEV" = "udev" ]; then
-	udevadm control --exit
-fi &
+	udevadm control --exit &
+fi
 ENDEF
 wait
 
