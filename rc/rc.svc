@@ -61,6 +61,25 @@ exifex() {
 	fi
 }
 
+# Get the status of a service
+__status() {
+	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
+		print "$NAME is not compatible with $(uname)" nolog ${RED}
+		exit 1
+	fi
+	if [ -r "/etc/leaninit.d/svc.e/$1" ]; then
+		STAT=enabled
+	else
+		STAT=disabled
+	fi
+	if [ ! -r "/var/run/leaninit/$1.status" ]; then
+		print "$NAME ($STAT) is not running" nolog ${PURPLE} ${WHITE}
+	else
+		print "$NAME ($STAT) has the status of: $(cat /var/run/leaninit/$1.status)" nolog ${PURPLE} ${WHITE}
+	fi
+	exit 0
+}
+
 # Used internally by waitfor
 __waitfor_loop_file() {
 	__TIMER=0
@@ -151,7 +170,7 @@ print() {
 	fi
 }
 
-# Reserved for run()
+# Start a service
 __start() {
 	# Return if the service is active
 	__rootcheck
@@ -182,6 +201,7 @@ __start() {
 	return $RET
 }
 
+# Stop a service
 __stop() {
 	# Return if the service is not active
 	__rootcheck
@@ -214,16 +234,26 @@ __stop() {
 	print "Stopped $NAME successfully" log ${GREEN} ${WHITE}
 }
 
+# Restart a service
+__restart() {
+	__stop $1
+	__start $1
+	if [ "$RET" = "0" ]; then
+		echo "Restarted" > /var/run/leaninit/$1.status
+	fi
+}
+
+# Reload a service
 __reload() {
 	print "Reloading $NAME..." log ${BLUE} ${WHITE}
 	reload
 	RET=$?
 	if [ $RET = 0 ]; then
 		print "Successfully reloaded $NAME" log ${GREEN} ${WHITE}
+		echo "Reloaded" > /var/run/leaninit/$1.status
 	else
 		print "Failed to reload $NAME" log ${RED}
 	fi
-	exit $RET
 }
 
 __oscheck() {
@@ -296,22 +326,16 @@ run() {
 		stop)
 			__stop $1 ;;
 		restart)
-			__stop $1
-			__start $1 ;;
+			__restart $1 ;;
 		try-restart)
-			if [ -r "/var/run/leaninit/$1.status" ]; then
-				__stop $1
-				__start $1
-			else
-				print "$NAME is not running" nolog ${RED}
-				exit 7
-			fi ;;
+			__svccheck $1
+			__restart $1 ;;
 		reload)
 			__rootcheck
 			__svccheck $1
 			type reload >> /dev/null
 			if [ $? = 0 ]; then
-				__reload
+				__reload $1
 			else
 				print "$NAME cannot be reloaded" log ${RED}
 				exit 3
@@ -321,19 +345,13 @@ run() {
 			__svccheck $1
 			type reload >> /dev/null
 			if [ $? = 0 ]; then
-				__reload
+				__reload $1
 			else
 				print "Forcing $NAME to restart..." log ${BLUE} ${WHITE}
-				__stop $1
-				__start $1
+				__restart $1
 			fi ;;
 		status)
-			if [ ! -r "/var/run/leaninit/$1.status" ]; then
-				print "There is no current status for $NAME" nolog ${PURPLE} ${WHITE}
-			else
-				print "$NAME has the status of: $(cat /var/run/leaninit/$1.status)" nolog ${PURPLE} ${WHITE}
-			fi
-			exit 0 ;;
+			__status $1 ;;
 		*)
 			echo "Illegal action - $2"
 			echo "Valid actions:"
