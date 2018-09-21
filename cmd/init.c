@@ -65,11 +65,12 @@ static void open_tty(unsigned int reopen)
 		revoke(CONSOLE);
 #		endif
 	}
-	tty_fd = open(CONSOLE, O_RDWR);
+	tty_fd = open(CONSOLE, O_RDWR | O_NOCTTY);
 	login_tty(tty_fd);
 	dup2(tty_fd, STDIN_FILENO);
 	dup2(tty_fd, STDOUT_FILENO);
 	dup2(tty_fd, STDERR_FILENO);
+	ioctl(tty_fd, TIOCSCTTY, 1);
 }
 
 // Single user mode
