@@ -335,8 +335,8 @@ run() {
 			fi
 			exit 0 ;;
 		*)
-			echo "Illegal command - $2"
-			echo "Valid commands:"
+			echo "Illegal action - $2"
+			echo "Valid actions:"
 			echo "  enable"
 			echo "  disable"
 			echo "  start"
