@@ -61,26 +61,27 @@ exifex() {
 	fi
 }
 
-# Get the status of a service
+# Change the status of a service to 'Failure', then exit with the specified exit code
+__fail() {
+	echo 'Failure' > "/var/run/leaninit/$__svcname.status"
+	exit $1
+}
+
+# Get the current status of a service
 __status() {
-	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
-		print "$NAME is not compatible with $(uname)" nolog ${RED}
-		exit 1
-	fi
-	if [ -r "/etc/leaninit.d/svc.e/$1" ]; then
+	if [ -r "/etc/leaninit.d/svc.e/$__svcname" ]; then
 		STAT=enabled
 	else
 		STAT=disabled
 	fi
-	if [ ! -r "/var/run/leaninit/$1.status" ]; then
+	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
 		print "$NAME ($STAT) is not running" nolog ${PURPLE} ${WHITE}
 	else
-		print "$NAME ($STAT) has the status of: $(cat /var/run/leaninit/$1.status)" nolog ${PURPLE} ${WHITE}
+		print "$NAME ($STAT) has the status of: $(cat /var/run/leaninit/$__svcname.status)" nolog ${PURPLE} ${WHITE}
 	fi
-	exit 0
 }
 
-# Used internally by waitfor
+# Wait for a file
 __waitfor_loop_file() {
 	__TIMER=0
 	while true; do
@@ -89,15 +90,16 @@ __waitfor_loop_file() {
 		__TIMER=$(expr $TIMER + 1)
 		if [ $__TIMER = 70 ]; then
 			print "$2" log ${RED}
-			exit 1
+			__fail 1
 		fi
 	done
 	if [ -n "$3" ] && [ "$(cat $1)" = "Failure" ]; then
 		print "$3" log ${RED}
-		exit 1
+		__fail 1
 	fi
 }
 
+# Wait for a process
 __waitfor_loop_proc() {
 	__TIMER=0
 	while true; do
@@ -107,7 +109,7 @@ __waitfor_loop_proc() {
 		if [ $__TIMER = 70 ]; then
 			if [ "$3" != "return" ]; then
 				print "$2" log ${RED}
-				exit 1
+				__fail 1
 			else
 				return 1
 			fi
@@ -142,7 +144,7 @@ waitfor() {
 					return 0
 				else
 					print "$NAME failed to start because the service $2 is not enabled" log ${RED}
-					exit 1
+					__fail 1
 				fi
 			fi
 			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start" "$NAME failed to start because the service $2 failed to start"
@@ -151,7 +153,7 @@ waitfor() {
 			if [ ! -r "/etc/leaninit.d/svc.e/$1.type" ]; then
 				if  [ "$2" != optional ]; then
 					print "$NAME failed to start because no currently enabled services satisfy the type $1" log ${RED}
-					exit 1
+					__fail 1
 				else
 					return 0
 				fi
@@ -174,7 +176,7 @@ print() {
 __start() {
 	# Return if the service is active
 	__rootcheck
-	if [ -r "/var/run/leaninit/$1.status" ]; then
+	if [ -r "/var/run/leaninit/$__svcname.status" ]; then
 		print "$NAME is already running" nolog ${PURPLE} ${YELLOW}
 		return 0
 	elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
@@ -190,13 +192,13 @@ __start() {
 	RET=$?
 	if [ $RET = 0 ]; then
 		print "Started $NAME successfully" log ${GREEN} ${WHITE}
-		echo "Started" > "/var/run/leaninit/$1.status"
+		echo "Started" > "/var/run/leaninit/$__svcname.status"
 		if [ -n "$TYPE" ]; then
-			echo "$1" > "/var/run/leaninit/$TYPE.type"
+			echo "$__svcname" > "/var/run/leaninit/$TYPE.type"
 		fi
 	else
 		print "$NAME failed to start" log ${RED}
-		echo "Failure" > "/var/run/leaninit/$1.status"
+		echo "Failure" > "/var/run/leaninit/$__svcname.status"
 	fi
 	return $RET
 }
@@ -205,7 +207,7 @@ __start() {
 __stop() {
 	# Return if the service is not active
 	__rootcheck
-	if [ ! -r "/var/run/leaninit/$1.status" ]; then
+	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
 		print "$NAME is not running" nolog ${PURPLE} ${YELLOW}
 		return 0
 	fi
@@ -225,7 +227,7 @@ __stop() {
 	exifex stop
 
 	# Remove the .status and .type files for the service
-	rm -f "/var/run/leaninit/$1.status"
+	rm -f "/var/run/leaninit/$__svcname.status"
 	if [ -n "$TYPE" ]; then
 		rm -f "/var/run/leaninit/$TYPE.type"
 	fi
@@ -236,11 +238,12 @@ __stop() {
 
 # Restart a service
 __restart() {
-	__stop $1
-	__start $1
+	__stop
+	__start
 	if [ "$RET" = "0" ]; then
-		echo "Restarted" > /var/run/leaninit/$1.status
+		echo "Restarted" > "/var/run/leaninit/$__svcname.status"
 	fi
+	return $RET
 }
 
 # Reload a service
@@ -250,33 +253,59 @@ __reload() {
 	RET=$?
 	if [ $RET = 0 ]; then
 		print "Successfully reloaded $NAME" log ${GREEN} ${WHITE}
-		echo "Reloaded" > /var/run/leaninit/$1.status
+		echo "Reloaded" > "/var/run/leaninit/$__svcname.status"
 	else
 		print "Failed to reload $NAME" log ${RED}
 	fi
+	return $RET
 }
 
+# Used for checking $TARGET
 __oscheck() {
 	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
 		print "$NAME could not be ${1}d because the target OS ($TARGET) does not match the current OS ($(uname))" log ${RED}
-		exit 5
+		__fail 5
 	fi
 }
 
+# Checks for $__svcname.status
 __svccheck() {
-	if [ ! -r "/var/run/leaninit/$1.status" ]; then
+	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
 		print "$NAME is not running" nolog ${RED}
 		exit 7
 	fi
 }
 
+# Show init script usage info
+__usage() {
+	echo "Usage: /etc/leaninit.d/svc.d/$__svcname [enable|disable|start|stop|restart|try-restart|force-reload|reload|status]"
+	echo "Valid actions:"
+	echo "  enable"
+	echo "  disable"
+	echo "  start"
+	echo "  stop"
+	echo "  restart"
+	echo "  force-reload"
+	echo "  reload"
+	echo "  status"
+	exit 1
+}
+
 # Run function for directly executing init scripts
 run() {
 
-	# Must be given an argument
+	# Set $__svcname to $1
+	__svcname=$1
+
+	# Init scripts must be given two arguments
 	if [ ! -n "$2" ]; then
-		echo "Usage: $1 [enable|disable|start|stop|restart|try-restart|force-reload|reload|status]"
-		exit 1
+		__usage
+	fi
+
+	# If the service does not support the current OS, exit
+	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
+		print "$NAME is not compatible with $(uname)" nolog ${RED}
+		exit 5
 	fi
 
 	# Handle arguments
@@ -284,7 +313,7 @@ run() {
 		enable)
 			__rootcheck
 			__oscheck enable
-			if [ -r "/etc/leaninit.d/svc.e/$1" ]; then
+			if [ -r "/etc/leaninit.d/svc.e/$__svcname" ]; then
 				print "$NAME is already enabled" nolog ${PURPLE} ${YELLOW}
 				exit 0
 			fi
@@ -292,25 +321,20 @@ run() {
 				print "$NAME could not be enabled because $(cat /etc/leaninit.d/svc.e/$TYPE.type) conflicts with $NAME" log ${RED}
 				exit 1
 			fi
-			touch "/etc/leaninit.d/svc.e/$1"
+			touch "/etc/leaninit.d/svc.e/$__svcname"
 			if [ -n "$TYPE" ]; then
-				echo "$1" > "/etc/leaninit.d/svc.e/$TYPE.type"
-			fi
-			if [ $? != 0 ]; then
-				print "Could not enable $NAME" log ${RED}
-				exit 1
+				echo "$__svcname" > "/etc/leaninit.d/svc.e/$TYPE.type"
 			fi
 			print "$NAME has been enabled" log ${BLUE} ${WHITE}
-			exifex enable
-			exit 0 ;;
+			exifex enable ;;
 		disable)
 			__rootcheck
 			__oscheck disable
-			if [ ! -r "/etc/leaninit.d/svc.e/$1" ]; then
+			if [ ! -r "/etc/leaninit.d/svc.e/$__svcname" ]; then
 				print "$NAME is already disabled" nolog ${PURPLE} ${YELLOW}
 				exit 0
 			fi
-			rm "/etc/leaninit.d/svc.e/$1"
+			rm "/etc/leaninit.d/svc.e/$__svcname"
 			if [ -n "$TYPE" ]; then
 				rm "/etc/leaninit.d/svc.e/$TYPE.type"
 			fi
@@ -319,51 +343,41 @@ run() {
 				exit 1
 			fi
 			print "$NAME has been disabled" log ${BLUE} ${WHITE}
-			exifex disable
-			exit 0 ;;
+			exifex disable ;;
 		start)
-			__start $1 ;;
+			__start ;;
 		stop)
-			__stop $1 ;;
+			__stop ;;
 		restart)
-			__restart $1 ;;
+			__restart ;;
 		try-restart)
-			__svccheck $1
-			__restart $1 ;;
+			__svccheck
+			__restart ;;
 		reload)
 			__rootcheck
-			__svccheck $1
+			__svccheck
 			type reload >> /dev/null
 			if [ $? = 0 ]; then
-				__reload $1
+				__reload
 			else
 				print "$NAME cannot be reloaded" log ${RED}
 				exit 3
 			fi ;;
 		force-reload)
 			__rootcheck
-			__svccheck $1
+			__svccheck
 			type reload >> /dev/null
 			if [ $? = 0 ]; then
-				__reload $1
+				__reload
 			else
 				print "Forcing $NAME to restart..." log ${BLUE} ${WHITE}
-				__restart $1
+				__restart
 			fi ;;
 		status)
-			__status $1 ;;
+			__status ;;
 		*)
 			echo "Illegal action - $2"
-			echo "Valid actions:"
-			echo "  enable"
-			echo "  disable"
-			echo "  start"
-			echo "  stop"
-			echo "  restart"
-			echo "  force-reload"
-			echo "  reload"
-			echo "  status"
-			exit 1 ;;
+			__usage ;;
 	esac
-	exit $RET
+	exit $?
 }
