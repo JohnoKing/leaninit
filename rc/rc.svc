@@ -160,7 +160,7 @@ __start() {
 		return 0
 	elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
 		print "$(cat /var/run/leaninit/$TYPE.type) is currently running and conflicts with $NAME" nolog ${RED}
-		exit 1
+		return 1
 	fi
 
 	# Run main()
