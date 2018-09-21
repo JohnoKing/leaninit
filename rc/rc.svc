@@ -230,7 +230,7 @@ __stop() {
 	fi
 
 	# Stop $DAEMON
-	if [ "$DAEMON" != "none" ]; then
+	if [ "$DAEMON" != "none" ] && [ "$(pgrep -x $DAEMON)" != "" ]; then
 		print "Sending $NAME SIGTERM..." log ${BLUE} ${WHITE}
 		until pkill -0 -x $DAEMON; do
 			sleep 7
