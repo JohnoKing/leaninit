@@ -29,6 +29,7 @@
 // Universal variables
 static unsigned int single_user = 1;
 static int current_signal       = 0;
+static int tty_fd = 0;
 
 // Shows usage for init
 static int usage(void)
@@ -53,6 +54,22 @@ static void sh(const char *cmd)
 	}
 
 	waitpid(child, NULL, 0);
+}
+
+// Open the tty
+static void open_tty(unsigned int reopen)
+{
+	if(reopen == 0) {
+		close(tty_fd);
+#		ifdef FreeBSD
+		revoke(CONSOLE);
+#		endif
+	}
+	tty_fd = open(CONSOLE, O_RDWR);
+	login_tty(tty_fd);
+	dup2(tty_fd, STDIN_FILENO);
+	dup2(tty_fd, STDOUT_FILENO);
+	dup2(tty_fd, STDERR_FILENO);
 }
 
 // Single user mode
@@ -82,8 +99,10 @@ static void single(const char *msg)
 	}
 
 	// Fork the shell into a seperate process
-	if(fork() == 0)
+	if(fork() == 0) {
+		open_tty(1);
 		execl(shell, shell, NULL);
+	}
 }
 
 // Execute rc(8) (multi-user)
@@ -142,8 +161,7 @@ int main(int argc, char *argv[])
 	if(getpid() == 1) {
 
 		// Open the console
-		int tty = open(CONSOLE, O_RDWR);
-		login_tty(tty);
+		open_tty(1);
 
 		// Login as root
 		setenv("HOME",    "/root", 1);
@@ -200,15 +218,21 @@ int main(int argc, char *argv[])
 				sync();
 
 				// Run rc.shutdown and kill the runlevel thread
-				sh("/etc/leaninit.d/rc.shutdown");
-				kill(-1, SIGKILL);
+				if(single_user != 0)
+					sh("/etc/leaninit.d/rc.shutdown");
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
+				kill(-1, SIGTERM);
+				unsigned int timer = 0;
+				while(timer != 70) {
+					usleep(100000);
+					if(kill(-1, 0) != 0) break;
+					timer++;
+				}
+				kill(-1, SIGKILL);
 
 				// Reopen the console
-				close(tty);
-				tty = open(CONSOLE, O_RDWR);
-				login_tty(tty);
+				open_tty(0);
 
 				// Synchronize file systems again (Pass 2)
 				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 2)..." RESET "\n");

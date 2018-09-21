@@ -42,30 +42,17 @@ fi
 ENDEF
 wait
 
-# Kill any remaining processes
-DEFLINUX
-__INVERSE="--inverse"
-ENDEF
-DEFBSD
-__INVERSE="-v"
-ENDEF
-until pkill -TERM $__INVERSE -s0,1; do
-	sleep 7
-	pkill -KILL $__INVERSE -s0,1
-	break
-done
-
 # Unmount all drives
-mount -o remount,ro / &
+mount -fo remount,ro / &
 if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs umount -a
 	zfs unshare -a
 fi &
 DEFBSD
-umount -A &
+umount -fA &
 ENDEF
 DEFLINUX
-umount -a &
+umount -fa &
 ENDEF
 swapoff -a &
 
