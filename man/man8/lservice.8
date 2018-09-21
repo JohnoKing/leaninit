@@ -41,6 +41,10 @@ Stop a service. Equivalent to '/etc/leaninit.d/svc.d/svcname stop'.
 Restart a service, or start it if it isn't running.
 Equivalent to '/etc/leaninit.d/svc.d/svcname restart'.
 
+.Nm try-restart
+Restart a service if it is currently running, otherwise return an error.
+Equivalent to '/etc/leaninit.d/svc.d/svcname try-restart'.
+
 .Nm enable
 Enable a service by creating a file for it in /etc/leaninit/svc.e.
 Equivalent to '/etc/leaninit.d/svc.d/svcname enable' or 'touch /etc/leaninit.d/svc.e/svcname'.
@@ -51,9 +55,11 @@ Equivalent to '/etc/leaninit.d/svc.d/svcname disable' or 'rm /etc/leaninit.d/svc
 
 .Nm force-reload
 This will reload services that support reloading and restart services that do not support reloading.
+Equivalent to '/etc/leaninit.d/svc.d/svcname force-reload' or '/etc/leaninit.d/svc.d/svcname try-restart'.
 
 .Nm reload
 Reload a service without restarting it (the service must support reloading for this to work).
+Equivalent to '/etc/leaninit.d/svc.d/svcname reload'.
 
 .Nm status
 Show a service's current status.

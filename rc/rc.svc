@@ -49,7 +49,7 @@ fi
 __rootcheck() {
 	if [ "$(id -u)" != "0" ]; then
 		print "This must be run as root!" nolog ${RED}
-		exit 1
+		exit 4
 	fi
 }
 
@@ -179,6 +179,7 @@ __start() {
 		print "$NAME failed to start" log ${RED}
 		echo "Failure" > "/var/run/leaninit/$1.status"
 	fi
+	return $RET
 }
 
 __stop() {
@@ -228,14 +229,14 @@ __reload() {
 __oscheck() {
 	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
 		print "$NAME could not be ${1}d because the target OS ($TARGET) does not match the current OS ($(uname))" log ${RED}
-		exit 1
+		exit 5
 	fi
 }
 
 __svccheck() {
 	if [ ! -r "/var/run/leaninit/$1.status" ]; then
-		print "$NAME is not running" nolog ${PURPLE} ${YELLOW}
-		exit 0
+		print "$NAME is not running" nolog ${RED}
+		exit 7
 	fi
 }
 
@@ -244,7 +245,7 @@ run() {
 
 	# Must be given an argument
 	if [ ! -n "$2" ]; then
-		echo "Usage: $1 [enable|disable|start|stop|restart|force-reload|reload|status]"
+		echo "Usage: $1 [enable|disable|start|stop|restart|try-restart|force-reload|reload|status]"
 		exit 1
 	fi
 
@@ -258,7 +259,7 @@ run() {
 				exit 0
 			fi
 			if [ -n "$TYPE" ] && [ -r "/etc/leaninit.d/svc.e/$TYPE.type" ]; then
-				print "$NAME could not be enabled because $(cat /etc/leaninit.d/svc.e/$TYPE.type) is conflicting with $NAME" log ${RED}
+				print "$NAME could not be enabled because $(cat /etc/leaninit.d/svc.e/$TYPE.type) conflicts with $NAME" log ${RED}
 				exit 1
 			fi
 			touch "/etc/leaninit.d/svc.e/$1"
@@ -271,26 +272,25 @@ run() {
 			fi
 			print "$NAME has been enabled" log ${BLUE} ${WHITE}
 			exifex enable
-			exit 0
-			;;
+			exit 0 ;;
 		disable)
 			__rootcheck
 			__oscheck disable
 			if [ ! -r "/etc/leaninit.d/svc.e/$1" ]; then
 				print "$NAME is already disabled" nolog ${PURPLE} ${YELLOW}
-			else
-				rm "/etc/leaninit.d/svc.e/$1"
-				if [ -n "$TYPE" ]; then
-					rm "/etc/leaninit.d/svc.e/$TYPE.type"
-				fi
-				RET=$?
-				if [ $RET != 0 ]; then
-					print "Could not disable $NAME" log ${RED}
-				else
-					print "$NAME has been disabled" log ${BLUE} ${WHITE}
-				fi
-				exifex disable
-			fi ;;
+				exit 0
+			fi
+			rm "/etc/leaninit.d/svc.e/$1"
+			if [ -n "$TYPE" ]; then
+				rm "/etc/leaninit.d/svc.e/$TYPE.type"
+			fi
+			if [ $? != 0 ]; then
+				print "Could not disable $NAME" log ${RED}
+				exit 1
+			fi
+			print "$NAME has been disabled" log ${BLUE} ${WHITE}
+			exifex disable
+			exit 0 ;;
 		start)
 			__start $1 ;;
 		stop)
@@ -298,6 +298,14 @@ run() {
 		restart)
 			__stop $1
 			__start $1 ;;
+		try-restart)
+			if [ -r "/var/run/leaninit/$1.status" ]; then
+				__stop $1
+				__start $1
+			else
+				print "$NAME is not running" nolog ${RED}
+				exit 7
+			fi ;;
 		reload)
 			__rootcheck
 			__svccheck $1
@@ -305,8 +313,8 @@ run() {
 			if [ $? = 0 ]; then
 				__reload
 			else
-				print "Could not reload $NAME" log ${RED}
-				exit 1
+				print "$NAME cannot be reloaded" log ${RED}
+				exit 3
 			fi ;;
 		force-reload)
 			__rootcheck
@@ -320,12 +328,12 @@ run() {
 				__start $1
 			fi ;;
 		status)
-			RET=0
 			if [ ! -r "/var/run/leaninit/$1.status" ]; then
 				print "There is no current status for $NAME" nolog ${PURPLE} ${WHITE}
 			else
 				print "$NAME has the status of: $(cat /var/run/leaninit/$1.status)" nolog ${PURPLE} ${WHITE}
-			fi ;;
+			fi
+			exit 0 ;;
 		*)
 			echo "Illegal command - $2"
 			echo "Valid commands:"

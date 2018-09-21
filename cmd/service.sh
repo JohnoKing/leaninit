@@ -28,17 +28,18 @@
 
 # Usage info
 usage() {
-	echo "Usage: $0 service-name action ..."
+	print "Usage: $0 service-name action ..." nolog ${PURPLE} ${WHITE}
+	print "  or $0 --status-all ..." nolog ${PURPLE} ${WHITE}
 	echo "Potential actions:"
 	echo "  enable"
 	echo "  disable"
 	echo "  start"
 	echo "  stop"
 	echo "  restart"
+	echo "  try-restart"
 	echo "  force-reload"
 	echo "  reload"
 	echo "  status"
-	echo "  --status-all"
 	exit 1
 }
 
