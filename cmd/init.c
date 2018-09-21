@@ -30,7 +30,7 @@
 static unsigned int single_user = 1;
 static unsigned int zstatus     = 0;
 static int current_signal       = 0;
-static int tty_fd = 0;
+static int tty_fd               = 0;
 
 // Shows usage for init
 static int usage(void)
@@ -225,19 +225,25 @@ int main(int argc, char *argv[])
 				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
 				sync();
 
-				// Run rc.shutdown and kill the runlevel thread
+				// Run rc.shutdown (multi-user)
 				if(single_user != 0)
 					sh("/etc/leaninit.d/rc.shutdown");
+
+				// Kill all remaining processes
 				printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
 				kill(-1, SIGTERM);
+				pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+				unsigned int timer = 0;
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
-				unsigned int timer = 0;
 				while(timer != 70) {
 					usleep(100000);
+					pthread_mutex_lock(&mutex);
 					if(zstatus != 0) break;
+					pthread_mutex_unlock(&mutex);
 					timer++;
 				}
+				pthread_mutex_destroy(&mutex);
 				kill(-1, SIGKILL);
 
 				// Reopen the console
