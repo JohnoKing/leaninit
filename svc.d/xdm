@@ -9,7 +9,7 @@ TYPE=display-manager
 # The main function
 main() {
 	if [ ! -n "$DM" ] || [ ! -x "$(command -v $DM)" ]; then
-		echo 'The xdm service failed to start due to $DM being invalid!'
+		print 'The xdm service failed to start due to $DM being invalid!' log ${RED}
 		return 1
 	fi
 	waitfor service dbus
