@@ -28,6 +28,7 @@
 
 // Universal variables
 static unsigned int single_user = 1;
+static unsigned int zstatus     = 0;
 static int current_signal       = 0;
 static int tty_fd = 0;
 
@@ -144,8 +145,13 @@ static void *chlvl(__attribute((unused)) void *ptr)
 // This perpetual loop kills all zombie processes
 __attribute((noreturn)) static void *zloop(__attribute((unused)) void *ptr)
 {
-	for(;;)
-		wait(NULL);
+	for(;;) {
+		pid_t pid = wait(NULL);
+		if(pid == -1 && zstatus == 0)
+			zstatus = 1;
+		else if(pid != -1 && zstatus == 1)
+			zstatus = 0;
+	}
 }
 
 // Halts, reboots or turns off the system
@@ -226,9 +232,9 @@ int main(int argc, char *argv[])
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
 				unsigned int timer = 0;
-				while(timer != 10) {
+				while(timer != 70) {
 					usleep(100000);
-					if(kill(-1, 0) != 0) break;
+					if(zstatus != 0) break;
 					timer++;
 				}
 				kill(-1, SIGKILL);
