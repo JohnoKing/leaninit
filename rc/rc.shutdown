@@ -26,11 +26,13 @@
 # Load rc.svc
 . /etc/leaninit.d/rc.conf
 
-# Stop all services
+# Stop all currently running services
 __LIST="$(ls /etc/leaninit.d/svc.d)"
 if [ -n "$__LIST" ]; then
 	for svc in $__LIST; do
-		lservice $svc stop &
+		if [ -r "/var/run/leaninit/$svc.status" ]; then
+			lservice $svc stop &
+		fi
 	done
 fi
 

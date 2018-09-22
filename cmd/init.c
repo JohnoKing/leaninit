@@ -223,8 +223,12 @@ int main(int argc, char *argv[])
 				sync();
 
 				// Run rc.shutdown (multi-user)
-				if(single_user != 0)
-					sh("/etc/leaninit.d/rc.shutdown");
+				if(access("/var/run", W_OK) == 0) {
+					if(access("/etc/leaninit.d/rc.shutdown", X_OK) == 0)
+						sh("/etc/leaninit.d/rc.shutdown");
+					else if(access("/etc/rc.shutdown", X_OK) == 0)
+						sh("/etc/rc.shutdown");
+				}
 
 				// Kill all remaining processes
 				printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");

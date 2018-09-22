@@ -54,7 +54,7 @@ fi
 # Exit when not given proper arguments
 if [ ! -n "$2" ]; then
 	usage
-elif [ ! -r "/etc/leaninit.d/svc.d/$1" ]; then
+elif [ ! -x "/etc/leaninit.d/svc.d/$1" ]; then
 	print "The service '$1' does not exist" nolog $RED
 	usage
 fi

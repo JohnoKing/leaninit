@@ -71,9 +71,9 @@ install:
 	fi
 	$(INSTALL) -Dm0755 out/rc.svc out/rc.shutdown $(DESTDIR)/etc/leaninit.d
 	cd $(DESTDIR)/usr/share/man/man8 ;\
-	[ -r lpoweroff.8 ] || link lhalt.8 lpoweroff.8 ;\
-	[ -r lreboot.8 ] || link lhalt.8 lreboot.8 ;\
-	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || link lhalt.8 lzzz.8; fi
+	[ -r lpoweroff.8 ] || ln lhalt.8 lpoweroff.8 ;\
+	[ -r lreboot.8 ] || ln lhalt.8 lreboot.8 ;\
+	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln lhalt.8 lzzz.8; fi
 	$(INSTALL) -Dm0755 out/leaninit out/lhalt out/lservice out/lrunlevel out/rungetty $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit.d
 	cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
