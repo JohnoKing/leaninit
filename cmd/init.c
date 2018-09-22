@@ -39,9 +39,9 @@ static int usage(void)
 	printf("  0           Poweroff\n");
 	printf("  1, S, s     Switch to single-user mode\n");
 	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
-	printf("  Q, q        Reload the current runlevel\n");
 	printf("  6           Reboot\n");
 	printf("  7           Halt\n");
+	printf("  Q, q        Reload the current runlevel\n");
 	return 1;
 }
 
