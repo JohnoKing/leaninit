@@ -30,7 +30,6 @@
 static unsigned int single_user = 1;
 static unsigned int zstatus     = 0;
 static int current_signal       = 0;
-static int tty_fd               = 0;
 
 // Shows usage for init
 static int usage(void)
@@ -59,20 +58,18 @@ static void sh(const char *cmd)
 }
 
 // Open the tty
-static void open_tty(unsigned int reopen)
+static int open_tty(void)
 {
-	if(reopen == 0) {
-		close(tty_fd);
-#		ifdef FreeBSD
-		revoke(CONSOLE);
-#		endif
-	}
-	tty_fd = open(CONSOLE, O_RDWR | O_NOCTTY);
-	login_tty(tty_fd);
-	dup2(tty_fd, STDIN_FILENO);
-	dup2(tty_fd, STDOUT_FILENO);
-	dup2(tty_fd, STDERR_FILENO);
-	ioctl(tty_fd, TIOCSCTTY, 1);
+#	ifdef FreeBSD
+	revoke(CONSOLE);
+#	endif
+	int tty = open(CONSOLE, O_RDWR | O_NOCTTY);
+	login_tty(tty);
+	dup2(tty, STDIN_FILENO);
+	dup2(tty, STDOUT_FILENO);
+	dup2(tty, STDERR_FILENO);
+	ioctl(tty, TIOCSCTTY, 1);
+	return tty;
 }
 
 // Single user mode
@@ -103,7 +100,7 @@ static void single(const char *msg)
 
 	// Fork the shell into a seperate process
 	if(fork() == 0) {
-		open_tty(1);
+		open_tty();
 		execl(shell, shell, NULL);
 	}
 }
@@ -169,7 +166,7 @@ int main(int argc, char *argv[])
 	if(getpid() == 1) {
 
 		// Open the console
-		open_tty(1);
+		int tty = open_tty();
 
 		// Login as root
 		setenv("HOME",    "/root", 1);
@@ -247,7 +244,8 @@ int main(int argc, char *argv[])
 				pthread_mutex_destroy(&mutex);
 
 				// Reopen the console
-				open_tty(0);
+				close(tty);
+				tty = open_tty();
 
 				// Synchronize file systems again (Pass 2)
 				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 2)..." RESET "\n");
