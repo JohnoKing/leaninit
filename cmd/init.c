@@ -242,6 +242,7 @@ int main(int argc, char *argv[])
 					timer++;
 				}
 				kill(-1, SIGKILL);
+				while(zstatus == 0);
 
 				// Reopen the console
 				close(tty);
