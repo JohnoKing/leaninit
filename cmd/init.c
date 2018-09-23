@@ -239,10 +239,10 @@ int main(int argc, char *argv[])
 				while(zstatus == 0) {
 					usleep(100000);
 					timer++;
-					if(timer == 70) break;
+					if(timer == 70)
+						kill(-1, SIGKILL);
 				}
 				kill(-1, SIGKILL);
-				while(zstatus == 0);
 
 				// Reopen the console
 				close(tty);
