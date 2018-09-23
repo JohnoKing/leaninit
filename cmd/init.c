@@ -238,8 +238,8 @@ int main(int argc, char *argv[])
 				unsigned int timer = 0;
 				while(zstatus == 0) {
 					usleep(100000);
-					if(timer == 70) break;
 					timer++;
+					if(timer == 70) break;
 				}
 				kill(-1, SIGKILL);
 				while(zstatus == 0);
