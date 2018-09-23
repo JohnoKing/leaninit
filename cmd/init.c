@@ -234,11 +234,11 @@ int main(int argc, char *argv[])
 				printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
 				kill(-1, SIGTERM);
 				pthread_kill(runlvl, SIGKILL);
-				unsigned int timer = 0;
 				pthread_join(runlvl, NULL);
-				while(timer != 70) {
+				unsigned int timer = 0;
+				while(zstatus == 0) {
 					usleep(100000);
-					if(zstatus != 0) break;
+					if(timer == 70) break;
 					timer++;
 				}
 				kill(-1, SIGKILL);
