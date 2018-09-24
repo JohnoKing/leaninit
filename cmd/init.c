@@ -283,8 +283,9 @@ int main(int argc, char *argv[])
 						break;
 				}
 
-				// Reload the runlevel thread
+				// Reload the runlevel thread and reset the signal
 				pthread_create(&runlvl, NULL, chlvl, NULL);
+				current_signal = 0;
 			}
 		}
 	}
