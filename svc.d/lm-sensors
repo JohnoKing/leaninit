@@ -3,7 +3,6 @@
 
 # lm-sensors
 NAME="Linux Monitoring Sensors"
-DAEMON=none
 TARGET=Linux
 
 main() {
