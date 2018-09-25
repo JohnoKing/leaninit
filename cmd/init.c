@@ -235,9 +235,13 @@ int main(int argc, char *argv[])
 				kill(-1, SIGTERM);
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
-				unsigned int timer = 0;
+
+				// Give processes seven seconds to comply with SIGTERM before sending SIGKILL
+				struct timespec rest  = {0};
+				rest.tv_nsec          = 100000000;
+				unsigned int timer    = 0;
 				while(zstatus == 0) {
-					usleep(100000);
+					nanosleep(&rest, NULL);
 					timer++;
 					if(timer == 70)
 						kill(-1, SIGKILL);
