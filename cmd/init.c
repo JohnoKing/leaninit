@@ -28,7 +28,7 @@
 
 // Universal variables
 static unsigned int single_user = 1;
-static unsigned int zstatus     = 0;
+static unsigned int zstatus     = 1;
 static int current_signal       = 0;
 
 // Shows usage for init
@@ -145,10 +145,10 @@ __attribute((noreturn)) static void *zloop(__attribute((unused)) void *ptr)
 {
 	for(;;) {
 		pid_t pid = wait(NULL);
-		if(pid == -1 && zstatus == 0)
-			zstatus = 1;
-		else if(pid != -1 && zstatus == 1)
+		if(pid == -1 && zstatus == 1)
 			zstatus = 0;
+		else if(pid != -1 && zstatus == 0)
+			zstatus = 1;
 	}
 }
 
@@ -240,11 +240,9 @@ int main(int argc, char *argv[])
 				struct timespec rest  = {0};
 				rest.tv_nsec          = 100000000;
 				unsigned int timer    = 0;
-				while(zstatus == 0) {
+				while(zstatus != 0 && timer < 70) {
 					nanosleep(&rest, NULL);
 					timer++;
-					if(timer == 70)
-						kill(-1, SIGKILL);
 				}
 				kill(-1, SIGKILL);
 
