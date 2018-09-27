@@ -190,10 +190,5 @@ for r in /etc/leaninit.d/rc.local /etc/rc.local; do
 	fi
 done
 
-# Wait for all services to start (debug mode)
-if [ "$DEBUG" = "true" ]; then
-	wait
-fi
-
 # Return to init
 exit 0
