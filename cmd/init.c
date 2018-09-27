@@ -113,15 +113,15 @@ static void multi(void)
 
 	// Locate rc(8)
 	char rc[19];
-	if(access("/etc/leaninit.d/rc", X_OK) != 0) {
-		if(access("/etc/rc", X_OK) != 0) {
-			single_user = 0;
-			single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
-			return;
-		} else
-			memcpy(rc, "/etc/rc", 8);
-	} else
+	if(access("/etc/leaninit.d/rc", X_OK) == 0)
 		memcpy(rc, "/etc/leaninit.d/rc", 19);
+	else if(access("/etc/rc", X_OK) == 0)
+		memcpy(rc, "/etc/rc", 8);
+	else {
+		single_user = 0;
+		single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
+		return;
+	}
 
 	// Run rc(8)
 	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
