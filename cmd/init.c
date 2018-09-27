@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
 
-				// Give processes seven seconds to comply with SIGTERM before sending SIGKILL
+				// Give processes about seven seconds to comply with SIGTERM before sending SIGKILL
 				struct timespec rest  = {0};
 				rest.tv_nsec          = 100000000;
 				unsigned int timer    = 0;
