@@ -134,7 +134,7 @@ static void multi(void)
 // Run either single() or multi() depending on the runlevel
 static void *chlvl(__attribute((unused)) void *ptr)
 {
-	// Run single-user if single_user == 0, otherwise run multi-user
+	// Run single-user if single_user is equal to 0, otherwise run multi-user
 	if(single_user == 0)
 		single("Booting into single user mode...");
 	else
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
 			pause();
 
 			// Cancel when the runlevel is already the currently running one
-			if(current_signal == SIGILL && single_user == 1)
+			if(current_signal == SIGILL && single_user != 0)
 				printf(PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
 
 			else if(current_signal == SIGTERM && single_user == 0)
