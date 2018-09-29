@@ -148,7 +148,7 @@ __attribute((noreturn)) static void *zloop(__attribute((unused)) void *ptr)
 {
 	for(;;) {
 		pid_t pid = wait(NULL);
-		if(pid == -1 && zstatus == 1)
+		if(pid == -1 && zstatus != 0)
 			zstatus = 0;
 		else if(pid != -1 && zstatus == 0)
 			zstatus = 1;
