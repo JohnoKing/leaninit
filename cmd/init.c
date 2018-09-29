@@ -172,9 +172,9 @@ int main(int argc, char *argv[])
 		int tty = open_tty();
 
 		// Login as root
-		setenv("HOME",    "/root", 1);
-		setenv("LOGNAME", "root",  1);
-		setenv("USER",    "root",  1);
+		setenv("HOME",   "/root", 1);
+		setenv("LOGNAME", "root", 1);
+		setenv("USER",    "root", 1);
 
 		// Print the current platform LeanInit is running on
 		struct utsname uts;
