@@ -1,8 +1,11 @@
 # For Visual Studio Code
 .vscode
 
-# Plasma Dolphin
+# Dolphin File Manager
 *.directory
 
 # Ignore ./out (stores built files)
 out
+
+# Ignore the built stall binary
+stall/stall
