@@ -55,12 +55,6 @@ grep -q ' /sys/fs/cgroup '       /etc/mtab || mount -t tmpfs cgroup /sys/fs/cgro
 grep -q ' /run/shm '             /etc/mtab || mount -n -o noexec,nosuid,nodev -t tmpfs tmpfs /run/shm
 mount --bind /run/shm /dev/shm &
 
-# Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
-if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
-	print "Loading kernel modules..." nolog ${PURPLE} ${WHITE}
-	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
-fi &
-
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
 	print "Starting udev..." nolog ${PURPLE} ${WHITE}
@@ -72,7 +66,14 @@ elif [ "$DEV" = "mdev" ]; then
 	$DEVEXEC -s
 	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi &
-wait $(jobs -p %-)
+
+# Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
+print "Loading kernel modules..." nolog ${PURPLE} ${WHITE}
+if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
+	modprobe -a $(cat /etc/modules-load.d/* | grep -v '#')
+fi &
+modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') &
+wait $(jobs -p %- %+)
 ENDEF
 
 # Mount all ZFS file systems
