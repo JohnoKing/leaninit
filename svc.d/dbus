@@ -16,7 +16,7 @@ main() {
 	waitfor process dbus-daemon return
 }
 
-# This will cause D-Bus to partially reload
+# This causes D-Bus to partially reload
 reload() {
 	pkill -HUP -x dbus-daemon
 }
