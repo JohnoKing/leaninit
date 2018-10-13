@@ -176,7 +176,8 @@ int main(int argc, char *argv[])
 		setenv("LOGNAME", "root", 1);
 		setenv("USER",    "root", 1);
 
-		// Print the current platform LeanInit is running on
+		// Set $PREVLEVEL to N and print the current platform LeanInit is running on
+		setenv("PREVLEVEL",  "N", 1);
 		struct utsname uts;
 		uname(&uts);
 		printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);

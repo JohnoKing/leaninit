@@ -59,6 +59,7 @@ mount --bind /run/shm /dev/shm &
 if [ "$DEV" = "udev" ]; then
 	print "Starting udev..." nolog ${PURPLE} ${WHITE}
 	$DEVEXEC --daemon
+	udevadm info --cleanup-db   # Clean the udev database
 	udevadm trigger --action=add
 	udevadm settle
 elif [ "$DEV" = "mdev" ]; then
