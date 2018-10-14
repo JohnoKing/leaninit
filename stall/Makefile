@@ -26,7 +26,7 @@ WFLAGS := -Wall -Wextra -Wpedantic -Wno-unused-result
 
 # Compile stall
 all: clean
-	$(CC) $(CFLAGS) -o stall stall.c $(LDFLAGS)
+	$(CC) $(CFLAGS) $(WFLAGS) -o stall stall.c $(LDFLAGS)
 
 # Clean this directory
 clean:

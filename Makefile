@@ -23,8 +23,8 @@
 CC       := cc
 SED      := sed
 INSTALL  := install
-WFLAGS   := -Wall -Wextra -Wpedantic -Wno-unused-result
 CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
+WFLAGS   := -Wall -Wextra -Wpedantic -Wno-unused-result
 LIBS     := -lpthread -lutil
 RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice out/lrunlevel
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
@@ -51,9 +51,9 @@ all: clean
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/leaninit cmd/init.c     $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/lhalt    cmd/halt.c     $(LDFLAGS) $(LIBS)
-	$(CC) $(WFLAGS) $(CFLAGS) -D`uname` -o out/rungetty cmd/rungetty.c $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit cmd/init.c     $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt    cmd/halt.c     $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/rungetty cmd/rungetty.c $(LDFLAGS) $(LIBS)
 
 # Install LeanInit (compatible with other init systems)
 install:
