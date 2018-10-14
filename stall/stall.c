@@ -43,6 +43,6 @@ int main(void)
 	}
 
 	printf("Stall is now running in the background with pid %d.\n", stall_pid);
-	printf("Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead).\n", stall_pid);
+	printf("Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead).\n");
 	return 0;
 }
