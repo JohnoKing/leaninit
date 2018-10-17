@@ -231,7 +231,9 @@ __stop() {
 
 	# Stop $DAEMON
 	if [ -n "$DAEMON" ] && [ -n "$(pgrep -x $DAEMON)" ]; then
-		print "Sending $NAME SIGTERM..." log ${BLUE} ${WHITE}
+		print "Sending $NAME SIGCONT and SIGTERM..." log ${BLUE} ${WHITE}
+		pkill -x -CONT $DAEMON
+		pkill -x -TERM $DAEMON
 		until pkill -0 -x $DAEMON; do
 			sleep 7
 			print "Sending $NAME SIGKILL..." log ${PURPLE} ${YELLOW}

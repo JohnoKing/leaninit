@@ -234,6 +234,7 @@ int main(int argc, char *argv[])
 
 				// Kill all remaining processes
 				printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
+				kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
 				kill(-1, SIGTERM);
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
