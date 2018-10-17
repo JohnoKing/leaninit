@@ -17,6 +17,8 @@ main() {
 		elogind -D
 	elif [ -x /usr/libexec/elogind/elogind ]; then
 		/usr/libexec/elogind/elogind -D
+	elif [ -x /usr/lib/elogind/elogind ]; then
+		/usr/lib/elogind/elogind -D
 	else
 		return 1
 	fi
