@@ -28,6 +28,11 @@ main() {
 		for fs in $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
 			/usr/libexec/elogind/elogind-uaccess-command $fs
 		done
+	elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then
+		/usr/lib/elogind/elogind-uaccess-command /dev
+		for fs in $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
+			/usr/lib/elogind/elogind-uaccess-command $fs
+		done
 	fi
 }
 
