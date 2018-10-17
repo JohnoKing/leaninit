@@ -29,20 +29,40 @@
 #include <string.h>
 #include <unistd.h>
 
-int main(void)
+int main(int argc, char *argv[])
 {
+	// SIGSTOP mode can be enabled by passing --sigstop to stall
+	unsigned int sigstop = 1;
+	if((argc > 1) && (strstr(argv[1], "--sigstop") != 0))
+		sigstop = 0;
+
+	// Create the stall process itself
 	pid_t stall_pid = fork();
 	if(stall_pid == 0) {
-		struct sigaction actor;
-		memset(&actor, 0, sizeof(actor));
-		actor.sa_handler = SIG_IGN;
-		sigaction(SIGINT, &actor, NULL);
-		sigaction(SIGTERM, &actor, NULL);
+		// Ignore SIGINT and SIGTERM when stall is not in SIGSTOP mode
+		if(sigstop != 0) {
+			struct sigaction actor;
+			memset(&actor, 0, sizeof(actor));
+			actor.sa_handler = SIG_IGN;
+			sigaction(SIGINT, &actor, NULL);
+			sigaction(SIGTERM, &actor, NULL);
+		}
+
+		// Eternal loop
 		for(;;)
 			sleep(100);
 	}
 
-	printf("Stall is now running in the background with pid %d.\n", stall_pid);
-	printf("Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead).\n");
-	return 0;
+	// Output info
+	if(sigstop != 0) {
+		printf("Stall is now running in the background with pid %d.\n", stall_pid);
+		printf("Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead).\n");
+		printf("To execute stall in SIGSTOP mode, pass --sigstop when executing stall.\n");
+		return 0;
+	} else {
+		kill(stall_pid, SIGSTOP);
+		printf("Stall is now in the background paused by SIGSTOP with pid %d.\n", stall_pid);
+		printf("You must send stall SIGCONT then SIGTERM to kill it.\n");
+		return 0;
+	}
 }
