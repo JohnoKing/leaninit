@@ -71,9 +71,10 @@ fi &
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 print "Loading kernel modules..." nolog ${PURPLE} ${WHITE}
 if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
-	modprobe -a $(cat /etc/modules-load.d/* | grep -v '#')
+	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
+else
+	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}')
 fi
-modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}')
 ENDEF
 
 # Mount all ZFS file systems
