@@ -7,8 +7,8 @@ DAEMON=dhcpcd
 TYPE=networking
 
 main() {
-	for i in $NETFACE; do
-		dhcpcd $NETFACE
+	for n in $NETFACE; do
+		dhcpcd $n
 	done
 }
 
