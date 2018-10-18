@@ -20,18 +20,18 @@ main() {
 	elif [ -x /usr/lib/elogind/elogind ]; then
 		/usr/lib/elogind/elogind -D
 	else
+		print "Could not find the elogind binary!" log ${RED}
 		return 1
 	fi
-	waitfor process $DAEMON return
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
-		/usr/libexec/elogind/elogind-uaccess-command /dev
-		for fs in $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
-			/usr/libexec/elogind/elogind-uaccess-command $fs
-		done
+		EUACCESS=/usr/libexec/elogind/elogind-uaccess-command
 	elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then
-		/usr/lib/elogind/elogind-uaccess-command /dev
-		for fs in $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
-			/usr/lib/elogind/elogind-uaccess-command $fs
+		EUACCESS=/usr/lib/elogind/elogind-uaccess-command
+	fi
+	waitfor process $DAEMON return
+	if [ -n "$EUACCESS" ]; then
+		for fs in /dev $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
+			$EUACCESS $fs
 		done
 	fi
 }
