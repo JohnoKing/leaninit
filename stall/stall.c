@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 	// Create the stall process itself
 	pid_t stall_pid = fork();
 	if(stall_pid == 0) {
+
 		// Ignore SIGINT and SIGTERM when stall is not in SIGSTOP mode
 		if(sigstop != 0) {
 			struct sigaction actor;
