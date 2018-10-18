@@ -96,7 +96,7 @@ static void single(const char *msg)
 
 		// Output a warning
 		} else {
-			printf(PURPLE "* " YELLOW "Could not execute %s, defaulting to /bin/sh" RESET "\n", shell);
+			printf(PURPLE "* " YELLOW "Could not execute %s, defaulting to /bin/sh..." RESET "\n", shell);
 			memcpy(shell, "/bin/sh", 8);
 		}
 	}
@@ -127,7 +127,7 @@ static void multi(void)
 	}
 
 	// Run rc(8)
-	printf(CYAN "* " WHITE "Executing %s" RESET "\n", rc);
+	printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
 	sh(rc);
 }
 
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 
 	// Prevent anyone but root from running this
 	if(getuid() != 0) {
-		printf(RED "* Permission denied" RESET "\n");
+		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
 	}
 

@@ -40,6 +40,9 @@ usage() {
 	echo "  force-reload"
 	echo "  reload"
 	echo "  status"
+DEFBSD
+	echo "  info"
+ENDEF
 	exit 1
 }
 

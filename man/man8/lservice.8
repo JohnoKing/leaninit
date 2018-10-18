@@ -65,6 +65,10 @@ Equivalent to '/etc/leaninit.d/svc.d/svcname reload'.
 Show a service's current status.
 Equivalent to '/etc/leaninit.d/svc.d/svcname status' or 'cat /var/run/leaninit/svcname.status'.
 
+.Nm info
+Sends the SIGINFO signal to the service's process when applicable.
+This action is not available on Linux.
+
 .Nm --status-all
 Show the current statuses of all LeanInit services.
 

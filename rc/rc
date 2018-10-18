@@ -129,7 +129,7 @@ done
 ENDEF
 
 # Remove the nologin and .status files
-print "Removing any existing nologin files and resetting /var/run/leaninit..." nolog ${PURPLE} ${WHITE}
+print "Removing any existing nologin files and resetting /var/run/leaninit..." log ${BLUE} ${WHITE}
 rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
 
@@ -167,7 +167,7 @@ fi
 DEFLINUX
 # Set the keyboard layout (this requires kbd to work)
 if [ -n "$KEYMAP" ]; then
-	print "Setting the keyboard layout to $KEYMAP..." log ${BLUE} ${WHITE}
+	print "Setting the keyboard layout to $KEYMAP..." nolog ${PURPLE} ${WHITE}
 	loadkeys $KEYMAP &
 fi
 ENDEF
