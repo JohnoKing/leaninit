@@ -220,7 +220,7 @@ waitfor() {
 __start() {
 	# Return if the service is active
 	__rootcheck
-	if [ -r "/var/run/leaninit/$__svcname.status" ]; then
+	if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat /var/run/leaninit/$__svcname.status)" != "Failure" ]; then
 		print "$NAME is already running..." nolog ${PURPLE} ${YELLOW}
 		return 0
 	elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
