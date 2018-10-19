@@ -388,7 +388,7 @@ DEFBSD
 				exit 1
 			fi
 			print "Sending SIGINFO to $NAME (process name $DAEMON)..." nolog ${PURPLE} ${WHITE}
-			pkill -x -INFO $DAEMON ;;
+			pkill -INFO -x "$DAEMON" ;;
 ENDEF
 		*)
 			echo "Illegal action - $2"
