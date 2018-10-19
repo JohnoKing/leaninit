@@ -61,13 +61,22 @@ Equivalent to '/etc/leaninit.d/svc.d/svcname force-reload' or '/etc/leaninit.d/s
 Reload a service without restarting it (the service must support reloading for this to work).
 Equivalent to '/etc/leaninit.d/svc.d/svcname reload'.
 
+.Nm info
+Sends the SIGINFO signal to the service's process when applicable.
+This action is not available on Linux.
+
+.Nm pause
+Sends the SIGSTOP signal to the service's process when applicable to pause it; sets the service's status to 'Paused'.
+
+.Nm cont
+Sends the SIGCONT signal to the service's process when applicable to unpause it; sets the service's status to 'Continued'.
+
 .Nm status
 Show a service's current status.
 Equivalent to '/etc/leaninit.d/svc.d/svcname status' or 'cat /var/run/leaninit/svcname.status'.
 
-.Nm info
-Sends the SIGINFO signal to the service's process when applicable.
-This action is not available on Linux.
+.Nm help
+Displays usage info for the service itself.
 
 .Nm --status-all
 Show the current statuses of all LeanInit services.

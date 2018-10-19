@@ -80,8 +80,22 @@ __oscheck() {
 # Checks for $__svcname.status
 __svccheck() {
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+		if [ "$1" = "return" ]; then
+			return 7
+		fi
 		print "$NAME is not running!" nolog ${RED}
 		exit 7
+	fi
+}
+
+# Makes sure $DAEMON is set
+__proccheck() {
+	if [ ! -n "$DAEMON" ]; then
+		if [ "$1" = "return" ]; then
+			return 1
+		fi
+		print "$NAME does not have a process to send the SIGINFO signal to!" nolog ${RED}
+		exit 1
 	fi
 }
 
@@ -93,20 +107,30 @@ __fail() {
 
 # Show init script usage info
 __usage() {
-	echo "Usage: /etc/leaninit.d/svc.d/$__svcname [enable|disable|start|stop|restart|try-restart|force-reload|reload|status]"
-	echo "Valid actions:"
-	echo "  enable"
-	echo "  disable"
-	echo "  start"
-	echo "  stop"
-	echo "  restart"
-	echo "  force-reload"
-	echo "  reload"
-	echo "  status"
-DEFBSD
-	echo "  info"
+	if [ "$(id -u)" != "0" ]; then
+		echo "Usage: /etc/leaninit.d/svc.d/$__svcname [status|help]"
+		exit $1
+	fi
+	printf "Usage: /etc/leaninit.d/svc.d/$__svcname [enable|disable|start|stop|restart"
+	__svccheck return
+	if [ $? = 0 ]; then
+		printf "|try-restart|force-reload"
+		type reload 2> /dev/null >> /dev/null
+		if [ $? = 0 ]; then
+			printf "|reload"
+		fi
+	fi
+	__proccheck return
+	if [ $? = 0 ]; then
+DEFLINUX
+		printf "|pause|cont"
 ENDEF
-	exit 1
+DEFBSD
+		printf "|info|pause|cont"
+ENDEF
+	fi
+	printf "|status|help]\n"
+	exit $1
 }
 
 # Wait for a file
@@ -235,8 +259,8 @@ __stop() {
 	# Stop $DAEMON
 	if [ -n "$DAEMON" ] && [ -n "$(pgrep -x $DAEMON)" ]; then
 		print "Sending $NAME SIGCONT and SIGTERM..." log ${BLUE} ${WHITE}
-		pkill -x -CONT $DAEMON
-		pkill -x -TERM $DAEMON
+		pkill -CONT -x $DAEMON
+		pkill -TERM -x $DAEMON
 		until pkill -0 -x $DAEMON; do
 			sleep 7
 			print "Sending $NAME SIGKILL..." log ${PURPLE} ${YELLOW}
@@ -304,7 +328,7 @@ run() {
 
 	# Init scripts must be given two arguments
 	if [ ! -n "$2" ]; then
-		__usage
+		__usage 1
 	fi
 
 	# If the service does not support the current OS, exit
@@ -383,16 +407,45 @@ run() {
 DEFBSD
 		info)
 			__rootcheck
-			if [ ! -n "$DAEMON" ]; then
-				print "$NAME does not have a process to send the SIGINFO signal to!" nolog ${RED}
-				exit 1
-			fi
+			__proccheck
 			print "Sending SIGINFO to $NAME (process name $DAEMON)..." nolog ${PURPLE} ${WHITE}
-			pkill -INFO -x "$DAEMON" ;;
+			pkill -INFO -x $DAEMON ;;
 ENDEF
+		pause)
+			__rootcheck
+			__proccheck
+			print "Pausing $NAME with SIGSTOP (process name $DAEMON)..." log ${BLUE} ${WHITE}
+			pkill -STOP -x $DAEMON
+			RET=$?
+			if [ $RET = 0 ]; then
+				echo "Paused" > "/var/run/leaninit/$__svcname.status"
+				print "Successfully paused $NAME!" log ${GREEN} ${WHITE}
+			else
+				print "Failed to pause $NAME!" log ${RED}
+			fi
+			exit $RET ;;
+		cont)
+			__rootcheck
+			__proccheck
+			if [ "$(cat /var/run/leaninit/$__svcname.status)" != "Paused" ]; then
+				print "$NAME is not paused..." nolog ${PURPLE} ${YELLOW}
+				exit 0
+			fi
+			print "Unpausing $NAME with SIGCONT (process name $DAEMON)..." log ${BLUE} ${WHITE}
+			pkill -CONT -x $DAEMON
+			RET=$?
+			if [ $RET = 0 ]; then
+				echo "Continued" > "/var/run/leaninit/$__svcname.status"
+				print "Successfully unpaused $NAME!" log ${GREEN} ${WHITE}
+			else
+				print "Failed to unpause $NAME!" log ${RED}
+			fi
+			exit $RET ;;
+		help)
+			__usage 0 ;;
 		*)
 			echo "Illegal action - $2"
-			__usage ;;
+			__usage 1 ;;
 	esac
 	exit $?
 }

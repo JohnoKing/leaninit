@@ -39,10 +39,13 @@ usage() {
 	echo "  try-restart"
 	echo "  force-reload"
 	echo "  reload"
-	echo "  status"
 DEFBSD
 	echo "  info"
 ENDEF
+	echo "  pause"
+	echo "  cont"
+	echo "  status"
+	echo "  help"
 	exit 1
 }
 
