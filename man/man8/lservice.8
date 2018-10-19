@@ -32,51 +32,47 @@
 service utility can do the following actions:
 
 .Nm start
-Start a service. Equivalent to '/etc/leaninit.d/svc.d/svcname start'.
+Start a service if it is not currently started.
 
 .Nm stop
-Stop a service. Equivalent to '/etc/leaninit.d/svc.d/svcname stop'.
+Stops any currently running service by issuing it SIGCONT and SIGTERM, then after seven seconds issuing it SIGKILL (only applies to services with active daemons).
 
 .Nm restart
-Restart a service, or start it if it isn't running.
-Equivalent to '/etc/leaninit.d/svc.d/svcname restart'.
+Restart a service, or start one if it isn't running.
 
 .Nm try-restart
 Restart a service if it is currently running, otherwise return an error.
-Equivalent to '/etc/leaninit.d/svc.d/svcname try-restart'.
 
 .Nm enable
 Enable a service by creating a file for it in /etc/leaninit/svc.e.
-Equivalent to '/etc/leaninit.d/svc.d/svcname enable' or 'touch /etc/leaninit.d/svc.e/svcname'.
+Equivalent to 'touch /etc/leaninit.d/svc.e/svcname'.
 
 .Nm disable
-Disable a service by removing its file in /etc/leaninit/svc.d.
-Equivalent to '/etc/leaninit.d/svc.d/svcname disable' or 'rm /etc/leaninit.d/svc.e/svcname'.
+Disable a service by removing its file in /etc/leaninit/svc.e.
+Equivalent to 'rm /etc/leaninit.d/svc.e/svcname'.
 
 .Nm force-reload
 This will reload services that support reloading and restart services that do not support reloading.
-Equivalent to '/etc/leaninit.d/svc.d/svcname force-reload' or '/etc/leaninit.d/svc.d/svcname try-restart'.
 
 .Nm reload
 Reload a service without restarting it (the service must support reloading for this to work).
-Equivalent to '/etc/leaninit.d/svc.d/svcname reload'.
 
 .Nm info
 Sends the SIGINFO signal to the service's process when applicable.
 This action is not available on Linux.
 
 .Nm pause
-Sends the SIGSTOP signal to the service's process when applicable to pause it; sets the service's status to 'Paused'.
+Sends the SIGSTOP signal to the service's process when applicable to pause it, then sets the service's status to 'Paused'.
 
 .Nm cont
-Sends the SIGCONT signal to the service's process when applicable to unpause it; sets the service's status to 'Continued'.
+Sends the SIGCONT signal to the service's process when applicable to unpause it, then sets the service's status to 'Continued'.
 
 .Nm status
-Show a service's current status.
-Equivalent to '/etc/leaninit.d/svc.d/svcname status' or 'cat /var/run/leaninit/svcname.status'.
+Shows the status of a currently running service.
+Equivalent to 'cat /var/run/leaninit/svcname.status'.
 
 .Nm help
-Displays usage info for the service itself.
+Displays usage information for the service itself.
 
 .Nm --status-all
 Show the current statuses of all LeanInit services.

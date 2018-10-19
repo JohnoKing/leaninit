@@ -442,9 +442,10 @@ ENDEF
 			fi
 			exit $RET ;;
 		help)
+			print "Showing usage information for $NAME:" nolog ${PURPLE} ${WHITE}
 			__usage 0 ;;
 		*)
-			echo "Illegal action - $2"
+			print "Illegal action - $2" nolog ${RED}
 			__usage 1 ;;
 	esac
 	exit $?
