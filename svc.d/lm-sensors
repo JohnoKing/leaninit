@@ -9,4 +9,8 @@ main() {
 	sensors -s
 }
 
+reload() {
+	sensors -s
+}
+
 run lm-sensors "$@"
