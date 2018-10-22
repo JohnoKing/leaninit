@@ -256,17 +256,22 @@ __stop() {
 		return 0
 	fi
 
-	# Stop the specified pids
+	# Stop the specified pids in the pid file (if there are any)
 	if [ -n "$__svcpid" ]; then
 		print "Sending $NAME SIGCONT and SIGTERM..." log ${BLUE} ${WHITE}
 		kill -CONT $__svcpid 2> /dev/null
 		kill -TERM $__svcpid 2> /dev/null
 		for pid in $__svcpid; do
-			until ! kill -0 $pid 2> /dev/null; do
-				sleep 7
-				print "Sending SIGKILL to $NAME PID $pid..." log ${PURPLE} ${YELLOW}
-				kill -KILL $__svcpid 2> /dev/null
-				break
+			__TIMER=0
+			while true; do
+				if ! kill -0 $pid 2> /dev/null; then break; fi
+				sleep 0.1
+				__TIMER=$(expr $__TIMER + 1)
+				if [ "$(expr $__TIMER '>' 69)" = "1" ]; then
+					print "Sending SIGKILL to $NAME PID $pid..." log ${PURPLE} ${YELLOW}
+					kill -KILL $pid 2> /dev/null
+					break
+				fi
 			done &
 		done
 		wait

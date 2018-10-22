@@ -12,7 +12,6 @@ main() {
 	if [ ! -r /etc/machine-id ]; then
 		dbus-uuidgen > /etc/machine-id
 	fi
-	waitfor process dbus-daemon return
 }
 
 # This causes D-Bus to partially reload
