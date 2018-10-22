@@ -12,4 +12,4 @@ reload() {
 	setupcon
 }
 
-run setupcon "$@"
+run "$@"

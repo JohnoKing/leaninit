@@ -110,11 +110,7 @@ Appending 'optional' as a third argument will cause waitfor to simply return if 
 
 
 .Nm run
-This function is used to run scripts with standard arguments such as 'start' and 'stop'.
-It should be passed
-.Em $2
-for usage with
-.Nm rc(8).
+This function is used to run init scripts with standard arguments such as 'start' and 'stop'.
 .Sh FILES
 .Em /etc/leaninit.d/rc.conf
 Provides config settings for
@@ -137,6 +133,11 @@ and the log file:
 
 print "General informative message..." log ${BLUE} ${WHITE}
 
+Run an init script using the
+.Nm run()
+function:
+
+run "$@"
 .Sh SEE ALSO
 rc(8), rc.shutdown(8), rc.conf(5)
 .Sh AUTHOR

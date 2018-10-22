@@ -15,4 +15,4 @@ reload() {
 	pkill -HUP -x smbd
 }
 
-run samba "$@"
+run "$@"

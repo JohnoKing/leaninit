@@ -14,4 +14,4 @@ reload() {
 	avahi-daemon --reload
 }
 
-run avahi "$@"
+run "$@"

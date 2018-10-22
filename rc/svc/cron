@@ -14,4 +14,4 @@ ENDEF
 	jobs -p %+ > /var/run/leaninit/cron.pid
 }
 
-run cron "$@"
+run "$@"

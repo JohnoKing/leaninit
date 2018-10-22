@@ -9,4 +9,4 @@ main() {
 	ntpd -p /var/run/leaninit/ntpd.pid
 }
 
-run ntpd "$@"
+run "$@"

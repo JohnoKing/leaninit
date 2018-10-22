@@ -88,7 +88,7 @@ __svccheck() {
 	fi
 }
 
-# Makes sure a service has a pid file with valid PIDs
+# Makes sure the service has $__svcpid set
 __proccheck() {
 	if [ ! -n "$__svcpid" ]; then
 		if [ "$1" = "return" ]; then
@@ -323,28 +323,23 @@ __status() {
 	fi
 }
 
-# Run function for directly executing init scripts
+# This function must be executed for init scripts to start
 run() {
 
-	# Set $__svcname to $1
-	__svcname=$1
-	if [ -r /var/run/leaninit/$__svcname.pid ]; then
-		__svcpid="$(cat /var/run/leaninit/$__svcname.pid)"
-	fi
-
-	# Init scripts must be given two arguments
-	if [ ! -n "$2" ]; then
-		__usage 1
-	fi
+	# Return an error if the service was not written correctly
+	if [ ! -n "$1" ] || [ ! -n "$NAME" ] || ! type main 2> /dev/null; then
+		print "Service syntax is invalid!" nolog ${RED}
+		exit 128
 
 	# If the service does not support the current OS, exit
-	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
+	elif [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
 		print "$NAME is not compatible with $(uname)!" nolog ${RED}
 		exit 5
 	fi
 
 	# Handle arguments
-	case $2 in
+	__svcname="$(basename $0)"
+	case "$1" in
 		enable)
 			__rootcheck
 			__oscheck enable
@@ -454,7 +449,7 @@ ENDEF
 			print "Showing usage information for $NAME:" nolog ${PURPLE} ${WHITE}
 			__usage 0 ;;
 		*)
-			print "Illegal action - $2" nolog ${RED}
+			print "Illegal action - $1" nolog ${RED}
 			__usage 1 ;;
 	esac
 	exit $?

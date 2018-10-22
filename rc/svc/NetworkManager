@@ -11,4 +11,4 @@ main() {
 	NetworkManager --pid-file=/var/run/leaninit/NetworkManager.pid
 }
 
-run NetworkManager "$@"
+run "$@"

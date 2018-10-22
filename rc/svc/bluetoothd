@@ -11,4 +11,4 @@ main() {
 	jobs -p %+ > /var/run/leaninit/bluetoothd.pid
 }
 
-run bluetoothd "$@"
+run "$@"

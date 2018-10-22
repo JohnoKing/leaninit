@@ -18,4 +18,4 @@ reload() {
 	pkill -HUP -x sshd
 }
 
-run sshd "$@"
+run "$@"

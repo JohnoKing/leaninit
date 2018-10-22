@@ -20,4 +20,4 @@ reload() {
 	pkill -HUP -x dbus-daemon
 }
 
-run dbus "$@"
+run "$@"

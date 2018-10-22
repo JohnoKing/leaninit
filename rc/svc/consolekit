@@ -11,4 +11,4 @@ main() {
 	jobs -p %+ > /var/run/leaninit/consolekit.pid
 }
 
-run consolekit "$@"
+run "$@"

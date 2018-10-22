@@ -11,4 +11,4 @@ main() {
 	jobs -p %+ > /var/run/leaninit/cups.pid
 }
 
-run cups "$@"
+run "$@"

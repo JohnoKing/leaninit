@@ -9,4 +9,4 @@ main() {
 	powerd -P /var/run/leaninit/powerd.pid
 }
 
-run powerd "$@"
+run "$@"

@@ -12,4 +12,4 @@ reload() {
 	pkill -HUP -x syslogd
 }
 
-run syslogd "$@"
+run "$@"

@@ -16,4 +16,4 @@ stop() {
 	rm -f /var/run/wicd/wicd.pid
 }
 
-run wicd "$@"
+run "$@"

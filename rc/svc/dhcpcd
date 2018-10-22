@@ -12,4 +12,4 @@ main() {
 	done
 }
 
-run dhcpcd "$@"
+run "$@"

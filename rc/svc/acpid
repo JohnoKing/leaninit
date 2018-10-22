@@ -10,4 +10,4 @@ main() {
 	acpid -p /var/run/leaninit/acpid.pid
 }
 
-run acpid "$@"
+run "$@"

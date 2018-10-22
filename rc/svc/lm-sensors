@@ -13,4 +13,4 @@ reload() {
 	sensors -s
 }
 
-run lm-sensors "$@"
+run "$@"
