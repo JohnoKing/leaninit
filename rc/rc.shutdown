@@ -20,11 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# /etc/leaninit.d/rc.shutdown - Stops all services and unmounts all file systems
+# /etc/leaninit.d/rc.shutdown - Stops all services
 #
 
+DEFLINUX
 # Load rc.svc
 . /etc/leaninit.d/rc.conf
+ENDEF
 
 # Stop all currently running services
 __LIST="$(ls /etc/leaninit.d/svc.d)"
@@ -42,22 +44,7 @@ if [ "$DEV" = "udev" ]; then
 	udevadm control --exit &
 fi
 ENDEF
-wait
 
-# Unmount all drives
-mount -fo remount,ro / &
-if [ "$ZFS_ENABLE" = "true" ]; then
-	zfs umount -a
-	zfs unshare -a
-fi &
-DEFBSD
-umount -fA &
-ENDEF
-DEFLINUX
-umount -fa &
-ENDEF
-swapoff -a &
-
-# Exit
+# Finish
 wait
 exit 0
