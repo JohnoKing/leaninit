@@ -327,7 +327,7 @@ __status() {
 run() {
 
 	# Return an error if the service was not written correctly
-	if [ ! -n "$1" ] || [ ! -n "$NAME" ] || ! type main 2> /dev/null; then
+	if [ ! -n "$1" ] || [ ! -n "$NAME" ] || ! type main 2> /dev/null >> /dev/null; then
 		print "Service syntax is invalid!" nolog ${RED}
 		exit 128
 
@@ -339,6 +339,9 @@ run() {
 
 	# Handle arguments
 	__svcname="$(basename $0)"
+	if [ -r "/var/run/leaninit/$__svcname.pid" ]; then
+		__svcpid="$(cat /var/run/leaninit/$__svcname.pid)"
+	fi
 	case "$1" in
 		enable)
 			__rootcheck
