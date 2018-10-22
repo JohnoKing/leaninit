@@ -3,12 +3,12 @@
 
 # dhcpcd (for Linux)
 NAME="dhcpcd"
-DAEMON=dhcpcd
 TYPE=networking
 
 main() {
 	for n in $NETFACE; do
-		dhcpcd $n
+		dhcpcd -B $n &
+		echo " $(jobs -p %+)" >> /var/run/leaninit/dhcpcd.pid
 	done
 }
 

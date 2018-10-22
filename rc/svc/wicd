@@ -3,13 +3,13 @@
 
 # Linux NetworkManager
 NAME="Wicd"
-DAEMON=wicd
 TYPE=networking
 TARGET=Linux
 
 main() {
 	waitfor service dbus
 	wicd
+	ln -s /var/run/wicd/wicd.pid /var/run/leaninit/wicd.pid
 }
 
 stop() {

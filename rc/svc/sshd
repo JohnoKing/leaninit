@@ -3,7 +3,6 @@
 
 # Secure SHell Daemon
 NAME="SSH"
-DAEMON=sshd
 
 main() {
 	# Wait for internet services
@@ -11,7 +10,8 @@ main() {
 
 	# sshd must be executed with the full path to the executable
 	ssh-keygen -A >> /dev/null
-	command $(command -v sshd)
+	command $(command -v sshd) -D &
+	jobs -p %+ > /var/run/leaninit/sshd.pid
 }
 
 reload() {

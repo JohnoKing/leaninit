@@ -3,11 +3,10 @@
 
 # CPU frequency control (FreeBSD)
 NAME="PowerD"
-DAEMON=powerd
 TARGET=FreeBSD
 
 main() {
-	powerd
+	powerd -P /var/run/leaninit/powerd.pid
 }
 
 run powerd "$@"

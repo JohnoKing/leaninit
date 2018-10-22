@@ -3,13 +3,12 @@
 
 # Linux NetworkManager
 NAME="NetworkManager"
-DAEMON=NetworkManager
 TYPE=networking
 TARGET=Linux
 
 main() {
 	waitfor service dbus
-	NetworkManager
+	NetworkManager --pid-file=/var/run/leaninit/NetworkManager.pid
 }
 
 run NetworkManager "$@"

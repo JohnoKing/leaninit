@@ -5,30 +5,25 @@
 NAME="elogind"
 TYPE=login-daemon
 TARGET=Linux
-if [ -n "$(pgrep -x elogind-daemon)" ]; then
-	DAEMON=elogind-daemon
-else
-	DAEMON=elogind
-fi
 
 main() {
 	waitfor service dbus
 	if [ -n "$(command -v elogind)" ]; then
-		elogind -D
+		elogind &
 	elif [ -x /usr/libexec/elogind/elogind ]; then
-		/usr/libexec/elogind/elogind -D
+		/usr/libexec/elogind/elogind &
 	elif [ -x /usr/lib/elogind/elogind ]; then
-		/usr/lib/elogind/elogind -D
+		/usr/lib/elogind/elogind &
 	else
 		print "Could not find the elogind binary!" log ${RED}
 		return 1
 	fi
+	jobs -p %+ > /var/run/leaninit/elogind.pid
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
 		EUACCESS=/usr/libexec/elogind/elogind-uaccess-command
 	elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then
 		EUACCESS=/usr/lib/elogind/elogind-uaccess-command
 	fi
-	waitfor process $DAEMON return
 	if [ -n "$EUACCESS" ]; then
 		for fs in /dev $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
 			$EUACCESS $fs

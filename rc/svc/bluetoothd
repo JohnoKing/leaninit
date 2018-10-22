@@ -1,14 +1,14 @@
 #!/bin/sh
 . /etc/leaninit.d/rc.svc
 
-# avahi
+# Bluetooth daemon
 NAME="Bluetooth daemon"
-DAEMON=bluetoothd
 TYPE=bluetooth
 
 main() {
 	waitfor service dbus
 	bluetoothd &
+	jobs -p %+ > /var/run/leaninit/bluetoothd.pid
 }
 
 run bluetoothd "$@"

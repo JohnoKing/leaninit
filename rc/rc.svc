@@ -88,13 +88,13 @@ __svccheck() {
 	fi
 }
 
-# Makes sure $DAEMON is set
+# Makes sure a service has a pid file with valid PIDs
 __proccheck() {
-	if [ ! -n "$DAEMON" ]; then
+	if [ ! -n "$__svcpid" ]; then
 		if [ "$1" = "return" ]; then
 			return 1
 		fi
-		print "$NAME does not have a process to send the SIGINFO signal to!" nolog ${RED}
+		print "$NAME does not have a process to send a signal to!" nolog ${RED}
 		exit 1
 	fi
 }
@@ -139,8 +139,8 @@ __waitfor_loop_file() {
 	while true; do
 		if [ -r "$1" ]; then break; fi
 		sleep 0.1
-		__TIMER=$(expr $TIMER + 1)
-		if [ $__TIMER = 70 ]; then
+		__TIMER=$(expr $__TIMER + 1)
+		if [ "$(expr $__TIMER '>' 69)" = "1" ]; then
 			print "$2" log ${RED}
 			__fail 1
 		fi
@@ -157,8 +157,8 @@ __waitfor_loop_proc() {
 	while true; do
 		if [ -n "$(pgrep -x $1)" ]; then break; fi
 		sleep 0.1
-		__TIMER=$(expr $TIMER + 1)
-		if [ $__TIMER = 70 ]; then
+		__TIMER=$(expr $__TIMER + 1)
+		if [ "$(expr $__TIMER '>' 69)" = "1" ]; then
 			if [ "$3" != "return" ]; then
 				print "$2" log ${RED}
 				__fail 1
@@ -256,24 +256,27 @@ __stop() {
 		return 0
 	fi
 
-	# Stop $DAEMON
-	if [ -n "$DAEMON" ] && [ -n "$(pgrep -x $DAEMON)" ]; then
+	# Stop the specified pids
+	if [ -n "$__svcpid" ]; then
 		print "Sending $NAME SIGCONT and SIGTERM..." log ${BLUE} ${WHITE}
-		pkill -CONT -x $DAEMON
-		pkill -TERM -x $DAEMON
-		until pkill -0 -x $DAEMON; do
-			sleep 7
-			print "Sending $NAME SIGKILL..." log ${PURPLE} ${YELLOW}
-			pkill -KILL -x $DAEMON
-			break
+		kill -CONT $__svcpid 2> /dev/null
+		kill -TERM $__svcpid 2> /dev/null
+		for pid in $__svcpid; do
+			until ! kill -0 $pid 2> /dev/null; do
+				sleep 7
+				print "Sending SIGKILL to $NAME PID $pid..." log ${PURPLE} ${YELLOW}
+				kill -KILL $__svcpid 2> /dev/null
+				break
+			done &
 		done
+		wait
 	fi
 
 	# Execute stop()
 	exifex stop
 
-	# Remove the .status and .type files for the service
-	rm -f "/var/run/leaninit/$__svcname.status"
+	# Remove the .status, .pid and .type files for the service
+	rm -f "/var/run/leaninit/$__svcname.status" "/var/run/leaninit/$__svcname.pid"
 	if [ -n "$TYPE" ]; then
 		rm -f "/var/run/leaninit/$TYPE.type"
 	fi
@@ -325,6 +328,9 @@ run() {
 
 	# Set $__svcname to $1
 	__svcname=$1
+	if [ -r /var/run/leaninit/$__svcname.pid ]; then
+		__svcpid="$(cat /var/run/leaninit/$__svcname.pid)"
+	fi
 
 	# Init scripts must be given two arguments
 	if [ ! -n "$2" ]; then
@@ -408,14 +414,17 @@ DEFBSD
 		info)
 			__rootcheck
 			__proccheck
-			print "Sending SIGINFO to $NAME (process name $DAEMON)..." nolog ${PURPLE} ${WHITE}
-			pkill -INFO -x $DAEMON ;;
+			print "Sending SIGINFO to $NAME..." nolog ${PURPLE} ${WHITE}
+			for p in $__svcpid; do
+				print "PID $p:" nolog ${PURPLE} ${WHITE}
+				kill -INFO $p
+			done ;;
 ENDEF
 		pause)
 			__rootcheck
 			__proccheck
-			print "Pausing $NAME with SIGSTOP (process name $DAEMON)..." log ${BLUE} ${WHITE}
-			pkill -STOP -x $DAEMON
+			print "Pausing $NAME with SIGSTOP (PIDs $__svcpid)..." log ${BLUE} ${WHITE}
+			kill -STOP $__svcpid
 			RET=$?
 			if [ $RET = 0 ]; then
 				echo "Paused" > "/var/run/leaninit/$__svcname.status"
@@ -431,8 +440,8 @@ ENDEF
 				print "$NAME is not paused..." nolog ${PURPLE} ${YELLOW}
 				exit 0
 			fi
-			print "Unpausing $NAME with SIGCONT (process name $DAEMON)..." log ${BLUE} ${WHITE}
-			pkill -CONT -x $DAEMON
+			print "Unpausing $NAME with SIGCONT (PIDs $__svcpid)..." log ${BLUE} ${WHITE}
+			kill -CONT $__svcpid
 			RET=$?
 			if [ $RET = 0 ]; then
 				echo "Continued" > "/var/run/leaninit/$__svcname.status"

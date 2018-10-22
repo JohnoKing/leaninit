@@ -3,10 +3,9 @@
 
 # Daemon for syslog(3)
 NAME="SyslogD"
-DAEMON=syslogd
 
 main() {
-	syslogd -ss
+	syslogd -ss -P /var/run/leaninit/syslogd.pid
 }
 
 reload() {

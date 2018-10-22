@@ -1,13 +1,13 @@
 #!/bin/sh
 . /etc/leaninit.d/rc.svc
 
-# avahi
+# Avahi
 NAME="Avahi"
-DAEMON=avahi-daemon
 
 main() {
 	waitfor service dbus
 	avahi-daemon &
+	jobs -p %+ > /var/run/leaninit/avahi.pid
 }
 
 reload() {

@@ -26,13 +26,14 @@ INSTALL  := install
 CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
 WFLAGS   := -Wall -Wextra -Wpedantic -Wno-unused-result
 LIBS     := -lpthread -lutil
-RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice out/lrunlevel
+RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice out/lrunlevel out/svc.d/*
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
 		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 $(DESTDIR)/usr/share/man/man8/lrunlevel.8
 
 # Compile LeanInit
 all: clean
 	cp -r rc out
+	mv out/svc out/svc.d
 	cp cmd/service.sh  out/lservice
 	cp cmd/runlevel.sh out/lrunlevel
 	if [ `uname` = Linux ]; then \
@@ -59,7 +60,7 @@ all: clean
 install:
 	if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
 	mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit.d/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	cp -r svc.d $(DESTDIR)/etc/leaninit.d
+	cp -r out/svc.d $(DESTDIR)/etc/leaninit.d
 	chmod 0755 $(DESTDIR)/etc/leaninit.d/svc.d/*
 	cp -r man $(DESTDIR)/usr/share
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT

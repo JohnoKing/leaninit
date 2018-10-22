@@ -3,13 +3,12 @@
 
 # D-Bus (required by many other services)
 NAME="D-Bus"
-DAEMON=dbus-daemon
 
 # Launch D-Bus
 main() {
-	mkdir -p /run/dbus
-	rm -f /var/run/dbus/pid
-	dbus-daemon --fork --system
+	mkdir -p /run/dbus /var/run/dbus
+	rm -f /run/dbus/pid /var/run/dbus/pid
+	dbus-daemon --fork --system --print-pid > /var/run/leaninit/dbus.pid
 	if [ ! -r /etc/machine-id ]; then
 		dbus-uuidgen > /etc/machine-id
 	fi

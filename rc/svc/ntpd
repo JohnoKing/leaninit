@@ -3,11 +3,10 @@
 
 # Network Time Protocol Daemon
 NAME="ntpd"
-DAEMON=ntpd
 
 main() {
 	waitfor networking
-	ntpd
+	ntpd -p /var/run/leaninit/ntpd.pid
 }
 
 run ntpd "$@"

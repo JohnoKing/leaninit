@@ -3,12 +3,12 @@
 
 # Service for CUPS
 NAME="CUPS"
-DAEMON=cupsd
 TYPE=printing-daemon
 
 main() {
 	waitfor service avahi
-	cupsd
+	cupsd -f &
+	jobs -p %+ > /var/run/leaninit/cups.pid
 }
 
 run cups "$@"

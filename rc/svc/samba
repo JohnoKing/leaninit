@@ -3,12 +3,12 @@
 
 # Samba
 NAME="Samba"
-DAEMON=smbd
 
 # Main function
 main() {
 	waitfor networking
-	smbd -D
+	smbd -F &
+	jobs -p %+ > /var/run/leaninit/samba.pid
 }
 
 reload() {

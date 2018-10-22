@@ -3,11 +3,11 @@
 
 # HALD
 NAME="HALD"
-DAEMON=hald
 
 main() {
 	waitfor service dbus
-	hald --daemon=yes --use-syslog
+	hald --daemon=no --use-syslog &
+	jobs -p %+ > /var/run/leaninit/hald.pid
 }
 
 # Kill all hald related processes

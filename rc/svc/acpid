@@ -3,12 +3,11 @@
 
 # Service for acpid (either BusyBox or other implementation)
 NAME="ACPI Daemon"
-DAEMON=acpid
 TARGET=Linux
 
 main() {
 	waitfor service dbus optional
-	acpid
+	acpid -p /var/run/leaninit/acpid.pid
 }
 
 run acpid "$@"

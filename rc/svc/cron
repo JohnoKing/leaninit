@@ -3,13 +3,15 @@
 
 # Service for cron
 NAME="cron"
-DAEMON=cron
 
 main() {
-	cron -s
-	if [ $? != 0 ]; then
-		cron
-	fi
+DEFBSD
+	cron -ns &
+ENDEF
+DEFLINUX
+	cron -f &
+ENDEF
+	jobs -p %+ > /var/run/leaninit/cron.pid
 }
 
 run cron "$@"

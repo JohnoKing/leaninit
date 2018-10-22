@@ -3,7 +3,6 @@
 
 # Service for X Server Display Managers
 NAME=$XDMNAME
-DAEMON=$DM
 TYPE=display-manager
 
 # The main function
@@ -16,12 +15,12 @@ main() {
 	waitfor login-daemon optional
 	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
 	$DM &
+	jobs -p %+ > /var/run/leaninit/xdm.pid
 }
 
 # Kill the X server manually
 stop() {
 	pkill -x Xorg
-	pkill -x $DM
 }
 
 run xdm "$@"
