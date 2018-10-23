@@ -428,14 +428,8 @@ ENDEF
 			__proccheck
 			print "Pausing $NAME with SIGSTOP (PIDs $__svcpid)..." log ${BLUE} ${WHITE}
 			kill -STOP $__svcpid
-			RET=$?
-			if [ $RET = 0 ]; then
-				echo "Paused" > "/var/run/leaninit/$__svcname.status"
-				print "Successfully paused $NAME!" log ${GREEN} ${WHITE}
-			else
-				print "Failed to pause $NAME!" log ${RED}
-			fi
-			exit $RET ;;
+			echo "Paused" > "/var/run/leaninit/$__svcname.status"
+			print "Successfully paused $NAME!" log ${GREEN} ${WHITE} ;;
 		cont)
 			__rootcheck
 			__proccheck
@@ -445,14 +439,8 @@ ENDEF
 			fi
 			print "Unpausing $NAME with SIGCONT (PIDs $__svcpid)..." log ${BLUE} ${WHITE}
 			kill -CONT $__svcpid
-			RET=$?
-			if [ $RET = 0 ]; then
-				echo "Continued" > "/var/run/leaninit/$__svcname.status"
-				print "Successfully unpaused $NAME!" log ${GREEN} ${WHITE}
-			else
-				print "Failed to unpause $NAME!" log ${RED}
-			fi
-			exit $RET ;;
+			echo "Continued" > "/var/run/leaninit/$__svcname.status"
+			print "Successfully unpaused $NAME!" log ${GREEN} ${WHITE} ;;
 		help)
 			print "Showing usage information for $NAME:" nolog ${PURPLE} ${WHITE}
 			__usage 0 ;;
