@@ -69,14 +69,6 @@ __rootcheck() {
 	fi
 }
 
-# Used for checking $TARGET
-__oscheck() {
-	if [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
-		print "$NAME could not be ${1}d because the target OS ($TARGET) does not match the current OS ($(uname))!" log ${RED}
-		__fail 5
-	fi
-}
-
 # Checks for $__svcname.status
 __svccheck() {
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
@@ -350,7 +342,6 @@ run() {
 	case "$1" in
 		enable)
 			__rootcheck
-			__oscheck enable
 			if [ -r "/etc/leaninit.d/svc.e/$__svcname" ]; then
 				print "$NAME is already enabled..." nolog ${PURPLE} ${YELLOW}
 				exit 0
@@ -367,7 +358,6 @@ run() {
 			exifex enable ;;
 		disable)
 			__rootcheck
-			__oscheck disable
 			if [ ! -r "/etc/leaninit.d/svc.e/$__svcname" ]; then
 				print "$NAME is already disabled..." nolog ${PURPLE} ${YELLOW}
 				exit 0
