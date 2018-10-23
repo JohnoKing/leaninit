@@ -384,7 +384,7 @@ run() {
 		reload)
 			__rootcheck
 			__svccheck
-			type reload >> /dev/null
+			type reload 2> /dev/null >> /dev/null
 			if [ $? = 0 ]; then
 				__reload
 			else
@@ -394,7 +394,7 @@ run() {
 		force-reload)
 			__rootcheck
 			__svccheck
-			type reload >> /dev/null
+			type reload 2> /dev/null >> /dev/null
 			if [ $? = 0 ]; then
 				__reload
 			else
