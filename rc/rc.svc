@@ -417,6 +417,10 @@ ENDEF
 		pause)
 			__rootcheck
 			__proccheck
+			if [ "$(cat /var/run/leaninit/$__svcname.status)" = "Paused" ]; then
+				print "$NAME is already paused..." nolog ${PURPLE} ${YELLOW}
+				exit 0
+			fi
 			print "Pausing $NAME with SIGSTOP (PIDs $__svcpid)..." log ${BLUE} ${WHITE}
 			kill -STOP $__svcpid
 			echo "Paused" > "/var/run/leaninit/$__svcname.status"
