@@ -159,9 +159,9 @@ if [ -n "$HOSTNAME" ]; then
 fi
 
 # Set the timezone
-if [ -n "$TIMEZONE" ] && [ -r /usr/share/zoneinfo/$TIMEZONE ]; then
+if [ -n "$TIMEZONE" ] && [ -r "/usr/share/zoneinfo/$TIMEZONE" ]; then
 	print "Setting the timezone to $TIMEZONE..." nolog ${PURPLE} ${WHITE}
-	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime &
+	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
 fi
 
 DEFLINUX
