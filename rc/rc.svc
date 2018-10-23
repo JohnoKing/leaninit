@@ -211,7 +211,6 @@ waitfor() {
 # Start a service
 __start() {
 	# Return if the service is active
-	__rootcheck
 	if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat /var/run/leaninit/$__svcname.status)" != "Failure" ]; then
 		print "$NAME is already running..." nolog ${PURPLE} ${YELLOW}
 		return 0
@@ -242,7 +241,6 @@ __start() {
 # Stop a service
 __stop() {
 	# Return if the service is not active
-	__rootcheck
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
 		print "$NAME is not running..." nolog ${PURPLE} ${YELLOW}
 		return 0
@@ -284,6 +282,7 @@ __stop() {
 
 # Restart a service
 __restart() {
+	__rootcheck
 	__stop
 	__start
 	if [ "$RET" = "0" ]; then
@@ -373,8 +372,10 @@ run() {
 			print "$NAME has been disabled!" log ${GREEN} ${WHITE}
 			exifex disable ;;
 		start)
+			__rootcheck
 			__start ;;
 		stop)
+			__rootcheck
 			__stop ;;
 		restart)
 			__restart ;;
