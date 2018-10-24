@@ -53,13 +53,18 @@ int main(int argc, char *argv[])
 	int status;
 	for(;;) {
 
-		// Run login(1)
+		// Child process for login(1)
 		pid_t login = fork();
 		if(login == 0) {
 
-			// The tty must exist
+			// This is required for the subshell to have job control on FreeBSD
+#			ifdef FreeBSD
+			revoke(argv[1]);
+#			endif
+
+			// Verify the tty exists
 			int tty = open(argv[1], O_RDWR | O_NOCTTY);
-			if(isatty(tty) == 0)
+			if(tty == -1 || isatty(tty) == 0)
 				return usage();
 
 			// Set the tty as the controlling terminal
