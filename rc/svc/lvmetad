@@ -1,0 +1,12 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# lvmetad
+NAME="LVM metadata cache daemon"
+TARGET=Linux
+
+main() {
+	lvmetad -p /var/run/leaninit/lvmetad.pid
+}
+
+run "$@"
