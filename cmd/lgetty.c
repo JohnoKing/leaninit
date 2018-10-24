@@ -38,6 +38,17 @@ int main(int argc, char *argv[])
 	if(argc < 2)
 		return usage();
 
+	// Find login(1)
+	char login_cmd[18];
+	if(access("/bin/login", X_OK) == 0)
+		memcpy(login_cmd, "/bin/login -p", 14);
+	else if(access("/usr/bin/login", X_OK) == 0)
+		memcpy(login_cmd, "/usr/bin/login -p", 18);
+	else {
+		printf(RED "* Could not find login(1) (please symlink it to either /bin/login or /usr/bin/login)" RESET "\n");
+		return 127;
+	}
+
 	// Infinite loop
 	int status;
 	for(;;) {
@@ -60,7 +71,7 @@ int main(int argc, char *argv[])
 
 			// Execute /bin/login with the -p flag to preserve the current environment
 			printf(CYAN "* " WHITE "Executing /bin/login on %s" RESET "\n\n", argv[1]);
-			return execl("/bin/sh", "/bin/sh", "-mc", "/bin/login -p", NULL);
+			return execl("/bin/sh", "/bin/sh", "-mc", login_cmd, NULL);
 		}
 
 		// Prevent spamming
