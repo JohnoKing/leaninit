@@ -43,8 +43,10 @@ DEFLINUX
 mount_cgroups() {
 	mkdir -p /sys/fs/cgroup
 	grep -q ' /sys/fs/cgroup ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
-	mkdir -p /sys/fs/cgroup/leaninit
-	grep -q ' /sys/fs/cgroup/leaninit ' /etc/mtab || mount -o none,nosuid,nodev,noexec,relatime,name=leaninit -t cgroup leaninit /sys/fs/cgroup/leaninit
+	mkdir -p /sys/fs/cgroup/leaninit /sys/fs/cgroup/controllers
+	grep -q ' /sys/fs/cgroup/leaninit '    /etc/mtab || mount -o none,nosuid,nodev,noexec,relatime,name=leaninit -t cgroup leaninit /sys/fs/cgroup/leaninit &
+	grep -q ' /sys/fs/cgroup/controllers ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t cgroup controllers /sys/fs/cgroup/controllers &
+	wait
 }
 
 # Mount pseudo file systems
