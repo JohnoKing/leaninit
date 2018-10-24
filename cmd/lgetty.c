@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 			ioctl(tty, TIOCSCTTY, 1);
 
 			// Execute /bin/login with the -p flag to preserve the current environment
-			printf(CYAN "* " WHITE "Executing /bin/login on %s" RESET "\n\n", argv[1]);
+			printf(CYAN "* " WHITE "Executing '%s' on %s" RESET "\n\n", login_cmd, argv[1]);
 			return execl("/bin/sh", "/bin/sh", "-mc", login_cmd, NULL);
 		}
 
