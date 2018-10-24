@@ -31,28 +31,38 @@ fsck -F
 ENDEF
 DEFLINUX
 fsck -A
+ENDEF
 
 # Mount all drives
 print "Mounting all drives..." nolog ${PURPLE} ${WHITE}
 mount -a &
 mount -o remount,rw / 2> /dev/null &
 
+DEFLINUX
+# Cgroup support
+mount_cgroups() {
+	mkdir -p /sys/fs/cgroup
+	grep -q ' /sys/fs/cgroup ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
+	mkdir -p /sys/fs/cgroup/leaninit
+	grep -q ' /sys/fs/cgroup/leaninit ' /etc/mtab || mount -o none,nosuid,nodev,noexec,relatime,name=leaninit -t cgroup leaninit /sys/fs/cgroup/leaninit
+}
+
 # Mount pseudo file systems
 print "Mounting pseudo file systems..." nolog ${PURPLE} ${WHITE}
 rm -rf /tmp/*
-grep -q ' /dev '                 /etc/mtab || mount -o nosuid -t udev devtmpfs /dev &
-grep -q ' /proc '                /etc/mtab || mount -o noexec,nosuid,nodev -t proc proc /proc &
-grep -q ' /sys '                 /etc/mtab || mount -o noexec,nosuid,nodev -t sysfs sysfs /sys &
-grep -q ' /tmp '                 /etc/mtab || mount -o noatime,noexec,nosuid,nodev,mode=1777 -t tmpfs tmpfs /tmp &
-grep -q ' /run '                 /etc/mtab || mount -o noexec,nosuid -t tmpfs tmpfs /run &
+grep -q ' /dev '  /etc/mtab || mount -o nosuid,relatime -t udev devtmpfs /dev &
+grep -q ' /proc ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc &
+grep -q ' /sys '  /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
+grep -q ' /tmp '  /etc/mtab || mount -o nosuid,nodev,noexec,noatime,mode=1777 -t tmpfs tmpfs /tmp &
+grep -q ' /run '  /etc/mtab || mount -o nosuid,noexec,relatime -t tmpfs tmpfs /run &
 wait
-mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm
-grep -q ' /dev/pts '             /etc/mtab || mount -o noexec,nosuid,gid=5,mode=0620 -t devpts devpts /dev/pts &
-grep -q ' /dev/mqueue '          /etc/mtab || mount -t mqueue none /dev/mqueue &
-grep -q ' /sys/kernel/security ' /etc/mtab || mount -t securityfs securityfs /sys/kernel/security &
-grep -q ' /sys/fs/pstore '       /etc/mtab || mount -t pstore pstore /sys/fs/pstore &
-grep -q ' /sys/fs/cgroup '       /etc/mtab || mount -t tmpfs cgroup /sys/fs/cgroup &
-grep -q ' /run/shm '             /etc/mtab || mount -n -o noexec,nosuid,nodev -t tmpfs tmpfs /run/shm
+mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
+mount_cgroups &
+grep -q ' /dev/pts '             /etc/mtab || mount -o nosuid,noexec,relatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
+grep -q ' /dev/mqueue '          /etc/mtab || mount -o relatime -t mqueue none /dev/mqueue &
+grep -q ' /sys/kernel/security ' /etc/mtab || mount -o relatime -t securityfs securityfs /sys/kernel/security &
+grep -q ' /sys/fs/pstore '       /etc/mtab || mount -o relatime -t pstore pstore /sys/fs/pstore &
+grep -q ' /run/shm '             /etc/mtab || mount -n -o nosuid,nodev,noexec,relatime -t tmpfs tmpfs /run/shm
 mount --bind /run/shm /dev/shm &
 
 # Launch either udev or mdev
