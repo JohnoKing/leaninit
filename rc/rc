@@ -63,8 +63,8 @@ rm -rf /tmp/*
 grep -q ' /dev '  /etc/mtab || mount -o nosuid,relatime -t udev devtmpfs /dev &
 grep -q ' /proc ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc &
 grep -q ' /sys '  /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
-grep -q ' /tmp '  /etc/mtab || mount -o nosuid,nodev,noexec,noatime,mode=1777 -t tmpfs tmpfs /tmp &
-grep -q ' /run '  /etc/mtab || mount -o nosuid,noexec,relatime -t tmpfs tmpfs /run &
+grep -q ' /tmp '  /etc/mtab || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
+grep -q ' /run '  /etc/mtab || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
 wait
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
 mount_cgroups &
@@ -72,7 +72,7 @@ grep -q ' /dev/pts '             /etc/mtab || mount -o nosuid,noexec,relatime,gi
 grep -q ' /dev/mqueue '          /etc/mtab || mount -o relatime -t mqueue none /dev/mqueue &
 grep -q ' /sys/kernel/security ' /etc/mtab || mount -o relatime -t securityfs securityfs /sys/kernel/security &
 grep -q ' /sys/fs/pstore '       /etc/mtab || mount -o relatime -t pstore pstore /sys/fs/pstore &
-grep -q ' /run/shm '             /etc/mtab || mount -n -o nosuid,nodev,noexec,relatime -t tmpfs tmpfs /run/shm
+grep -q ' /run/shm '             /etc/mtab || mount -n -o nosuid,nodev,mode=1777,relatime -t tmpfs tmpfs /run/shm
 mount --bind /run/shm /dev/shm &
 
 # Launch either udev or mdev
