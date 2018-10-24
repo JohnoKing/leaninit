@@ -18,24 +18,24 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd September 20, 2018
-.Dt SERVICE 8
+.Dd October 24, 2018
+.Dt LSERVICE 8
 .Os
 .Sh NAME
 .Nm lservice
 .Nd service manager for LeanInit
 .Sh SYNOPSIS
-.Nm service service-name action
-.Nm service --status-all
+.Nm lservice service-name action
+.Nm lservice --status-all
 .Sh DESCRIPTION
 .Nm LeanInit's
 service utility can do the following actions:
 
 .Nm start
-Start a service if it is not currently started.
+Starts a service if it is not currently started.
 
 .Nm stop
-Stops any currently running service by issuing it SIGCONT and SIGTERM, then after seven seconds issuing it SIGKILL (only applies to services with active daemons).
+Stops a service by issuing it SIGCONT and SIGTERM, then after seven seconds issuing it SIGKILL (only applies to services with active daemons).
 
 .Nm restart
 Restart a service, or start one if it isn't running.
@@ -87,6 +87,6 @@ service ntpd status
 Restart the X Server:
 service xdm restart
 .Sh SEE ALSO
-rc(8), rc.svc(8), svc-start(8), svc-stop(8)
+rc(8), rc.svc(8)
 .Sh AUTHOR
 Johnothan King

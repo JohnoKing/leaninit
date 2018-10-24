@@ -1,14 +1,9 @@
 # /etc/leaninit.d/ttys
 #
-# This file first has the name of the getty program to launch,
-# then lists the ttys to spawn.
-# Comments must be on their own line.
+# This file lists the ttys to spawn lgetty(8) on.
+# All comments must be on their own line.
 #
 
-# Path to the getty program
-GETTY_PROG
-
-# List of ttys to launch
 DEFBSD
 TTY0
 ENDEF

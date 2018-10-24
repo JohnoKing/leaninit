@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd September 8, 2018
+.Dd October 24, 2018
 .Dt INIT 8
 .Os
 .Sh NAME
@@ -108,9 +108,10 @@ Reboots the system.
 outputs text with the following color coding:
 
 .Nm Cyan star and White text:
-A generic message from the
+A generic message directly sent from
 .Nm LeanInit
-binary
+or
+.Nm LGetty.
 
 .Nm Purple star and White text:
 A generic message that is not logged
@@ -159,15 +160,15 @@ Folder containing scripts for starting various services (such as D-BUS).
 .Em /etc/leaninit.d/svc.e
 Location of all files used to determine which services are enabled.
 
-.Em /var/log/leaninit/leaninit.log
+.Em /var/log/leaninit.log
 Default log file for
 .Nm LeanInit,
 used by
 .Nm rc.svc(8).
 
 .Em /var/run/leaninit
-Default location for LeanInit's .status and PID files
+Default location for LeanInit's .status and .pid files
 .Sh SEE ALSO
-lhalt(8), lrc(8), lrc.conf(5), lrc.shutdown(8), lservice(8), rc.svc(8), rungetty(8), lttys(5), kill(1), signal(7)
+lhalt(8), lrc(8), lrc.conf(5), lrc.shutdown(8), lservice(8), rc.svc(8), lgetty(8), lttys(5), kill(1), signal(7)
 .Sh AUTHOR
 Johnothan King

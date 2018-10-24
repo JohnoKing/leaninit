@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 17, 2018
+.Dd October 24, 2018
 .Dt RC.SHUTDOWN 8
 .Os
 .Sh NAME
@@ -27,15 +27,11 @@
 .Sh DESCRIPTION
 The
 .Nm rc.shutdown
-script is responsible for killing all currently running processes and
-unmounting all file systems before
-.Nm leaninit(8)
-calls
-.Nm sync(2)
-and
-.Nm reboot(2).
+script is responsible for killing all currently running services when executed by
+.Nm LeanInit
+while reloading or switching to a different runlevel.
 
 .Sh SEE ALSO
-halt(8), leaninit(8)
+leaninit(8), halt(8)
 .Sh AUTHOR
 Johnothan King

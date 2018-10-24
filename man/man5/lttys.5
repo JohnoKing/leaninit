@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 17, 2018
+.Dd October 24, 2018
 .Dt LTTYS 5
 .Os
 .Sh NAME
@@ -27,26 +27,21 @@
 .Em /etc/leaninit.d/ttys
 is the file
 .Nm rc(8)
-reads from for two things:
-.Pp
-1. The
-.Nm getty(8)
-program that will be used.
-
-2. The ttys to launch on the getty.
-.Pp
+reads from for the list of ttys to launch
+.Nm lgetty(8)
+on.
 The
 .Nm ttys
-file may have comments using '#', however,
-all comments must be on their own line.
+file may have comments that start with '#', although
+all comments must be placed on their own line.
 .Sh EXAMPLE
-# This sets the getty program to /sbin/getty
- /sbin/getty
-.Pp
-# This will cause the getty program to be launched on /dev/console and /dev/tty2
+# This will cause
+.Nm LGetty
+to launch on /dev/console and /dev/tty2
+
  console
  tty2
 .Sh SEE ALSO
-getty(8), rc(8), rungetty(8)
+lgetty(8), rc(8)
 .Sh AUTHOR
 Johnothan King

@@ -18,24 +18,24 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd September 8, 2018
-.Dt RUNLEVEL 8
+.Dd October 24, 2018
+.Dt LRUNLEVEL 8
 .Os
 .Sh NAME
 .Nm lrunlevel
 .Nd print the current runlevel
 .Sh DESCRIPTION
 The
-.Nm runlevel
+.Nm lrunlevel
 utility will print the previous and current runlevels using the
 .Em $PREVLEVEL
 and
 .Em $RUNLEVEL
-environment variables, or 'unknown' if both of these variables have no value.
+environment variables, or 'unknown' if neither variable is set.
 
 .Sh EXAMPLE
 Output given by
-.Nm runlevel
+.Nm lrunlevel
 after switching from runlevel 5 to runlevel 1:
 5 1
 .Sh SEE ALSO

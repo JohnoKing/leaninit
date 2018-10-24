@@ -18,33 +18,36 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 15, 2018
-.Dt RUNGETTY 8
+.Dd October 24, 2018
+.Dt LGETTY 8
 .Os
 .Sh NAME
-.Nm rungetty
-.Nd launch gettys with job control
+.Nm lgetty
+.Nd a small getty program made for LeanInit
 .Sh SYNOPSIS
-.Nm rungetty ttypath 'getty' ...
+.Nm lgetty tty & ...
 .Sh DESCRIPTION
-.Nm Rungetty
-launches 'getty' on ttypath with job control. It is run by
-.Nm rc(8)
-after all services have been run.
-.Nm Rungetty
-will respawn the getty unless an error occurs.
+.Nm LGetty
+is a getty program for
+.Nm LeanInit
+that will launch
+.Nm login(1)
+on the specified tty with job control, and respawn
+.Nm login(1)
+when it ends.
+
 .Sh EXAMPLES
 Launch
-.Nm agetty(8)
-on tty8 (Linux):
-rungetty /dev/tty8 "/sbin/agetty 38400 tty8"
+.Nm LGetty
+on /dev/tty8:
+lgetty /dev/tty8
 
 Launch
-.Nm getty(8)
-on /dev/ttyv4 as a seperate process (FreeBSD):
-rungetty /dev/ttyv4 "/usr/libexec/getty Pc ttyv4" &
+.Nm LGetty
+on /dev/ttyv4 as a seperate process:
+lgetty /dev/ttyv4 &
 
 .Sh SEE ALSO
-getty(8), rc(8), lttys(5)
+login(1), lttys(5)
 .Sh AUTHOR
 Johnothan King

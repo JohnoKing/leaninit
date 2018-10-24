@@ -21,29 +21,30 @@
  */
 
 /*
- * rungetty - Launch a getty with job control
+ * lgetty - A minimal getty that respawns itself
  */
 
 #include "inc.h"
 
 static int usage(void)
 {
-	printf("Usage: %s tty command & ...\n", __progname);
+	printf("Usage: %s tty & ...\n", __progname);
 	return 1;
 }
 
 int main(int argc, char *argv[])
 {
-	// At least two arguments are required
-	if(argc < 3)
+	// An argument is required
+	if(argc < 2)
 		return usage();
 
 	// Infinite loop
 	int status;
 	for(;;) {
-		// Launch the getty
-		pid_t getty = fork();
-		if(getty == 0) {
+
+		// Run login(1)
+		pid_t login = fork();
+		if(login == 0) {
 
 			// The tty must exist
 			int tty = open(argv[1], O_RDWR | O_NOCTTY);
@@ -52,16 +53,20 @@ int main(int argc, char *argv[])
 
 			// Set the tty as the controlling terminal
 			login_tty(tty);
+			dup2(tty, STDIN_FILENO);
+			dup2(tty, STDOUT_FILENO);
+			dup2(tty, STDERR_FILENO);
 			ioctl(tty, TIOCSCTTY, 1);
 
-			// Attempt to run the getty
-			return execl("/bin/sh", "/bin/sh", "-mc", argv[2], NULL);
+			// Execute /bin/login with the -p flag to preserve the current environment
+			printf(CYAN "* " WHITE "Executing /bin/login on %s" RESET "\n\n", argv[1]);
+			return execl("/bin/sh", "/bin/sh", "-mc", "/bin/login -p", NULL);
 		}
 
-		// Prevent getty spamming
-		waitpid(getty, &status, 0);
+		// Prevent spamming
+		waitpid(login, &status, 0);
 		if(WEXITSTATUS(status) != 0) {
-			printf(RED "* The getty on %s exited with a status of %d" RESET "\n", argv[1], WEXITSTATUS(status));
+			printf(RED "* login(1) exited with a return status of %d" RESET "\n", WEXITSTATUS(status));
 			return status;
 		}
 	}

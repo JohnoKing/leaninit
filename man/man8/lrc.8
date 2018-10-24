@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 17, 2018
+.Dd October 24, 2018
 .Dt RC 8
 .Os
 .Sh NAME
@@ -27,27 +27,20 @@
 .Sh DESCRIPTION
 The
 .Nm rc
-script is responsible for mounting all file systems, starting
-all services in
-.Em /etc/leaninit.d/svce
-in a parallel manner,
-and starting a
-.Nm getty(8)
-on all ttys listed in
-.Em /etc/leaninit.d/ttys
-using
-.Nm rungetty(8).
+script is responsible for mounting all file systems and starting all services in
+.Em /etc/leaninit.d/svc.e
+concurrently.
 If either
 .Em /etc/rc.local
 or
 .Em /etc/leaninit.d/rc.local
 exist and are executable,
 .Nm rc
-will run them before it launches gettys.
+will run them after it launches all services.
 .Pp
 .Nm RC
 will log the output from booting the system to
-.Em /var/log/leaninit/leaninit.log
+.Em /var/log/leaninit.log
 by default.
 .Sh FILES
 .Em /etc/rc.local
@@ -70,6 +63,6 @@ services
 Default log file for
 .Nm LeanInit
 .Sh SEE ALSO
-rc(8), rc.conf(5), rc.svc(8), rungetty(8), lttys(5)
+rc.conf(5), rc.svc(8)
 .Sh AUTHOR
 Johnothan King

@@ -18,8 +18,8 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd September 20, 2018
-.Dt RC.API 8
+.Dd October 24, 2018
+.Dt RC.SVC 8
 .Os
 .Sh NAME
 .Nm rc.svc
@@ -34,7 +34,7 @@ variables and functions to
 .Nm LeanInit's
 various scripts, including
 .Nm rc(8), rc.shutdown(8)
-and scripts located in
+and all scripts located in
 .Em /etc/leaninit.d/svc.d
 .Pp
 
@@ -139,6 +139,6 @@ function:
 
 run "$@"
 .Sh SEE ALSO
-rc(8), rc.shutdown(8), rc.conf(5)
+rc(8), rc.shutdown(8), rc.conf(5), leaninit(8)
 .Sh AUTHOR
 Johnothan King

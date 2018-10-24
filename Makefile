@@ -26,9 +26,11 @@ INSTALL  := install
 CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
 WFLAGS   := -Wall -Wextra -Wpedantic -Wno-unused-result
 LIBS     := -lpthread -lutil
-RC       := out/rc out/rc.svc out/rc.shutdown out/rc.conf out/ttys out/lservice out/lrunlevel out/svc.d/*
+RC       := out/*/* out/*
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
-		$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 $(DESTDIR)/usr/share/man/man8/lrunlevel.8
+	$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 $(DESTDIR)/usr/share/man/man8/lrunlevel.8 \
+	$(DESTDIR)/usr/share/man/man8/lgetty.8 $(DESTDIR)/usr/share/man/man8/lrc.shutdown.8 $(DESTDIR)/usr/share/man/man8/lservice.8 $(DESTDIR)/usr/share/man/man8/lpoweroff.8 \
+	$(DESTDIR)/usr/share/man/man8/lreboot.8 $(DESTDIR)/usr/share/man/man8/lzzz.8
 
 # Compile LeanInit
 all: clean
@@ -40,21 +42,19 @@ all: clean
 		$(SED) -i "/DEFBSD/,/ENDEF/d" $(RC) ;\
 		$(SED) -i "/DEFLINUX/d"       $(RC) ;\
 		$(SED) -i "/ENDEF/d"          $(RC) ;\
-		$(SED) -i "s:GETTY_PROG:/sbin/agetty:g" out/ttys ;\
-		$(SED) -i "s:TTY:tty:g"                 out/ttys ;\
+		$(SED) -i "s:TTY:tty:g"    out/ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
 		$(SED) -i '' "/DEFLINUX/,/ENDEF/d" $(RC) ;\
 		$(SED) -i '' "/DEFBSD/d"           $(RC) ;\
 		$(SED) -i '' "/ENDEF/d"            $(RC) ;\
-		$(SED) -i '' "s:GETTY_PROG:/usr/libexec/getty:g" out/ttys ;\
-		$(SED) -i '' "s:TTY:ttyv:g"                      out/ttys ;\
+		$(SED) -i '' "s:TTY:ttyv:g"     out/ttys ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
-	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit cmd/init.c     $(LDFLAGS) $(LIBS)
-	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt    cmd/halt.c     $(LDFLAGS) $(LIBS)
-	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/rungetty cmd/rungetty.c $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit cmd/init.c   $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt    cmd/halt.c   $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lgetty   cmd/lgetty.c $(LDFLAGS) $(LIBS)
 
 # Install LeanInit (compatible with other init systems)
 install:
@@ -75,12 +75,12 @@ install:
 	[ -r lpoweroff.8 ] || ln -sf lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
-	$(INSTALL) -Dm0755 out/leaninit out/lhalt out/lservice out/lrunlevel out/rungetty $(DESTDIR)/sbin
+	$(INSTALL) -Dm0755 out/leaninit out/lhalt out/lservice out/lrunlevel out/lgetty $(DESTDIR)/sbin
 	$(INSTALL) -Dm0755 out/rc $(DESTDIR)/etc/leaninit.d
 	cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
-	if [ ! -r $(DESTDIR)/etc/leaninit.d/svc.e/getty.type ]; then touch $(DESTDIR)/etc/leaninit.d/svc.e/rungetty && echo rungetty > $(DESTDIR)/etc/leaninit.d/svc.e/getty.type; fi
+	if [ ! -r $(DESTDIR)/etc/leaninit.d/svc.e/getty.type ]; then touch $(DESTDIR)/etc/leaninit.d/svc.e/lgetty && echo lgetty > $(DESTDIR)/etc/leaninit.d/svc.e/getty.type; fi
 
 # Uninstall (only works with normal installations)
 uninstall:
@@ -93,7 +93,7 @@ uninstall:
 		false ;\
 	fi
 	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!"
-	rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/sbin/rungetty $(DESTDIR)/usr/share/licenses/leaninit \
+	rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/sbin/lgetty $(DESTDIR)/usr/share/licenses/leaninit \
 		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/sbin/lrunlevel $(DESTDIR)/etc/leaninit.d $(DESTDIR)/var/log/leaninit.log $(DESTDIR)/var/run/leaninit $(MANPAGES)
 
 # Clean the directory
