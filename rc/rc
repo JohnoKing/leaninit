@@ -46,33 +46,33 @@ mount_cgroups() {
 	# Mount a tmpfs at /sys/fs/cgroup
 	print "Mounting cgroups..." log ${BLUE} ${WHITE}
 	mkdir -p /sys/fs/cgroup
-	grep -q ' /sys/fs/cgroup ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
+	mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
 
 	# elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
 	mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
-	grep -q ' /sys/fs/cgroup/openrc '      /etc/mtab || mount -o none,nosuid,nodev,noexec,relatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
+	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,relatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
 
 	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
-	grep -q ' /sys/fs/cgroup/controllers ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t cgroup controllers /sys/fs/cgroup/controllers &
+	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,relatime -t cgroup controllers /sys/fs/cgroup/controllers &
 	wait
 }
 
 # Mount pseudo file systems
 print "Mounting pseudo file systems..." nolog ${PURPLE} ${WHITE}
 rm -rf /tmp/*
-grep -q ' /dev '  /etc/mtab || mount -o nosuid,relatime -t udev devtmpfs /dev &
-grep -q ' /proc ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc &
-grep -q ' /sys '  /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
-grep -q ' /tmp '  /etc/mtab || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
-grep -q ' /run '  /etc/mtab || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
+mountpoint -q /dev  || mount -o nosuid,relatime -t udev devtmpfs /dev &
+mountpoint -q /proc || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc &
+mountpoint -q /sys  || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
+mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
+mountpoint -q /run  || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
 wait
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
 mount_cgroups &
-grep -q ' /dev/pts '             /etc/mtab || mount -o nosuid,noexec,relatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
-grep -q ' /dev/mqueue '          /etc/mtab || mount -o relatime -t mqueue none /dev/mqueue &
-grep -q ' /sys/kernel/security ' /etc/mtab || mount -o relatime -t securityfs securityfs /sys/kernel/security &
-grep -q ' /sys/fs/pstore '       /etc/mtab || mount -o relatime -t pstore pstore /sys/fs/pstore &
-grep -q ' /run/shm '             /etc/mtab || mount -n -o nosuid,nodev,mode=1777,relatime -t tmpfs tmpfs /run/shm
+mountpoint -q /dev/pts             || mount -o nosuid,noexec,relatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
+mountpoint -q /dev/mqueue          || mount -o relatime -t mqueue none /dev/mqueue &
+mountpoint -q /sys/kernel/security || mount -o relatime -t securityfs securityfs /sys/kernel/security &
+mountpoint -q /sys/fs/pstore       || mount -o relatime -t pstore pstore /sys/fs/pstore &
+mountpoint -q /run/shm             || mount -n -o nosuid,nodev,mode=1777,relatime -t tmpfs tmpfs /run/shm
 mount --bind /run/shm /dev/shm &
 
 # Launch either udev or mdev
