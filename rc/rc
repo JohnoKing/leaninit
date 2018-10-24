@@ -33,14 +33,17 @@ DEFLINUX
 fsck -A
 ENDEF
 
-# Mount all drives
+# Mount all drives specified in /etc/fstab
 print "Mounting all drives..." nolog ${PURPLE} ${WHITE}
 mount -a &
+
+# Remount root (/) as read-write
 mount -o remount,rw / 2> /dev/null &
 
 DEFLINUX
-# Cgroups support
+# Cgroups support (this function must be run in its own subshell)
 mount_cgroups() {
+	# Mount a tmpfs at /sys/fs/cgroup
 	print "Mounting cgroups..." log ${BLUE} ${WHITE}
 	mkdir -p /sys/fs/cgroup
 	grep -q ' /sys/fs/cgroup ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
@@ -48,6 +51,8 @@ mount_cgroups() {
 	# elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
 	mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
 	grep -q ' /sys/fs/cgroup/openrc '      /etc/mtab || mount -o none,nosuid,nodev,noexec,relatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
+
+	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
 	grep -q ' /sys/fs/cgroup/controllers ' /etc/mtab || mount -o nosuid,nodev,noexec,relatime -t cgroup controllers /sys/fs/cgroup/controllers &
 	wait
 }
@@ -110,7 +115,7 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	# ZFS NFS
 	zfs share -a
 
-	# Turn on writes
+	# Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
 	__LIST="$(zpool list -Ho name)"
 	if [ -n "$__LIST" ]; then
 		for z in $__LIST; do
@@ -143,7 +148,7 @@ for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 done
 ENDEF
 
-# Remove the nologin and .status files
+# Remove the nologin files and reset /var/run/leaninit
 print "Removing any existing nologin files and resetting /var/run/leaninit..." log ${BLUE} ${WHITE}
 rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
@@ -187,7 +192,7 @@ if [ -n "$KEYMAP" ]; then
 fi
 ENDEF
 
-# Wait for all jobs
+# Wait for all jobs to finish
 wait
 
 # Start all enabled services
