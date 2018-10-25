@@ -182,13 +182,25 @@ int main(int argc, char *argv[])
 		uname(&uts);
 		printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
-		// Single user support
+		// Single user support (argv = -s)
 		int args;
 		while((args = getopt(argc, argv, "s")) != -1) {
 			switch(args) {
 				case 's':
 					single_user = 0;
 					break;
+			}
+		}
+
+		// Single user support (argv = single)
+		if(single_user != 0) {
+			args = --argc;
+			while(0 < args) {
+				if(strcmp(argv[args], "single") == 0) {
+					single_user = 0;
+					break;
+				}
+				--args;
 			}
 		}
 
