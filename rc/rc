@@ -40,11 +40,16 @@ mount -a &
 # Remount root (/) as read-write
 mount -o remount,rw / 2> /dev/null &
 
+DEFBSD
+# Wait for all file systems in /etc/fstab to be properly mounted (UFS)
+wait
+ENDEF
+
 DEFLINUX
 # Cgroups support (this function must be run in its own subshell)
 mount_cgroups() {
 	# Mount a tmpfs at /sys/fs/cgroup
-	print "Mounting cgroups..." log ${BLUE} ${WHITE}
+	print "Mounting cgroups..." nolog ${PURPLE} ${WHITE}
 	mkdir -p /sys/fs/cgroup
 	mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
 
@@ -125,15 +130,16 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	fi
 fi
 
-# Swap
-print "Turning on all swap partitions..." nolog ${PURPLE} ${WHITE}
-swapon -a &
-
 # Logging
 touch "$LOGFILE" "$LOGFILE.2"
 mv "$LOGFILE"    "$LOGFILE.old"
 mv "$LOGFILE.2"  "$LOGFILE.old.2"
 echo "LeanInit has started logging on $(uname -srm)" > "$LOGFILE"
+print "LeanInit has started logging" nolog ${BLUE} ${WHITE} # This message is not logged because it is redundant
+
+# Swap
+print "Turning on all swap partitions..." nolog ${PURPLE} ${WHITE}
+swapon -a &
 
 # sysctl(8)
 print "Launching sysctl(8)..." log ${BLUE} ${WHITE}
