@@ -48,18 +48,6 @@ static int usage(void)
 	return 1;
 }
 
-// Execute a script
-static void sh(const char *cmd)
-{
-	pid_t child = fork();
-	if(child == 0) {
-		setsid();
-		execl("/bin/sh", "/bin/sh", cmd, NULL);
-	}
-
-	waitpid(child, NULL, 0);
-}
-
 // Open the tty
 static int open_tty(void)
 {
@@ -73,6 +61,18 @@ static int open_tty(void)
 	dup2(tty, STDERR_FILENO);
 	ioctl(tty, TIOCSCTTY, 1);
 	return tty;
+}
+
+// Execute a script
+static void sh(const char *cmd)
+{
+	pid_t child = fork();
+	if(child == 0) {
+		setsid();
+		execl("/bin/sh", "/bin/sh", cmd, NULL);
+	}
+
+	waitpid(child, NULL, 0);
 }
 
 // Single user mode
