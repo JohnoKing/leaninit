@@ -84,10 +84,10 @@ __svccheck() {
 __proccheck() {
 	if [ ! -n "$__svcpid" ]; then
 		if [ "$1" = "return" ]; then
-			return 1
+			return 3
 		fi
 		print "$NAME does not have a process to send a signal to!" nolog ${RED}
-		exit 1
+		exit 3
 	fi
 }
 
@@ -167,21 +167,21 @@ waitfor() {
 		file)
 			if [ ! -n "$2" ]; then
 				echo "Usage: waitfor type name..."
-				return 1
+				return 2
 			fi
 			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!"
 			;;
 		process)
 			if [ ! -n "$2" ]; then
 				echo "Usage: waitfor type name..."
-				return 1
+				return 2
 			fi
 			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
 			;;
 		service)
 			if [ ! -n "$2" ]; then
 				echo "Usage: waitfor type name..."
-				return 1
+				return 2
 			fi
 			if [ ! -r "/etc/leaninit.d/svc.e/$2" ]; then
 				if [ "$3" = "optional" ]; then
@@ -441,7 +441,7 @@ ENDEF
 			__usage 0 ;;
 		*)
 			print "Illegal action - $1" nolog ${RED}
-			__usage 1 ;;
+			__usage 2 ;;
 	esac
 	exit $?
 }
