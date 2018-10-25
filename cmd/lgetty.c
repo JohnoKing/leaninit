@@ -39,11 +39,11 @@ int main(int argc, char *argv[])
 		return usage();
 
 	// Find login(1)
-	char login_cmd[18];
+	char login_cmd[19];
 	if(access("/bin/login", X_OK) == 0)
-		memcpy(login_cmd, "/bin/login -p", 14);
+		memcpy(login_cmd, "/bin/login -p ", 15);
 	else if(access("/usr/bin/login", X_OK) == 0)
-		memcpy(login_cmd, "/usr/bin/login -p", 18);
+		memcpy(login_cmd, "/usr/bin/login -p ", 19);
 	else {
 		printf(RED "* Could not find login(1) (please symlink it to either /bin/login or /usr/bin/login)" RESET "\n");
 		return 127;
@@ -74,9 +74,25 @@ int main(int argc, char *argv[])
 			dup2(tty, STDERR_FILENO);
 			ioctl(tty, TIOCSCTTY, 1);
 
-			// Execute /bin/login with the -p flag to preserve the current environment
-			printf(CYAN "* " WHITE "Executing '%s' on %s" RESET "\n\n", login_cmd, argv[1]);
-			return execl("/bin/sh", "/bin/sh", "-mc", login_cmd, NULL);
+			// Get user input
+			char input[100], cmd[119];
+			printf(CYAN "\n* " WHITE "%s login:" RESET " ", argv[1]);
+			scanf("%s", input);
+			memcpy(cmd,  login_cmd, 19);
+			strncat(cmd, input,    100);
+
+			// Because -p is passed to login(1) to preserve the environment, $HOME must be corrected
+			if(strcmp("root", input) == 0)
+				putenv("HOME=/root");
+			else {
+				char home[112];
+				memcpy(home, "HOME=/home/", 12);
+				strncat(home, input, 100);
+				putenv(home);
+			}
+
+			// Execute login(1)
+			return execl("/bin/sh", "/bin/sh", "-mc", cmd, NULL);
 		}
 
 		// Prevent spamming
