@@ -71,7 +71,7 @@ ENDEF
 wait
 
 DEFLINUX
-# Resume
+# Mount the rest of the pseudo file systems
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
 mount_cgroups &
 mountpoint -q /dev/pts             || mount -o nosuid,noexec,relatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
