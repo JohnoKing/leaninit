@@ -246,6 +246,9 @@ __stop() {
 		return 0
 	fi
 
+	# Execute stop()
+	exifex stop
+
 	# Stop the specified pids in the pid file (if there are any)
 	if [ -n "$__svcpid" ]; then
 		print "Sending $NAME SIGCONT and SIGTERM..." log ${BLUE} ${WHITE}
@@ -266,9 +269,6 @@ __stop() {
 		done
 		wait
 	fi
-
-	# Execute stop()
-	exifex stop
 
 	# Remove the .status, .pid and .type files for the service
 	rm -f "/var/run/leaninit/$__svcname.status" "/var/run/leaninit/$__svcname.pid"

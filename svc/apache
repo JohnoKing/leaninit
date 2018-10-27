@@ -1,0 +1,20 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# Service for apache httpd
+NAME="Apache Web Server"
+
+main() {
+	httpd -k start -DFOREGROUND &
+	jobs -p %+ > /var/run/leaninit/apache.pid
+}
+
+stop() {
+	httpd -k graceful-stop
+}
+
+reload() {
+	pkill -HUP -x httpd
+}
+
+run "$@"
