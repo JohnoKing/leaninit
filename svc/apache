@@ -5,6 +5,7 @@
 NAME="Apache Web Server"
 
 main() {
+	mkdir -p /run/httpd /var/run/httpd
 	httpd -k start -DFOREGROUND &
 	jobs -p %+ > /var/run/leaninit/apache.pid
 }
