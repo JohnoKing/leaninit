@@ -40,11 +40,6 @@ mount -a &
 # Remount root (/) as read-write
 mount -o remount,rw / 2> /dev/null &
 
-DEFBSD
-# Wait for all file systems in /etc/fstab to be properly mounted (UFS)
-wait
-ENDEF
-
 DEFLINUX
 # Cgroups support (this function must be run in its own subshell)
 mount_cgroups() {
@@ -70,7 +65,13 @@ mountpoint -q /proc || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc 
 mountpoint -q /sys  || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
 mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
 mountpoint -q /run  || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
+ENDEF
+
+# Wait for all currently running jobs to finish
 wait
+
+DEFLINUX
+# Resume
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
 mount_cgroups &
 mountpoint -q /dev/pts             || mount -o nosuid,noexec,relatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
