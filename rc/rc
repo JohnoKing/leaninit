@@ -136,7 +136,7 @@ touch "$LOGFILE" "$LOGFILE.2"
 mv "$LOGFILE"    "$LOGFILE.old"
 mv "$LOGFILE.2"  "$LOGFILE.old.2"
 echo "LeanInit has started logging on $(uname -srm)" > "$LOGFILE"
-print "LeanInit has started logging" nolog ${BLUE} ${WHITE} # This message is not logged because it is redundant
+print "LeanInit has started logging!" nolog ${BLUE} ${WHITE} # This message is not logged because it is redundant
 
 # Swap
 print "Turning on all swap partitions..." log ${BLUE} ${WHITE}
