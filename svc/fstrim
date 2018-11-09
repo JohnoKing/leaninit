@@ -3,7 +3,7 @@
 
 # Service for using fstrim(8) on root (/), intended for usage with SSDs
 NAME="FSTrim"
-TARGET="Linux"
+TARGET=Linux
 
 main() {
 	fstrim /
