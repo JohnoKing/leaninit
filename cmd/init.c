@@ -29,6 +29,7 @@
 // Universal variables
 static unsigned int single_user = 1;
 static unsigned int zstatus     = 1;
+static unsigned int verbose     = 0;
 static int current_signal       = 0;
 
 // Shows usage for init
@@ -76,11 +77,10 @@ static void sh(const char *cmd)
 }
 
 // Single user mode
-static void single(const char *msg)
+static void single(void)
 {
 	// Start single user mode as runlevel 1
 	setenv("RUNLEVEL", "1", 1);
-	printf(CYAN "* " WHITE "%s" RESET "\n", msg);
 
 	// Use a shell of the user's choice
 	char shell[101];
@@ -121,13 +121,14 @@ static void multi(void)
 	else if(access("/etc/rc", X_OK) == 0)
 		memcpy(rc, "/etc/rc", 8);
 	else {
+		printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user mode..." RESET "\n");
 		single_user = 0;
-		single("Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user...");
+		single();
 		return;
 	}
 
 	// Run rc(8)
-	printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
+	if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
 	sh(rc);
 }
 
@@ -136,7 +137,7 @@ static void *chlvl(__attribute((unused)) void *ptr)
 {
 	// Run single-user if single_user is equal to 0, otherwise run multi-user
 	if(single_user == 0)
-		single("Booting into single user mode...");
+		single();
 	else
 		multi();
 
@@ -155,7 +156,7 @@ __attribute((noreturn)) static void *zloop(__attribute((unused)) void *ptr)
 	}
 }
 
-// Halts, reboots or turns off the system
+// Set current_signal to the signal sent to PID 1
 static void sighandle(int signal)
 {
 	current_signal = signal;
@@ -171,16 +172,11 @@ int main(int argc, char *argv[])
 		// Open the console
 		int tty = open_tty();
 
-		// Login as root
+		// Login as root and set $PREVLEVEL to N
 		setenv("HOME",   "/root", 1);
 		setenv("LOGNAME", "root", 1);
 		setenv("USER",    "root", 1);
-
-		// Set $PREVLEVEL to N and print the current platform LeanInit is running on
 		setenv("PREVLEVEL",  "N", 1);
-		struct utsname uts;
-		uname(&uts);
-		printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
 		// Single user support (argv = -s)
 		int args;
@@ -192,17 +188,25 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		// Single user support (argv = single)
+		// Single user (argv = single) and quiet mode (argv = quiet) support
 		if(single_user != 0) {
 			args = --argc;
 			while(0 < args) {
 				if(strcmp(argv[args], "single") == 0) {
 					single_user = 0;
 					break;
+				} else if(strcmp(argv[args], "quiet") == 0) {
+					verbose = 1;
+					break;
 				}
 				--args;
 			}
 		}
+
+		// Print the current platform LeanInit is running on
+		struct utsname uts;
+		uname(&uts);
+		if(verbose == 0) printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
 		// Start zloop() and chlvl() in seperate threads
 		pthread_t loop, runlvl;
@@ -235,7 +239,7 @@ int main(int argc, char *argv[])
 			// Switch the current runlevel
 			else {
 				// Synchronize all file systems (Pass 1)
-				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
+				if(verbose == 0) printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
 				sync();
 
 				// Run rc.shutdown (multi-user)
@@ -245,7 +249,7 @@ int main(int argc, char *argv[])
 					sh("/etc/rc.shutdown");
 
 				// Kill all remaining processes
-				printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
+				if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
 				kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
 				kill(-1, SIGTERM);
 				pthread_kill(runlvl, SIGKILL);
@@ -266,7 +270,7 @@ int main(int argc, char *argv[])
 				tty = open_tty();
 
 				// Synchronize file systems again (Pass 2)
-				printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 2)..." RESET "\n");
+				if(verbose == 0) printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 2)..." RESET "\n");
 				sync();
 
 				// Handle the given signal properly
@@ -274,17 +278,14 @@ int main(int argc, char *argv[])
 
 					// Halt
 					case SIGUSR1:
-						printf(CYAN "* " WHITE "The system will now halt!" RESET "\n");
 						return reboot(SYS_HALT);
 
 					// Poweroff
 					case SIGUSR2:
-						printf(CYAN "* " WHITE "The system will now poweroff!" RESET "\n");
 						return reboot(SYS_POWEROFF);
 
 					// Reboot
 					case SIGINT:
-						printf(CYAN "* " WHITE "The system will now reboot!" RESET "\n");
 						return reboot(RB_AUTOBOOT);
 
 					// Switch to single-user
