@@ -24,7 +24,7 @@
 #
 
 DEFLINUX
-# Load rc.svc
+# Load rc.conf
 . /etc/leaninit.d/rc.conf
 ENDEF
 

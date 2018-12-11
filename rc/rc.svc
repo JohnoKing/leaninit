@@ -49,7 +49,7 @@ fi
 exifex() {
 	type $1 2> /dev/null >> /dev/null
 	if [ $? = 0 ]; then
-		$*
+		"$@"
 	fi
 }
 
