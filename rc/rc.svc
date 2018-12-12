@@ -47,7 +47,7 @@ fi
 
 # Execute if exists
 exifex() {
-	type $1 2> /dev/null >> /dev/null
+	type "$1" 2> /dev/null >> /dev/null
 	if [ $? = 0 ]; then
 		"$@"
 	fi
@@ -409,9 +409,9 @@ DEFBSD
 			__rootcheck
 			__proccheck
 			print "Sending SIGINFO to $NAME..." nolog ${PURPLE} ${WHITE}
-			for p in $__svcpid; do
-				print "PID $p:" nolog ${PURPLE} ${WHITE}
-				kill -INFO $p
+			for pid in $__svcpid; do
+				print "PID $pid:" nolog ${PURPLE} ${WHITE}
+				kill -INFO $pid
 			done ;;
 ENDEF
 		pause)
