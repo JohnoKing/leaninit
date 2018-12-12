@@ -111,9 +111,6 @@ static void single(void)
 // Execute rc(8) (multi-user)
 static void multi(void)
 {
-	// Start multi-user mode as runlevel 5
-	setenv("RUNLEVEL", "5", 1);
-
 	// Locate rc(8)
 	char rc[19];
 	if(access("/etc/leaninit.d/rc", X_OK) == 0)
@@ -126,6 +123,9 @@ static void multi(void)
 		single();
 		return;
 	}
+
+	// Set the runlevel to 5 after rc(8) has been located
+	setenv("RUNLEVEL", "5", 1);
 
 	// Run rc(8)
 	if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
