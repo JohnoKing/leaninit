@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd October 24, 2018
+.Dd December 12, 2018
 .Dt INIT 8
 .Os
 .Sh NAME
@@ -26,6 +26,7 @@
 .Nd a fast init system
 .Sh SYNOPSIS
 .Nm init [ 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | S | s | Q | q ]
+.Nm init [ -s | single | quiet ]
 .Sh DESCRIPTION
 .Nm LeanInit
 is a BSD-style init system that is developed for Linux and FreeBSD.
@@ -75,10 +76,14 @@ Hibernate the system (Linux only)
 .Nm Q, q
 Reload the current runlevel
 .Pp
-Passing -s to
 .Nm LeanInit
-before booting will cause it to start the
-system in single user mode.
+accepts the following arguments before booting:
+
+.Nm -s, single
+Start the system in single user mode.
+
+.Nm quiet
+Enables quiet boot (this is currently very limited).
 .Sh SIGNALS
 When
 .Nm LeanInit
