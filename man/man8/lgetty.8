@@ -18,14 +18,14 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd October 24, 2018
+.Dd December 12, 2018
 .Dt LGETTY 8
 .Os
 .Sh NAME
 .Nm lgetty
 .Nd a small getty program made for LeanInit
 .Sh SYNOPSIS
-.Nm lgetty tty & ...
+.Nm lgetty tty [debug] ...
 .Sh DESCRIPTION
 .Nm LGetty
 is a getty program for
@@ -35,6 +35,12 @@ that will launch
 on the specified tty with job control, and respawn
 .Nm login(1)
 when it ends.
+Passing 'debug' as a second argument will cause
+.Nm LGetty
+to pass -p to
+.Nm login(1),
+which avoids overwritting existing environment variables such as
+.Em $RUNLEVEL.
 
 .Sh EXAMPLES
 Launch

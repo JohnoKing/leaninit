@@ -28,7 +28,7 @@
 
 static int usage(void)
 {
-	printf("Usage: %s tty & ...\n", __progname);
+	printf("Usage: %s tty [debug] ...\n", __progname);
 	return 1;
 }
 
