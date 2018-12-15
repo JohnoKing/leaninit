@@ -1,0 +1,13 @@
+#!/bin/sh
+. /etc/leaninit.d/rc.svc
+
+# Service for nvidia-persistenced
+NAME="nvidia-persistenced"
+TARGET=Linux
+
+main() {
+	nvidia-persistenced
+	ln -sf /var/run/nvidia-persistenced/nvidia-persistenced.pid /var/run/leaninit/nvidia-persistenced.pid
+}
+
+run "$@"
