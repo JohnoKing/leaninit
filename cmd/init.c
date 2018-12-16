@@ -89,7 +89,7 @@ static void single(void)
 
 	// If the given shell is invalid, use /bin/sh instead
 	if(access(shell, X_OK) != 0) {
-		printf(PURPLE "* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
+		printf(PURPLE "* " YELLOW "Defaulting to /bin/sh..." RESET "\n\n");
 		memcpy(shell, "/bin/sh", 8);
 	}
 
