@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Long options for halt
-	static struct option halt_long_options[] = {
+	struct option halt_long_options[] = {
 		{ "force",    no_argument, 0, 'f' },
 		{ "halt",     no_argument, 0, 'h' },
 		{ "no-wall",  no_argument, 0, 'l' },
