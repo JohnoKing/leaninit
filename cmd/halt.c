@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	// Int variables
 	unsigned int force = 1; // If this is 0, skip sending a signal to init
 	unsigned int wall  = 0; // For syslog(3)
-	int signal;             // For signals to init
+	int signal;             // For signals that will be sent to init
 
 	if(strstr(__progname,      "halt")     != 0) // Halt
 		signal = SIGUSR1;
