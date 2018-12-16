@@ -87,18 +87,10 @@ static void single(void)
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
 	scanf("%s", shell);
 
-	// If the given shell is invalid, check for the existence of /bin/sh
+	// If the given shell is invalid, use /bin/sh instead
 	if(access(shell, X_OK) != 0) {
-		if(access("/bin/sh", X_OK) != 0) {
-			printf(RED "* Could not execute %s or /bin/sh, powering off!" RESET "\n", shell);
-			kill(1, SIGUSR2);
-			return;
-
-		// Output a warning
-		} else {
-			printf(PURPLE "* " YELLOW "Could not execute %s, defaulting to /bin/sh..." RESET "\n", shell);
-			memcpy(shell, "/bin/sh", 8);
-		}
+		printf(PURPLE "* " YELLOW "%s could not be executed, defaulting to /bin/sh..." RESET "\n", shell);
+		memcpy(shell, "/bin/sh", 8);
 	}
 
 	// Fork the shell into a seperate process
@@ -171,6 +163,14 @@ int main(int argc, char *argv[])
 
 		// Open the console
 		int tty = open_tty();
+
+		// Check for the existence of /bin/sh before proceeding
+		if(access("/bin/sh", X_OK) != 0) {
+			printf(RED "* /bin/sh either does not have executable permissions or does not exist! Press ENTER to power off the system:" RESET " ");
+			getchar();
+			sync();
+			return reboot(SYS_POWEROFF);
+		}
 
 		// Login as root and set $PREVLEVEL to N
 		setenv("HOME",   "/root", 1);
