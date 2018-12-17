@@ -89,11 +89,12 @@ static void single(void)
 
 	// If the given shell is invalid, use /bin/sh instead
 	if(access(shell, X_OK) != 0) {
-		printf(PURPLE "* " YELLOW "Defaulting to /bin/sh..." RESET "\n\n");
+		printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
 		memcpy(shell, "/bin/sh", 8);
 	}
 
 	// Fork the shell into a seperate process
+	printf("\n");
 	if(fork() == 0) {
 		open_tty();
 		execl(shell, shell, NULL);
