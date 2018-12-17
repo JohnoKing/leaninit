@@ -94,10 +94,12 @@ static void single(void)
 	}
 
 	// Fork the shell into a seperate process
+	char *nargv[] = { shell, NULL };
+	char *nenvp[] = { "RUNLEVEL=1", "HOME=/root", "USER=root", "LOGNAME=root", NULL };
 	printf("\n");
 	if(fork() == 0) {
 		open_tty();
-		execl(shell, shell, NULL);
+		execve(shell, nargv, nenvp);
 	}
 }
 
