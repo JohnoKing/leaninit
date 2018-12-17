@@ -1,4 +1,4 @@
-# /etc/leaninit.d/ttys
+# /etc/leaninit/ttys
 #
 # This file lists the ttys to spawn lgetty(8) on.
 # All comments must be on their own line.

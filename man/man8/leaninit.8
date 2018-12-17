@@ -134,35 +134,35 @@ A warning message
 An error message
 .Pp
 .Sh FILES
-.Em /etc/leaninit.d/rc
+.Em /etc/leaninit/rc
 Primary init script run by
 .Nm LeanInit
 
 .Em /etc/rc
 Secondary init script that is run if
-.Em /etc/leaninit.d/rc
+.Em /etc/leaninit/rc
 does not exist.
 
-.Em /etc/leaninit.d/rc.conf
+.Em /etc/leaninit/rc.conf
 Provides config settings for
 .Nm lrc(8)
 and
 .Nm LeanInit
 scripts
 
-.Em /etc/leaninit.d/rc.svc
+.Em /etc/leaninit/rc.svc
 Provides variables and functions for
 .Nm LeanInit
 scripts
 
-.Em /etc/leaninit.d/rc.shutdown
+.Em /etc/leaninit/rc.shutdown
 Stops all processes and unmounts
 all file systems before reboot.
 
-.Em /etc/leaninit.d/svc.d
+.Em /etc/leaninit/svc.d
 Folder containing scripts for starting various services (such as D-BUS).
 
-.Em /etc/leaninit.d/svc.e
+.Em /etc/leaninit/svc.e
 Location of all files used to determine which services are enabled.
 
 .Em /var/log/leaninit.log

@@ -60,18 +60,18 @@ all: clean
 # Install LeanInit (compatible with other init systems)
 install:
 	if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
-	mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit.d/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	cp -r out/svc.d $(DESTDIR)/etc/leaninit.d
-	chmod 0755 $(DESTDIR)/etc/leaninit.d/svc.d/*
+	mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
+	cp -r out/svc.d $(DESTDIR)/etc/leaninit
+	chmod 0755 $(DESTDIR)/etc/leaninit/svc.d/*
 	cp -r man $(DESTDIR)/usr/share
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	if [ ! -r $(DESTDIR)/etc/leaninit.d/rc.conf ]; then \
-		$(INSTALL) -Dm0644 out/rc/rc.conf $(DESTDIR)/etc/leaninit.d ;\
+	if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
+		$(INSTALL) -Dm0644 out/rc/rc.conf $(DESTDIR)/etc/leaninit ;\
 	fi
-	if [ ! -r $(DESTDIR)/etc/leaninit.d/ttys ]; then \
-		$(INSTALL) -Dm0644 out/rc/ttys $(DESTDIR)/etc/leaninit.d ;\
+	if [ ! -r $(DESTDIR)/etc/leaninit/ttys ]; then \
+		$(INSTALL) -Dm0644 out/rc/ttys $(DESTDIR)/etc/leaninit ;\
 	fi
-	$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit.d
+	$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
 	cd $(DESTDIR)/usr/share/man/man8 ;\
 	[ -r lpoweroff.8 ] || ln -sf lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
@@ -80,7 +80,7 @@ install:
 	cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
-	if [ ! -r $(DESTDIR)/etc/leaninit.d/svc.e/getty.type ]; then touch $(DESTDIR)/etc/leaninit.d/svc.e/lgetty && echo lgetty > $(DESTDIR)/etc/leaninit.d/svc.e/getty.type; fi
+	if [ ! -r $(DESTDIR)/etc/leaninit/svc.e/getty.type ]; then touch $(DESTDIR)/etc/leaninit/svc.e/lgetty && echo lgetty > $(DESTDIR)/etc/leaninit/svc.e/getty.type; fi
 
 # Uninstall (only works with normal installations)
 uninstall:
@@ -94,7 +94,7 @@ uninstall:
 	fi
 	echo "Please make sure you remove LeanInit from your bootloader after uninstalling!"
 	rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/sbin/lgetty $(DESTDIR)/usr/share/licenses/leaninit \
-		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/sbin/lrunlevel $(DESTDIR)/etc/leaninit.d $(DESTDIR)/var/log/leaninit.log $(DESTDIR)/var/run/leaninit $(MANPAGES)
+		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/sbin/lrunlevel $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log $(DESTDIR)/var/run/leaninit $(MANPAGES)
 
 # Clean the directory
 clean:

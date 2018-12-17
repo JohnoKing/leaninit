@@ -1,5 +1,5 @@
 #!/bin/sh
-. /etc/leaninit.d/rc.svc
+. /etc/leaninit/rc.svc
 
 # Service for ConsoleKit
 NAME="ConsoleKit"

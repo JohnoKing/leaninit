@@ -33,10 +33,10 @@ To boot from LeanInit, append the following line to `/boot/loader.conf`:
 Most information on LeanInit is located in its man pages. 
 To read the main man page, run `man leaninit`.
 
-### /etc/leaninit.d/rc.conf
-`/etc/leaninit.d/rc.conf` allows you to change your hostname, keyboard layout (Linux), 
+### /etc/leaninit/rc.conf
+`/etc/leaninit/rc.conf` allows you to change your hostname, keyboard layout (Linux), 
 wireless interface, and other settings.
 
-### /etc/leaninit.d/ttys
-`/etc/leaninit.d/ttys` allows you to add and remove the ttys launched on boot,
+### /etc/leaninit/ttys
+`/etc/leaninit/ttys` allows you to add and remove the ttys launched on boot,
 as well as change the getty program that will be used.

@@ -20,20 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# /etc/leaninit.d/rc.shutdown - Stops all services
+# /etc/leaninit/rc.shutdown - Stops all services
 #
 
 DEFLINUX
 # Load rc.conf
-. /etc/leaninit.d/rc.conf
+. /etc/leaninit/rc.conf
 ENDEF
 
 # Stop all currently running services
-__LIST="$(ls /etc/leaninit.d/svc.d)"
+__LIST="$(ls /etc/leaninit/svc.d)"
 if [ -n "$__LIST" ]; then
 	for svc in $__LIST; do
 		if [ -r "/var/run/leaninit/$svc.status" ]; then
-			"/etc/leaninit.d/svc.d/$svc" stop &
+			"/etc/leaninit/svc.d/$svc" stop &
 		fi
 	done
 fi

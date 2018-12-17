@@ -22,7 +22,7 @@
 #
 
 # Source rc.svc
-. /etc/leaninit.d/rc.svc
+. /etc/leaninit/rc.svc
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog ${PURPLE} ${WHITE}
@@ -203,17 +203,17 @@ ENDEF
 wait
 
 # Start all enabled services
-__LIST="$(ls /etc/leaninit.d/svc.e)"
+__LIST="$(ls /etc/leaninit/svc.e)"
 if [ -n "$__LIST" ]; then
 	for sv in $__LIST; do
-		if [ -x "/etc/leaninit.d/svc.d/$sv" ]; then
-			/etc/leaninit.d/svc.d/$sv start &
+		if [ -x "/etc/leaninit/svc.d/$sv" ]; then
+			/etc/leaninit/svc.d/$sv start &
 		fi
 	done
 fi
 
 # Run rc.local (when present)
-for r in /etc/leaninit.d/rc.local /etc/rc.local; do
+for r in /etc/leaninit/rc.local /etc/rc.local; do
 	if [ -x $r ]; then
 		sh $r &
 	fi

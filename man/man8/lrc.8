@@ -28,12 +28,12 @@
 The
 .Nm rc
 script is responsible for mounting all file systems and starting all services in
-.Em /etc/leaninit.d/svc.e
+.Em /etc/leaninit/svc.e
 concurrently.
 If either
 .Em /etc/rc.local
 or
-.Em /etc/leaninit.d/rc.local
+.Em /etc/leaninit/rc.local
 exist and are executable,
 .Nm rc
 will run them after it launches all services.
@@ -48,11 +48,11 @@ Optional script run by
 .Nm rc
 if it exists.
 
-.Em /etc/leaninit.d/rc.svc
+.Em /etc/leaninit/rc.svc
 Provides variables and functions to
 .Nm rc
 
-.Em /etc/leaninit.d/rc.conf
+.Em /etc/leaninit/rc.conf
 Config file for
 .Nm rc
 and

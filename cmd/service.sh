@@ -24,7 +24,7 @@
 #
 
 # Load rc.svc
-. /etc/leaninit.d/rc.svc
+. /etc/leaninit/rc.svc
 
 # Usage info
 usage() {
@@ -51,8 +51,8 @@ ENDEF
 
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
-	for svc in $(ls /etc/leaninit.d/svc.d); do
-		/etc/leaninit.d/svc.d/$svc status
+	for svc in $(ls /etc/leaninit/svc.d); do
+		/etc/leaninit/svc.d/$svc status
 	done
 	exit 0
 fi
@@ -60,10 +60,10 @@ fi
 # Exit when not given proper arguments
 if [ ! -n "$2" ]; then
 	usage
-elif [ ! -x "/etc/leaninit.d/svc.d/$1" ]; then
+elif [ ! -x "/etc/leaninit/svc.d/$1" ]; then
 	print "The service '$1' does not exist" nolog $RED
 	usage
 fi
 
 # Execute the service directly
-exec /etc/leaninit.d/svc.d/$1 $2
+exec /etc/leaninit/svc.d/$1 $2

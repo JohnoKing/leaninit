@@ -105,13 +105,13 @@ static void single(void)
 static void multi(void)
 {
 	// Locate rc(8)
-	char rc[19];
-	if(access("/etc/leaninit.d/rc", X_OK) == 0)
-		memcpy(rc, "/etc/leaninit.d/rc", 19);
+	char rc[17];
+	if(access("/etc/leaninit/rc", X_OK) == 0)
+		memcpy(rc, "/etc/leaninit/rc", 17);
 	else if(access("/etc/rc", X_OK) == 0)
 		memcpy(rc, "/etc/rc", 8);
 	else {
-		printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit.d/rc could be found, falling back to single user mode..." RESET "\n");
+		printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
 		single_user = 0;
 		single();
 		return;
@@ -244,8 +244,8 @@ int main(int argc, char *argv[])
 				sync();
 
 				// Run rc.shutdown (multi-user)
-				if(access("/etc/leaninit.d/rc.shutdown", W_OK | X_OK) == 0)
-					sh("/etc/leaninit.d/rc.shutdown");
+				if(access("/etc/leaninit/rc.shutdown", W_OK | X_OK) == 0)
+					sh("/etc/leaninit/rc.shutdown");
 				else if(access("/etc/rc.shutdown", W_OK | X_OK) == 0)
 					sh("/etc/rc.shutdown");
 

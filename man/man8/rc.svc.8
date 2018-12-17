@@ -28,14 +28,14 @@
 The
 .Nm rc.svc
 script is responsible for reading
-.Em /etc/leaninit.d/rc.conf,
+.Em /etc/leaninit/rc.conf,
 then providing all required
 variables and functions to
 .Nm LeanInit's
 various scripts, including
 .Nm rc(8), rc.shutdown(8)
 and all scripts located in
-.Em /etc/leaninit.d/svc.d
+.Em /etc/leaninit/svc.d
 .Pp
 
 The following functions and variables are provided by
@@ -112,7 +112,7 @@ Appending 'optional' as a third argument will cause waitfor to simply return if 
 .Nm run
 This function is used to run init scripts with standard arguments such as 'start' and 'stop'.
 .Sh FILES
-.Em /etc/leaninit.d/rc.conf
+.Em /etc/leaninit/rc.conf
 Provides config settings for
 .Nm rc(8)
 and
