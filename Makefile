@@ -62,7 +62,6 @@ install:
 	if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
 	mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
 	cp -r out/svc.d $(DESTDIR)/etc/leaninit
-	chmod 0755 $(DESTDIR)/etc/leaninit/svc.d/*
 	cp -r man $(DESTDIR)/usr/share
 	$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
