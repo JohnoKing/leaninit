@@ -40,6 +40,9 @@
 #include <utmp.h>
 #endif
 
+// Current LeanInit version
+#define VERSION_NUMBER "1.0-RC1"
+
 // OS specific macros
 #ifdef Linux
 #define CONSOLE      "/dev/tty1"
@@ -54,13 +57,13 @@
 
 // Colors
 #define RESET  "\x1b[m"
-#define RED    "\x1b[91m"
-#define GREEN  "\x1b[92m"
-#define YELLOW "\x1b[93m"
-#define BLUE   "\x1b[94m"
-#define PURPLE "\x1b[95m"
-#define CYAN   "\x1b[96m"
-#define WHITE  "\x1b[97m"
+#define RED    "\x1b[1;31m"
+#define GREEN  "\x1b[1;32m"
+#define YELLOW "\x1b[1;33m"
+#define BLUE   "\x1b[1;34m"
+#define PURPLE "\x1b[1;35m"
+#define CYAN   "\x1b[1;36m"
+#define WHITE  "\x1b[1;37m"
 
 // argv[0] is not sufficent
 extern char *__progname;

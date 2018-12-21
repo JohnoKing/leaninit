@@ -37,6 +37,7 @@ static int usage(void)
 {
 	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [runlevel] ...\n", __progname);
+	printf("    or %s --version  ...\n", __progname);
 	printf("  0           Poweroff\n");
 	printf("  1, S, s     Switch to single-user mode\n");
 	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
@@ -207,7 +208,7 @@ int main(int argc, char *argv[])
 		// Print the current platform LeanInit is running on
 		struct utsname uts;
 		uname(&uts);
-		if(verbose == 0) printf(CYAN "* " WHITE "LeanInit is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
+		if(verbose == 0) printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
 		// Start zloop() and chlvl() in seperate threads
 		pthread_t loop, runlvl;
@@ -318,6 +319,10 @@ int main(int argc, char *argv[])
 	// Emulate some SysV-like behavior when re-executed
 	if(argc < 2)
 		return usage();
+
+	// Show the version number when called with --version
+	if(strcmp(argv[1], "--version") == 0)
+		return printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER RESET "\n");
 
 	// Runlevel support
 	switch(*argv[1]) {
