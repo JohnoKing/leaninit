@@ -26,11 +26,12 @@ WFLAGS := -Wall -Wextra -Wpedantic -Wno-unused-result
 
 # Compile stall
 all: clean
-	$(CC) $(CFLAGS) $(WFLAGS) -o stall stall.c $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(WFLAGS) -o stall stall.c $(LDFLAGS)
+	@echo "Successfully built stall!"
 
 # Clean this directory
 clean:
-	rm -f stall
+	@rm -f stall
 
 # Alias for clean
 clobber: clean
