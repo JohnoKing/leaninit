@@ -35,7 +35,6 @@ static int current_signal       = 0;
 // Shows usage for init
 static int usage(void)
 {
-	printf("%s: Option not permitted\n", __progname);
 	printf("Usage: %s [runlevel] ...\n", __progname);
 	printf("    or %s --version  ...\n", __progname);
 	printf("  0           Poweroff\n");
@@ -312,12 +311,6 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// Prevent anyone but root from running this
-	if(getuid() != 0) {
-		printf(RED "* Permission denied!" RESET "\n");
-		return 1;
-	}
-
 	// Emulate some SysV-like behavior when re-executed
 	if(argc < 2)
 		return usage();
@@ -325,6 +318,12 @@ int main(int argc, char *argv[])
 	// Show the version number when called with --version
 	if(strcmp(argv[1], "--version") == 0)
 		return printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER RESET "\n");
+
+	// Prevent anyone but root from running this
+	if(getuid() != 0) {
+		printf(RED "* Permission denied!" RESET "\n");
+		return 1;
+	}
 
 	// Runlevel support
 	switch(*argv[1]) {
