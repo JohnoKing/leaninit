@@ -80,9 +80,7 @@ int main(int argc, char *argv[])
 		// Create a child process for login(1)
 		pid_t login = fork();
 		if(login == 0) {
-#			ifdef FreeBSD
 			open_tty(argv[1]);
-#			endif
 
 			// Get user input
 			char input[100], cmd[116];
