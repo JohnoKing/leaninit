@@ -28,7 +28,7 @@
 
 static int usage(void)
 {
-	printf("Usage: %s tty [debug] ...\n", __progname);
+	printf("Usage: %s tty ...\n", __progname);
 	return 1;
 }
 
@@ -39,21 +39,14 @@ int main(int argc, char *argv[])
 		return usage();
 
 	// Find login(1)
-	char login_cmd[19];
+	char login_path[19];
 	if(access("/bin/login", X_OK) == 0)
-		memcpy(login_cmd, "/bin/login ", 12);
+		memcpy(login_path, "/bin/login ", 12);
 	else if(access("/usr/bin/login", X_OK) == 0)
-		memcpy(login_cmd, "/usr/bin/login ", 16);
+		memcpy(login_path, "/usr/bin/login ", 16);
 	else {
 		printf(RED "* Could not find login(1) (please symlink it to either /bin/login or /usr/bin/login and give it executable permissions)" RESET "\n");
 		return 127;
-	}
-
-	// Pass -p to login when debug mode is enabled
-	unsigned int debug = 1;
-	if((argc > 2) && (strcmp(argv[2], "debug") == 0)) {
-		strncat(login_cmd, "-p ", 4);
-		debug = 0;
 	}
 
 	// Infinite loop
@@ -81,27 +74,14 @@ int main(int argc, char *argv[])
 			dup2(tty, STDERR_FILENO);
 			ioctl(tty, TIOCSCTTY, 1);
 
-			// Get user input
-			char input[100], cmd[119];
+			// Get user input (for logging in)
+			char user[100];
 			printf(CYAN "\n* " WHITE "%s login:" RESET " ", argv[1]);
-			scanf("%s", input);
-			memcpy(cmd,  login_cmd, 19);
-			strncat(cmd, input,    100);
-
-			// Because -p is passed to login(1) to preserve the environment, $HOME must be corrected (for debug mode)
-			if(debug == 0) {
-				if(strcmp("root", input) == 0)
-					putenv("HOME=/root");
-				else {
-					char home[112];
-					memcpy(home, "HOME=/home/", 12);
-					strncat(home, input, 100);
-					putenv(home);
-				}
-			}
+			scanf("%s", user);
 
 			// Execute login(1)
-			return execl("/bin/sh", "/bin/sh", "-mc", cmd, NULL);
+			char *sargv[] = { "login", user, NULL };
+			return execve(login_path, sargv, environ);
 		}
 
 		// Prevent spamming

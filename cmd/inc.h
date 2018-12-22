@@ -41,7 +41,7 @@
 #endif
 
 // Current LeanInit version
-#define VERSION_NUMBER "1.0-RC1"
+#define VERSION_NUMBER "1.0-RC2"
 
 // OS specific macros
 #ifdef Linux
@@ -65,5 +65,6 @@
 #define CYAN   "\x1b[1;36m"
 #define WHITE  "\x1b[1;37m"
 
-// argv[0] is not sufficent
-extern char *__progname;
+// Extern char variables
+extern char *__progname; // argv[0] is not sufficent
+extern char **environ;   // This is used with execve(2)

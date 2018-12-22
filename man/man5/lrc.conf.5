@@ -58,29 +58,11 @@ Set to wlan0 (and eth0 on Linux) by default.
 Sets the driver to use for the networking interfaces.
 Set to 'wext' on Linux and 'bsd' on FreeBSD.
 
-.Em DBUS_ENABLE
-Enables support for
-.Nm D-Bus.
-Set to true by default.
-
 .Em XDMNAME:
 Sets the name of the Display Manager used by the xdm service.
 
 .Em DM:
 Sets the executable for the Display Manager used by the xdm service.
-
-.Em LOGFILE:
-Sets the file
-.Nm LeanInit
-uses for logging. Set to
-.Em /var/log/leaninit/leaninit.log
-by default.
-
-.Em GETTYMODE:
-Sets the mode used when launching the
-.Nm getty(8)
-program.
-Set to '38400' on Linux and 'Pc' on FreeBSD.
 
 .Em DEV
 Allows you to choose between either udev or mdev (Linux only). Set to udev by default.
@@ -91,10 +73,6 @@ Sets the location of udev or mdev. Set to
 for udev and
 .Em /sbin/mdev
 for mdev.
-
-.Em DEBUG
-Allows you to turn debug mode on or off (currently just waits for all services to start before launching gettys).
-Debug mode is disabled by default.
 .Sh SEE ALSO
 rc(8), rc.svc(8), lttys(5)
 .Sh AUTHOR
