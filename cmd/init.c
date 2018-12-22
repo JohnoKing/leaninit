@@ -318,9 +318,10 @@ int main(int argc, char *argv[])
 		return usage(1);
 
 	// Show the version number when called with --version
-	if(strcmp(argv[1], "--version") == 0)
-		return printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER RESET "\n");
-	else if(strcmp(argv[1], "--help") == 0)
+	if(strcmp(argv[1], "--version") == 0) {
+		printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER RESET "\n");
+		return 0;
+	} else if(strcmp(argv[1], "--help") == 0)
 		return usage(0);
 
 	// Prevent everyone except root from running any of the following code
