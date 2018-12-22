@@ -32,11 +32,35 @@ static int usage(int ret)
 	return ret;
 }
 
+// Opens the tty for job control
+static int open_tty(const char *ttyd)
+{
+	// This is required for the subshell to have job control on FreeBSD
+#	ifdef FreeBSD
+	revoke(ttyd);
+#	endif
+
+	// Verify the tty exists
+	int tty = open(ttyd, O_RDWR | O_NOCTTY);
+	if(isatty(tty) == 0)
+		return usage(127);
+
+	// Set the tty as the controlling terminal
+	login_tty(tty);
+	dup2(tty, STDIN_FILENO);
+	dup2(tty, STDOUT_FILENO);
+	dup2(tty, STDERR_FILENO);
+	ioctl(tty, TIOCSCTTY, 1);
+}
+
 int main(int argc, char *argv[])
 {
 	// An argument is required
 	if(argc < 2)
 		return usage(1);
+
+	// Attempt to open the tty
+	open_tty(argv[1]);
 
 	// Find login(1)
 	char login_cmd[16];
@@ -53,26 +77,10 @@ int main(int argc, char *argv[])
 	int status;
 	for(;;) {
 
-		// Child process for login(1)
+		// Create a child process for login(1)
 		pid_t login = fork();
 		if(login == 0) {
-
-			// This is required for the subshell to have job control on FreeBSD
-#			ifdef FreeBSD
-			revoke(argv[1]);
-#			endif
-
-			// Verify the tty exists
-			int tty = open(argv[1], O_RDWR | O_NOCTTY);
-			if(isatty(tty) == 0)
-				return usage(127);
-
-			// Set the tty as the controlling terminal
-			login_tty(tty);
-			dup2(tty, STDIN_FILENO);
-			dup2(tty, STDOUT_FILENO);
-			dup2(tty, STDERR_FILENO);
-			ioctl(tty, TIOCSCTTY, 1);
+			open_tty(argv[1]);
 
 			// Get user input
 			char input[100], cmd[116];
@@ -85,9 +93,10 @@ int main(int argc, char *argv[])
 			return execl("/bin/sh", "/bin/sh", "-mc", cmd, NULL);
 		}
 
-		// Prevent spamming
+		// Do not spam the tty
 		waitpid(login, &status, 0);
 		if(WEXITSTATUS(status) != 0) {
+			open_tty(argv[1]);
 			printf(RED "* The LGetty child process exited with a return status of %d" RESET "\n", WEXITSTATUS(status));
 			return WEXITSTATUS(status);
 		}
