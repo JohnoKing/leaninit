@@ -33,7 +33,7 @@ static int usage(int ret)
 }
 
 // Opens the tty for job control
-static int open_tty(const char *ttyd)
+static void open_tty(const char *ttyd)
 {
 	// This is required for the subshell to have job control on FreeBSD
 #	ifdef FreeBSD
@@ -80,7 +80,9 @@ int main(int argc, char *argv[])
 		// Create a child process for login(1)
 		pid_t login = fork();
 		if(login == 0) {
+#			ifdef FreeBSD
 			open_tty(argv[1]);
+#			endif
 
 			// Get user input
 			char input[100], cmd[116];
@@ -96,7 +98,9 @@ int main(int argc, char *argv[])
 		// Do not spam the tty
 		waitpid(login, &status, 0);
 		if(WEXITSTATUS(status) != 0) {
+#			ifdef FreeBSD
 			open_tty(argv[1]);
+#			endif
 			printf(RED "* The LGetty child process exited with a return status of %d" RESET "\n", WEXITSTATUS(status));
 			return WEXITSTATUS(status);
 		}
