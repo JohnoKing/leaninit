@@ -26,10 +26,10 @@
 
 #include "inc.h"
 
-static int usage(int ret)
+static void usage(int ret)
 {
 	printf("Usage: %s tty ...\n", __progname);
-	return ret;
+	exit(ret);
 }
 
 // Opens the tty for job control
@@ -43,7 +43,7 @@ static void open_tty(const char *ttyd)
 	// Verify the tty exists
 	int tty = open(ttyd, O_RDWR | O_NOCTTY);
 	if(isatty(tty) == 0)
-		return usage(127);
+		usage(127);
 
 	// Set the tty as the controlling terminal
 	login_tty(tty);
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 {
 	// An argument is required
 	if(argc < 2)
-		return usage(1);
+		usage(1);
 
 	// Attempt to open the tty
 	open_tty(argv[1]);
