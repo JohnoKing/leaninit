@@ -65,6 +65,6 @@
 #define CYAN   "\x1b[1;36m"
 #define WHITE  "\x1b[1;37m"
 
-// Extern char variables
+// External char variables
 extern char *__progname; // argv[0] is not sufficent
 extern char **environ;   // This is used with execve(2)

@@ -66,12 +66,12 @@ static int open_tty(void)
 }
 
 // Execute a script
-static void sh(const char *script)
+static void sh(char *script)
 {
 	pid_t child = fork();
 	if(child == 0) {
 		setsid();
-		char *sargv[] = { "rc", NULL };
+		char *sargv[] = { script, NULL };
 		execve(script, sargv, environ);
 	}
 
