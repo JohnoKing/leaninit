@@ -27,6 +27,7 @@
 .Sh SYNOPSIS
 .Nm init [ 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | S | s | Q | q ]
 .Nm init [ -s | single | quiet ]
+.Nm init [ --version | --help ]
 .Sh DESCRIPTION
 .Nm LeanInit
 is a BSD-style init system that is developed for Linux and FreeBSD.
@@ -75,6 +76,12 @@ Hibernate the system (Linux only)
 
 .Nm Q, q
 Reload the current runlevel
+
+.Nm --version
+Displays LeanInit's version number to the user.
+
+.Nm --help
+Displays LeanInit's usage information to the user.
 .Pp
 .Nm LeanInit
 accepts the following arguments before booting:

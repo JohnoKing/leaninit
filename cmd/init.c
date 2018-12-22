@@ -33,10 +33,10 @@ static unsigned int verbose     = 0;
 static int current_signal       = 0;
 
 // Shows usage for init
-static int usage(void)
+static int usage(int ret)
 {
 	printf("Usage: %s [runlevel] ...\n", __progname);
-	printf("    or %s --version  ...\n", __progname);
+	printf("    or %s --[opt]    ...\n", __progname);
 	printf("  0           Poweroff\n");
 	printf("  1, S, s     Switch to single-user mode\n");
 	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
@@ -46,7 +46,9 @@ static int usage(void)
 	printf("  8           Hibernate\n");
 #	endif
 	printf("  Q, q        Reload the current runlevel\n");
-	return 1;
+	printf("  --version   Shows LeanInit's version number\n");
+	printf("  --help      Shows this usage information\n");
+	return ret;
 }
 
 // Open the tty
@@ -313,19 +315,21 @@ int main(int argc, char *argv[])
 
 	// Emulate some SysV-like behavior when re-executed
 	if(argc < 2)
-		return usage();
+		return usage(1);
 
 	// Show the version number when called with --version
 	if(strcmp(argv[1], "--version") == 0)
 		return printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER RESET "\n");
+	else if(strcmp(argv[1], "--help") == 0)
+		return usage(0);
 
-	// Prevent anyone but root from running this
+	// Prevent everyone except root from running any of the following code
 	if(getuid() != 0) {
 		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
 	}
 
-	// Runlevel support
+	// Switches runlevels by sending PID 1 the correct signal
 	switch(*argv[1]) {
 
 		// Poweroff
@@ -366,6 +370,6 @@ int main(int argc, char *argv[])
 
 		// Fallback
 		default:
-			return usage();
+			return usage(0);
 	}
 }
