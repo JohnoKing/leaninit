@@ -26,20 +26,20 @@
 
 #include "inc.h"
 
-static int usage(void)
+static int usage(int ret)
 {
 	printf("Usage: %s tty ...\n", __progname);
-	return 1;
+	return ret;
 }
 
 int main(int argc, char *argv[])
 {
 	// An argument is required
 	if(argc < 2)
-		return usage();
+		return usage(1);
 
 	// Find login(1)
-	char login_path[19];
+	char login_path[16];
 	if(access("/bin/login", X_OK) == 0)
 		memcpy(login_path, "/bin/login ", 12);
 	else if(access("/usr/bin/login", X_OK) == 0)
@@ -64,8 +64,8 @@ int main(int argc, char *argv[])
 
 			// Verify the tty exists
 			int tty = open(argv[1], O_RDWR | O_NOCTTY);
-			if(tty == -1 || isatty(tty) == 0)
-				return usage();
+			if(isatty(tty) == 0)
+				return usage(127);
 
 			// Set the tty as the controlling terminal
 			login_tty(tty);
@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
 		// Prevent spamming
 		waitpid(login, &status, 0);
 		if(WEXITSTATUS(status) != 0) {
-			printf(RED "* login(1) exited with a return status of %d" RESET "\n", WEXITSTATUS(status));
-			return status;
+			printf(RED "* The LGetty child process exited with a return status of %d" RESET "\n", WEXITSTATUS(status));
+			return WEXITSTATUS(status);
 		}
 	}
 }
