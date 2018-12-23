@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
 
 		// Single user (argv = single) and quiet mode (argv = quiet) support
 		if(single_user != 0) {
-			args = --argc;
+			args = argc - 1;
 			while(0 < args) {
 				if(strcmp(argv[args], "single") == 0) {
 					single_user = 0;

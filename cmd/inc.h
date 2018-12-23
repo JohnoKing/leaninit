@@ -41,7 +41,7 @@
 #endif
 
 // Current LeanInit version
-#define VERSION_NUMBER "1.0-RC5"
+#define VERSION_NUMBER "1.0-RC6"
 
 // OS specific macros
 #ifdef Linux
