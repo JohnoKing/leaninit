@@ -40,8 +40,8 @@
 #include <utmp.h>
 #endif
 
-// Current LeanInit version
-#define VERSION_NUMBER "1.0-RC6"
+// LeanInit's version number
+#define VERSION_NUMBER "1.0"
 
 // OS specific macros
 #ifdef Linux
