@@ -133,10 +133,8 @@ static void multi(void)
 static void *chlvl(__attribute((unused)) void *ptr)
 {
 	// Run single-user if single_user is equal to 0, otherwise run multi-user
-	if(single_user == 0)
-		single();
-	else
-		multi();
+	if(single_user == 0) single();
+	else multi();
 
 	return NULL;
 }
@@ -146,10 +144,8 @@ __attribute((noreturn)) static void *zloop(__attribute((unused)) void *ptr)
 {
 	for(;;) {
 		pid_t pid = wait(NULL);
-		if(pid == -1 && zstatus != 0)
-			zstatus = 0;
-		else if(pid != -1 && zstatus == 0)
-			zstatus = 1;
+		if(pid == -1 && zstatus != 0)      zstatus = 0;
+		else if(pid != -1 && zstatus == 0) zstatus = 1;
 	}
 }
 
@@ -197,13 +193,9 @@ int main(int argc, char *argv[])
 		if(single_user != 0) {
 			args = argc - 1;
 			while(0 < args) {
-				if(strcmp(argv[args], "single") == 0) {
-					single_user = 0;
-					break;
-				} else if(strcmp(argv[args], "quiet") == 0) {
-					verbose = 1;
-					break;
-				}
+				if(strcmp(argv[args], "single") == 0) single_user = 0;  // Single user
+				else if(strcmp(argv[args], "quiet") == 0) verbose = 1;  // Quiet mode
+
 				--args;
 			}
 		}
