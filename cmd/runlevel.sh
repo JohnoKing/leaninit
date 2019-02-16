@@ -30,13 +30,13 @@ if [ ! -n "$PREVLEVEL" ] && [ ! -n "$RUNLEVEL" ]; then
 fi
 
 if [ -n "$PREVLEVEL" ]; then
-	__PREVLEVEL=$PREVLEVEL
+	__PREVLEVEL="$PREVLEVEL"
 else
 	__PREVLEVEL=N
 fi
 
 if [ -n "$RUNLEVEL" ]; then
-	__RUNLEVEL=$RUNLEVEL
+	__RUNLEVEL="$RUNLEVEL"
 else
 	__RUNLEVEL=N
 fi
