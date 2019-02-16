@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2018 Johnothan King. All rights reserved.
+# Copyright (c) 2018-2019 Johnothan King. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@
 
 # Usage info
 usage() {
-	print "Usage: $0 service-name action ..." nolog ${PURPLE} ${WHITE}
-	print "  or $0 --status-all ..." nolog ${PURPLE} ${WHITE}
+	print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
+	print "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
 	echo "Potential actions:"
 	echo "  enable"
 	echo "  disable"
