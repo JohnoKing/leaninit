@@ -58,7 +58,7 @@ if [ "$1" = "--status-all" ]; then
 fi
 
 # Exit when not given proper arguments
-if [ ! -n "$2" ]; then
+if [ -z "$2" ]; then
 	usage
 elif [ ! -x "/etc/leaninit/svc.d/$1" ]; then
 	print "The service '$1' does not exist" nolog $RED

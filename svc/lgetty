@@ -15,9 +15,9 @@ main() {
 
 # Output an message to the user about disabling LGetty
 disable() {
-	print "If you do not want the next execution of LeanInit's 'make install' to re-enable $NAME when no other getty type services are enabled," nolog ${PURPLE} ${WHITE}
-	print "run 'echo init > /etc/leaninit/svc.e/getty.type' as root" nolog ${PURPLE} ${WHITE}
-	print "To re-enable $NAME after executing the above command, run 'rm /etc/leaninit/svc.e/getty.type && lservice lgetty enable' as root" nolog ${PURPLE} ${WHITE}
+	print "If you do not want the next execution of LeanInit's 'make install' to re-enable $NAME when no other getty type services are enabled," nolog "$PURPLE" "$WHITE"
+	print "run 'echo init > /etc/leaninit/svc.e/getty.type' as root" nolog "$PURPLE" "$WHITE"
+	print "To re-enable $NAME after executing the above command, run 'rm /etc/leaninit/svc.e/getty.type && lservice lgetty enable' as root" nolog "$PURPLE" "$WHITE"
 }
 
 run "$@"

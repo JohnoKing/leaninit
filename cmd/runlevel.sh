@@ -24,7 +24,7 @@
 #    This script uses the $RUNLEVEL and $PREVLEVEL variables to determine the current runlevel.
 #
 
-if [ ! -n "$PREVLEVEL" ] && [ ! -n "$RUNLEVEL" ]; then
+if [ -z "$PREVLEVEL" ] && [ -z "$RUNLEVEL" ]; then
 	echo "unknown"
 	exit 1
 fi

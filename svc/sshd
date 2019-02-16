@@ -10,7 +10,7 @@ main() {
 
 	# sshd must be executed with the full path to the executable
 	ssh-keygen -A >> /dev/null
-	command $(command -v sshd) -D &
+	command "$(command -v sshd)" -D &
 	jobs -p %+ > /var/run/leaninit/sshd.pid
 }
 

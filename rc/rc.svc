@@ -41,7 +41,7 @@ CYAN='\033[1;36m'
 WHITE='\033[1;37m'
 
 # Make sure $LOGFILE is set
-if [ ! -n "$LOGFILE" ]; then
+if [ -z "$LOGFILE" ]; then
 	LOGFILE=/var/log/leaninit.log
 fi
 
@@ -82,7 +82,7 @@ __svccheck() {
 
 # Makes sure the service has $__svcpid set
 __proccheck() {
-	if [ ! -n "$__svcpid" ]; then
+	if [ -z "$__svcpid" ]; then
 		if [ "$1" = "return" ]; then
 			return 3
 		fi
@@ -165,21 +165,21 @@ __waitfor_loop_proc() {
 waitfor() {
 	case "$1" in
 		file)
-			if [ ! -n "$2" ]; then
+			if [ -z "$2" ]; then
 				echo "Usage: waitfor type name..."
 				return 2
 			fi
 			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!"
 			;;
 		process)
-			if [ ! -n "$2" ]; then
+			if [ -z "$2" ]; then
 				echo "Usage: waitfor type name..."
 				return 2
 			fi
 			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
 			;;
 		service)
-			if [ ! -n "$2" ]; then
+			if [ -z "$2" ]; then
 				echo "Usage: waitfor type name..."
 				return 2
 			fi
@@ -323,7 +323,7 @@ __status() {
 run() {
 
 	# Return an error if the service was not written correctly
-	if [ ! -n "$1" ] || [ ! -n "$NAME" ] || ! type main 2> /dev/null >> /dev/null; then
+	if [ -z "$1" ] || [ -z "$NAME" ] || ! type main 2> /dev/null >> /dev/null; then
 		print "Service syntax is invalid!" nolog ${RED}
 		exit 128
 

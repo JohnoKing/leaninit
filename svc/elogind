@@ -15,7 +15,7 @@ main() {
 	elif [ -x /usr/lib/elogind/elogind ]; then
 		/usr/lib/elogind/elogind &
 	else
-		print "Could not find the elogind binary!" log ${RED}
+		print "Could not find the elogind binary!" log "$RED"
 		return 1
 	fi
 	jobs -p %+ > /var/run/leaninit/elogind.pid
