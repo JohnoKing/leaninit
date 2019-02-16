@@ -26,7 +26,7 @@
 
 #include "inc.h"
 
-static void usage(int ret)
+__attribute((noreturn)) static void usage(int ret)
 {
 	printf("Usage: %s tty ...\n", __progname);
 	exit(ret);
