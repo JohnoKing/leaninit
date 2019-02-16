@@ -4,9 +4,9 @@
 # All comments must be on their own line.
 #
 
-DEFBSD
+#DEF FreeBSD
 TTY0
-ENDEF
+#ENDEF
 TTY1
 TTY2
 TTY3

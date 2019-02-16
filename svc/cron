@@ -5,12 +5,12 @@
 NAME="cron"
 
 main() {
-DEFBSD
+#DEF FreeBSD
 	cron -ns &
-ENDEF
-DEFLINUX
+#ENDEF
+#DEF Linux
 	cron -f &
-ENDEF
+#ENDEF
 	jobs -p %+ > /var/run/leaninit/cron.pid
 }
 

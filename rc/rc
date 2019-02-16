@@ -26,12 +26,12 @@
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog ${PURPLE} ${WHITE}
-DEFBSD
+#DEF FreeBSD
 fsck -F
-ENDEF
-DEFLINUX
+#ENDEF
+#DEF Linux
 fsck -A
-ENDEF
+#ENDEF
 
 # Mount all drives specified in /etc/fstab
 print "Mounting all drives..." nolog ${PURPLE} ${WHITE}
@@ -40,7 +40,7 @@ mount -a &
 # Remount root (/) as read-write
 mount -o remount,rw / 2> /dev/null &
 
-DEFLINUX
+#DEF Linux
 # Cgroups support (this function must be run in its own subshell)
 mount_cgroups() {
 	# Mount a tmpfs at /sys/fs/cgroup
@@ -66,9 +66,9 @@ mountpoint -q /sys  || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys
 mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
 mountpoint -q /run  || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
 wait
-ENDEF
+#ENDEF
 
-DEFLINUX
+#DEF Linux
 # Mount the rest of the pseudo file systems
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
 mount_cgroups &
@@ -99,7 +99,7 @@ if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
 else
 	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}')
 fi
-ENDEF
+#ENDEF
 
 # Mount all ZFS file systems
 if [ "$ZFS_ENABLE" = "true" ]; then
@@ -142,30 +142,30 @@ swapon -a &
 
 # sysctl(8)
 print "Launching sysctl(8)..." log ${BLUE} ${WHITE}
-DEFLINUX
+#DEF Linux
 sysctl --system &
-ENDEF
-DEFBSD
+#ENDEF
+#DEF FreeBSD
 for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 	if [ -r $s ]; then
 		sysctl -f /etc/sysctl.conf &
 	fi
 done
-ENDEF
+#ENDEF
 
 # Remove the nologin files and reset /var/run/leaninit
 print "Removing any existing nologin files and resetting /var/run/leaninit..." log ${BLUE} ${WHITE}
 rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
 
-DEFBSD
+#DEF FreeBSD
 # Launch devd (vidcontrol -m is required for moused to function)
 print "Starting devd..." log ${BLUE} ${WHITE}
 vidcontrol -m on
 devd -n
-ENDEF
+#ENDEF
 
-DEFLINUX
+#DEF Linux
 # Set up network interfaces
 print "Setting up a loopback interface..." log ${BLUE} ${WHITE}
 ip link set up dev lo &
@@ -175,7 +175,7 @@ if [ -n "$NETFACE" ]; then
 		ip link set up dev $n &
 	done
 fi
-ENDEF
+#ENDEF
 
 # Set the hostname
 if [ -n "$HOSTNAME" ]; then
@@ -189,13 +189,13 @@ if [ -n "$TIMEZONE" ] && [ -r "/usr/share/zoneinfo/$TIMEZONE" ]; then
 	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
 fi
 
-DEFLINUX
+#DEF Linux
 # Set the keyboard layout (this requires kbd to work)
 if [ -n "$KEYMAP" ]; then
 	print "Setting the keyboard layout to $KEYMAP..." nolog ${PURPLE} ${WHITE}
 	loadkeys $KEYMAP &
 fi
-ENDEF
+#ENDEF
 
 # Wait for all jobs to finish
 wait

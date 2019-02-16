@@ -39,9 +39,9 @@ usage() {
 	echo "  try-restart"
 	echo "  force-reload"
 	echo "  reload"
-DEFBSD
+#DEF FreeBSD
 	echo "  info"
-ENDEF
+#ENDEF
 	echo "  pause"
 	echo "  cont"
 	echo "  status"

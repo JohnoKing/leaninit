@@ -40,14 +40,14 @@ all: clean
 	@cp cmd/service.sh  out/rc/lservice
 	@cp cmd/runlevel.sh out/rc/lrunlevel
 	@if [ `uname` = Linux ]; then \
-		$(SED) -i "/DEFBSD/,/ENDEF/d" $(RC) ;\
-		$(SED) -i "/DEFLINUX/d"       $(RC) ;\
-		$(SED) -i "/ENDEF/d"          $(RC) ;\
+		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
+		$(SED) -i "/#DEF Linux/d"       $(RC) ;\
+		$(SED) -i "/#ENDEF/d"          $(RC) ;\
 		$(SED) -i "s:TTY:tty:g" out/rc/ttys ;\
 	elif [ `uname` = FreeBSD ]; then \
-		$(SED) -i '' "/DEFLINUX/,/ENDEF/d" $(RC) ;\
-		$(SED) -i '' "/DEFBSD/d"           $(RC) ;\
-		$(SED) -i '' "/ENDEF/d"            $(RC) ;\
+		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" $(RC) ;\
+		$(SED) -i '' "/#DEF FreeBSD/d"           $(RC) ;\
+		$(SED) -i '' "/#ENDEF/d"            $(RC) ;\
 		$(SED) -i '' "s:TTY:ttyv:g"  out/rc/ttys ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\

@@ -23,10 +23,10 @@
 # /etc/leaninit/rc.shutdown - Stops all services
 #
 
-DEFLINUX
+#DEF Linux
 # Load rc.conf
 . /etc/leaninit/rc.conf
-ENDEF
+#ENDEF
 
 # Stop all currently running services
 __LIST="$(ls /etc/leaninit/svc.d)"
@@ -38,12 +38,12 @@ if [ -n "$__LIST" ]; then
 	done
 fi
 
-DEFLINUX
+#DEF Linux
 # Stop udev
 if [ "$DEV" = "udev" ]; then
 	udevadm control --exit &
 fi
-ENDEF
+#ENDEF
 
 # Finish
 wait

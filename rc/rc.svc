@@ -114,12 +114,12 @@ __usage() {
 	fi
 	__proccheck return
 	if [ $? = 0 ]; then
-DEFLINUX
+#DEF Linux
 		printf "|pause|cont"
-ENDEF
-DEFBSD
+#ENDEF
+#DEF FreeBSD
 		printf "|info|pause|cont"
-ENDEF
+#ENDEF
 	fi
 	printf "|status|help]\n"
 	exit $1
@@ -404,7 +404,7 @@ run() {
 			fi ;;
 		status)
 			__status ;;
-DEFBSD
+#DEF FreeBSD
 		info)
 			__rootcheck
 			__proccheck
@@ -413,7 +413,7 @@ DEFBSD
 				print "PID $pid:" nolog ${PURPLE} ${WHITE}
 				kill -INFO $pid
 			done ;;
-ENDEF
+#ENDEF
 		pause)
 			__rootcheck
 			__proccheck
