@@ -52,7 +52,7 @@ usage() {
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
 	for svc in $(ls /etc/leaninit/svc.d); do
-		/etc/leaninit/svc.d/$svc status
+		"/etc/leaninit/svc.d/$svc" status
 	done
 	exit 0
 fi
@@ -61,9 +61,9 @@ fi
 if [ -z "$2" ]; then
 	usage
 elif [ ! -x "/etc/leaninit/svc.d/$1" ]; then
-	print "The service '$1' does not exist" nolog $RED
+	print "The service '$1' does not exist" nolog "$RED!"
 	usage
 fi
 
 # Execute the service directly
-exec /etc/leaninit/svc.d/$1 $2
+exec "/etc/leaninit/svc.d/$1" "$2"
