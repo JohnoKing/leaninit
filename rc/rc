@@ -205,7 +205,7 @@ __LIST="$(ls /etc/leaninit/svc.e)"
 if [ -n "$__LIST" ]; then
 	for sv in $__LIST; do
 		if [ -x "/etc/leaninit/svc.d/$sv" ]; then
-			/etc/leaninit/svc.d/$sv start &
+			"/etc/leaninit/svc.d/$sv" start &
 		fi
 	done
 fi

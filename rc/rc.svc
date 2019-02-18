@@ -104,16 +104,14 @@ __usage() {
 		exit $1
 	fi
 	printf "Usage: /etc/leaninit/svc.d/$__svcname [enable|disable|start|stop|restart"
-	__svccheck return
-	if [ $? = 0 ]; then
+	if __svccheck return; then
 		printf "|try-restart|force-reload"
 		type reload 2> /dev/null >> /dev/null
 		if [ $? = 0 ]; then
 			printf "|reload"
 		fi
 	fi
-	__proccheck return
-	if [ $? = 0 ]; then
+	if __proccheck return; then
 #DEF Linux
 		printf "|pause|cont"
 #ENDEF
@@ -131,8 +129,8 @@ __waitfor_loop_file() {
 	while true; do
 		if [ -r "$1" ]; then break; fi
 		sleep 0.1
-		__TIMER=$(expr $__TIMER + 1)
-		if [ "$(expr $__TIMER '>' 69)" = "1" ]; then
+		__TIMER=$((__TIMER + 1))
+		if [ "$((__TIMER > 69))" = "1" ]; then
 			print "$2" log "$RED"
 			__fail 1
 		fi
@@ -149,8 +147,8 @@ __waitfor_loop_proc() {
 	while true; do
 		if [ -n "$(pgrep -x $1)" ]; then break; fi
 		sleep 0.1
-		__TIMER=$(expr $__TIMER + 1)
-		if [ "$(expr $__TIMER '>' 69)" = "1" ]; then
+		__TIMER=$((__TIMER + 1))
+		if [ "$((__TIMER > 69))" = "1" ]; then
 			if [ "$3" != "return" ]; then
 				print "$2" log "$RED"
 				__fail 1
@@ -259,8 +257,8 @@ __stop() {
 			while true; do
 				if ! kill -0 $pid 2> /dev/null; then break; fi
 				sleep 0.1
-				__TIMER=$(expr $__TIMER + 1)
-				if [ "$(expr $__TIMER '>' 69)" = "1" ]; then
+				__TIMER=$((__TIMER + 1))
+				if [ "$((__TIMER > 69))" = "1" ]; then
 					print "Sending SIGKILL to $NAME PID $pid..." log "$PURPLE" "$YELLOW"
 					kill -KILL $pid 2> /dev/null
 					break
