@@ -47,7 +47,7 @@ fi
 
 # Execute If Exists
 exifex() {
-	if type "$1" 2> /dev/null >> /dev/null; then
+	if command -v "$1" >> /dev/null; then
 		"$@"
 	fi
 }
@@ -105,7 +105,7 @@ __usage() {
 	printf "Usage: /etc/leaninit/svc.d/$__svcname [enable|disable|start|stop|restart"
 	if __svccheck return; then
 		printf "|try-restart|force-reload"
-		if type reload 2> /dev/null >> /dev/null; then
+		if command -v reload >> /dev/null; then
 			printf "|reload"
 		fi
 	fi
@@ -319,7 +319,7 @@ __status() {
 run() {
 
 	# Return an error if the service was not written correctly
-	if [ -z "$1" ] || [ -z "$NAME" ] || ! type main 2> /dev/null >> /dev/null; then
+	if [ -z "$1" ] || [ -z "$NAME" ] || ! command -v main >> /dev/null; then
 		print "Service syntax is invalid!" nolog "$RED"
 		exit 128
 
@@ -382,7 +382,7 @@ run() {
 		reload)
 			__rootcheck
 			__svccheck
-			if type reload 2> /dev/null >> /dev/null; then
+			if command -v reload >> /dev/null; then
 				__reload
 			else
 				print "$NAME cannot be reloaded!" log "$RED"
@@ -391,7 +391,7 @@ run() {
 		force-reload)
 			__rootcheck
 			__svccheck
-			if type reload 2> /dev/null >> /dev/null; then
+			if command -v reload >> /dev/null; then
 				__reload
 			else
 				print "Forcing $NAME to restart..." log "$BLUE" "$WHITE"
