@@ -28,9 +28,10 @@
 
 // Universal variables
 static unsigned int single_user = 1;
-static unsigned int zstatus     = 1;
-static unsigned int verbose     = 0;
-static int current_signal       = 0;
+static unsigned int zstatus = 1;
+static unsigned int verbose = 0;
+static int current_signal   = 0;
+static char silent_flag[2];
 
 // Shows usage for init
 static int usage(int ret)
@@ -72,7 +73,7 @@ static void sh(char *script)
 	pid_t child = fork();
 	if(child == 0) {
 		setsid();
-		char *sargv[] = { script, NULL };
+		char *sargv[] = { script, silent_flag, NULL };
 		execve(script, sargv, environ);
 	}
 
@@ -189,12 +190,19 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		// Single user (argv = single) and quiet mode (argv = quiet) support
+		// Single user (argv = single) and silent mode (argv = silent) support
 		if(single_user != 0) {
 			args = argc - 1;
 			while(0 < args) {
-				if(strcmp(argv[args], "single") == 0) single_user = 0;  // Single user
-				else if(strcmp(argv[args], "quiet") == 0) verbose = 1;  // Quiet mode
+
+				// Single user mode
+				if(strcmp(argv[args], "single") == 0) single_user = 0;
+
+				// Silent mode
+				else if(strcmp(argv[args], "silent") == 0) {
+					memcpy(silent_flag, "s", 2);
+					verbose = 1;
+				}
 
 				--args;
 			}

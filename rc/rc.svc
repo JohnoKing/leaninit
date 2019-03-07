@@ -54,7 +54,9 @@ exifex() {
 
 # Print formatted output to stdout and unformatted output to $LOGFILE (use this instead of echo)
 print() {
-	printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
+	if [ "$SILENT_MODE" != "true" ]; then
+		printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
+	fi
 	if [ "$2" = "log" ]; then
 		echo "$1" >> "$LOGFILE"
 	fi

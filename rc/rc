@@ -24,13 +24,19 @@
 # Source rc.svc
 . /etc/leaninit/rc.svc
 
+if [ "$1" = "s" ]; then
+	SILENT_MODE=true
+else
+	SILENT_MODE=false
+fi
+
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE"
 #DEF FreeBSD
-fsck -F
+fsck -F >> /dev/null
 #ENDEF
 #DEF Linux
-fsck -A
+fsck -A >> /dev/null
 #ENDEF
 
 # Mount all drives specified in /etc/fstab
@@ -129,7 +135,7 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	fi
 fi
 
-# Logging
+# Init logging
 touch "$LOGFILE" "$LOGFILE.2"
 mv "$LOGFILE"    "$LOGFILE.old"
 mv "$LOGFILE.2"  "$LOGFILE.old.2" &
@@ -143,12 +149,12 @@ swapon -a &
 # sysctl(8)
 print "Launching sysctl(8)..." log "$BLUE" "$WHITE"
 #DEF Linux
-sysctl --system &
+sysctl --system >> /dev/null &
 #ENDEF
 #DEF FreeBSD
 for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 	if [ -r $s ]; then
-		sysctl -f /etc/sysctl.conf &
+		sysctl -f /etc/sysctl.conf >> /dev/null &
 	fi
 done
 #ENDEF
@@ -205,7 +211,7 @@ __LIST="$(ls /etc/leaninit/svc.e)"
 if [ -n "$__LIST" ]; then
 	for sv in $__LIST; do
 		if [ -x "/etc/leaninit/svc.d/$sv" ]; then
-			"/etc/leaninit/svc.d/$sv" start &
+			SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc.d/$sv" start &
 		fi
 	done
 fi
