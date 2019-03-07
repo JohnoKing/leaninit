@@ -45,7 +45,7 @@ if [ -z "$LOGFILE" ]; then
 	LOGFILE=/var/log/leaninit.log
 fi
 
-# Execute if exists
+# Execute If Exists
 exifex() {
 	if type "$1" 2> /dev/null >> /dev/null; then
 		"$@"
@@ -438,5 +438,4 @@ run() {
 			print "Illegal action - $1" nolog "$RED"
 			__usage 2 ;;
 	esac
-	exit $?
 }
