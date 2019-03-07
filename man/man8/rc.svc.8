@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd Febuary 16, 2019
+.Dd March 7, 2019
 .Dt RC.SVC 8
 .Os
 .Sh NAME
@@ -47,6 +47,11 @@ will set the path to
 .Em /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin,
 then load
 .Em /etc/profile
+
+
+.Em $__svcpidfile
+.Nm rc.svc
+provides services with a preconfigured path for a PID file that may contain either one single PID or multiple PIDs.
 
 
 .Nm exifex

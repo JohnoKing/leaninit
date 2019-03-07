@@ -8,7 +8,7 @@ NAME="Samba"
 main() {
 	waitfor networking
 	smbd -F &
-	jobs -p %+ > /var/run/leaninit/samba.pid
+	jobs -p %+ > "$__svcpidfile"
 }
 
 reload() {

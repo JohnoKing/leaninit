@@ -8,7 +8,7 @@ TYPE=bluetooth
 main() {
 	waitfor service dbus
 	bluetoothd &
-	jobs -p %+ > /var/run/leaninit/bluetoothd.pid
+	jobs -p %+ > "$__svcpidfile"
 }
 
 run "$@"

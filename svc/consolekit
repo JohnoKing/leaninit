@@ -8,7 +8,7 @@ TYPE=login-daemon
 main() {
 	waitfor service dbus
 	console-kit-daemon --no-daemon &
-	jobs -p %+ > /var/run/leaninit/consolekit.pid
+	jobs -p %+ > "$__svcpidfile"
 }
 
 run "$@"

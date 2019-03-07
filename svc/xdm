@@ -14,8 +14,8 @@ main() {
 	waitfor service dbus
 	waitfor login-daemon optional
 	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
-	$DM &
-	jobs -p %+ > /var/run/leaninit/xdm.pid
+	"$DM" &
+	jobs -p %+ > "$__svcpidfile"
 }
 
 # Kill the X server manually

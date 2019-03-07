@@ -5,7 +5,7 @@
 NAME="SyslogD"
 
 main() {
-	syslogd -ss -P /var/run/leaninit/syslogd.pid
+	syslogd -ss -P "$__svcpidfile"
 }
 
 reload() {

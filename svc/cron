@@ -11,7 +11,7 @@ main() {
 #DEF Linux
 	cron -f &
 #ENDEF
-	jobs -p %+ > /var/run/leaninit/cron.pid
+	jobs -p %+ > "$__svcpidfile"
 }
 
 run "$@"

@@ -7,7 +7,7 @@ NAME="Avahi"
 main() {
 	waitfor service dbus
 	avahi-daemon &
-	jobs -p %+ > /var/run/leaninit/avahi.pid
+	jobs -p %+ > "$__svcpidfile"
 }
 
 reload() {

@@ -7,7 +7,7 @@ TARGET=Linux
 
 main() {
 	nvidia-persistenced
-	ln -sf /var/run/nvidia-persistenced/nvidia-persistenced.pid /var/run/leaninit/nvidia-persistenced.pid
+	ln -sf /var/run/nvidia-persistenced/nvidia-persistenced.pid "$__svcpidfile"
 }
 
 run "$@"

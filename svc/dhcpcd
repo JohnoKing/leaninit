@@ -8,7 +8,7 @@ TYPE=networking
 main() {
 	for n in $NETFACE; do
 		dhcpcd -B $n &
-		echo " $(jobs -p %+)" >> /var/run/leaninit/dhcpcd.pid
+		echo " $(jobs -p %+)" >> "$__svcpidfile"
 	done
 }
 

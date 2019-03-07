@@ -6,7 +6,7 @@ NAME="ntpd"
 
 main() {
 	waitfor networking
-	ntpd -p /var/run/leaninit/ntpd.pid
+	ntpd -p "$__svcpidfile"
 }
 
 run "$@"

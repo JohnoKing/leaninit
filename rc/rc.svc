@@ -267,7 +267,7 @@ __stop() {
 	fi
 
 	# Remove the .status, .pid and .type files for the service
-	rm -f "/var/run/leaninit/$__svcname.status" "/var/run/leaninit/$__svcname.pid"
+	rm -f "/var/run/leaninit/$__svcname.status" "$__svcpidfile"
 	if [ -n "$TYPE" ]; then
 		rm -f "/var/run/leaninit/$TYPE.type"
 	fi
@@ -331,8 +331,9 @@ run() {
 
 	# Handle arguments
 	__svcname="$(basename $0)"
-	if [ -r "/var/run/leaninit/$__svcname.pid" ]; then
-		__svcpid="$(cat /var/run/leaninit/$__svcname.pid)"
+	__svcpidfile="/var/run/leaninit/$__svcname.pid"
+	if [ -r "$__svcpidfile" ]; then
+		__svcpid="$(cat $__svcpidfile)"
 	fi
 	case "$1" in
 		enable)

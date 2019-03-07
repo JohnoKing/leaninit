@@ -7,7 +7,7 @@ TARGET=Linux
 
 main() {
 	waitfor service dbus optional
-	acpid -p /var/run/leaninit/acpid.pid
+	acpid -p "$__svcpidfile"
 }
 
 run "$@"

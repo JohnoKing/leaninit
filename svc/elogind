@@ -18,7 +18,7 @@ main() {
 		print "Could not find the elogind binary!" log "$RED"
 		return 1
 	fi
-	jobs -p %+ > /var/run/leaninit/elogind.pid
+	jobs -p %+ > "$__svcpidfile"
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
 		EUACCESS=/usr/libexec/elogind/elogind-uaccess-command
 	elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then

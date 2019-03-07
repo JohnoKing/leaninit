@@ -10,7 +10,7 @@ main() {
 	waitfor process wpa_supplicant
 	sleep 0.5
 	pkill -KILL -x wpa_supplicant
-	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P /var/run/leaninit/wpa_supplicant.pid
+	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
 }
 
 run "$@"

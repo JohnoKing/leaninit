@@ -8,7 +8,7 @@ TARGET=Linux
 
 main() {
 	waitfor service dbus
-	NetworkManager --pid-file=/var/run/leaninit/NetworkManager.pid
+	NetworkManager --pid-file="$__svcpidfile"
 }
 
 run "$@"

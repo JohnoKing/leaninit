@@ -7,7 +7,7 @@ NAME="HALD"
 main() {
 	waitfor service dbus
 	hald --daemon=no --use-syslog &
-	jobs -p %+ > /var/run/leaninit/hald.pid
+	jobs -p %+ > "$__svcpidfile"
 }
 
 # Kill all hald related processes

@@ -8,7 +8,7 @@ TYPE=printing-daemon
 main() {
 	waitfor service avahi
 	cupsd -f &
-	jobs -p %+ > /var/run/leaninit/cups.pid
+	jobs -p %+ > "$__svcpidfile"
 }
 
 run "$@"

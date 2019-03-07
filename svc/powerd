@@ -6,7 +6,7 @@ NAME="PowerD"
 TARGET=FreeBSD
 
 main() {
-	powerd -P /var/run/leaninit/powerd.pid
+	powerd -P "$__svcpidfile"
 }
 
 run "$@"

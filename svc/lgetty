@@ -9,7 +9,7 @@ TYPE=getty
 main() {
 	for tty in $(grep -v '#' /etc/leaninit/ttys); do
 		lgetty "/dev/$tty" &
-		echo " $(jobs -p %+)" >> /var/run/leaninit/lgetty.pid
+		echo " $(jobs -p %+)" >> "$__svcpidfile"
 	done
 }
 
