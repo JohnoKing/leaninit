@@ -1,4 +1,4 @@
-.\" Copyright (c) 2018 Johnothan King. All rights reserved.
+.\" Copyright (c) 2018-2019 Johnothan King. All rights reserved.
 .\"
 .\" Permission is hereby granted, free of charge, to any person obtaining a copy
 .\" of this software and associated documentation files (the "Software"), to deal
@@ -18,8 +18,8 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd August 17, 2018
-.Dt RC 8
+.Dd March 9, 2019
+.Dt RC.CONF 8
 .Os
 .Sh NAME
 .Nm rc.conf
@@ -73,6 +73,13 @@ Sets the location of udev or mdev. Set to
 for udev and
 .Em /sbin/mdev
 for mdev.
+
+.Em LOGFILE
+Sets the location of the log files used by
+.Nm LeanInit.
+Set to
+.Em /var/log/leaninit.log
+by default.
 .Sh SEE ALSO
 rc(8), rc.svc(8), lttys(5)
 .Sh AUTHOR

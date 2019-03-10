@@ -18,8 +18,8 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 7, 2019
-.Dt INIT 8
+.Dd March 9, 2019
+.Dt LEANINIT 8
 .Os
 .Sh NAME
 .Nm leaninit
@@ -57,25 +57,25 @@ If it is not
 will instead do the following:
 .Pp
 .Nm 0
-Turn off the system
+Turn off the system.
 
 .Nm 1, S, s
-Switch the runlevel to single-user (1)
+Switch the runlevel to single-user (1).
 
 .Nm 2, 3, 4, 5
-Switch the runlevel to multi-user (5)
+Switch the runlevel to multi-user (5).
 
 .Nm 6
-Reboot the system
+Reboot the system.
 
 .Nm 7
-Halt the system
+Halt the system.
 
 .Nm 8
-Hibernate the system (Linux only)
+Hibernate the system (Linux only).
 
 .Nm Q, q
-Reload the current runlevel
+Reload the current runlevel.
 
 .Nm --version
 Displays LeanInit's version number to the user.
@@ -129,19 +129,19 @@ or
 .Nm LGetty.
 
 .Nm Purple star and White text:
-A generic message that is not logged
+A generic message that is not logged.
 
 .Nm Blue star and White text:
-A generic message that is logged
+A generic message that is logged.
 
 .Nm Green star and White text:
-A message that indicates a successful action
+A message that indicates a successful action.
 
 .Nm Purple star and Yellow text:
-A warning message
+A warning message.
 
 .Nm Red star and Red text:
-An error message
+An error message.
 .Pp
 .Sh FILES
 .Em /etc/leaninit/rc
@@ -151,7 +151,7 @@ Primary init script run by
 .Em /etc/rc
 Secondary init script that is run if
 .Em /etc/leaninit/rc
-does not exist.
+does not exist
 
 .Em /etc/leaninit/rc.conf
 Provides config settings for
@@ -167,19 +167,19 @@ scripts
 
 .Em /etc/leaninit/rc.shutdown
 Stops all processes and unmounts
-all file systems before reboot.
+all file systems before reboot
 
 .Em /etc/leaninit/svc.d
-Folder containing scripts for starting various services (such as D-BUS).
+Folder containing scripts for starting various services (such as D-BUS)
 
 .Em /etc/leaninit/svc.e
-Location of all files used to determine which services are enabled.
+Location of all files used to determine which services are enabled
 
 .Em /var/log/leaninit.log
 Default log file for
 .Nm LeanInit,
 used by
-.Nm rc.svc(8).
+.Nm rc.svc(8)
 
 .Em /var/run/leaninit
 Default location for LeanInit's .status and .pid files
