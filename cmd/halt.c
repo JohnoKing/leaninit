@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Johnothan King. All rights reserved.
+ * Copyright (c) 2018-2019 Johnothan King. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,12 +37,15 @@ int main(int argc, char *argv[])
 
 	// Long options for halt
 	struct option halt_long_options[] = {
-		{ "force",    no_argument, 0, 'f' },
-		{ "halt",     no_argument, 0, 'h' },
-		{ "no-wall",  no_argument, 0, 'l' },
-		{ "poweroff", no_argument, 0, 'p' },
-		{ "reboot",   no_argument, 0, 'r' },
-		{ "help",     no_argument, 0, '?' },
+		{ "force",          no_argument, 0, 'f' },
+#		ifdef Linux
+		{ "firmware-setup", no_argument, 0, 'F' },
+#		endif
+		{ "halt",           no_argument, 0, 'h' },
+		{ "no-wall",        no_argument, 0, 'l' },
+		{ "poweroff",       no_argument, 0, 'p' },
+		{ "reboot",         no_argument, 0, 'r' },
+		{ "help",           no_argument, 0, '?' },
 	};
 
 	// Int variables
@@ -74,8 +77,15 @@ int main(int argc, char *argv[])
 
 			// Display usage info
 			case '?':
+#				ifdef Linux
+				printf("Usage: %s [-fFhlpr?]\n",  __progname);
+#				else
 				printf("Usage: %s [-fhlpr?]\n",  __progname);
+#				endif
 				printf("  -f, --force            Do not send a signal to init, just shutdown\n");
+#				ifdef Linux
+				printf("  -F, --firmware-setup   Reboot into the firmware setup (cannot be forced)\n");
+#				endif
 				printf("  -h, --halt             Forces halt, even when called as poweroff or reboot\n");
 				printf("  -l, --no-wall          Turn off wall messages\n");
 				printf("  -p, --poweroff         Forces poweroff, even when called as halt or reboot\n");
@@ -107,6 +117,13 @@ int main(int argc, char *argv[])
 			case 'r':
 				signal = SIGINT;
 				break;
+
+#			ifdef Linux
+			// Reboot into firmware setup
+			case 'F':
+				signal = SIGXFSZ;
+				break;
+#			endif
 		}
 	}
 
@@ -127,6 +144,9 @@ int main(int argc, char *argv[])
 			case SIGUSR2: // Poweroff
 				return reboot(SYS_POWEROFF);
 			case SIGINT:  // Reboot
+#			ifdef Linux
+			case SIGXFSZ:
+#			endif
 				return reboot(RB_AUTOBOOT);
 		}
 	}

@@ -18,14 +18,14 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 9, 2019
+.Dd May 19, 2019
 .Dt LEANINIT 8
 .Os
 .Sh NAME
 .Nm leaninit
 .Nd a fast init system
 .Sh SYNOPSIS
-.Nm init [ 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | S | s | Q | q ]
+.Nm init [ 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | S | s | Q | q ]
 .Nm init [ -s | single | silent | quiet silent ]
 .Nm init [ --version | --help ]
 .Sh DESCRIPTION
@@ -74,6 +74,9 @@ Halt the system.
 .Nm 8
 Hibernate the system (Linux only).
 
+.Nm 9
+Reboot the system into the firmware setup (Linux only).
+
 .Nm Q, q
 Reload the current runlevel.
 
@@ -118,6 +121,9 @@ Turns off the system.
 
 .Nm SIGINT
 Reboots the system.
+
+.Nm SIGXFSZ
+Reboots into the system's firmware (Linux only).
 .Sh OUTPUT
 .Nm LeanInit
 outputs text with the following color coding:

@@ -45,6 +45,7 @@ static int usage(int ret)
 	printf("  7           Halt\n");
 #	ifdef Linux
 	printf("  8           Hibernate\n");
+	printf("  9           Reboot into the system firmware (if supported)\n");
 #	endif
 	printf("  Q, q        Reload the current runlevel\n");
 	printf("  --version   Shows LeanInit's version number\n");
@@ -228,6 +229,9 @@ int main(int argc, char *argv[])
 		sigaction(SIGILL,  &actor, NULL); // Multi-user
 		sigaction(SIGHUP,  &actor, NULL); // Reloads everything
 		sigaction(SIGINT,  &actor, NULL); // Reboot
+#		ifdef Linux
+		sigaction(SIGXFSZ, &actor, NULL); // Reboot into firmware setup
+#		endif
 
 		// Signal handling loop
 		for(;;) {
@@ -288,6 +292,22 @@ int main(int argc, char *argv[])
 					// Poweroff
 					case SIGUSR2:
 						return reboot(SYS_POWEROFF);
+
+#					ifdef Linux
+					/*
+					 * Reboot into firmware setup
+					 * Check for OsIndicationsSupported in /sys/firmware/efi
+					 * If this file is found, set the OsIndications variable to use this feature
+					 * Otherwise, skip directly to SIGINT reboot (fallthrough)
+					 */
+					case SIGXFSZ:
+						if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", W_OK) == 0) {
+							unsigned long firmware_setup = 0x0000000000000001; // Variable to write into OsIndications
+							FILE *efd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
+							fwrite(&firmware_setup, 1, 5, efd);
+							fclose(efd);
+						}
+#					endif
 
 					// Reboot
 					case SIGINT:
@@ -363,10 +383,15 @@ int main(int argc, char *argv[])
 		case '7':
 			return kill(1, SIGUSR1);
 
-		// Hibernate
 #		ifdef Linux
+
+		// Hibernate
 		case '8':
 			return reboot(RB_SW_SUSPEND);
+
+		// Reboot into firmware setup
+		case '9':
+			return kill(1, SIGXFSZ);
 #		endif
 
 		// Fallback

@@ -47,6 +47,15 @@ mount -a &
 mount -o remount,rw / 2> /dev/null &
 
 #DEF Linux
+# Mount pseudo file systems
+print "Mounting pseudo file systems..." nolog "$PURPLE" "$WHITE"
+rm -rf /tmp/*
+mountpoint -q /dev  || mount -o nosuid,relatime -t udev devtmpfs /dev &
+mountpoint -q /proc || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc &
+mountpoint -q /sys  || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
+mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
+mountpoint -q /run  || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
+
 # Cgroups support (this function must be run in its own subshell)
 mount_cgroups() {
 	# Mount a tmpfs at /sys/fs/cgroup
@@ -63,19 +72,8 @@ mount_cgroups() {
 	wait
 }
 
-# Mount pseudo file systems
-print "Mounting pseudo file systems..." nolog "$PURPLE" "$WHITE"
-rm -rf /tmp/*
-mountpoint -q /dev  || mount -o nosuid,relatime -t udev devtmpfs /dev &
-mountpoint -q /proc || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc &
-mountpoint -q /sys  || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
-mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
-mountpoint -q /run  || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
-wait
-#ENDEF
-
-#DEF Linux
 # Mount the rest of the pseudo file systems
+wait
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
 mount_cgroups &
 mountpoint -q /dev/pts             || mount -o nosuid,noexec,relatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
@@ -138,7 +136,7 @@ fi
 # Init logging
 touch "$LOGFILE" "$LOGFILE.2"
 mv "$LOGFILE"    "$LOGFILE.old"
-mv "$LOGFILE.2"  "$LOGFILE.old.2" &
+mv "$LOGFILE.2"  "$LOGFILE.old.2"
 echo "LeanInit has started logging on $(uname -srm)" > "$LOGFILE"
 print "LeanInit has started logging!" nolog "$BLUE" "$WHITE" # This message is logged using the previous command above this one
 

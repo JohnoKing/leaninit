@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd September 8, 2018
+.Dd May 19, 2019
 .Dt HALT 8
 .Os
 .Sh NAME
@@ -26,7 +26,7 @@
 .Nd halt, poweroff or reboot
 .Sh SYNOPSIS
 .Nm halt
-.Op Fl fhlpr?
+.Op Fl fFhlpr?
 .Sh DESCRIPTION
 .Nm Halt
 will poweroff, reboot or halt the system when executed by sending the following signals to init:
@@ -36,6 +36,8 @@ Halt: SIGUSR1
 Poweroff: SIGUSR2
 
 Reboot: SIGINT
+
+Reboot into firmware: SIGXFSZ (Linux-only)
 
 .Nm LeanInit's
 version of
@@ -52,6 +54,16 @@ Do not send a signal to
 call
 .Nm reboot(2)
 directly instead.
+.Pp
+.Nm -F, --firmware-setup
+Reboot into the system firmware's interface (Linux-only).
+This option does not work with
+.Nm --force,
+attempting to use
+.Nm --force
+with
+.Nm --firmware-setup
+will result in a normal reboot.
 .Pp
 .Nm -h, --halt
 Forces halt, even when
