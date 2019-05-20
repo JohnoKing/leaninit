@@ -76,7 +76,7 @@ install:
 	@cd $(DESTDIR)/usr/share/man/man8 ;\
 	[ -r lpoweroff.8 ] || ln -sf lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
-	@if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
+	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
 	@if [ `uname` = Linux ]; then $(INSTALL) -Dm0755 out/osindications $(DESTDIR)/sbin; fi
 	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/rc/lservice out/rc/lrunlevel out/lgetty $(DESTDIR)/sbin
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
