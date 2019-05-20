@@ -32,7 +32,6 @@ static unsigned int zstatus = 1;
 static unsigned int verbose = 0;
 static int current_signal   = 0;
 static char silent_flag[2];
-static char fw_flag[2];
 
 // Shows usage for init
 static int usage(int ret)
@@ -75,7 +74,7 @@ static void sh(char *script)
 	pid_t child = fork();
 	if(child == 0) {
 		setsid();
-		char *sargv[] = { script, silent_flag, fw_flag, NULL };
+		char *sargv[] = { script, silent_flag, NULL };
 		execve(script, sargv, environ);
 	}
 
@@ -230,9 +229,6 @@ int main(int argc, char *argv[])
 		sigaction(SIGILL,  &actor, NULL); // Multi-user
 		sigaction(SIGHUP,  &actor, NULL); // Reloads everything
 		sigaction(SIGINT,  &actor, NULL); // Reboot
-#		ifdef Linux
-		sigaction(SIGXFSZ, &actor, NULL); // Reboot into firmware setup
-#		endif
 
 		// Signal handling loop
 		for(;;) {
@@ -251,10 +247,6 @@ int main(int argc, char *argv[])
 				// Synchronize all file systems (Pass 1)
 				if(verbose == 0) printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
 				sync();
-
-				// Set fw_flag to 'E' if SIGXFSZ was sent to LeanInit
-				if(current_signal == SIGXFSZ)
-					memcpy(fw_flag, "E", 2);
 
 				// Run rc.shutdown (multi-user)
 				if(access("/etc/leaninit/rc.shutdown", W_OK | X_OK) == 0)
@@ -299,9 +291,6 @@ int main(int argc, char *argv[])
 						return reboot(SYS_POWEROFF);
 
 					// Reboot
-#					ifdef Linux
-					case SIGXFSZ:
-#					endif
 					case SIGINT:
 						return reboot(RB_AUTOBOOT);
 
@@ -375,15 +364,10 @@ int main(int argc, char *argv[])
 		case '7':
 			return kill(1, SIGUSR1);
 
-#		ifdef Linux
-
 		// Hibernate
+#		ifdef Linux
 		case '8':
 			return reboot(RB_SW_SUSPEND);
-
-		// Reboot into firmware setup
-		case 'R':
-			return kill(1, SIGXFSZ);
 #		endif
 
 		// Fallback

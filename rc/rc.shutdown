@@ -28,15 +28,6 @@
 . /etc/leaninit/rc.conf
 #ENDEF
 
-#DEF Linux
-# Remove the immutable attribute from OsIndications (this allows for booting into system firmware)
-if [ "$2" = "E" ] && [ -w /sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c ] && [ -n "$(hexdump /sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c | grep ' 0001')" ]; then
-	touch /sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c
-	chattr -i /sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c
-	osindications-set
-fi
-#ENDEF
-
 # Stop all currently running services
 __LIST="$(ls /etc/leaninit/svc.d)"
 if [ -n "$__LIST" ]; then

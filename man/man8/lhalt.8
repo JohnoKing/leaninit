@@ -1,4 +1,4 @@
-.\" Copyright (c) 2018 Johnothan King. All rights reserved.
+.\" Copyright (c) 2018-2019 Johnothan King. All rights reserved.
 .\"
 .\" Permission is hereby granted, free of charge, to any person obtaining a copy
 .\" of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 .Nd halt, poweroff or reboot
 .Sh SYNOPSIS
 .Nm halt
-.Op Fl fFhlpr?
+.Op Fl fhlpr?
 .Sh DESCRIPTION
 .Nm Halt
 will poweroff, reboot or halt the system when executed by sending the following signals to init:
@@ -54,16 +54,6 @@ Do not send a signal to
 call
 .Nm reboot(2)
 directly instead.
-.Pp
-.Nm -F, --firmware-setup
-Reboot into the system firmware's interface (Linux-only).
-This option does not work with
-.Nm --force,
-attempting to use
-.Nm --force
-with
-.Nm --firmware-setup
-will result in a normal reboot.
 .Pp
 .Nm -h, --halt
 Forces halt, even when
