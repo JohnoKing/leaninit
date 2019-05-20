@@ -257,6 +257,26 @@ int main(int argc, char *argv[])
 				else if(access("/etc/rc.shutdown", W_OK | X_OK) == 0)
 					sh("/etc/rc.shutdown");
 
+				/*
+				 * Check for OsIndicationsSupported in /sys/firmware/efi
+				 * If this file is found when passed SIGXFSZ, enable this feature in OsIndications
+				 * TODO: Set immutable attributes with ioctl(3)
+				 */
+#				ifdef Linux
+				if((current_signal == SIGXFSZ) && (access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", W_OK) == 0)) {
+
+					// Values to write into OsIndications
+					unsigned long firmware_attr = 0x0000000000000007;
+					unsigned long firmware_boot = 0x0000000000000001;
+
+					// Write /sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c
+					FILE *efi_fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
+					fwrite(&firmware_attr, 1, 4, efi_fd);
+					fwrite(&firmware_boot, 1, 1, efi_fd);
+					fclose(efi_fd);
+				}
+#				endif
+
 				// Kill all remaining processes
 				if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
 				kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
@@ -293,23 +313,10 @@ int main(int argc, char *argv[])
 					case SIGUSR2:
 						return reboot(SYS_POWEROFF);
 
-#					ifdef Linux
-					/*
-					 * Reboot into firmware setup
-					 * Check for OsIndicationsSupported in /sys/firmware/efi
-					 * If this file is found, set the OsIndications variable to use this feature
-					 * Otherwise, skip directly to SIGINT reboot (fallthrough)
-					 */
-					case SIGXFSZ:
-						if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", W_OK) == 0) {
-							unsigned long firmware_setup = 0x0000000000000001; // Variable to write into OsIndications
-							FILE *efd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
-							fwrite(&firmware_setup, 1, 5, efd);
-							fclose(efd);
-						}
-#					endif
-
 					// Reboot
+#					ifdef Linux
+					case SIGXFSZ:
+#					endif
 					case SIGINT:
 						return reboot(RB_AUTOBOOT);
 
