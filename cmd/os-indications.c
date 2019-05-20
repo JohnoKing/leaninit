@@ -21,7 +21,7 @@
  */
 
 /*
- * osindications - This program sets OsIndications for booting into firmware setup.
+ * os-indications - This program sets OsIndications for booting into firmware setup.
  */
 
 #include "inc.h"
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 			// Display usage info
 			case '?':
 				printf("Usage: %s [-u?]\n", __progname);
-				printf("  -u, --unset            Revert changes made by osindications\n");
+				printf("  -u, --unset            Revert changes made by os-indications\n");
 				printf("  -?, --help             Show this usage information\n");
 				return 1;
 
@@ -83,10 +83,10 @@ int main(int argc, char *argv[]) {
 	sync();
 	if(first_bytes == 4) {
 		printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
-		printf(CYAN "* " WHITE "Run `osindications --unset` to revert this change." RESET "\n");
+		printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
 	} else {
 		printf(CYAN "* " WHITE "This system will not boot into the firmware's UI the next time it boots." RESET "\n");
-		printf(CYAN "* " WHITE "Any prior changes made by osindications have been reverted." RESET "\n");
+		printf(CYAN "* " WHITE "Any prior changes made by os-indications have been reverted." RESET "\n");
 	}
 
 	return 0;
