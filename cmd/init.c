@@ -32,6 +32,7 @@ static unsigned int zstatus = 1;
 static unsigned int verbose = 0;
 static int current_signal   = 0;
 static char silent_flag[2];
+static char fw_flag[2];
 
 // Shows usage for init
 static int usage(int ret)
@@ -45,7 +46,7 @@ static int usage(int ret)
 	printf("  7           Halt\n");
 #	ifdef Linux
 	printf("  8           Hibernate\n");
-	printf("  9           Reboot into the system firmware (if supported)\n");
+	printf("  R           Reboot into the system firmware (if supported)\n");
 #	endif
 	printf("  Q, q        Reload the current runlevel\n");
 	printf("  --version   Shows LeanInit's version number\n");
@@ -74,7 +75,7 @@ static void sh(char *script)
 	pid_t child = fork();
 	if(child == 0) {
 		setsid();
-		char *sargv[] = { script, silent_flag, NULL };
+		char *sargv[] = { script, silent_flag, fw_flag, NULL };
 		execve(script, sargv, environ);
 	}
 
@@ -251,31 +252,15 @@ int main(int argc, char *argv[])
 				if(verbose == 0) printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
 				sync();
 
+				// Set fw_flag to 'E' if SIGXFSZ was sent to LeanInit
+				if(current_signal == SIGXFSZ)
+					memcpy(fw_flag, "E", 2);
+
 				// Run rc.shutdown (multi-user)
 				if(access("/etc/leaninit/rc.shutdown", W_OK | X_OK) == 0)
 					sh("/etc/leaninit/rc.shutdown");
 				else if(access("/etc/rc.shutdown", W_OK | X_OK) == 0)
 					sh("/etc/rc.shutdown");
-
-				/*
-				 * Check for OsIndicationsSupported in /sys/firmware/efi
-				 * If this file is found when passed SIGXFSZ, enable this feature in OsIndications
-				 * TODO: Set immutable attributes with ioctl(3)
-				 */
-#				ifdef Linux
-				if((current_signal == SIGXFSZ) && (access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", W_OK) == 0)) {
-
-					// Values to write into OsIndications
-					unsigned long firmware_attr = 0x0000000000000007;
-					unsigned long firmware_boot = 0x0000000000000001;
-
-					// Write /sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c
-					FILE *efi_fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
-					fwrite(&firmware_attr, 1, 4, efi_fd);
-					fwrite(&firmware_boot, 1, 1, efi_fd);
-					fclose(efi_fd);
-				}
-#				endif
 
 				// Kill all remaining processes
 				if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
@@ -397,7 +382,7 @@ int main(int argc, char *argv[])
 			return reboot(RB_SW_SUSPEND);
 
 		// Reboot into firmware setup
-		case '9':
+		case 'R':
 			return kill(1, SIGXFSZ);
 #		endif
 
