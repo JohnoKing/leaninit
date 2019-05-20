@@ -32,7 +32,7 @@ int main(void) {
 	if(getuid() != 0) {
 		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
-	else if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", W_OK) != 0) {
+	} else if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", W_OK) != 0) {
 		printf(RED "* This system does not support OsIndications!" RESET "\n");
 		return 1;
 	}
