@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 		printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
 		printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
 	} else {
-		printf(CYAN "* " WHITE "This system will not boot into the firmware's UI the next time it boots." RESET "\n");
+		printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots." RESET "\n");
 		printf(CYAN "* " WHITE "Any prior changes made by os-indications have been reverted." RESET "\n");
 	}
 
