@@ -37,12 +37,12 @@ int main(int argc, char *argv[])
 
 	// Long options for halt
 	struct option halt_long_options[] = {
-		{ "force",          no_argument, 0, 'f' },
-		{ "halt",           no_argument, 0, 'h' },
-		{ "no-wall",        no_argument, 0, 'l' },
-		{ "poweroff",       no_argument, 0, 'p' },
-		{ "reboot",         no_argument, 0, 'r' },
-		{ "help",           no_argument, 0, '?' },
+		{ "force",    no_argument, 0, 'f' },
+		{ "halt",     no_argument, 0, 'h' },
+		{ "no-wall",  no_argument, 0, 'l' },
+		{ "poweroff", no_argument, 0, 'p' },
+		{ "reboot",   no_argument, 0, 'r' },
+		{ "help",     no_argument, 0, '?' },
 	};
 
 	// Int variables

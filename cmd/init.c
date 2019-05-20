@@ -45,7 +45,6 @@ static int usage(int ret)
 	printf("  7           Halt\n");
 #	ifdef Linux
 	printf("  8           Hibernate\n");
-	printf("  R           Reboot into the system firmware (if supported)\n");
 #	endif
 	printf("  Q, q        Reload the current runlevel\n");
 	printf("  --version   Shows LeanInit's version number\n");
