@@ -97,7 +97,7 @@ static void single(void)
 		memcpy(shell, "/bin/sh", 8);
 	}
 
-	// Fork the shell into a seperate process
+	// Fork the shell into a separate process
 	printf("\n");
 	if(fork() == 0) {
 		open_tty();
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
 		uname(&uts);
 		if(verbose == 0) printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
-		// Start zloop() and chlvl() in seperate threads
+		// Start zloop() and chlvl() in separate threads
 		pthread_t loop, runlvl;
 		pthread_create(&loop,   NULL, zloop, NULL);
 		pthread_create(&runlvl, NULL, chlvl, NULL);

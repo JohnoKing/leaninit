@@ -41,7 +41,7 @@
 #endif
 
 // LeanInit's version number
-#define VERSION_NUMBER "1.2.0-BETA5"
+#define VERSION_NUMBER "1.2.0-BETA6"
 
 // OS specific macros
 #ifdef Linux
@@ -66,5 +66,5 @@
 #define WHITE  "\x1b[1;37m"
 
 // External char variables
-extern char *__progname; // argv[0] is not sufficent
+extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)
