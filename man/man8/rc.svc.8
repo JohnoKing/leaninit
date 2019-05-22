@@ -51,19 +51,29 @@ then load
 .Em /etc/profile
 
 
+
 .Em $__svcpidfile
 .Nm rc.svc
 provides services with a preconfigured path for a PID file that may contain either one single PID or multiple PIDs.
 
+
+
+.Nm exifex command [command args] ...
 
 .Nm exifex
 .Nm ExIfEx (Execute If Exists)
 will execute the given command if it is valid, otherwise it silently returns zero.
 
 
-.Nm isfunc
-This function will return 0 if the given command is a shell function, otherwise it returns 1.
 
+.Nm isfunc command ...
+
+.Nm isfunc
+This function will return 0 if the given command is a shell function, otherwise it will return 1.
+
+
+
+.Nm print "msg" log_argument star_color [message_color] ...
 
 .Nm print
 This function prints formatted output to
@@ -93,6 +103,7 @@ Resets the text format (advised when using custom colors)
 .Em $WHITE
 
 
+
 .Nm waitfor type name [optional]...
 
 .Nm waitfor
@@ -120,6 +131,9 @@ Other types will cause waitfor to look for '/var/run/leaninit/TYPENAME.type', in
 Appending 'optional' as a third argument will cause waitfor to simply return if the type does not exist.
 
 
+
+.Nm run argv ...
+
 .Nm run
 This function is used to run init scripts with standard arguments such as 'start' and 'stop'.
 .Sh FILES
@@ -132,23 +146,26 @@ scripts.
 .Sh EXAMPLES
 Wait for HALD to launch:
 
-waitfor service hald
+.Nm waitfor service hald
+
 
 Wait for a networking service to launch:
 
-waitfor networking
+.Nm waitfor networking
+
 
 Print colored output with a blue star and white text to
 .Em /dev/tty
 and the log file:
 
-print "General informative message..." log "$BLUE" "$WHITE"
+.Nm print "General informative message..." log "$BLUE" "$WHITE"
+
 
 Run an init script using the
 .Nm run()
 function:
 
-run "$@"
+.Nm run "$@"
 .Sh SEE ALSO
 rc(8), rc.shutdown(8), rc.conf(5), leaninit(8)
 .Sh AUTHOR
