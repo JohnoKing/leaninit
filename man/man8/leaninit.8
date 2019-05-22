@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd May 19, 2019
+.Dd May 21, 2019
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -54,7 +54,7 @@ If it is not
 .Nm PID
 1,
 .Nm LeanInit
-will instead do the following:
+will instead read argv and do the following for each option:
 .Pp
 .Nm 0
 Turn off the system.
@@ -78,10 +78,14 @@ Hibernate the system (Linux only).
 Reload the current runlevel.
 
 .Nm --version
-Displays LeanInit's version number to the user.
+Displays
+.Nm LeanInit's
+version number to the user.
 
 .Nm --help
-Displays LeanInit's usage information to the user.
+Displays
+.Nm LeanInit's
+usage information to the user.
 .Pp
 .Nm LeanInit
 accepts the following arguments before booting:
@@ -123,10 +127,9 @@ Reboots the system.
 outputs text with the following color coding:
 
 .Nm Cyan star and White text:
-A generic message directly sent from
-.Nm LeanInit
-or
-.Nm LGetty.
+A generic message sent from one of
+.Nm LeanInit's
+binaries.
 
 .Nm Purple star and White text:
 A generic message that is not logged.
@@ -169,8 +172,13 @@ scripts
 Stops all processes and unmounts
 all file systems before reboot
 
+.Em /etc/rc.shutdown
+Secondary shutdown script that is run if
+.Em /etc/leaninit/rc.shutdown
+does not exist
+
 .Em /etc/leaninit/svc.d
-Folder containing scripts for starting various services (such as D-BUS)
+Folder containing scripts for starting various services (such as D-Bus)
 
 .Em /etc/leaninit/svc.e
 Location of all files used to determine which services are enabled
@@ -182,7 +190,9 @@ used by
 .Nm rc.svc(8)
 
 .Em /var/run/leaninit
-Default location for LeanInit's .status and .pid files
+Default location for
+.Nm LeanInit's
+.status and .pid files
 .Sh SEE ALSO
 lhalt(8), lrc(8), lrc.conf(5), lrc.shutdown(8), lservice(8), rc.svc(8), lgetty(8), lttys(5), kill(1), signal(7)
 .Sh AUTHOR

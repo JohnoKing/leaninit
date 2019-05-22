@@ -1,4 +1,4 @@
-.\" Copyright (c) 2018 Johnothan King. All rights reserved.
+.\" Copyright (c) 2018-2019 Johnothan King. All rights reserved.
 .\"
 .\" Permission is hereby granted, free of charge, to any person obtaining a copy
 .\" of this software and associated documentation files (the "Software"), to deal
@@ -18,12 +18,13 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd October 24, 2018
+.Dd May 21, 2019
 .Dt LSERVICE 8
 .Os
 .Sh NAME
 .Nm lservice
-.Nd service manager for LeanInit
+.Nd service manager for
+.Nm LeanInit
 .Sh SYNOPSIS
 .Nm lservice service-name action
 .Nm lservice --status-all
@@ -59,7 +60,7 @@ Reload a service without restarting it (the service must support reloading for t
 
 .Nm info
 Sends the SIGINFO signal to the service's process when applicable.
-This action is not available on Linux.
+This action is only available on FreeBSD.
 
 .Nm pause
 Sends the SIGSTOP signal to the service's process when applicable to pause it, then sets the service's status to 'Paused'.
@@ -75,7 +76,9 @@ Equivalent to 'cat /var/run/leaninit/svcname.status'.
 Displays usage information for the service itself.
 
 .Nm --status-all
-Show the current statuses of all LeanInit services.
+Show the current statuses of all
+.Nm LeanInit
+services.
 
 .Sh EXAMPLES
 Enable SSH:
