@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd May 21, 2019
+.Dd May 22, 2019
 .Dt RC.SVC 8
 .Os
 .Sh NAME
@@ -59,6 +59,10 @@ provides services with a preconfigured path for a PID file that may contain eith
 .Nm exifex
 .Nm ExIfEx (Execute If Exists)
 will execute the given command if it is valid, otherwise it silently returns zero.
+
+
+.Nm isfunc
+This function will return 0 if the given command is a shell function, otherwise it returns 1.
 
 
 .Nm print

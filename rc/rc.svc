@@ -52,6 +52,15 @@ exifex() {
 	fi
 }
 
+# Return 0 if the given command is a shell function, otherwise return 1
+isfunc() {
+	if [ "$(command -V $1 2> /dev/null | sed 's/ shell//g' | head -n1)" = "$1 is a function" ]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 # Print formatted output to stdout and unformatted output to $LOGFILE (use this instead of echo)
 print() {
 	if [ "$SILENT_MODE" != "true" ]; then
@@ -107,7 +116,7 @@ __usage() {
 	printf "Usage: /etc/leaninit/svc.d/$__svcname [enable|disable|start|stop|restart"
 	if __svccheck return; then
 		printf "|try-restart|force-reload"
-		if command -v reload >> /dev/null; then
+		if isfunc reload; then
 			printf "|reload"
 		fi
 	fi
@@ -245,7 +254,9 @@ __stop() {
 	fi
 
 	# Execute stop()
-	exifex stop
+	if isfunc stop; then
+		stop
+	fi
 
 	# Stop the specified pids in the pid file (if there are any)
 	if [ -n "$__svcpid" ]; then
@@ -321,7 +332,7 @@ __status() {
 run() {
 
 	# Return an error if the service was not written correctly
-	if [ -z "$1" ] || [ -z "$NAME" ] || ! command -v main >> /dev/null; then
+	if [ -z "$1" ] || [ -z "$NAME" ] || ! isfunc main; then
 		print "Service syntax is invalid!" nolog "$RED"
 		exit 128
 
@@ -353,7 +364,9 @@ run() {
 				echo "$__svcname" > "/etc/leaninit/svc.e/$TYPE.type"
 			fi
 			print "$NAME has been enabled!" log "$GREEN" "$WHITE"
-			exifex enable ;;
+			if isfunc enable; then
+				enable
+			fi ;;
 		disable)
 			__rootcheck
 			if [ ! -r "/etc/leaninit/svc.e/$__svcname" ]; then
@@ -369,7 +382,9 @@ run() {
 				exit 1
 			fi
 			print "$NAME has been disabled!" log "$GREEN" "$WHITE"
-			exifex disable ;;
+			if isfunc disable; then
+				disable
+			fi ;;
 		start)
 			__rootcheck
 			__start ;;
@@ -384,7 +399,7 @@ run() {
 		reload)
 			__rootcheck
 			__svccheck
-			if command -v reload >> /dev/null; then
+			if isfunc reload; then
 				__reload
 			else
 				print "$NAME cannot be reloaded!" log "$RED"
@@ -393,7 +408,7 @@ run() {
 		force-reload)
 			__rootcheck
 			__svccheck
-			if command -v reload >> /dev/null; then
+			if isfunc reload; then
 				__reload
 			else
 				print "Forcing $NAME to restart..." log "$BLUE" "$WHITE"
