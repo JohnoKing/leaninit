@@ -371,6 +371,6 @@ int main(int argc, char *argv[])
 
 		// Fallback
 		default:
-			return usage(0);
+			return usage(1);
 	}
 }
