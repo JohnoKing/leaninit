@@ -316,16 +316,23 @@ __reload() {
 
 # Get the current status of a service
 __status() {
+
+	# Look for the service in /etc/leaninit/svc.e
 	if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
-		STAT=enabled
+		__STAT="Enabled"
 	else
-		STAT=disabled
+		__STAT="Disabled"
 	fi
+
+	# Get the service's status
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
-		print "$NAME ($STAT) is not running..." nolog "$PURPLE" "$WHITE"
+		__STATUS="Not Running"
 	else
-		print "$NAME ($STAT) has the status of: $(cat /var/run/leaninit/$__svcname.status)" nolog "$PURPLE" "$WHITE"
+		__STATUS="$(cat /var/run/leaninit/$__svcname.status)"
 	fi
+
+	# Print the output without a star (for --status-all)
+	echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
 }
 
 # This function must be executed for init scripts to start
