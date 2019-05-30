@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
 	unsigned int wall  = 0; // For syslog(3)
 	int signal;             // For signals that will be sent to init
 
+	// Set the signal to send to init(8) using __progname
 	if(strstr(__progname,      "halt")     != 0) // Halt
 		signal = SIGUSR1;
 	else if(strstr(__progname, "poweroff") != 0) // Poweroff
