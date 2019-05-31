@@ -131,20 +131,20 @@ static void multi(void)
 }
 
 // Run either single() or multi() depending on the runlevel
-static void *chlvl(__attribute((unused)) void *ptr)
+static void *chlvl(void *nullptr)
 {
 	// Run single-user if single_user is equal to 0, otherwise run multi-user
 	if(single_user == 0) single();
 	else multi();
 
-	return NULL;
+	return nullptr;
 }
 
 // This perpetual loop kills all zombie processes
-__attribute((noreturn)) static void *zloop(__attribute((unused)) void *ptr)
+__attribute((noreturn)) static void *zloop(void *nullptr)
 {
 	for(;;) {
-		pid_t pid = wait(NULL);
+		pid_t pid = wait(nullptr);
 		if(pid == -1 && zstatus != 0)      zstatus = 0;
 		else if(pid != -1 && zstatus == 0) zstatus = 1;
 	}
