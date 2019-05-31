@@ -255,10 +255,10 @@ int main(int argc, char *argv[])
 
 				// Kill all remaining processes
 				if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
-				kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
-				kill(-1, SIGTERM);
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
+				kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
+				kill(-1, SIGTERM);
 
 				// Give processes about seven seconds to comply with SIGTERM before sending SIGKILL
 				struct timespec rest  = {0};
