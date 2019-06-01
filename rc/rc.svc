@@ -382,11 +382,10 @@ run() {
 			fi
 			rm "/etc/leaninit/svc.e/$__svcname"
 			if [ -n "$TYPE" ]; then
-				rm "/etc/leaninit/svc.e/$TYPE.type"
-			fi
-			if [ $? != 0 ]; then
-				print "Could not disable $NAME!" log "$RED"
-				exit 1
+				if ! rm "/etc/leaninit/svc.e/$TYPE.type"; then
+					print "Could not disable $NAME!" log "$RED"
+					exit 1
+				fi
 			fi
 			print "$NAME has been disabled!" log "$GREEN" "$WHITE"
 			if isfunc disable; then
