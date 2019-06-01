@@ -55,10 +55,18 @@ if [ "$1" = "--status-all" ]; then
 	for svc in $(ls /etc/leaninit/svc.d); do
 		"/etc/leaninit/svc.d/$svc" status >> "$__TMP"
 	done
-	sed -i '/not compatible/d' "$__TMP"
+#DEF Linux
 	echo "$WHITE"
+	sed -i '/not compatible/d' "$__TMP"
 	column -ts '|' -o '|' "$__TMP" |  sort
 	echo "$RESET"
+#ENDEF
+#DEF FreeBSD
+	echo ""
+	sed -i '' '/not compatible/d' "$__TMP"
+	column -ts '|' "$__TMP" |  sort
+	echo ""
+#ENDEF
 	rm -f "$__TMP"
 	exit 0
 fi

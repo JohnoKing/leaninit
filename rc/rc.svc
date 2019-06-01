@@ -332,7 +332,12 @@ __status() {
 	fi
 
 	# Print the output without a star (for --status-all)
+#DEF Linux
 	echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
+#ENDEF
+#DEF FreeBSD
+	echo "$NAME  |  $__STAT  |  $__STATUS"
+#ENDEF
 }
 
 # This function must be executed for init scripts to start
