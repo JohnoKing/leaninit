@@ -55,15 +55,27 @@ static int usage(int ret)
 // Open the tty
 static int open_tty(void)
 {
+
+	// Revoke access to CONSOLE
 #	ifdef FreeBSD
 	revoke(CONSOLE);
 #	endif
-	int tty = open(CONSOLE, O_RDWR | O_NOCTTY);
+
+	// Open CONSOLE
+	int tty;
+	if(single_user == 0)
+		tty = open(CONSOLE, O_RDWR | O_NOCTTY);
+	else
+		tty = open(CONSOLE, O_RDWR | O_NOCTTY | O_NONBLOCK);  // This prevents I/O bugs in multi-user
 	login_tty(tty);
+
+	// Set stdin, stdout and stderr
 	dup2(tty, STDIN_FILENO);
 	dup2(tty, STDOUT_FILENO);
 	dup2(tty, STDERR_FILENO);
 	ioctl(tty, TIOCSCTTY, 1);
+
+	// Return the file descriptor of CONSOLE
 	return tty;
 }
 
@@ -163,17 +175,6 @@ int main(int argc, char *argv[])
 	// PID 1
 	if(getpid() == 1) {
 
-		// Open the console
-		int tty = open_tty();
-
-		// Check for the existence of /bin/sh before proceeding
-		if(access("/bin/sh", X_OK) != 0) {
-			printf(RED "* /bin/sh either does not have executable permissions or does not exist! Press ENTER to power off the system:" RESET " ");
-			getchar();
-			sync();
-			return reboot(SYS_POWEROFF);
-		}
-
 		// Login as root and set $PREVLEVEL to N
 		setenv("HOME",   "/root", 1);
 		setenv("LOGNAME", "root", 1);
@@ -208,6 +209,9 @@ int main(int argc, char *argv[])
 			}
 		}
 
+		// Open the console
+		int tty = open_tty();
+
 		// Print the current platform LeanInit is running on
 		struct utsname uts;
 		uname(&uts);
@@ -236,15 +240,14 @@ int main(int argc, char *argv[])
 
 			// Cancel when the runlevel is already the currently running one
 			if(current_signal == SIGILL && single_user != 0)
-				printf(PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
+				printf("\n" PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
 
 			else if(current_signal == SIGTERM && single_user == 0)
-				printf(PURPLE "* " YELLOW "LeanInit is already in single-user mode..." RESET "\n");
+				printf("\n" PURPLE "* " YELLOW "LeanInit is already in single-user mode..." RESET "\n");
 
 			// Switch the current runlevel
 			else {
 				// Synchronize all file systems (Pass 1)
-				if(verbose == 0) printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 1)..." RESET "\n");
 				sync();
 
 				// Run rc.shutdown (multi-user)
@@ -254,7 +257,6 @@ int main(int argc, char *argv[])
 					sh("/etc/rc.shutdown");
 
 				// Kill all remaining processes
-				if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes..." RESET "\n");
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
 				kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
@@ -270,12 +272,7 @@ int main(int argc, char *argv[])
 				}
 				kill(-1, SIGKILL);
 
-				// Reopen the console
-				close(tty);
-				tty = open_tty();
-
 				// Synchronize file systems again (Pass 2)
-				if(verbose == 0) printf(CYAN "* " WHITE "Synchronizing all file systems (Pass 2)..." RESET "\n");
 				sync();
 
 				// Handle the given signal properly
@@ -305,6 +302,10 @@ int main(int argc, char *argv[])
 						single_user = 1;
 						break;
 				}
+
+				// Reopen the console (this must be done after single_user is set)
+				close(tty);
+				tty = open_tty();
 
 				// Reload the runlevel thread and reset the signal
 				pthread_create(&runlvl, NULL, chlvl, NULL);
