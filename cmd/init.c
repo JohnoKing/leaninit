@@ -40,7 +40,7 @@ static int usage(int ret)
 	printf("Usage: %s [runlevel] ...\n", __progname);
 	printf("    or %s --[opt]    ...\n", __progname);
 	printf("  0           Poweroff\n");
-	printf("  1, S, s     Switch to single-user mode\n");
+	printf("  1, S, s     Switch to single user mode\n");
 	printf("  2, 3, 4, 5  Switch to multi-user mode\n");
 	printf("  6           Reboot\n");
 	printf("  7           Halt\n");
@@ -147,7 +147,7 @@ static void multi(void)
 // Run either single() or multi() depending on the runlevel
 static void *chlvl(void *nullptr)
 {
-	// Run single-user if single_user is equal to 0, otherwise run multi-user
+	// Run single user if single_user is equal to 0, otherwise run multi-user
 	if(single_user == 0) single();
 	else multi();
 
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
 				printf("\n" PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
 
 			else if(current_signal == SIGTERM && single_user == 0)
-				printf("\n" PURPLE "* " YELLOW "LeanInit is already in single-user mode..." RESET "\n");
+				printf("\n" PURPLE "* " YELLOW "LeanInit is already in single user mode..." RESET "\n");
 
 			// Switch the current runlevel
 			else {
@@ -296,7 +296,7 @@ int main(int argc, char *argv[])
 					case SIGINT:
 						return reboot(RB_AUTOBOOT);
 
-					// Switch to single-user
+					// Switch to single user
 					case SIGTERM:
 						setenv("PREVLEVEL", "5", 1);
 						single_user = 0;
