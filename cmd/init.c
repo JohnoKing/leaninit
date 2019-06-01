@@ -28,7 +28,6 @@
 
 // Universal variables
 static unsigned int single_user = 1;
-static pid_t single_shell_pid   = -1;
 static unsigned int zstatus = 1;
 static unsigned int verbose = 0;
 static int current_signal   = 0;
@@ -112,8 +111,7 @@ static void single(void)
 
 	// Fork the shell into a separate process
 	printf("\n");
-	single_shell_pid = fork();
-	if(single_shell_pid == 0) {
+	if(fork() == 0) {
 		open_tty();
 		char *sargv[] = { shell, NULL };
 		execve(shell, sargv, environ);
@@ -261,10 +259,6 @@ int main(int argc, char *argv[])
 				// Kill all remaining processes
 				pthread_kill(runlvl, SIGKILL);
 				pthread_join(runlvl, NULL);
-				if(single_shell_pid != -1) {
-					kill(single_shell_pid, SIGKILL);
-					single_shell_pid = -1;
-				}
 				kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
 				kill(-1, SIGTERM);
 
