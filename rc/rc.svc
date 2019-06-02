@@ -144,7 +144,7 @@ __waitfor_loop_file() {
 			__fail 1
 		fi
 	done
-	if [ -n "$3" ] && [ "$(cat $1)" = "Failure" ]; then
+	if [ -n "$3" ] && [ "$(cat \"$1\")" = "Failure" ]; then
 		print "$3" log "$RED"
 		__fail 1
 	fi
