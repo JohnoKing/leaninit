@@ -100,7 +100,7 @@ static void single(void)
 	setenv("RUNLEVEL", "1", 1);
 
 	// Use a shell of the user's choice
-	char shell[101];
+	char shell[102];
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
 	scanf("%s", shell);
 
@@ -108,10 +108,10 @@ static void single(void)
 	if(access(shell, X_OK) != 0) {
 		printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
 		memcpy(shell, "/bin/sh", 8);
+		printf("\n");
 	}
 
 	// Fork the shell into a separate process
-	printf("\n");
 	single_shell_pid = fork();
 	if(single_shell_pid == 0) {
 		open_tty();
