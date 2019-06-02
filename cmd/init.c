@@ -100,9 +100,10 @@ static void single(void)
 	setenv("RUNLEVEL", "1", 1);
 
 	// Use a shell of the user's choice
-	char shell[102];
+	char buffer[101], shell[101];
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-	scanf("%s", shell);
+	fgets(buffer, 101, stdin);
+	sscanf(buffer, "%s", shell);
 
 	// If the given shell is invalid, use /bin/sh instead
 	if(access(shell, X_OK) != 0) {
