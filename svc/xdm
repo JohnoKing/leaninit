@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Service for X Server Display Managers
 NAME=$XDMNAME
@@ -21,3 +20,5 @@ main() {
 stop() {
 	pkill -x Xorg
 }
+
+. /etc/leaninit/rc.svc

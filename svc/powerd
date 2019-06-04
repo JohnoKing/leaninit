@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # CPU frequency control (FreeBSD)
 NAME="PowerD"
@@ -8,3 +7,5 @@ TARGET=FreeBSD
 main() {
 	powerd -P "$__svcpidfile"
 }
+
+. /etc/leaninit/rc.svc

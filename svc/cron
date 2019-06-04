@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Service for cron
 NAME="cron"
@@ -12,3 +11,5 @@ main() {
 	fork cron -f
 #ENDEF
 }
+
+. /etc/leaninit/rc.svc

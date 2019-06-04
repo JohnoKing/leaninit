@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # WPA Supplicant service (for FreeBSD)
 NAME="WPA Supplicant"
@@ -12,3 +11,5 @@ main() {
 	pkill -KILL -x wpa_supplicant
 	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
 }
+
+. /etc/leaninit/rc.svc

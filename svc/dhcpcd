@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # dhcpcd (for Linux)
 NAME="dhcpcd"
@@ -10,3 +9,5 @@ main() {
 		fork dhcpcd -B $n
 	done
 }
+
+. /etc/leaninit/rc.svc

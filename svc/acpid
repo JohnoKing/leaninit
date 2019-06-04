@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Service for acpid (either BusyBox or other implementation)
 NAME="ACPI Daemon"
@@ -9,3 +8,5 @@ main() {
 	waitfor service dbus optional
 	acpid -p "$__svcpidfile"
 }
+
+. /etc/leaninit/rc.svc

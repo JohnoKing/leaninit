@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Launch gettys
 NAME="LGetty"
@@ -18,3 +17,5 @@ disable() {
 	print "run 'echo init > /etc/leaninit/svc.e/getty.type' as root" nolog "$PURPLE" "$WHITE"
 	print "To re-enable $NAME after executing the above command, run 'rm /etc/leaninit/svc.e/getty.type && lservice lgetty enable' as root" nolog "$PURPLE" "$WHITE"
 }
+
+. /etc/leaninit/rc.svc

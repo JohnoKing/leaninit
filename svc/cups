@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Service for CUPS
 NAME="CUPS"
@@ -9,3 +8,5 @@ main() {
 	waitfor service avahi
 	fork cupsd -f
 }
+
+. /etc/leaninit/rc.svc

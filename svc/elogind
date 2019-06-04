@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # elogind
 NAME="elogind"
@@ -35,3 +34,5 @@ main() {
 		done
 	fi
 }
+
+. /etc/leaninit/rc.svc

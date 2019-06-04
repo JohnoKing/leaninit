@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Service for setupcon(1)
 NAME="Console Setup"
@@ -11,3 +10,5 @@ main() {
 reload() {
 	setupcon
 }
+
+. /etc/leaninit/rc.svc

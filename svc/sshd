@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Secure SHell Daemon
 NAME="SSH"
@@ -16,3 +15,5 @@ main() {
 reload() {
 	pkill -HUP -x sshd
 }
+
+. /etc/leaninit/rc.svc

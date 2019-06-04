@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Samba
 NAME="Samba"
@@ -13,3 +12,5 @@ main() {
 reload() {
 	pkill -HUP -x smbd
 }
+
+. /etc/leaninit/rc.svc

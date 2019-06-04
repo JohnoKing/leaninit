@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Avahi
 NAME="Avahi"
@@ -12,3 +11,5 @@ main() {
 reload() {
 	avahi-daemon --reload
 }
+
+. /etc/leaninit/rc.svc

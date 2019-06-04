@@ -1,7 +1,6 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
-# Linux NetworkManager
+# Wicd
 NAME="Wicd"
 TYPE=networking
 TARGET=Linux
@@ -15,3 +14,5 @@ main() {
 stop() {
 	rm -f /var/run/wicd/wicd.pid
 }
+
+. /etc/leaninit/rc.svc

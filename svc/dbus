@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # D-Bus (required by many other services)
 NAME="D-Bus"
@@ -18,3 +17,5 @@ main() {
 reload() {
 	pkill -HUP -x dbus-daemon
 }
+
+. /etc/leaninit/rc.svc

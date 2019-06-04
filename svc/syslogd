@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Daemon for syslog(3)
 NAME="SyslogD"
@@ -11,3 +10,5 @@ main() {
 reload() {
 	pkill -HUP -x syslogd
 }
+
+. /etc/leaninit/rc.svc

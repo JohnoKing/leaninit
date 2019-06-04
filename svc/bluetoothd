@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Bluetooth daemon
 NAME="Bluetooth daemon"
@@ -9,3 +8,5 @@ main() {
 	waitfor service dbus
 	fork bluetoothd
 }
+
+. /etc/leaninit/rc.svc

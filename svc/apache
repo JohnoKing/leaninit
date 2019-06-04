@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Service for apache httpd
 NAME="Apache Web Server"
@@ -16,3 +15,5 @@ stop() {
 reload() {
 	pkill -HUP -x httpd
 }
+
+. /etc/leaninit/rc.svc

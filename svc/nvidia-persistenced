@@ -1,5 +1,4 @@
 #!/bin/sh
-. /etc/leaninit/rc.svc
 
 # Service for nvidia-persistenced
 NAME="nvidia-persistenced"
@@ -9,3 +8,5 @@ main() {
 	nvidia-persistenced
 	ln -sf /var/run/nvidia-persistenced/nvidia-persistenced.pid "$__svcpidfile"
 }
+
+. /etc/leaninit/rc.svc
