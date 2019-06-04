@@ -6,8 +6,7 @@ NAME="HALD"
 
 main() {
 	waitfor service dbus
-	hald --daemon=no --use-syslog &
-	jobs -p %+ > "$__svcpidfile"
+	fork hald --daemon=no --use-syslog
 }
 
 # Kill all hald related processes

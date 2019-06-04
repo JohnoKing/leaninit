@@ -7,18 +7,23 @@ TYPE=login-daemon
 TARGET=Linux
 
 main() {
+
+	# elogind requires D-Bus
 	waitfor service dbus
+
+	# Run elogind
 	if [ -n "$(command -v elogind)" ]; then
-		elogind &
+		fork elogind
 	elif [ -x /usr/libexec/elogind/elogind ]; then
-		/usr/libexec/elogind/elogind &
+		fork /usr/libexec/elogind/elogind
 	elif [ -x /usr/lib/elogind/elogind ]; then
-		/usr/lib/elogind/elogind &
+		fork /usr/lib/elogind/elogind
 	else
 		print "Could not find the elogind binary!" log "$RED"
 		return 1
 	fi
-	jobs -p %+ > "$__svcpidfile"
+
+	# If elogind-uaccess-command exists, run it
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
 		EUACCESS=/usr/libexec/elogind/elogind-uaccess-command
 	elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then

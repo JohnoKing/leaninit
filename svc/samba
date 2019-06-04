@@ -7,8 +7,7 @@ NAME="Samba"
 # Main function
 main() {
 	waitfor networking
-	smbd -F &
-	jobs -p %+ > "$__svcpidfile"
+	fork smbd -F
 }
 
 reload() {

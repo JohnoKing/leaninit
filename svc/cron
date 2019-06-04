@@ -6,12 +6,11 @@ NAME="cron"
 
 main() {
 #DEF FreeBSD
-	cron -ns &
+	fork cron -ns
 #ENDEF
 #DEF Linux
-	cron -f &
+	fork cron -f
 #ENDEF
-	jobs -p %+ > "$__svcpidfile"
 }
 
 run "$@"

@@ -7,8 +7,7 @@ TYPE=login-daemon
 
 main() {
 	waitfor service dbus
-	console-kit-daemon --no-daemon &
-	jobs -p %+ > "$__svcpidfile"
+	fork console-kit-daemon --no-daemon
 }
 
 run "$@"

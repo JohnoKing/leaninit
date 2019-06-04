@@ -6,8 +6,7 @@ NAME="Apache Web Server"
 
 main() {
 	mkdir -p /run/httpd /var/run/httpd
-	httpd -k start -DFOREGROUND &
-	jobs -p %+ > "$__svcpidfile"
+	fork httpd -k start -DFOREGROUND
 }
 
 stop() {

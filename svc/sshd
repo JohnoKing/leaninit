@@ -10,8 +10,7 @@ main() {
 
 	# sshd must be executed with the full path to the executable
 	ssh-keygen -A >> /dev/null
-	command "$(command -v sshd)" -D &
-	jobs -p %+ > "$__svcpidfile"
+	fork $(command -v sshd) -D
 }
 
 reload() {

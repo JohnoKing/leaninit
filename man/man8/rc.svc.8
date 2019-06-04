@@ -38,7 +38,7 @@ various scripts, including
 .Nm rc(8), rc.shutdown(8)
 and all scripts located in
 .Em /etc/leaninit/svc.d
-.Pp
+
 
 The following functions and variables are provided by
 .Nm rc.svc:
@@ -60,7 +60,6 @@ provides services with a preconfigured path for a PID file that may contain eith
 
 .Nm exifex command [command args] ...
 
-.Nm exifex
 .Nm ExIfEx (Execute If Exists)
 will execute the given command if it is valid, otherwise it silently returns zero.
 
@@ -68,17 +67,14 @@ will execute the given command if it is valid, otherwise it silently returns zer
 
 .Nm isfunc command ...
 
-.Nm isfunc
 This function will return 0 if the given command is a shell function, otherwise it will return 1.
 
 
 
 .Nm print "msg" log_argument star_color [message_color] ...
 
-.Nm print
 This function prints formatted output to
 .Em stdout.
-
 If $2 is set to 'log', then the output from print will be logged to the log file.
 $3 defines the ANSI color of at least the star and $4 (if set) defines the color of the text.
 
@@ -104,9 +100,16 @@ Resets the text format (advised when using custom colors)
 
 
 
+.Nm fork command ...
+
+This function will fork the command given to it and then write
+the resulting PID(s) to
+.Em $__svcpidfile.
+
+
+
 .Nm waitfor type name [optional]...
 
-.Nm waitfor
 This function allows scripts to have dependency management
 by letting them wait for a specified 'type' before proceeding.
 .Nm Waitfor
@@ -134,7 +137,6 @@ Appending 'optional' as a third argument will cause waitfor to simply return if 
 
 .Nm run argv ...
 
-.Nm run
 This function is used to run init scripts with standard arguments such as 'start' and 'stop'.
 .Sh FILES
 .Em /etc/leaninit/rc.conf

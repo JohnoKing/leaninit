@@ -6,8 +6,7 @@ NAME="Avahi"
 
 main() {
 	waitfor service dbus
-	avahi-daemon &
-	jobs -p %+ > "$__svcpidfile"
+	fork avahi-daemon
 }
 
 reload() {

@@ -71,6 +71,12 @@ print() {
 	fi
 }
 
+# Fork the given command into a separate process and put the PID into $__svcpidfile
+fork() {
+	"$@" &
+	jobs -p %+ > "$__svcpidfile"
+}
+
 # Check for uid 0
 __rootcheck() {
 	if [ "$(id -u)" != "0" ]; then
