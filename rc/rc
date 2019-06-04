@@ -22,8 +22,10 @@
 #
 
 # Source rc.svc
+__SVC=false
 . /etc/leaninit/rc.svc
 
+# Enable silent mode if passed 's'
 if [ "$1" = "s" ]; then
 	SILENT_MODE=true
 else

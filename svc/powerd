@@ -8,5 +8,3 @@ TARGET=FreeBSD
 main() {
 	powerd -P "$__svcpidfile"
 }
-
-run "$@"

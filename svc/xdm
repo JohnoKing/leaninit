@@ -21,5 +21,3 @@ main() {
 stop() {
 	pkill -x Xorg
 }
-
-run "$@"

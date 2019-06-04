@@ -24,6 +24,7 @@
 #
 
 # Load rc.svc
+__SVC=false
 . /etc/leaninit/rc.svc
 
 # Usage info

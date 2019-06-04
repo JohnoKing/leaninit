@@ -10,5 +10,3 @@ main() {
 	waitfor service dbus
 	NetworkManager --pid-file="$__svcpidfile"
 }
-
-run "$@"

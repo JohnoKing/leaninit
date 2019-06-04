@@ -132,12 +132,6 @@ Appending 'optional' as a third argument will cause waitfor to simply return if 
 .Nm other
 Other types will cause waitfor to look for '/var/run/leaninit/TYPENAME.type', in a similar manner to the 'file' and 'service' types.
 Appending 'optional' as a third argument will cause waitfor to simply return if the type does not exist.
-
-
-
-.Nm run argv ...
-
-This function is used to run init scripts with standard arguments such as 'start' and 'stop'.
 .Sh FILES
 .Em /etc/leaninit/rc.conf
 Provides config settings for
@@ -161,13 +155,6 @@ Print colored output with a blue star and white text to
 and the log file:
 
 .Nm print "General informative message..." log "$BLUE" "$WHITE"
-
-
-Run an init script using the
-.Nm run()
-function:
-
-.Nm run "$@"
 .Sh SEE ALSO
 rc(8), rc.shutdown(8), rc.conf(5), leaninit(8)
 .Sh AUTHOR

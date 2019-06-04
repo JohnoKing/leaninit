@@ -9,5 +9,3 @@ main() {
 	waitfor service dbus
 	fork console-kit-daemon --no-daemon
 }
-
-run "$@"

@@ -8,5 +8,3 @@ main() {
 	waitfor networking
 	ntpd -p "$__svcpidfile"
 }
-
-run "$@"

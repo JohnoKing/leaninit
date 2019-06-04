@@ -7,9 +7,6 @@ TYPE=networking
 
 main() {
 	for n in $NETFACE; do
-		dhcpcd -B $n &
-		echo " $(jobs -p %+)" >> "$__svcpidfile"
+		fork dhcpcd -B $n
 	done
 }
-
-run "$@"

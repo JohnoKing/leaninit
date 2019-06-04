@@ -12,5 +12,3 @@ main() {
 reload() {
 	avahi-daemon --reload
 }
-
-run "$@"

@@ -9,5 +9,3 @@ main() {
 	waitfor service avahi
 	fork cupsd -f
 }
-
-run "$@"

@@ -12,5 +12,3 @@ main() {
 	pkill -KILL -x wpa_supplicant
 	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
 }
-
-run "$@"

@@ -12,5 +12,3 @@ main() {
 	fork cron -f
 #ENDEF
 }
-
-run "$@"

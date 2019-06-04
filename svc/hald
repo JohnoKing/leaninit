@@ -13,5 +13,3 @@ main() {
 stop() {
 	pkill hald
 }
-
-run "$@"

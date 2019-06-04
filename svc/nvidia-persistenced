@@ -9,5 +9,3 @@ main() {
 	nvidia-persistenced
 	ln -sf /var/run/nvidia-persistenced/nvidia-persistenced.pid "$__svcpidfile"
 }
-
-run "$@"

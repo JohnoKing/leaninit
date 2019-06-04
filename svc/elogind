@@ -35,5 +35,3 @@ main() {
 		done
 	fi
 }
-
-run "$@"

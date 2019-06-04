@@ -8,8 +8,7 @@ TYPE=getty
 # Open gettys on the ttys specified in /etc/leaninit/ttys
 main() {
 	for tty in $(grep -v '#' /etc/leaninit/ttys); do
-		lgetty "/dev/$tty" &
-		echo " $(jobs -p %+)" >> "$__svcpidfile"
+		fork lgetty "/dev/$tty"
 	done
 }
 
@@ -19,5 +18,3 @@ disable() {
 	print "run 'echo init > /etc/leaninit/svc.e/getty.type' as root" nolog "$PURPLE" "$WHITE"
 	print "To re-enable $NAME after executing the above command, run 'rm /etc/leaninit/svc.e/getty.type && lservice lgetty enable' as root" nolog "$PURPLE" "$WHITE"
 }
-
-run "$@"

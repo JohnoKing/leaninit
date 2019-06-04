@@ -9,5 +9,3 @@ main() {
 	waitfor service dbus optional
 	acpid -p "$__svcpidfile"
 }
-
-run "$@"

@@ -9,5 +9,3 @@ main() {
 	waitfor service dbus
 	fork bluetoothd
 }
-
-run "$@"

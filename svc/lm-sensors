@@ -12,5 +12,3 @@ main() {
 reload() {
 	sensors -s
 }
-
-run "$@"

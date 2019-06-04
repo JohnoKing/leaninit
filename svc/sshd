@@ -16,5 +16,3 @@ main() {
 reload() {
 	pkill -HUP -x sshd
 }
-
-run "$@"

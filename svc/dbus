@@ -18,5 +18,3 @@ main() {
 reload() {
 	pkill -HUP -x dbus-daemon
 }
-
-run "$@"
