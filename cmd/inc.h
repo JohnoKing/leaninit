@@ -41,7 +41,7 @@
 #endif
 
 // LeanInit's version number
-#define VERSION_NUMBER "2.0.0-DEV"
+#define VERSION_NUMBER "v2.0.0-DEV"
 
 // OS specific macros
 #ifdef Linux

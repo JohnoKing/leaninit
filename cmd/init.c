@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 		// Print the current platform LeanInit is running on
 		struct utsname uts;
 		uname(&uts);
-		if(verbose == 0) printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
+		if(verbose == 0) printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
 		// Start zloop() and chlvl() in separate threads
 		pthread_t loop, runlvl;
@@ -327,7 +327,7 @@ int main(int argc, char *argv[])
 
 	// Show the version number when called with --version
 	if(strcmp(argv[1], "--version") == 0) {
-		printf(CYAN "* " WHITE "LeanInit version " CYAN VERSION_NUMBER RESET "\n");
+		printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
 		return 0;
 	} else if(strcmp(argv[1], "--help") == 0)
 		return usage(0);
