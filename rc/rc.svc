@@ -54,7 +54,7 @@ exifex() {
 
 # Return 0 if the given command is a shell function, otherwise return 1
 isfunc() {
-	if [ "$(command -V $1 2> /dev/null | sed 's/ shell//g' | head -n1)" = "$1 is a function" ]; then
+	if [ "$(command -V "$1" 2> /dev/null | sed 's/ shell//g' | head -n1)" = "$1 is a function" ]; then
 		return 0
 	else
 		return 1
@@ -119,7 +119,7 @@ __usage() {
 		echo "Usage: /etc/leaninit/svc.d/$__svcname [status|help]"
 		exit $1
 	fi
-	printf "Usage: /etc/leaninit/svc.d/$__svcname [enable|disable|start|stop|restart"
+	printf "%s" "Usage: /etc/leaninit/svc.d/$__svcname [enable|disable|start|stop|restart"
 	if __svccheck return; then
 		printf "|try-restart|force-reload"
 		if isfunc reload; then
@@ -150,7 +150,7 @@ __waitfor_loop_file() {
 			__fail 1
 		fi
 	done
-	if [ -n "$3" ] && [ "$(cat \"$1\")" = "Failure" ]; then
+	if [ -n "$3" ] && [ "$(cat "$1")" = "Failure" ]; then
 		print "$3" log "$RED"
 		__fail 1
 	fi
@@ -160,7 +160,7 @@ __waitfor_loop_file() {
 __waitfor_loop_proc() {
 	__TIMER=0
 	while true; do
-		if [ -n "$(pgrep -x $1)" ]; then break; fi
+		if [ -n "$(pgrep -x "$1")" ]; then break; fi
 		sleep 0.1
 		__TIMER=$((__TIMER + 1))
 		if [ "$((__TIMER > 69))" = "1" ]; then
@@ -215,7 +215,7 @@ waitfor() {
 					return 0
 				fi
 			fi
-			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat /etc/leaninit/svc.e/$1.type) failed to start!"
+			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat "/etc/leaninit/svc.e/$1.type") failed to start!"
 			;;
 	esac
 	return $?
@@ -224,11 +224,11 @@ waitfor() {
 # Start a service
 __start() {
 	# Return if the service is active
-	if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat /var/run/leaninit/$__svcname.status)" != "Failure" ]; then
+	if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Failure" ]; then
 		print "$NAME is already running..." nolog "$PURPLE" "$YELLOW"
 		return 0
 	elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
-		print "$(cat /var/run/leaninit/$TYPE.type) is currently running and conflicts with $NAME!" nolog "$RED"
+		print "$(cat "/var/run/leaninit/$TYPE.type") is currently running and conflicts with $NAME!" nolog "$RED"
 		return 1
 	fi
 
@@ -334,7 +334,7 @@ __status() {
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
 		__STATUS="Not Running"
 	else
-		__STATUS="$(cat /var/run/leaninit/$__svcname.status)"
+		__STATUS="$(cat "/var/run/leaninit/$__svcname.status")"
 	fi
 
 	# Print the output without a star (for --status-all)
@@ -361,10 +361,10 @@ run() {
 	fi
 
 	# Set $__svc variables
-	__svcname="$(basename $0)"
+	__svcname="$(basename "$0")"
 	__svcpidfile="/var/run/leaninit/$__svcname.pid"
 	if [ -r "$__svcpidfile" ]; then
-		__svcpid="$(cat $__svcpidfile)"
+		__svcpid="$(cat "$__svcpidfile")"
 	fi
 
 	# Handle arguments
@@ -376,7 +376,7 @@ run() {
 				exit 0
 			fi
 			if [ -n "$TYPE" ] && [ -r "/etc/leaninit/svc.e/$TYPE.type" ]; then
-				print "$NAME could not be enabled because $(cat /etc/leaninit/svc.e/$TYPE.type) conflicts with $NAME!" log "$RED"
+				print "$NAME could not be enabled because $(cat "/etc/leaninit/svc.e/$TYPE.type") conflicts with $NAME!" log "$RED"
 				exit 1
 			fi
 			touch "/etc/leaninit/svc.e/$__svcname"
@@ -458,7 +458,7 @@ run() {
 		pause)
 			__rootcheck
 			__proccheck
-			if [ "$(cat /var/run/leaninit/$__svcname.status)" = "Paused" ]; then
+			if [ "$(cat "/var/run/leaninit/$__svcname.status")" = "Paused" ]; then
 				print "$NAME is already paused..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
@@ -470,7 +470,7 @@ run() {
 		cont)
 			__rootcheck
 			__proccheck
-			if [ "$(cat /var/run/leaninit/$__svcname.status)" != "Paused" ]; then
+			if [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Paused" ]; then
 				print "$NAME is not paused..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
