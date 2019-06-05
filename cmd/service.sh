@@ -53,8 +53,8 @@ usage() {
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
 	__TMP=$(mktemp)
-	for svc in $(ls /etc/leaninit/svc.d); do
-		"/etc/leaninit/svc.d/$svc" status >> "$__TMP"
+	for svc in /etc/leaninit/svc.d/*; do
+		"$svc" status >> "$__TMP"
 	done
 #DEF Linux
 	echo "$WHITE"
