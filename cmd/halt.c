@@ -78,12 +78,12 @@ int main(int argc, char *argv[])
 			// Display usage info
 			case '?':
 				printf("Usage: %s [-fFhlpr?]\n",  __progname);
-				printf("  -f, --force            Do not send a signal to init, just shutdown\n");
+				printf("  -f, --force            Do not send a signal to init, call reboot(2) directly\n");
 				printf("  -F, --firmware-setup   Reboot into the firmware setup\n");
-				printf("  -h, --halt             Forces halt, even when called as poweroff or reboot\n");
+				printf("  -h, --halt             Force halt, even when called as poweroff or reboot\n");
 				printf("  -l, --no-wall          Turn off wall messages\n");
-				printf("  -p, --poweroff         Forces poweroff, even when called as halt or reboot\n");
-				printf("  -r, --reboot           Forces reboot, even when called as halt or poweroff\n");
+				printf("  -p, --poweroff         Force poweroff, even when called as halt or reboot\n");
+				printf("  -r, --reboot           Force reboot, even when called as halt or poweroff\n");
 				printf("  -?, --help             Show this usage information\n");
 				return 1;
 
