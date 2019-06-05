@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Long options and other variables
-	unsigned int verbose = 0;
-	size_t first_bytes   = 4;
+	unsigned int first_bytes = 4;
+	unsigned int verbose     = 0;
 	struct option long_options[] = {
 		{ "quiet", no_argument, 0, 'q' },
 		{ "unset", no_argument, 0, 'u' },
