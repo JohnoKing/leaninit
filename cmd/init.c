@@ -56,7 +56,6 @@ static int usage(int ret)
 // Open the tty
 static int open_tty(void)
 {
-
 	// Revoke access to CONSOLE
 #	ifdef FreeBSD
 	revoke(CONSOLE);
