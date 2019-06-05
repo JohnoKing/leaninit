@@ -28,7 +28,7 @@
 for booting into firmware setup
 .Sh SYNOPSIS
 .Nm os-indications
-.Op Fl u?
+.Op Fl qu?
 .Sh DESCRIPTION
 This program controls whether or not the UEFI variable
 .Nm OsIndications
@@ -41,6 +41,11 @@ will set
 to boot into the system firmware on the next boot.
 
 This program accepts the following flags:
+
+.Nm -q, --quiet
+Disable
+.Nm os-indications
+output (unless an error occurs).
 
 .Nm -u, --unset
 Unset the 0x0000000000000001 value in

@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 
 	// Long options for halt
 	struct option halt_long_options[] = {
+		{ "firmware-setup", no_argument, 0, 'F' },
 		{ "force",    no_argument, 0, 'f' },
 		{ "halt",     no_argument, 0, 'h' },
 		{ "no-wall",  no_argument, 0, 'l' },
@@ -47,7 +48,8 @@ int main(int argc, char *argv[])
 
 	// Int variables
 	unsigned int force = 1; // If this is 0, skip sending a signal to init
-	unsigned int wall  = 0; // For syslog(3)
+	unsigned int osin  = 1; // If this is 0, call os-indications(8) before rebooting
+	unsigned int wall  = 0; // Used for syslog(3) messages
 	int signal;             // For signals that will be sent to init
 
 	// Set the signal to send to init(8) using __progname
@@ -70,13 +72,14 @@ int main(int argc, char *argv[])
 
 	// Parse any given options
 	int args;
-	while((args = getopt_long(argc, argv, "fhlpr?", halt_long_options, NULL)) != -1) {
+	while((args = getopt_long(argc, argv, "fFhlpr?", halt_long_options, NULL)) != -1) {
 		switch(args) {
 
 			// Display usage info
 			case '?':
-				printf("Usage: %s [-fhlpr?]\n",  __progname);
+				printf("Usage: %s [-fFhlpr?]\n",  __progname);
 				printf("  -f, --force            Do not send a signal to init, just shutdown\n");
+				printf("  -F, --firmware-setup   Reboot into the firmware setup\n");
 				printf("  -h, --halt             Forces halt, even when called as poweroff or reboot\n");
 				printf("  -l, --no-wall          Turn off wall messages\n");
 				printf("  -p, --poweroff         Forces poweroff, even when called as halt or reboot\n");
@@ -87,6 +90,11 @@ int main(int argc, char *argv[])
 			// --force
 			case 'f':
 				force = 0;
+				break;
+
+			// Firmware setup
+			case 'F':
+				osin = 0;
 				break;
 
 			// Force halt
@@ -116,6 +124,17 @@ int main(int argc, char *argv[])
 		openlog(__progname, LOG_CONS, LOG_AUTH);
 		syslog(LOG_CRIT, "The system is going down NOW!");
 		closelog();
+	}
+
+	// Run os-indications(8) if --firmware-setup was passed
+	if(osin == 0) {
+		pid_t child = fork();
+		if(child == 0) {
+			char *cargv[] = { "os-indications", "-q", NULL };
+			execve("/sbin/os-indications", cargv, environ);
+		}
+
+		waitpid(child, NULL, 0);
 	}
 
 	// Skip init if force is true

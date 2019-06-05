@@ -37,24 +37,32 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	// Long options and first_bytes variable
-	size_t first_bytes = 4;
+	// Long options and other variables
+	unsigned int verbose = 0;
+	size_t first_bytes   = 4;
 	struct option long_options[] = {
+		{ "quiet", no_argument, 0, 'q' },
 		{ "unset", no_argument, 0, 'u' },
 		{ "help",  no_argument, 0, '?' },
 	};
 
 	// Parse options
 	int args;
-	while((args = getopt_long(argc, argv, "u?", long_options, NULL)) != -1) {
+	while((args = getopt_long(argc, argv, "qu?", long_options, NULL)) != -1) {
 		switch(args) {
 
 			// Display usage info
 			case '?':
-				printf("Usage: %s [-u?]\n", __progname);
+				printf("Usage: %s [-qu?]\n", __progname);
+				printf("  -q, --quiet            Disable output (unless there was an error)\n");
 				printf("  -u, --unset            Revert changes made by os-indications\n");
 				printf("  -?, --help             Show this usage information\n");
 				return 1;
+
+			// Quiet mode
+			case 'q':
+				verbose = 1;
+				break;
 
 			// Unset OsIndications
 			case 'u':
@@ -78,15 +86,17 @@ int main(int argc, char *argv[]) {
 		fwrite(&efi_boot, 1, 1, fd);
 	}
 
-	// Close the file and notify the user of the change
+	// Close the file and (if --quiet was not passed) notify the user of the change
 	fclose(fd);
 	sync();
-	if(first_bytes == 4) {
-		printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
-		printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
-	} else {
-		printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots." RESET "\n");
-		printf(CYAN "* " WHITE "Any prior changes made by os-indications have been reverted." RESET "\n");
+	if(verbose == 0) {
+		if(first_bytes == 4) {
+			printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
+			printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
+		} else {
+			printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots." RESET "\n");
+			printf(CYAN "* " WHITE "Any prior changes made by os-indications have been reverted." RESET "\n");
+		}
 	}
 
 	return 0;
