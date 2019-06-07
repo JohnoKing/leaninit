@@ -181,6 +181,12 @@ if [ -n "$NETFACE" ]; then
 		ip link set up dev $n &
 	done
 fi
+
+# Set the keyboard layout (this requires kbd to work)
+if [ -n "$KEYMAP" ]; then
+	print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
+	loadkeys $KEYMAP &
+fi
 #ENDEF
 
 # Set the hostname
@@ -194,14 +200,6 @@ if [ -n "$TIMEZONE" ] && [ -r "/usr/share/zoneinfo/$TIMEZONE" ]; then
 	print "Setting the timezone to $TIMEZONE..." nolog "$PURPLE" "$WHITE"
 	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
 fi
-
-#DEF Linux
-# Set the keyboard layout (this requires kbd to work)
-if [ -n "$KEYMAP" ]; then
-	print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
-	loadkeys $KEYMAP &
-fi
-#ENDEF
 
 # Wait for all jobs to finish
 wait
