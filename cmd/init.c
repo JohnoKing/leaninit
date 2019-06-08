@@ -95,9 +95,6 @@ static void sh(char *script)
 // Single user mode
 static void single(void)
 {
-	// Start single user mode as runlevel 1
-	setenv("RUNLEVEL", "1", 1);
-
 	// Use a shell of the user's choice
 	char buffer[101], shell[101];
 	printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
@@ -131,13 +128,9 @@ static void multi(void)
 		memcpy(rc, "/etc/rc", 8);
 	else {
 		printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
-		single_user = 0;
-		single();
+		kill(1, SIGTERM);
 		return;
 	}
-
-	// Set the runlevel to 5 after rc(8) has been located
-	setenv("RUNLEVEL", "5", 1);
 
 	// Run rc(8)
 	if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
@@ -298,12 +291,14 @@ int main(int argc, char *argv[])
 					// Switch to single user
 					case SIGTERM:
 						setenv("PREVLEVEL", "5", 1);
+						setenv("RUNLEVEL",  "1", 1);
 						single_user = 0;
 						break;
 
 					// Switch to multi-user
 					case SIGILL:
 						setenv("PREVLEVEL", "1", 1);
+						setenv("RUNLEVEL",  "5", 1);
 						single_user = 1;
 						break;
 				}
