@@ -168,7 +168,6 @@ __attribute((noreturn)) static void *zloop(void *nullptr)
 static void sighandle(int signal)
 {
 	current_signal = signal;
-	return;
 }
 
 // The main function
