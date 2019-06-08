@@ -173,7 +173,6 @@ int main(int argc, char *argv[])
 		setenv("HOME",   "/root", 1);
 		setenv("LOGNAME", "root", 1);
 		setenv("USER",    "root", 1);
-		setenv("PREVLEVEL",  "N", 1);
 
 		// Single user support (argv = -s)
 		int args;
@@ -290,15 +289,11 @@ int main(int argc, char *argv[])
 
 					// Switch to single user
 					case SIGTERM:
-						setenv("PREVLEVEL", "5", 1);
-						setenv("RUNLEVEL",  "1", 1);
 						single_user = 0;
 						break;
 
 					// Switch to multi-user
 					case SIGILL:
-						setenv("PREVLEVEL", "1", 1);
-						setenv("RUNLEVEL",  "5", 1);
 						single_user = 1;
 						break;
 				}

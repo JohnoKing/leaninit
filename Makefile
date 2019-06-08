@@ -28,7 +28,7 @@ WFLAGS   := -Wall -Wextra -Wpedantic
 LIBS     := -lpthread -lutil
 RC       := out/*/*
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
-	$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 $(DESTDIR)/usr/share/man/man8/lrunlevel.8 \
+	$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
 	$(DESTDIR)/usr/share/man/man8/lgetty.8 $(DESTDIR)/usr/share/man/man8/lrc.shutdown.8 $(DESTDIR)/usr/share/man/man8/lservice.8 $(DESTDIR)/usr/share/man/man8/lpoweroff.8 \
 	$(DESTDIR)/usr/share/man/man8/lreboot.8 $(DESTDIR)/usr/share/man/man8/lzzz.8 $(DESTDIR)/usr/share/man/man8/os-indications.8
 
@@ -38,7 +38,6 @@ all: clean
 	@cp -r rc  out/rc
 	@cp -r svc out/svc.d
 	@cp cmd/service.sh  out/rc/lservice
-	@cp cmd/runlevel.sh out/rc/lrunlevel
 	@if [ `uname` = Linux ]; then \
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
 		$(SED) -i "/#DEF Linux/d"       $(RC) ;\
@@ -78,7 +77,7 @@ install:
 	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
 	@if [ `uname` = Linux ]; then $(INSTALL) -Dm0755 out/os-indications $(DESTDIR)/sbin; fi
-	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/rc/lservice out/rc/lrunlevel out/lgetty $(DESTDIR)/sbin
+	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/rc/lservice out/lgetty $(DESTDIR)/sbin
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
@@ -97,7 +96,7 @@ uninstall:
 		false ;\
 	fi
 	@rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/sbin/lgetty $(DESTDIR)/sbin/os-indications $(DESTDIR)/usr/share/licenses/leaninit \
-		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/sbin/lrunlevel $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log $(DESTDIR)/var/run/leaninit $(MANPAGES)
+		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log $(DESTDIR)/var/run/leaninit $(MANPAGES)
 	@echo "Successfully uninstalled LeanInit!"
 	@echo "Please make sure you remove LeanInit from your bootloader!"
 
