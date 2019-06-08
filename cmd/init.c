@@ -128,7 +128,8 @@ static void multi(void)
 		memcpy(rc, "/etc/rc", 8);
 	else {
 		printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
-		kill(1, SIGTERM);
+		single_user = 0;
+		single();
 		return;
 	}
 
