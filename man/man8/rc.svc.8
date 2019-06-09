@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 3, 2019
+.Dd June 8, 2019
 .Dt RC.SVC 8
 .Os
 .Sh NAME
@@ -45,16 +45,26 @@ The following functions and variables are provided by
 
 .Em $PATH
 .Nm rc.svc
-will set the path to
+will set the default path to
 .Em /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin,
 then load
 .Em /etc/profile
 
 
 
+.Em $__svcname
+This variable provides services with their basename by running `$(basename "$0")`.
+
+
+
 .Em $__svcpidfile
 .Nm rc.svc
 provides services with a preconfigured path for a PID file that may contain either one single PID or multiple PIDs.
+
+
+
+.Em $__svcpid
+This variable provides services with their PID(s) by running `$(cat $__svcpidfile)`.
 
 
 
