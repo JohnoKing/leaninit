@@ -29,7 +29,7 @@
 // Universal variables
 static unsigned int single_user = 1;
 static pid_t single_shell_pid   = -1;
-static unsigned int zstatus = 1;
+static unsigned int pstatus = 1;
 static unsigned int verbose = 0;
 static int current_signal   = 0;
 static char silent_flag[2];
@@ -153,8 +153,8 @@ __attribute((noreturn)) static void *zloop(void *nullptr)
 {
 	for(;;) {
 		pid_t pid = wait(nullptr);
-		if(pid == -1 && zstatus != 0)      zstatus = 0;
-		else if(pid != -1 && zstatus == 0) zstatus = 1;
+		if(pid == -1 && pstatus == 0)      pstatus = 1;
+		else if(pid != -1 && pstatus != 0) pstatus = 0;
 	}
 }
 
@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
 				struct timespec rest  = {0};
 				rest.tv_nsec          = 100000000;
 				unsigned int timer    = 0;
-				while(zstatus != 0 && timer < 70) {
+				while(pstatus == 0 && timer < 70) {
 					nanosleep(&rest, NULL);
 					timer++;
 				}
