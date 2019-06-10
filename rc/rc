@@ -123,8 +123,11 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	zfs mount -a
 	zfs share -a
 
-	# Make / read-write (used in case root is a read-only ZFS dataset)
-	zfs readonly=off / 2> /dev/null
+	# Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
+	for z in $(zpool list -Ho name); do
+		print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
+		zfs readonly=off $z
+	done
 fi
 
 # Init logging
