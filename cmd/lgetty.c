@@ -42,7 +42,7 @@ static void open_tty(const char *ttyd)
 
 	// Verify the tty exists
 	int tty = open(ttyd, O_RDWR | O_NOCTTY);
-	if(isatty(tty) == 0)
+	if(isatty(tty))
 		usage(127);
 
 	// Set the tty as the controlling terminal
@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
 
 	// Find login(1)
 	char login_cmd[16];
-	if(access("/bin/login", X_OK) == 0)
+	if(access("/bin/login", X_OK))
 		memcpy(login_cmd, "/bin/login ", 12);
-	else if(access("/usr/bin/login", X_OK) == 0)
+	else if(access("/usr/bin/login", X_OK))
 		memcpy(login_cmd, "/usr/bin/login ", 16);
 	else {
 		printf(RED "* Could not find login(1) (please symlink it to either /bin/login or /usr/bin/login and give it executable permissions)" RESET "\n");
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
 		// Create a child process for login(1)
 		pid_t login = fork();
-		if(login == 0) {
+		if(login) {
 			open_tty(argv[1]);
 
 			// Get user input
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
 		// Do not spam the tty
 		waitpid(login, &status, 0);
-		if(WEXITSTATUS(status) != 0) {
+		if(!WEXITSTATUS(status)) {
 #			ifdef FreeBSD
 			open_tty(argv[1]);
 #			endif

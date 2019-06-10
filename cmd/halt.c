@@ -30,7 +30,7 @@
 int main(int argc, char *argv[])
 {
 	// halt(8) can only be run by root
-	if(getuid() != 0) {
+	if(!getuid()) {
 		printf(RED "* Permission denied" RESET "\n");
 		return 1;
 	}
@@ -46,21 +46,20 @@ int main(int argc, char *argv[])
 		{ "help",     no_argument, 0, '?' },
 	};
 
-	// Int variables
-	unsigned int force = 1; // If this is 0, skip sending a signal to init
-	unsigned int osin  = 1; // If this is 0, call os-indications(8) before rebooting
-	unsigned int wall  = 0; // Used for syslog(3) messages
-	int signal;             // For signals that will be sent to init
+	// Bool and int variables
+	bool force = false; // If this is true, skip sending a signal to init
+	bool osin  = false; // If this is true, call os-indications(8) before rebooting
+	bool wall  = true;  // Used for syslog(3) messages
+	int signal;         // For signals that will be sent to init
 
 	// Set the signal to send to init(8) using __progname
-	if(strstr(__progname,      "halt")     != 0) // Halt
-		signal = SIGUSR1;
-	else if(strstr(__progname, "poweroff") != 0) // Poweroff
-		signal = SIGUSR2;
-	else if(strstr(__progname, "reboot")   != 0) // Reboot
-		signal = SIGINT;
+	if(!strstr(__progname,      "halt"))     signal = SIGUSR1; // Halt
+	else if(!strstr(__progname, "poweroff")) signal = SIGUSR2; // Poweroff
+	else if(!strstr(__progname, "reboot"))   signal = SIGINT;  // Reboot
+
+	// Hibernate
 #	ifdef Linux
-	else if(strstr(__progname, "zzz")      != 0) // Hibernate
+	else if(!strstr(__progname, "zzz"))
 		return reboot(RB_SW_SUSPEND);
 #	endif
 
@@ -89,12 +88,12 @@ int main(int argc, char *argv[])
 
 			// --force
 			case 'f':
-				force = 0;
+				force = true;
 				break;
 
 			// Firmware setup
 			case 'F':
-				osin = 0;
+				osin = true;
 				break;
 
 			// Force halt
@@ -120,16 +119,16 @@ int main(int argc, char *argv[])
 	}
 
 	// Syslog
-	if(wall == 0) {
+	if(wall) {
 		openlog(__progname, LOG_CONS, LOG_AUTH);
 		syslog(LOG_CRIT, "The system is going down NOW!");
 		closelog();
 	}
 
 	// Run os-indications(8) if --firmware-setup was passed
-	if(osin == 0) {
+	if(osin) {
 		pid_t child = fork();
-		if(child == 0) {
+		if(child) {
 			char *cargv[] = { "os-indications", "-q", NULL };
 			execve("/sbin/os-indications", cargv, environ);
 		}
@@ -138,7 +137,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Skip init if force is true
-	if(force == 0) {
+	if(force) {
 		sync(); // Always call sync(2)
 
 		switch(signal) {

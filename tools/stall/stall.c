@@ -25,6 +25,7 @@
  */
 
 #include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -32,16 +33,16 @@
 int main(int argc, char *argv[])
 {
 	// SIGSTOP mode can be enabled by passing --sigstop to stall
-	unsigned int sigstop = 1;
-	if((argc > 1) && (strstr(argv[1], "--sigstop") != 0))
-		sigstop = 0;
+	bool sigstop = false;
+	if(argc > 1 && !strstr(argv[1], "--sigstop"))
+		sigstop = true;
 
 	// Create the stall process itself
 	pid_t stall_pid = fork();
-	if(stall_pid == 0) {
+	if(stall_pid) {
 
 		// Ignore SIGINT and SIGTERM when stall is not in SIGSTOP mode
-		if(sigstop != 0) {
+		if(!sigstop) {
 			struct sigaction actor;
 			memset(&actor, 0, sizeof(actor));
 			actor.sa_handler = SIG_IGN;
@@ -55,7 +56,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Output info
-	if(sigstop != 0) {
+	if(!sigstop) {
 		printf("Stall is now running in the background with pid %d.\n", stall_pid);
 		printf("Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead).\n");
 		printf("To execute stall in SIGSTOP mode, pass --sigstop when executing stall.\n");

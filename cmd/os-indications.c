@@ -29,17 +29,17 @@
 int main(int argc, char *argv[]) {
 
 	// Error checks
-	if(getuid() != 0) {
+	if(!getuid()) {
 		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
-	} else if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
+	} else if(!access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK)) {
 		printf(RED "* This system does not support OsIndications!" RESET "\n");
 		return 1;
 	}
 
 	// Long options and other variables
 	unsigned int first_bytes = 4;
-	unsigned int verbose     = 0;
+	bool verbose = true;
 	struct option long_options[] = {
 		{ "quiet", no_argument, 0, 'q' },
 		{ "unset", no_argument, 0, 'u' },
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 
 			// Quiet mode
 			case 'q':
-				verbose = 1;
+				verbose = false;
 				break;
 
 			// Unset OsIndications
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 	// Write efi_attr (0x0000000000000007)
 	FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
 	unsigned long efi_attr = 0x0000000000000007;
-	if(fwrite(&efi_attr, 1, first_bytes, fd) == 0) {
+	if(fwrite(&efi_attr, 1, first_bytes, fd)) {
 		fclose(fd);
 		printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
 		return 1;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 	// Close the file and (if --quiet was not passed) notify the user of the change
 	fclose(fd);
 	sync();
-	if(verbose == 0) {
+	if(verbose) {
 		if(first_bytes == 4) {
 			printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
 			printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
