@@ -147,7 +147,7 @@ print "Turning on all swap partitions..." log "$BLUE" "$WHITE"
 swapon -a &
 
 # sysctl(8)
-print "Launching sysctl(8)..." log "$BLUE" "$WHITE"
+print "Executing sysctl(8)..." log "$BLUE" "$WHITE"
 #DEF Linux
 sysctl --system >> /dev/null &
 #ENDEF
