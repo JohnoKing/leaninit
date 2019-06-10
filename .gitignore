@@ -4,6 +4,8 @@
 # Dolphin File Manager
 *.directory
 
-# Ignore build files
+# Ignore ./out (stores built files)
 out
-tools/stall/stall
+
+# Ignore the built stall binary
+stall/stall

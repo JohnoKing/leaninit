@@ -27,11 +27,11 @@
 #include "inc.h"
 
 // Universal variables
-static pid_t single_shell_pid = -1;
-static int   current_signal   = 0;
-static bool single_user = true;
-static bool verbose     = true;
-static bool pstatus     = false;
+static unsigned int single_user = 1;
+static pid_t single_shell_pid   = -1;
+static unsigned int zstatus = 1;
+static unsigned int verbose = 0;
+static int current_signal   = 0;
 static char silent_flag[2];
 
 // Shows usage for init
@@ -63,7 +63,7 @@ static int open_tty(void)
 
 	// Open CONSOLE
 	int tty;
-	if(single_user)
+	if(single_user == 0)
 		tty = open(CONSOLE, O_RDWR | O_NOCTTY);
 	else
 		tty = open(CONSOLE, O_RDWR | O_NOCTTY | O_NONBLOCK);  // This prevents I/O bugs in multi-user
@@ -83,7 +83,7 @@ static int open_tty(void)
 static void sh(char *script)
 {
 	pid_t child = fork();
-	if(child) {
+	if(child == 0) {
 		setsid();
 		char *sargv[] = { script, silent_flag, NULL };
 		execve(script, sargv, environ);
@@ -102,7 +102,7 @@ static void single(void)
 	sscanf(buffer, "%s", shell);
 
 	// If the given shell is invalid, use /bin/sh instead
-	if(!access(shell, X_OK)) {
+	if(access(shell, X_OK) != 0) {
 		printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
 		memcpy(shell, "/bin/sh", 8);
 		printf("\n");
@@ -110,7 +110,7 @@ static void single(void)
 
 	// Fork the shell into a separate process
 	single_shell_pid = fork();
-	if(single_shell_pid) {
+	if(single_shell_pid == 0) {
 		open_tty();
 		char *sargv[] = { shell, NULL };
 		execve(shell, sargv, environ);
@@ -122,27 +122,27 @@ static void multi(void)
 {
 	// Locate rc(8)
 	char rc[17];
-	if(access("/etc/leaninit/rc", X_OK))
+	if(access("/etc/leaninit/rc", X_OK) == 0)
 		memcpy(rc, "/etc/leaninit/rc", 17);
-	else if(access("/etc/rc", X_OK))
+	else if(access("/etc/rc", X_OK) == 0)
 		memcpy(rc, "/etc/rc", 8);
 	else {
 		printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
-		single_user = true;
+		single_user = 0;
 		single();
 		return;
 	}
 
 	// Run rc(8)
-	if(verbose) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
+	if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
 	sh(rc);
 }
 
 // Run either single() or multi() depending on the runlevel
 static void *chlvl(void *nullptr)
 {
-	// Run single user if single_user is set to true, otherwise run multi-user
-	if(single_user) single();
+	// Run single user if single_user is equal to 0, otherwise run multi-user
+	if(single_user == 0) single();
 	else multi();
 
 	return nullptr;
@@ -153,8 +153,8 @@ __attribute((noreturn)) static void *zloop(void *nullptr)
 {
 	for(;;) {
 		pid_t pid = wait(nullptr);
-		if(pid == -1 && pstatus)       pstatus = false;
-		else if(pid != -1 && !pstatus) pstatus = true;
+		if(pid == -1 && zstatus != 0)      zstatus = 0;
+		else if(pid != -1 && zstatus == 0) zstatus = 1;
 	}
 }
 
@@ -180,23 +180,23 @@ int main(int argc, char *argv[])
 		while((args = getopt(argc, argv, "s")) != -1) {
 			switch(args) {
 				case 's':
-					single_user = true;
+					single_user = 0;
 					break;
 			}
 		}
 
 		// Single user (argv = single) and silent mode (argv = silent) support
-		if(!single_user) {
+		if(single_user != 0) {
 			args = argc - 1;
 			while(0 < args) {
 
 				// Single user mode
-				if(strcmp(argv[args], "single")) single_user = true;
+				if(strcmp(argv[args], "single") == 0) single_user = 0;
 
 				// Silent mode
-				else if(strcmp(argv[args], "silent")) {
+				else if(strcmp(argv[args], "silent") == 0) {
 					memcpy(silent_flag, "s", 2);
-					verbose = false;
+					verbose = 1;
 				}
 
 				--args;
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
 		// Print the current platform LeanInit is running on
 		struct utsname uts;
 		uname(&uts);
-		if(verbose) printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
+		if(verbose == 0) printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
 
 		// Start zloop() and chlvl() in separate threads
 		pthread_t loop, runlvl;
@@ -233,10 +233,10 @@ int main(int argc, char *argv[])
 			pause();
 
 			// Cancel when the runlevel is already the currently running one
-			if(current_signal == SIGILL && !single_user)
+			if(current_signal == SIGILL && single_user != 0)
 				printf("\n" PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
 
-			else if(current_signal == SIGTERM && single_user)
+			else if(current_signal == SIGTERM && single_user == 0)
 				printf("\n" PURPLE "* " YELLOW "LeanInit is already in single user mode..." RESET "\n");
 
 			// Switch the current runlevel
@@ -245,9 +245,9 @@ int main(int argc, char *argv[])
 				sync();
 
 				// Run rc.shutdown (multi-user)
-				if(access("/etc/leaninit/rc.shutdown", W_OK | X_OK))
+				if(access("/etc/leaninit/rc.shutdown", W_OK | X_OK) == 0)
 					sh("/etc/leaninit/rc.shutdown");
-				else if(access("/etc/rc.shutdown", W_OK | X_OK))
+				else if(access("/etc/rc.shutdown", W_OK | X_OK) == 0)
 					sh("/etc/rc.shutdown");
 
 				// Kill all remaining processes
@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
 				struct timespec rest  = {0};
 				rest.tv_nsec          = 100000000;
 				unsigned int timer    = 0;
-				while(pstatus && timer < 70) {
+				while(zstatus != 0 && timer < 70) {
 					nanosleep(&rest, NULL);
 					timer++;
 				}
@@ -290,12 +290,12 @@ int main(int argc, char *argv[])
 
 					// Switch to single user
 					case SIGTERM:
-						single_user = true;
+						single_user = 0;
 						break;
 
 					// Switch to multi-user
 					case SIGILL:
-						single_user = false;
+						single_user = 1;
 						break;
 				}
 
@@ -315,14 +315,14 @@ int main(int argc, char *argv[])
 		return usage(1);
 
 	// Show the version number when called with --version
-	if(strcmp(argv[1], "--version")) {
+	if(strcmp(argv[1], "--version") == 0) {
 		printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
 		return 0;
-	} else if(strcmp(argv[1], "--help"))
+	} else if(strcmp(argv[1], "--help") == 0)
 		return usage(0);
 
 	// Prevent everyone except root from running any of the following code
-	if(!getuid()) {
+	if(getuid() != 0) {
 		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
 	}
