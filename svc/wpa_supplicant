@@ -12,4 +12,12 @@ main() {
 	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
 }
 
+restart() {
+	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
+}
+
+reload() {
+	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
+}
+
 . /etc/leaninit/rc.svc

@@ -232,15 +232,19 @@ __start() {
 		return 1
 	fi
 
-	# Run main()
-	print "Starting $NAME..." log "$BLUE" "$WHITE"
-	main 2> "$LOGFILE.2"
+	# Run main() when starting and restart() when restarting
+	print "$1ing $NAME..." log "$BLUE" "$WHITE"
+	if [ "$1" = "Restart" ] && isfunc restart; then
+		restart 2> /dev/null
+	else
+		main 2> /dev/null
+	fi
 
 	# Finish by creating the service's .status and .type files
 	RET=$?
 	if [ $RET = 0 ]; then
-		print "Started $NAME successfully!" log "$GREEN" "$WHITE"
-		echo "Started" > "/var/run/leaninit/$__svcname.status"
+		print "$1ed $NAME successfully!" log "$GREEN" "$WHITE"
+		echo "$1ed" > "/var/run/leaninit/$__svcname.status"
 		if [ -n "$TYPE" ]; then
 			echo "$__svcname" > "/var/run/leaninit/$TYPE.type"
 		fi
@@ -299,11 +303,7 @@ __stop() {
 __restart() {
 	__rootcheck
 	__stop
-	__start
-	if [ "$RET" = "0" ]; then
-		echo "Restarted" > "/var/run/leaninit/$__svcname.status"
-	fi
-	return $RET
+	__start Restart
 }
 
 # Reload a service if it has a reload function
@@ -408,7 +408,7 @@ run() {
 
 		start)
 			__rootcheck
-			__start ;;
+			__start Start ;;
 
 		stop)
 			__rootcheck
