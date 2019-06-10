@@ -227,11 +227,14 @@ int main(int argc, char *argv[])
 			// Wait for a signal to be sent to init
 			pause();
 
+			// Store the received signal in recv_signal to prevent race conditions
+			int recv_signal = current_signal;
+
 			// Cancel when the runlevel is already the currently running one
-			if(current_signal == SIGILL && single_user != 0)
+			if(recv_signal == SIGILL && single_user != 0)
 				printf("\n" PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
 
-			else if(current_signal == SIGTERM && single_user == 0)
+			else if(recv_signal == SIGTERM && single_user == 0)
 				printf("\n" PURPLE "* " YELLOW "LeanInit is already in single user mode..." RESET "\n");
 
 			// Switch the current runlevel
@@ -269,7 +272,7 @@ int main(int argc, char *argv[])
 				sync();
 
 				// Handle the given signal properly
-				switch(current_signal) {
+				switch(recv_signal) {
 
 					// Halt
 					case SIGUSR1:
