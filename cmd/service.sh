@@ -54,8 +54,9 @@ usage() {
 if [ "$1" = "--status-all" ]; then
 	__TMP=$(mktemp)
 	for svc in /etc/leaninit/svc/*; do
-		"$svc" status >> "$__TMP"
+		"$svc" status >> "$__TMP" &
 	done
+	wait
 #DEF FreeBSD
 	echo ""
 	column -ts '|' "$__TMP" |  sort
