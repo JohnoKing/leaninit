@@ -46,4 +46,4 @@ W.I.P. changelog for LeanInit v2.0.0
     * Updated the dates in every single man page.
     * Updated the copyright notice in the rc.shutdown(8) man page.
 
-To upgrade from LeanInit v1 to v2, run `make upgrade`. This command is scheduled for removal in LeanInit v2.1.0.
+To upgrade from LeanInit v1 to v2, run `make upgrade`.
