@@ -20,13 +20,16 @@
 #
 
 # Variables (each one may be overridden)
-CC     := cc
-CFLAGS := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
-WFLAGS := -Wall -Wextra -Wpedantic
+CC      := cc
+STRIP   := strip
+CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
+WFLAGS  := -Wall -Wextra -Wpedantic
+LDFLAGS := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 
 # Compile stall
 all: clean
 	@$(CC) $(CFLAGS) $(WFLAGS) -o stall stall.c $(LDFLAGS)
+	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version stall
 	@echo "Successfully built stall!"
 
 # Clean this directory
