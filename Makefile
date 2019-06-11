@@ -39,25 +39,22 @@ all: clean
 	@mkdir -p  out
 	@cp -r rc  out/rc
 	@cp -r svc/universal out/svc
+	@cp cmd/service.sh   out/rc/lservice
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r svc/freebsd/* out/svc ;\
-	elif [ `uname` = Linux ]; then \
-		cp -r svc/linux/* out/svc ;\
-	else \
-		echo "`uname` is not supported by LeanInit!" ;\
-		false ;\
-	fi
-	@cp cmd/service.sh  out/rc/lservice
-	@if [ `uname` = FreeBSD ]; then \
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" $(RC) ;\
 		$(SED) -i '' "/#DEF FreeBSD/d"           $(RC) ;\
 		$(SED) -i '' "/#ENDEF/d"            $(RC) ;\
 		$(SED) -i '' "s:TTY:ttyv:g"  out/rc/ttys ;\
-	else \
+	elif [ `uname` = Linux ]; then \
+		cp -r svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
 		$(SED) -i "/#DEF Linux/d"       $(RC) ;\
 		$(SED) -i "/#ENDEF/d"          $(RC) ;\
 		$(SED) -i "s:TTY:tty:g" out/rc/ttys ;\
+	else \
+		echo "`uname` is not supported by LeanInit!" ;\
+		false ;\
 	fi
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit       cmd/init.c           $(LDFLAGS) $(LIBS)
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt          cmd/halt.c           $(LDFLAGS) $(LIBS)
