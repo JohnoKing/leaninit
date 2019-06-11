@@ -55,8 +55,13 @@ static void open_tty(const char *ttyd)
 
 int main(int argc, char *argv[])
 {
+	// This must be run as root
+	if(getuid() != 0) {
+		printf(RED "* Permission denied!" RESET "\n");
+		return 1;
+
 	// An argument is required
-	if(argc < 2 || getuid() != 0)
+	} else if(argc < 2)
 		usage(1);
 
 	// Attempt to open the tty
