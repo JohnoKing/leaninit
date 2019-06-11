@@ -49,8 +49,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Long options and other variables
-	unsigned int verbose = 0;
-	unsigned int unset   = 1;
+	unsigned char efi_boot = 0x0000000000000001;
+	unsigned int verbose   = 0;
+	unsigned int unset     = 1;
 	struct option long_options[] = {
 		{ "quiet", no_argument, 0, 'q' },
 		{ "unset", no_argument, 0, 'u' },
@@ -85,7 +86,13 @@ int main(int argc, char *argv[]) {
 	// FreeBSD libefivar section
 #	ifdef FreeBSD
 
-	// TODO: Put libefivar support here
+	// Set OsIndications for booting into firmware setup
+	if(unset != 0)
+		efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x0000000000000007, 0644);
+
+	// Delete OsIndications to unset it
+	else
+		efi_del_variable(global_guid, "OsIndications");
 
 	// Linux efivarfs section
 #	else
@@ -94,7 +101,6 @@ int main(int argc, char *argv[]) {
 	if(unset != 0) {
 		FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
 		unsigned long efi_attr = 0x0000000000000007;
-		unsigned long efi_boot = 0x0000000000000001;
 		if(fwrite(&efi_attr, 1, 4, fd) == 0) {
 			fclose(fd);
 			printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
@@ -116,10 +122,10 @@ int main(int argc, char *argv[]) {
 	if(verbose == 0) {
 		if(unset != 0) {
 			printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
-			printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
+			printf(CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);
 		} else {
 			printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots." RESET "\n");
-			printf(CYAN "* " WHITE "Any prior changes made by os-indications have been reverted." RESET "\n");
+			printf(CYAN "* " WHITE "Any prior changes made by %s have been reverted." RESET "\n", __progname);
 		}
 	}
 
