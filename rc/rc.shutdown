@@ -29,11 +29,11 @@
 #ENDEF
 
 # Stop all currently running services
-__LIST="$(ls /etc/leaninit/svc)"
-if [ -n "$__LIST" ]; then
-	for svc in $__LIST; do
+if [ -n "$(ls /etc/leaninit/svc)" ]; then
+	cd /etc/leaninit/svc
+	for svc in *; do
 		if [ -r "/var/run/leaninit/$svc.status" ]; then
-			"/etc/leaninit/svc/$svc" stop &
+			"./$svc" stop &
 		fi
 	done
 fi

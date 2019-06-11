@@ -196,19 +196,17 @@ fi
 wait
 
 # Start all enabled services
-__LIST="$(ls /etc/leaninit/svc.e)"
-if [ -n "$__LIST" ]; then
-	for sv in $__LIST; do
-		if [ -x "/etc/leaninit/svc/$sv" ]; then
-			SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc/$sv" start &
-		fi
+if [ -n "$(ls /etc/leaninit/svc.e)" ]; then
+	cd /etc/leaninit/svc.e
+	for sv in *; do
+		SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc/$sv" start &
 	done
 fi
 
 # Run rc.local (when present)
-for r in /etc/leaninit/rc.local /etc/rc.local; do
-	if [ -x $r ]; then
-		sh $r &
+for rc in /etc/leaninit/rc.local /etc/rc.local; do
+	if [ -x "$rc" ]; then
+		"$rc" &
 	fi
 done
 
