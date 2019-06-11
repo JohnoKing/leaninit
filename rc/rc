@@ -112,12 +112,9 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 	print "Mounting all ZFS file systems..." nolog "$PURPLE" "$WHITE"
 
 	# Done for compatibility with beadm(1)
-	__LIST="$(df -t zfs | tail -n +2 | awk '{print $1}')"
-	if [ -n "$__LIST" ]; then
-		for z in $__LIST; do
-			zfs mount $z
-		done
-	fi
+	for z in $(df -t zfs | tail -n +2 | awk '{print $1}'); do
+		zfs mount $z
+	done
 
 	# mount -a equivalent (includes NFS)
 	zfs mount -a
@@ -131,9 +128,8 @@ if [ "$ZFS_ENABLE" = "true" ]; then
 fi
 
 # Init logging
-touch "$LOGFILE" "$LOGFILE.2"
-mv "$LOGFILE"    "$LOGFILE.old"
-mv "$LOGFILE.2"  "$LOGFILE.old.2"
+touch "$LOGFILE"
+mv "$LOGFILE" "$LOGFILE.old"
 echo "LeanInit has started logging on $(uname -srm)" > "$LOGFILE"
 print "LeanInit has started logging!" nolog "$BLUE" "$WHITE" # This message is logged using the previous command above this one
 

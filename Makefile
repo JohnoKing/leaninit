@@ -43,23 +43,24 @@ all: clean
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r svc/freebsd/* out/svc ;\
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" $(RC) ;\
-		$(SED) -i '' "/#DEF FreeBSD/d"           $(RC) ;\
-		$(SED) -i '' "/#ENDEF/d"            $(RC) ;\
+		$(SED) -i '' "/#DEF FreeBSD/d" $(RC) ;\
+		$(SED) -i '' "/#ENDEF/d"       $(RC) ;\
 		$(SED) -i '' "s:TTY:ttyv:g"  out/rc/ttys ;\
+		$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
-		$(SED) -i "/#DEF Linux/d"       $(RC) ;\
-		$(SED) -i "/#ENDEF/d"          $(RC) ;\
+		$(SED) -i "/#DEF Linux/d" $(RC) ;\
+		$(SED) -i "/#ENDEF/d"     $(RC) ;\
 		$(SED) -i "s:TTY:tty:g" out/rc/ttys ;\
+		$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
-	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit       cmd/init.c           $(LDFLAGS) $(LIBS)
-	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt          cmd/halt.c           $(LDFLAGS) $(LIBS)
-	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lgetty         cmd/lgetty.c         $(LDFLAGS) $(LIBS)
-	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS)
+	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit cmd/init.c   $(LDFLAGS) $(LIBS)
+	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt    cmd/halt.c   $(LDFLAGS) $(LIBS)
+	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lgetty   cmd/lgetty.c $(LDFLAGS) $(LIBS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version out/leaninit out/lhalt out/lgetty out/os-indications
 	@echo "Successfully built LeanInit!"
 
@@ -81,14 +82,43 @@ install:
 	[ -r lpoweroff.8 ] || ln -sf lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
-	@if [ `uname` = Linux ]; then $(INSTALL) -Dm0755 out/os-indications $(DESTDIR)/sbin; fi
-	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/rc/lservice out/lgetty $(DESTDIR)/sbin
+	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/os-indications out/rc/lservice out/lgetty $(DESTDIR)/sbin
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
 	@if [ ! -r $(DESTDIR)/etc/leaninit/svc.e/getty.type ]; then touch $(DESTDIR)/etc/leaninit/svc.e/lgetty && echo lgetty > $(DESTDIR)/etc/leaninit/svc.e/getty.type; fi
-	@if [ `uname` = FreeBSD ]; then rm $(DESTDIR)/usr/share/man/man8/os-indications.8; fi
 	@echo "Successfully installed LeanInit!"
+
+# Upgrade a LeanInit v1 install to v2 (this will be removed in v2.1.0)
+upgrade:
+	@if [ `id -u` != 0 ]; then \
+		echo "You must be root to upgrade LeanInit!" ;\
+		false ;\
+	fi
+	@if [ ! -x $(DESTDIR)/sbin/leaninit ]; then \
+		echo "Failed to detect an installation of LeanInit, exiting..." ;\
+		false ;\
+	fi
+	@if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make upgrade`'; false; fi
+	@rm -rf $(MANPAGES) $(DESTDIR)/etc/leaninit/svc.d $(DESTDIR)/etc/leaninit/svc.e/fstrim $(DESTDIR)/etc/leaninit/svc.e/consolekit
+	@cp -r out/svc $(DESTDIR)/etc/leaninit
+	@cp -r man $(DESTDIR)/usr/share
+	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
+	@if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
+		$(INSTALL) -Dm0644 out/rc/rc.conf $(DESTDIR)/etc/leaninit ;\
+	fi
+	@$(INSTALL) -Dm0644 out/rc/ttys $(DESTDIR)/etc/leaninit ;\
+	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
+	@cd $(DESTDIR)/usr/share/man/man8 ;\
+	[ -r lpoweroff.8 ] || ln -sf lhalt.8 lpoweroff.8 ;\
+	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
+	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
+	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/os-indications out/rc/lservice out/lgetty $(DESTDIR)/sbin
+	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
+	@cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
+	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
+	@rm -f $(DESTDIR)/var/log/leaninit.log.2 $(DESTDIR)/var/log/leaninit.log.old.2 $(DESTDIR)/sbin/lrunlevel
+	@echo "Successfully upgraded LeanInit v1 to v2!"
 
 # Uninstall (only works with normal installations)
 uninstall:

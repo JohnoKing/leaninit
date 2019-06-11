@@ -22,24 +22,39 @@
 
 /*
  * os-indications - This program sets OsIndications for booting into firmware setup.
+ * The libefivar API is used when complied on FreeBSD, while the efivarfs and
+ * C Standard APIs are used on Linux to avoid requiring an extra dependency.
  */
 
 #include "inc.h"
 
 int main(int argc, char *argv[]) {
 
+	// GUID for OsIndications
+#	ifdef FreeBSD
+	efi_guid_t guid = "8be4df61-93ca-11d2-aa0d-00e098032b8c";
+#	endif
+
 	// Error checks
 	if(getuid() != 0) {
 		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
+#	ifdef FreeBSD
+	} else if(efi_get_variable_exists(guid, "OsIndicationsSupported") != 0) {
+#	else
 	} else if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
+#	endif
 		printf(RED "* This system does not support OsIndications!" RESET "\n");
 		return 1;
 	}
 
 	// Long options and other variables
+	unsigned int verbose = 0;
+#	ifdef FreeBSD
+	unsigned int unset = 1;
+#	else
 	unsigned int first_bytes = 4;
-	unsigned int verbose     = 0;
+#	endif
 	struct option long_options[] = {
 		{ "quiet", no_argument, 0, 'q' },
 		{ "unset", no_argument, 0, 'u' },
@@ -66,10 +81,22 @@ int main(int argc, char *argv[]) {
 
 			// Unset OsIndications
 			case 'u':
+#				ifdef FreeBSD
+				unset = 0;
+#				else
 				first_bytes++;
+#				endif
 				break;
 		}
 	}
+
+	// FreeBSD libefivar section
+#	ifdef FreeBSD
+
+	// TODO: Put libefivar support here
+
+	// Linux efivarfs section
+#	else
 
 	// Write efi_attr (0x0000000000000007)
 	FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
@@ -86,11 +113,18 @@ int main(int argc, char *argv[]) {
 		fwrite(&efi_boot, 1, 1, fd);
 	}
 
-	// Close the file and (if --quiet was not passed) notify the user of the change
+	// Close the file
 	fclose(fd);
 	sync();
+#	endif
+
+	// Notify the user of the change if --quiet was not passed
 	if(verbose == 0) {
+#		ifdef FreeBSD
+		if(unset != 0) {
+#		else
 		if(first_bytes == 4) {
+#		endif
 			printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
 			printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
 		} else {

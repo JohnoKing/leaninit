@@ -35,6 +35,7 @@
 #include <syslog.h>
 #include <unistd.h>
 #ifdef FreeBSD
+#include <efivar.h>
 #include <libutil.h>
 #else
 #include <utmp.h>
