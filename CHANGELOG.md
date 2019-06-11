@@ -29,7 +29,7 @@ W.I.P. changelog for LeanInit v2.0.0
     * The command lrunlevel(8) has consequently been removed as well.
 * Removed support for `/var/log/leaninit.log.2` (as well as `/var/log/leaninit.log.old.2`) due to security concerns.
 * Removed outdated information from the `README.md` file.
-* Fixed a bug that caused the wpa_supplicant service to fail to reload and restart on FreeBSD.
+* Fixed a bug that caused the wpa_supplicant service to fail to restart on FreeBSD.
 * Fixed a bug that caused os-indications(8) to display the wrong name in verbose output if it was renamed to something else.
 * Usage information for services is now accurate even if the service is not located in `/etc/leaninit/svc` and/or if no arguments are given.
 * `DEF` and `#ifdef` ordering across LeanInit is now more consistent.
