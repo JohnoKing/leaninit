@@ -3,7 +3,7 @@ W.I.P. changelog for LeanInit v2.0.0
 **v2.0.0 Release Candidate 1 Changelog:**
 * Heavily optimized various parts of LeanInit to improve performance and decrease its footprint.
     * LeanInit's LDFLAGS are now the following: `-Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now`.
-    * LeanInit's ELF binaries are now stripped of `.comment`, `.gnu-version` and with `--strip-unneeded` after being built to decrease file size.
+    * LeanInit's ELF binaries are now stripped of `.comment`, `.gnu-version`, `.GCC.command.line`, `.note.gnu.gold-version` and with `--strip-unneeded` after being built to decrease file size.
     * ZFS file system mounting is now faster.
     * The `zloop()` thread and system shutdown are now both faster as the `zstatus` variable has been replaced with usage of waitpid(3).
     * Services that are not compatible with the target OS will no longer be installed with `make install`.

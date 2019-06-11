@@ -61,7 +61,7 @@ all: clean
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit cmd/init.c   $(LDFLAGS) $(LIBS)
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt    cmd/halt.c   $(LDFLAGS) $(LIBS)
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lgetty   cmd/lgetty.c $(LDFLAGS) $(LIBS)
-	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version out/leaninit out/lhalt out/lgetty out/os-indications
+	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/lhalt out/lgetty out/os-indications
 	@echo "Successfully built LeanInit!"
 
 # Install LeanInit (compatible with other init systems)
