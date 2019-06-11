@@ -22,9 +22,11 @@
 # Variables (each one may be overridden)
 CC       := cc
 SED      := sed
+STRIP    := strip
 INSTALL  := install
 CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
 WFLAGS   := -Wall -Wextra -Wpedantic
+LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 LIBS     := -lpthread -lutil
 RC       := out/*/*
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
@@ -56,6 +58,7 @@ all: clean
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt          cmd/halt.c           $(LDFLAGS) $(LIBS)
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lgetty         cmd/lgetty.c         $(LDFLAGS) $(LIBS)
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS)
+	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version out/leaninit out/lhalt out/lgetty out/os-indications
 	@echo "Successfully built LeanInit!"
 
 # Install LeanInit (compatible with other init systems)

@@ -56,7 +56,7 @@ static void open_tty(const char *ttyd)
 int main(int argc, char *argv[])
 {
 	// An argument is required
-	if(argc < 2)
+	if(argc < 2 || getuid() != 0)
 		usage(1);
 
 	// Attempt to open the tty
