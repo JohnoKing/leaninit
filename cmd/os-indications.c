@@ -50,8 +50,8 @@ int main(int argc, char *argv[]) {
 
 	// Long options and other variables
 	unsigned char efi_boot = 0x0000000000000001;
-	unsigned int verbose   = 0;
-	unsigned int unset     = 1;
+	unsigned int  verbose  = 0;
+	unsigned int  unset    = 1;
 	struct option long_options[] = {
 		{ "quiet", no_argument, 0, 'q' },
 		{ "unset", no_argument, 0, 'u' },
