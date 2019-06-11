@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
 #	ifdef FreeBSD
-	} else if(efi_get_variable_exists(global_guid, "OsIndicationsSupported") != 0) {
+	} else if(efi_variables_supported() == 0) {
 #	else
 	} else if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
 #	endif
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 
 	// Set OsIndications for booting into firmware setup
 	if(unset != 0)
-		efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x0000000000000007, 0644);
+		efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x0000000000000007);
 
 	// Delete OsIndications to unset it
 	else
