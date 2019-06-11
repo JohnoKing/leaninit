@@ -8,7 +8,7 @@ W.I.P. changelog for LeanInit v2.0.0
     * The `zloop()` thread and system shutdown are now both faster as the `zstatus` variable has been replaced with usage of waitpid(3).
     * Services that are not compatible with the target OS will no longer be installed with `make install`.
     * `lservice --status-all` is now faster.
-    * The service syntax check in rc.svc(8) is now faster.
+    * Various parts of rc.svc(8) are now faster.
     * Removed the useless usage of `return;` from the LeanInit signal handler.
     * `unsigned int` is now used in place of `size_t`.
     * More strings are globbed to increase stability and performance.

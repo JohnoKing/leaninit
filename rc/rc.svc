@@ -178,24 +178,12 @@ __waitfor_loop_proc() {
 waitfor() {
 	case "$1" in
 		file)
-			if [ -z "$2" ]; then
-				echo "Usage: waitfor type name..."
-				return 2
-			fi
 			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!"
 			;;
 		process)
-			if [ -z "$2" ]; then
-				echo "Usage: waitfor type name..."
-				return 2
-			fi
 			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
 			;;
 		service)
-			if [ -z "$2" ]; then
-				echo "Usage: waitfor type name..."
-				return 2
-			fi
 			if [ ! -r "/etc/leaninit/svc.e/$2" ]; then
 				if [ "$3" = "optional" ]; then
 					return 0
@@ -208,7 +196,7 @@ waitfor() {
 			;;
 		*)
 			if [ ! -r "/etc/leaninit/svc.e/$1.type" ]; then
-				if  [ "$2" != optional ]; then
+				if  [ "$2" != "optional" ]; then
 					print "$NAME failed to start because no currently enabled services satisfy the type $1!" log "$RED"
 					__fail 1
 				else
@@ -218,7 +206,6 @@ waitfor() {
 			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat "/etc/leaninit/svc.e/$1.type") failed to start!"
 			;;
 	esac
-	return $?
 }
 
 # Start a service
@@ -252,6 +239,7 @@ __start() {
 		print "$NAME failed to start!" log "$RED"
 		echo "Failure" > "/var/run/leaninit/$__svcname.status"
 	fi
+
 	return $RET
 }
 
