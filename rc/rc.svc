@@ -127,11 +127,11 @@ __usage() {
 		fi
 	fi
 	if __proccheck return; then
-#DEF Linux
-		printf "|pause|cont"
-#ENDEF
 #DEF FreeBSD
 		printf "|info|pause|cont"
+#ENDEF
+#DEF Linux
+		printf "|pause|cont"
 #ENDEF
 	fi
 	printf "|status|help]\n"
@@ -338,11 +338,11 @@ __status() {
 	fi
 
 	# Print the output without a star (for --status-all)
-#DEF Linux
-	echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
-#ENDEF
 #DEF FreeBSD
 	echo "$NAME  |  $__STAT  |  $__STATUS"
+#ENDEF
+#DEF Linux
+	echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
 #ENDEF
 }
 
