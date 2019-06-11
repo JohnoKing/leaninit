@@ -58,13 +58,11 @@ if [ "$1" = "--status-all" ]; then
 	done
 #DEF FreeBSD
 	echo ""
-	sed -i '' '/not compatible/d' "$__TMP"
 	column -ts '|' "$__TMP" |  sort
 	echo ""
 #ENDEF
 #DEF Linux
 	echo "$WHITE"
-	sed -i '/not compatible/d' "$__TMP"
 	column -ts '|' -o '|' "$__TMP" |  sort
 	echo "$RESET"
 #ENDEF
