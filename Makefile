@@ -38,7 +38,7 @@ MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/ma
 all: clean
 	@mkdir -p  out
 	@cp -r rc  out/rc
-	@cp -r svc out/svc.d
+	@cp -r svc out/svc
 	@cp cmd/service.sh  out/rc/lservice
 	@if [ `uname` = Linux ]; then \
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
@@ -65,7 +65,7 @@ all: clean
 install:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
 	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	@cp -r out/svc.d $(DESTDIR)/etc/leaninit
+	@cp -r out/svc $(DESTDIR)/etc/leaninit
 	@cp -r man $(DESTDIR)/usr/share
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	@if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
