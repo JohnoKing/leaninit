@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 
 	// GUID for OsIndications
 #	ifdef FreeBSD
-	efi_guid_t guid = "8be4df61-93ca-11d2-aa0d-00e098032b8c";
+	efi_guid_t global_guid = EFI_GLOBAL_GUID;
 #	endif
 
 	// Error checks
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 		printf(RED "* Permission denied!" RESET "\n");
 		return 1;
 #	ifdef FreeBSD
-	} else if(efi_get_variable_exists(guid, "OsIndicationsSupported") != 0) {
+	} else if(efi_get_variable_exists(global_guid, "OsIndicationsSupported") != 0) {
 #	else
 	} else if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
 #	endif
@@ -50,11 +50,7 @@ int main(int argc, char *argv[]) {
 
 	// Long options and other variables
 	unsigned int verbose = 0;
-#	ifdef FreeBSD
-	unsigned int unset = 1;
-#	else
-	unsigned int first_bytes = 4;
-#	endif
+	unsigned int unset   = 1;
 	struct option long_options[] = {
 		{ "quiet", no_argument, 0, 'q' },
 		{ "unset", no_argument, 0, 'u' },
@@ -81,11 +77,7 @@ int main(int argc, char *argv[]) {
 
 			// Unset OsIndications
 			case 'u':
-#				ifdef FreeBSD
 				unset = 0;
-#				else
-				first_bytes++;
-#				endif
 				break;
 		}
 	}
@@ -99,32 +91,30 @@ int main(int argc, char *argv[]) {
 #	else
 
 	// Write efi_attr (0x0000000000000007)
-	FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
-	unsigned long efi_attr = 0x0000000000000007;
-	if(fwrite(&efi_attr, 1, first_bytes, fd) == 0) {
-		fclose(fd);
-		printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
-		return 1;
-	}
-
-	// Write efi_boot (0x0000000000000001)
-	if(first_bytes == 4) {
+	if(unset != 0) {
+		FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
+		unsigned long efi_attr = 0x0000000000000007;
 		unsigned long efi_boot = 0x0000000000000001;
-		fwrite(&efi_boot, 1, 1, fd);
-	}
+		if(fwrite(&efi_attr, 1, 4, fd) == 0) {
+			fclose(fd);
+			printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
+			return 1;
+		}
 
-	// Close the file
-	fclose(fd);
-	sync();
+		// Write efi_boot (0x0000000000000001)
+		fwrite(&efi_boot, 1, 1, fd);
+
+		// Close the file
+		fclose(fd);
+
+	// Delete OsIndications to unset it
+	} else
+		unlink("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c");
 #	endif
 
 	// Notify the user of the change if --quiet was not passed
 	if(verbose == 0) {
-#		ifdef FreeBSD
 		if(unset != 0) {
-#		else
-		if(first_bytes == 4) {
-#		endif
 			printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
 			printf(CYAN "* " WHITE "Run `os-indications --unset` to revert this change." RESET "\n");
 		} else {
