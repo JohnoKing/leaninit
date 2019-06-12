@@ -69,12 +69,12 @@ int main(int argc, char *argv[])
 
     // Find login(1)
     char login_cmd[16];
-    if(access("/bin/login", X_OK) == 0)
-        memcpy(login_cmd, "/bin/login ", 12);
-    else if(access("/usr/bin/login", X_OK) == 0)
+    if(access("/usr/bin/login", X_OK) == 0)
         memcpy(login_cmd, "/usr/bin/login ", 16);
+    else if(access("/bin/login", X_OK) == 0)
+        memcpy(login_cmd, "/bin/login ", 12);
     else {
-        printf(RED "* Could not find login(1) (please symlink it to either /bin/login or /usr/bin/login and give it executable permissions)" RESET "\n");
+        printf(RED "* Could not find login(1) (please symlink it to either /usr/bin/login or /bin/login and give it executable permissions)" RESET "\n");
         return 127;
     }
 

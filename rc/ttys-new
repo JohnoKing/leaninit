@@ -1,0 +1,24 @@
+# /etc/leaninit/ttys
+#
+# This file lists the ttys to spawn getties on.
+# All comments must be placed on their own line.
+#
+
+# NOTE: Fix the FreeBSD ttys later
+#DEF FreeBSD
+"/usr/bin/getty" "tty" "/dev/ttyv0"
+"/usr/bin/getty" "tty" "/dev/ttyv1"
+"/usr/bin/getty" "tty" "/dev/ttyv2"
+"/usr/bin/getty" "tty" "/dev/ttyv3"
+"/usr/bin/getty" "tty" "/dev/ttyv4"
+"/usr/bin/getty" "tty" "/dev/ttyv5"
+"/usr/bin/getty" "tty" "/dev/ttyv6"
+#ENDEF
+#DEF Linux
+"/sbin/agetty" "38400" "/dev/tty1"
+"/sbin/agetty" "38400" "/dev/tty2"
+"/sbin/agetty" "38400" "/dev/tty3"
+"/sbin/agetty" "38400" "/dev/tty4"
+"/sbin/agetty" "38400" "/dev/tty5"
+"/sbin/agetty" "38400" "/dev/tty6"
+#ENDEF

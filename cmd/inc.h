@@ -46,11 +46,11 @@
 
 // OS specific macros
 #ifdef FreeBSD
-#define CONSOLE      "/dev/ttyv0"
+#define DEFAULT_TTY "/dev/ttyv0"
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_HALT     RB_HALT
 #else
-#define CONSOLE      "/dev/tty1"
+#define DEFAULT_TTY "/dev/tty1"
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_HALT     RB_HALT_SYSTEM
 #endif

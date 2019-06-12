@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Launch gettys
+# Launch getties
 NAME="LGetty"
 TYPE=getty
 
-# Open gettys on the ttys specified in /etc/leaninit/ttys
+# Open getties on the ttys specified in /etc/leaninit/ttys
 main() {
     for tty in $(grep -v '#' /etc/leaninit/ttys); do
         fork lgetty "/dev/$tty"

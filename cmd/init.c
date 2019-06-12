@@ -53,28 +53,28 @@ static int usage(int ret)
 }
 
 // Open the tty
-static int open_tty(void)
+static int open_tty(const char *tty_path)
 {
-    // Revoke access to CONSOLE
+    // Revoke access to the tty if it is being used
 #   ifdef FreeBSD
-    revoke(CONSOLE);
+    revoke(tty_path);
 #   endif
 
-    // Open CONSOLE
+    // Open the tty with blocking in single user mode
     int tty;
-    if(single_user == 0)
-        tty = open(CONSOLE, O_RDWR | O_NOCTTY);
-    else
-        tty = open(CONSOLE, O_RDWR | O_NOCTTY | O_NONBLOCK);  // This prevents I/O bugs in multi-user
-    login_tty(tty);
+    if(single_user == 0) tty = open(tty_path, O_RDWR | O_NOCTTY);
+
+    // Open the tty without blocking in multi-user mode to prevent I/O bugs
+    else tty = open(tty_path, O_RDWR | O_NOCTTY | O_NONBLOCK);
 
     // Set stdin, stdout and stderr
+    login_tty(tty);
     dup2(tty, STDIN_FILENO);
     dup2(tty, STDOUT_FILENO);
     dup2(tty, STDERR_FILENO);
     ioctl(tty, TIOCSCTTY, 1);
 
-    // Return the file descriptor of CONSOLE
+    // Return the file descriptor of the tty
     return tty;
 }
 
@@ -90,6 +90,22 @@ static void sh(char *script)
 
     waitpid(child, NULL, 0);
 }
+
+// Spawn a getty on the given tty then return its PID
+#ifdef DEBUG
+static pid_t spawn_getty(char *argv[])
+{
+    // Create the getty
+    pid_t pid = fork();
+    if(pid == 0) {
+        open_tty(argv[2]);
+        execve(argv[0], argv, environ);
+    }
+
+    // Return the PID
+    return pid;
+}
+#endif
 
 // Single user mode
 static void single(void)
@@ -110,7 +126,7 @@ static void single(void)
     // Fork the shell into a separate process
     single_shell_pid = fork();
     if(single_shell_pid == 0) {
-        open_tty();
+        open_tty(DEFAULT_TTY);
         char *sargv[] = { shell, NULL };
         execve(shell, sargv, environ);
     }
@@ -135,6 +151,35 @@ static void multi(void)
     // Run rc(8)
     if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     sh(rc);
+
+    // Locate login(1)
+#   ifdef DEBUG
+    char login[16];
+    if(access("/usr/bin/login", X_OK) == 0)
+        memcpy(login, "/usr/bin/login", 15);
+    else if(access("/bin/login", X_OK) == 0)
+        memcpy(login, "/bin/login", 11);
+    else {
+        printf(RED "* Could not find login(1) (please symlink it to either /usr/bin/login or /bin/login and give it executable permissions)" RESET "\n");
+        return;
+    }
+
+    // This loop creates tty paths then calls spawn_getty()
+    pid_t getty[7];
+    for(int t = 0; t < 7; ++t) {
+
+        // Create the path to the tty
+        char tty[11];
+        snprintf(tty, 11, "/dev/tty%d", t);
+
+        // Create the arguments (getty, mode, tty) then call spawn_getty()
+        char *gargv[] = { "/sbin/agetty", "38400", tty };
+        getty[t] = spawn_getty(gargv);
+    }
+
+    //int status;
+    //waitpid(0 || -2, &status, WEXITSTATUS);
+#   endif
 }
 
 // Run either single() or multi() depending on the runlevel
@@ -199,7 +244,7 @@ int main(int argc, char *argv[])
         }
 
         // Open the console
-        int tty = open_tty();
+        int tty = open_tty(DEFAULT_TTY);
 
         // Print the current platform LeanInit is running on
         struct utsname uts;
@@ -299,7 +344,7 @@ int main(int argc, char *argv[])
 
                 // Reopen the console (this must be done after single_user is set)
                 close(tty);
-                tty = open_tty();
+                tty = open_tty(DEFAULT_TTY);
 
                 // Reload the runlevel thread and reset the signal
                 pthread_create(&runlvl, NULL, chlvl, NULL);

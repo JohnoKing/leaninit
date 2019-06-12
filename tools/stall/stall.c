@@ -59,11 +59,11 @@ int main(int argc, char *argv[])
         printf("Stall is now running in the background with pid %d.\n", stall_pid);
         printf("Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead).\n");
         printf("To execute stall in SIGSTOP mode, pass --sigstop when executing stall.\n");
-        return 0;
     } else {
         kill(stall_pid, SIGSTOP);
         printf("Stall is now in the background paused by SIGSTOP with pid %d.\n", stall_pid);
         printf("You must send stall SIGCONT then SIGTERM to kill it.\n");
-        return 0;
     }
+
+    return 0;
 }

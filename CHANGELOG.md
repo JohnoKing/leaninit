@@ -9,12 +9,15 @@ W.I.P. changelog for LeanInit v2.0.0
     * Services that are not compatible with the target OS will no longer be installed with `make install`.
     * `lservice --status-all` is now faster.
     * Various parts of rc.svc(8) are now faster.
-    * Removed the useless usage of `return;` from the LeanInit signal handler.
+    * Removed the useless usage of `return (0);` from the LeanInit signal handler and stall.
     * `unsigned int` is now used in place of `size_t`.
     * More strings are globbed to increase stability and performance.
     * Globs are now used in place of executing ls(1) when desirable.
     * Archaic usage of `\` has been removed from rc.svc(8).
     * The .gitignore file is now a little bit shorter.
+* Added support for standard getties such as agetty(8) and the FreeBSD getty(8).
+    * The format for /etc/leaninit/ttys has been drastically changed and is now very similar to the BSD format.
+    * LGetty as a result has been removed from the main LeanInit source tree.
 * Ported os-indications(8) to FreeBSD using the libefivar API.
 * Moved the services folder from `/etc/leaninit/svc.d` to `/etc/leaninit/svc`.
 * The consolekit and fstrim services have been removed.
