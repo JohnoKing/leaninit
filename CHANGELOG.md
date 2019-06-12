@@ -37,7 +37,7 @@ W.I.P. changelog for LeanInit v2.0.0
 * .gitignore will now ignore the built binary of stall.
 * Changed the message `Launching sysctl(8)...` to `Executing sysctl(8)...` in rc(8).
 * Spaces are now used instead of tabs to improve formatting.
-* Deleted an empty line from `init.c` to improve formatting.
+* Improved the formatting of `init.c` specifically.
 * Made various improvements to the man pages:
     * Added information about `$__svcname` and `$__svcpid` to the rc.svc(8) man page.
     * Changed 'path' to 'default path' in the rc.svc(8) man page.

@@ -27,7 +27,7 @@
 #include "inc.h"
 
 // Universal variables
-static unsigned int single_user = 1;
+static unsigned int single_user =  1;
 static pid_t single_shell_pid   = -1;
 static unsigned int verbose = 0;
 static int current_signal   = 0;
