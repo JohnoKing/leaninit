@@ -24,14 +24,14 @@ CC       := cc
 SED      := sed
 STRIP    := strip
 INSTALL  := install
-CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
+CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe #-DDEBUG
 WFLAGS   := -Wall -Wextra -Wpedantic
 LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 LIBS     := -lpthread -lutil
 RC       := out/*/*
 MANPAGES := $(DESTDIR)/usr/share/man/man5/lrc.conf.5 $(DESTDIR)/usr/share/man/man5/lttys.5 $(DESTDIR)/usr/share/man/man8/rc.svc.8 \
 	$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/lhalt.8 $(DESTDIR)/usr/share/man/man8/lrc.8 \
-	$(DESTDIR)/usr/share/man/man8/lgetty.8 $(DESTDIR)/usr/share/man/man8/lrc.shutdown.8 $(DESTDIR)/usr/share/man/man8/lservice.8 $(DESTDIR)/usr/share/man/man8/lpoweroff.8 \
+	$(DESTDIR)/usr/share/man/man8/lrc.shutdown.8 $(DESTDIR)/usr/share/man/man8/lservice.8 $(DESTDIR)/usr/share/man/man8/lpoweroff.8 \
 	$(DESTDIR)/usr/share/man/man8/lreboot.8 $(DESTDIR)/usr/share/man/man8/lzzz.8 $(DESTDIR)/usr/share/man/man8/os-indications.8
 
 # Compile LeanInit
@@ -86,7 +86,6 @@ install:
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
-	@if [ ! -r $(DESTDIR)/etc/leaninit/svc.e/getty.type ]; then touch $(DESTDIR)/etc/leaninit/svc.e/lgetty && echo lgetty > $(DESTDIR)/etc/leaninit/svc.e/getty.type; fi
 	@echo "Successfully installed LeanInit!"
 
 # Upgrade a LeanInit v1 install to v2 (this will be removed in v2.1.0)
@@ -117,7 +116,7 @@ upgrade:
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
-	@rm -f $(DESTDIR)/var/log/leaninit.log.2 $(DESTDIR)/var/log/leaninit.log.old.2 $(DESTDIR)/sbin/lrunlevel
+	@rm -f $(DESTDIR)/var/log/leaninit.log.2 $(DESTDIR)/var/log/leaninit.log.old.2 $(DESTDIR)/sbin/lrunlevel $(DESTDIR)/sbin/lgetty $(DESTDIR)/etc/leaninit/svc.e/getty.type $(DESTDIR)/etc/leaninit/svc.e/lgetty
 	@echo "Successfully upgraded LeanInit v1 to v2!"
 
 # Uninstall (only works with normal installations)
@@ -130,7 +129,7 @@ uninstall:
 		echo "Failed to detect an installation of LeanInit, exiting..." ;\
 		false ;\
 	fi
-	@rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/sbin/lgetty $(DESTDIR)/sbin/os-indications $(DESTDIR)/usr/share/licenses/leaninit \
+	@rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/lhalt $(DESTDIR)/sbin/lpoweroff $(DESTDIR)/sbin/lreboot $(DESTDIR)/sbin/os-indications $(DESTDIR)/usr/share/licenses/leaninit \
 		$(DESTDIR)/sbin/lzzz $(DESTDIR)/sbin/lservice $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log $(DESTDIR)/var/run/leaninit $(MANPAGES)
 	@echo "Successfully uninstalled LeanInit!"
 	@echo "Please make sure you remove LeanInit from your bootloader!"

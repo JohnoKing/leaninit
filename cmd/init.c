@@ -60,14 +60,8 @@ static int open_tty(const char *tty_path)
     revoke(tty_path);
 #   endif
 
-    // Open the tty with blocking in single user mode
-    int tty;
-    if(single_user == 0) tty = open(tty_path, O_RDWR | O_NOCTTY);
-
-    // Open the tty without blocking in multi-user mode to prevent I/O bugs
-    else tty = open(tty_path, O_RDWR | O_NOCTTY | O_NONBLOCK);
-
-    // Set stdin, stdout and stderr
+    // Open the tty
+    int tty = open(tty_path, O_RDWR | O_NOCTTY);
     login_tty(tty);
     dup2(tty, STDIN_FILENO);
     dup2(tty, STDOUT_FILENO);
@@ -98,7 +92,9 @@ static pid_t spawn_getty(char *argv[])
     // Create the getty
     pid_t pid = fork();
     if(pid == 0) {
-        open_tty(argv[2]);
+        char tty[10] = "/dev/";
+        strncat(tty, argv[1], 5);
+        open_tty(tty);
         execve(argv[0], argv, environ);
     }
 
@@ -166,14 +162,14 @@ static void multi(void)
 
     // This loop creates tty paths then calls spawn_getty()
     pid_t getty[7];
-    for(int t = 0; t < 7; ++t) {
+    for(int t = 1; t < 7; t++) {
 
         // Create the path to the tty
-        char tty[11];
-        snprintf(tty, 11, "/dev/tty%d", t);
+        char tty[5];
+        snprintf(tty, 5, "tty%d", t);
 
-        // Create the arguments (getty, mode, tty) then call spawn_getty()
-        char *gargv[] = { "/sbin/agetty", "38400", tty };
+        // Create the arguments (getty, tty, mode) then call spawn_getty()
+        char *gargv[] = { "/sbin/agetty", tty, "38400" };
         getty[t] = spawn_getty(gargv);
     }
 
