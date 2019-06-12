@@ -27,9 +27,9 @@ __SVC=false
 
 # Enable silent mode if passed 's'
 if [ "$1" = "s" ]; then
-	SILENT_MODE=true
+    SILENT_MODE=true
 else
-	SILENT_MODE=false
+    SILENT_MODE=false
 fi
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
@@ -60,18 +60,18 @@ mountpoint -q /run  || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
 
 # Cgroups support (this function must be run in its own subshell)
 mount_cgroups() {
-	# Mount a tmpfs at /sys/fs/cgroup
-	print "Mounting cgroups..." nolog "$PURPLE" "$WHITE"
-	mkdir -p /sys/fs/cgroup
-	mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
+    # Mount a tmpfs at /sys/fs/cgroup
+    print "Mounting cgroups..." nolog "$PURPLE" "$WHITE"
+    mkdir -p /sys/fs/cgroup
+    mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
 
-	# elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
-	mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
-	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,relatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
+    # elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
+    mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
+    mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,relatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
 
-	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
-	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,relatime -t cgroup controllers /sys/fs/cgroup/controllers &
-	wait
+    # The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
+    mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,relatime -t cgroup controllers /sys/fs/cgroup/controllers &
+    wait
 }
 
 # Mount the rest of the pseudo file systems
@@ -87,44 +87,44 @@ mount --bind /run/shm /dev/shm &
 
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
-	print "Starting udev..." nolog "$PURPLE" "$WHITE"
-	$DEVEXEC --daemon
-	udevadm info --cleanup-db   # Clean the udev database
-	udevadm trigger --action=add
-	udevadm settle
+    print "Starting udev..." nolog "$PURPLE" "$WHITE"
+    $DEVEXEC --daemon
+    udevadm info --cleanup-db   # Clean the udev database
+    udevadm trigger --action=add
+    udevadm settle
 elif [ "$DEV" = "mdev" ]; then
-	print "Starting mdev..." nolog "$PURPLE" "$WHITE"
-	$DEVEXEC -s
-	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
+    print "Starting mdev..." nolog "$PURPLE" "$WHITE"
+    $DEVEXEC -s
+    echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi &
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
 print "Loading kernel modules..." nolog "$PURPLE" "$WHITE"
 if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
-	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
+    modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
 else
-	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}')
+    modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}')
 fi
 #ENDEF
 
 # Mount all ZFS file systems
 if [ "$ZFS_ENABLE" = "true" ]; then
-	print "Mounting all ZFS file systems..." nolog "$PURPLE" "$WHITE"
+    print "Mounting all ZFS file systems..." nolog "$PURPLE" "$WHITE"
 
-	# Done for compatibility with beadm(1)
-	for z in $(df -t zfs | tail -n +2 | awk '{print $1}'); do
-		zfs mount $z
-	done
+    # Done for compatibility with beadm(1)
+    for z in $(df -t zfs | tail -n +2 | awk '{print $1}'); do
+        zfs mount $z
+    done
 
-	# mount -a equivalent (includes NFS)
-	zfs mount -a
-	zfs share -a
+    # mount -a equivalent (includes NFS)
+    zfs mount -a
+    zfs share -a
 
-	# Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
-	for z in $(zpool list -Ho name); do
-		print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
-		zfs readonly=off $z
-	done
+    # Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
+    for z in $(zpool list -Ho name); do
+        print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
+        zfs readonly=off $z
+    done
 fi
 
 # Init logging
@@ -141,9 +141,9 @@ swapon -a &
 print "Executing sysctl(8)..." log "$BLUE" "$WHITE"
 #DEF FreeBSD
 for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
-	if [ -r $s ]; then
-		sysctl -f /etc/sysctl.conf >> /dev/null &
-	fi
+    if [ -r $s ]; then
+        sysctl -f /etc/sysctl.conf >> /dev/null &
+    fi
 done
 #ENDEF
 #DEF Linux
@@ -167,29 +167,29 @@ devd -n
 print "Setting up a loopback interface..." log "$BLUE" "$WHITE"
 ip link set up dev lo &
 if [ -n "$NETFACE" ]; then
-	for n in $NETFACE; do
-		print "Setting up $n for networking..." log "$BLUE" "$WHITE"
-		ip link set up dev $n &
-	done
+    for n in $NETFACE; do
+        print "Setting up $n for networking..." log "$BLUE" "$WHITE"
+        ip link set up dev $n &
+    done
 fi
 
 # Set the keyboard layout (this requires kbd to work)
 if [ -n "$KEYMAP" ]; then
-	print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
-	loadkeys $KEYMAP &
+    print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
+    loadkeys $KEYMAP &
 fi
 #ENDEF
 
 # Set the hostname
 if [ -n "$HOSTNAME" ]; then
-	print "Setting the hostname to $HOSTNAME..." nolog "$PURPLE" "$WHITE"
-	hostname $HOSTNAME &
+    print "Setting the hostname to $HOSTNAME..." nolog "$PURPLE" "$WHITE"
+    hostname $HOSTNAME &
 fi
 
 # Set the timezone
 if [ -n "$TIMEZONE" ] && [ -r "/usr/share/zoneinfo/$TIMEZONE" ]; then
-	print "Setting the timezone to $TIMEZONE..." nolog "$PURPLE" "$WHITE"
-	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
+    print "Setting the timezone to $TIMEZONE..." nolog "$PURPLE" "$WHITE"
+    ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
 fi
 
 # Wait for all jobs to finish
@@ -197,17 +197,17 @@ wait
 
 # Start all enabled services
 if [ -n "$(ls /etc/leaninit/svc.e)" ]; then
-	cd /etc/leaninit/svc.e
-	for sv in *; do
-		SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc/$sv" start &
-	done
+    cd /etc/leaninit/svc.e
+    for sv in *; do
+        SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc/$sv" start &
+    done
 fi
 
 # Run rc.local (when present)
 for rc in /etc/leaninit/rc.local /etc/rc.local; do
-	if [ -x "$rc" ]; then
-		"$rc" &
-	fi
+    if [ -x "$rc" ]; then
+        "$rc" &
+    fi
 done
 
 # Return to init

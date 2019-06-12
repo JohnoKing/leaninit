@@ -29,54 +29,54 @@ __SVC=false
 
 # Usage info
 usage() {
-	print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
-	print "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
-	echo "Potential actions:"
-	echo "  enable"
-	echo "  disable"
-	echo "  start"
-	echo "  stop"
-	echo "  restart"
-	echo "  try-restart"
-	echo "  force-reload"
-	echo "  reload"
+    print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
+    print "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
+    echo "Potential actions:"
+    echo "  enable"
+    echo "  disable"
+    echo "  start"
+    echo "  stop"
+    echo "  restart"
+    echo "  try-restart"
+    echo "  force-reload"
+    echo "  reload"
 #DEF FreeBSD
-	echo "  info"
+    echo "  info"
 #ENDEF
-	echo "  pause"
-	echo "  cont"
-	echo "  status"
-	echo "  help"
-	exit 1
+    echo "  pause"
+    echo "  cont"
+    echo "  status"
+    echo "  help"
+    exit 1
 }
 
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
-	__TMP=$(mktemp)
-	for svc in /etc/leaninit/svc/*; do
-		"$svc" status >> "$__TMP" &
-	done
-	wait
+    __TMP=$(mktemp)
+    for svc in /etc/leaninit/svc/*; do
+        "$svc" status >> "$__TMP" &
+    done
+    wait
 #DEF FreeBSD
-	echo ""
-	column -ts '|' "$__TMP" |  sort
-	echo ""
+    echo ""
+    column -ts '|' "$__TMP" |  sort
+    echo ""
 #ENDEF
 #DEF Linux
-	echo "$WHITE"
-	column -ts '|' -o '|' "$__TMP" |  sort
-	echo "$RESET"
+    echo "$WHITE"
+    column -ts '|' -o '|' "$__TMP" |  sort
+    echo "$RESET"
 #ENDEF
-	rm -f "$__TMP"
-	exit 0
+    rm -f "$__TMP"
+    exit 0
 fi
 
 # Exit when not given proper arguments
 if [ -z "$2" ]; then
-	usage
+    usage
 elif [ ! -x "/etc/leaninit/svc/$1" ]; then
-	print "The service '$1' does not exist" nolog "$RED!"
-	usage
+    print "The service '$1' does not exist" nolog "$RED!"
+    usage
 fi
 
 # Execute the service directly

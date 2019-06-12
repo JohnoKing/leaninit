@@ -6,14 +6,14 @@ TYPE=networking
 TARGET=FreeBSD
 
 main() {
-	waitfor process wpa_supplicant
-	sleep 0.5
-	pkill -KILL -x wpa_supplicant
-	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
+    waitfor process wpa_supplicant
+    sleep 0.5
+    pkill -KILL -x wpa_supplicant
+    wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
 }
 
 restart() {
-	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
+    wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

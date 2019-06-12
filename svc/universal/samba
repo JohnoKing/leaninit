@@ -5,12 +5,12 @@ NAME="Samba"
 
 # Main function
 main() {
-	waitfor networking
-	fork smbd -F
+    waitfor networking
+    fork smbd -F
 }
 
 reload() {
-	pkill -HUP -x smbd
+    pkill -HUP -x smbd
 }
 
 . /etc/leaninit/rc.svc

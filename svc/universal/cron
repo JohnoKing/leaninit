@@ -5,10 +5,10 @@ NAME="cron"
 
 main() {
 #DEF FreeBSD
-	fork cron -ns
+    fork cron -ns
 #ENDEF
 #DEF Linux
-	fork cron -f
+    fork cron -f
 #ENDEF
 }
 

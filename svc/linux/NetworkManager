@@ -6,8 +6,8 @@ TYPE=networking
 TARGET=Linux
 
 main() {
-	waitfor service dbus
-	NetworkManager --pid-file="$__svcpidfile"
+    waitfor service dbus
+    NetworkManager --pid-file="$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

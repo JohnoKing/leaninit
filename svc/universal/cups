@@ -5,8 +5,8 @@ NAME="CUPS"
 TYPE=printing-daemon
 
 main() {
-	waitfor service avahi
-	fork cupsd -f
+    waitfor service avahi
+    fork cupsd -f
 }
 
 . /etc/leaninit/rc.svc

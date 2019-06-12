@@ -4,11 +4,11 @@
 NAME="Console Setup"
 
 main() {
-	setupcon
+    setupcon
 }
 
 reload() {
-	setupcon
+    setupcon
 }
 
 . /etc/leaninit/rc.svc

@@ -6,16 +6,16 @@ TYPE=getty
 
 # Open gettys on the ttys specified in /etc/leaninit/ttys
 main() {
-	for tty in $(grep -v '#' /etc/leaninit/ttys); do
-		fork lgetty "/dev/$tty"
-	done
+    for tty in $(grep -v '#' /etc/leaninit/ttys); do
+        fork lgetty "/dev/$tty"
+    done
 }
 
 # Output an message to the user about disabling LGetty
 disable() {
-	print "If you do not want the next execution of LeanInit's 'make install' to re-enable $NAME when no other getty type services are enabled," nolog "$PURPLE" "$WHITE"
-	print "run 'echo init > /etc/leaninit/svc.e/getty.type' as root" nolog "$PURPLE" "$WHITE"
-	print "To re-enable $NAME after executing the above command, run 'rm /etc/leaninit/svc.e/getty.type && lservice lgetty enable' as root" nolog "$PURPLE" "$WHITE"
+    print "If you do not want the next execution of LeanInit's 'make install' to re-enable $NAME when no other getty type services are enabled," nolog "$PURPLE" "$WHITE"
+    print "run 'echo init > /etc/leaninit/svc.e/getty.type' as root" nolog "$PURPLE" "$WHITE"
+    print "To re-enable $NAME after executing the above command, run 'rm /etc/leaninit/svc.e/getty.type && lservice lgetty enable' as root" nolog "$PURPLE" "$WHITE"
 }
 
 . /etc/leaninit/rc.svc

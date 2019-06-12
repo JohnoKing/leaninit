@@ -30,18 +30,18 @@
 
 # Stop all currently running services
 if [ -n "$(ls /etc/leaninit/svc)" ]; then
-	cd /etc/leaninit/svc
-	for svc in *; do
-		if [ -r "/var/run/leaninit/$svc.status" ]; then
-			"./$svc" stop &
-		fi
-	done
+    cd /etc/leaninit/svc
+    for svc in *; do
+        if [ -r "/var/run/leaninit/$svc.status" ]; then
+            "./$svc" stop &
+        fi
+    done
 fi
 
 #DEF Linux
 # Stop udev
 if [ "$DEV" = "udev" ]; then
-	udevadm control --exit &
+    udevadm control --exit &
 fi
 #ENDEF
 
