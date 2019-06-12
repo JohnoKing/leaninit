@@ -1,6 +1,6 @@
 # /etc/leaninit/ttys
 #
-# This file lists the ttys to spawn getties on.
+# This file lists the ttys to spawn getty(8) on.
 # All comments must be placed on their own line.
 #
 
