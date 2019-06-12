@@ -9,7 +9,7 @@ W.I.P. changelog for LeanInit v2.0.0
     * Services that are not compatible with the target OS will no longer be installed with `make install`.
     * `lservice --status-all` is now faster.
     * Various parts of rc.svc(8) are now faster.
-    * Removed the useless usage of `return (0);` from the LeanInit signal handler and stall.
+    * Removed the useless usage of `return` from the LeanInit signal handler and stall.
     * `unsigned int` is now used in place of `size_t`.
     * More strings are globbed to increase stability and performance.
     * Globs are now used in place of executing ls(1) when desirable.
