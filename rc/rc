@@ -199,7 +199,9 @@ wait
 if [ -n "$(ls /etc/leaninit/svc.e)" ]; then
     cd /etc/leaninit/svc.e
     for sv in *; do
-        SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc/$sv" start &
+        if [ -x "/etc/leaninit/svc/$sv" ]; then
+            SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc/$sv" start &
+        fi
     done
 fi
 
