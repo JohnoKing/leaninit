@@ -36,10 +36,10 @@ MANPAGES := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5 $(DESTDIR)/usr/shar
 
 # Compile LeanInit
 all: clean
-	@mkdir -p  out
-	@cp -r rc  out/rc
+	@mkdir -p out
+	@cp -r rc out/rc
 	@cp -r svc/universal out/svc
-	@cp cmd/service.sh   out/rc/leaninit-service
+	@cp cmd/service.sh out/rc/leaninit-service
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r svc/freebsd/* out/svc ;\
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" $(RC) ;\
