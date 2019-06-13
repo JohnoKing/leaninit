@@ -49,7 +49,7 @@ W.I.P. changelog for LeanInit v2.0.0
 * Made various improvements to the man pages:
     * Added information about `$__svcname` and `$__svcpid` to the leaninit-rc.svc(8) man page.
     * Changed 'path' to 'default path' in the leaninit-rc.svc(8) man page.
-	* Improved the formatting of the leaninit-rc.conf(5) and leaninit-rc.svc(8) man pages.
+    * Improved the formatting of the leaninit-rc.conf(5) and leaninit-rc.svc(8) man pages.
     * Fixed some grammar in the os-indications(8) man page.
     * Changed the self reference of `halt(8)` to `halt` in the leaninit-halt(8) man page.
     * Updated the dates in every single man page and in the debug tools.
