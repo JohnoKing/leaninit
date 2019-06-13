@@ -26,7 +26,7 @@
  * C Standard APIs are used on Linux to avoid requiring an extra dependency.
  */
 
-#include "inc.h"
+#include <leaninit.h>
 
 int main(int argc, char *argv[]) {
 

@@ -24,16 +24,13 @@
  * stall - This program is used to bug test LeanInit's runlevel switching and shutdown functionality
  */
 
-#include <signal.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#include <leaninit.h>
 
 int main(int argc, char *argv[])
 {
     // This program must be run as root
     if(getuid() != 0) {
-        printf("Permission denied!");
+        printf(RED "* Permission denied!" RESET "\n");
         return 1;
     }
     // SIGSTOP mode can be enabled by passing --sigstop to stall
@@ -60,13 +57,13 @@ int main(int argc, char *argv[])
 
     // Output info
     if(sigstop != 0) {
-        printf("Stall is now running in the background with pid %d.\n", stall_pid);
-        printf("Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead).\n");
-        printf("To execute stall in SIGSTOP mode, pass --sigstop when executing stall.\n");
+        printf(CYAN "* " WHITE "Stall is now running in the background with pid %d." RESET "\n", stall_pid);
+        printf(CYAN "* " WHITE "Stall cannot be killed with SIGINT or SIGTERM (use SIGKILL instead)." RESET "\n");
+        printf(CYAN "* " WHITE "To execute stall in SIGSTOP mode, pass --sigstop when executing stall." RESET "\n");
     } else {
         kill(stall_pid, SIGSTOP);
-        printf("Stall is now in the background paused by SIGSTOP with pid %d.\n", stall_pid);
-        printf("You must send stall SIGCONT then SIGTERM to kill it.\n");
+        printf(CYAN "* " WHITE "Stall is now in the background paused by SIGSTOP with pid %d." RESET "\n", stall_pid);
+        printf(CYAN "* " WHITE "You must send stall SIGCONT then SIGTERM to kill it." RESET "\n");
     }
 
     return 0;

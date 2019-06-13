@@ -24,7 +24,7 @@
  * leaninit - A fast init system
  */
 
-#include "inc.h"
+#include <leaninit.h>
 
 // Universal variables
 static unsigned int single_user =  1;

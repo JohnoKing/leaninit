@@ -22,7 +22,7 @@
 # Variables (each one may be overridden)
 CC      := cc
 STRIP   := strip
-CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
+CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe -I../include
 WFLAGS  := -Wall -Wextra -Wpedantic
 LDFLAGS := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 

@@ -24,25 +24,32 @@
  * signal-interfere - This program exploits the init(8) signal handler
  */
 
-#include <sys/wait.h>
-#include <getopt.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-extern char *__progname;
+#include <leaninit.h>
+
+// Show usage information
+static int usage(void)
+{
+    printf("Usage: %s [-AIiRT012?]\n", __progname);
+    printf("  -A, --alarm            SIGALRM\n");
+    printf("  -I, --int              SIGINT\n");
+    printf("  -i, --ill              SIGILL\n");
+    printf("  -R, --hup              SIGHUP\n");
+    printf("  -T, --term             SIGTERM\n");
+    printf("  -0, --zero             kill(1, 0)\n");
+    printf("  -1, --usr1             SIGUSR1\n");
+    printf("  -2, --usr2             SIGUSR2\n");
+    printf("  -?, --help             Show this usage information\n");
+    return 1;
+}
 
 int main(int argc, char *argv[])
 {
     // This program must be run as root and requires an argument
     if(getuid() != 0) {
-        printf("Permission denied!\n");
+        printf(RED "* Permission denied!" RESET "\n");
         return 1;
-    } else if(argc < 2) {
-        printf("Signal-Interfere requires an argument!\n");
-        return 1;
-    }
+    } else if(argc < 2)
+        return usage();
 
     // Long options struct
     struct option long_options[] = {
@@ -67,17 +74,7 @@ int main(int argc, char *argv[])
 
             // Display usage info
             case '?':
-                printf("Usage: %s [-AIiRT012?]\n", __progname);
-                printf("  -A, --alarm            SIGALRM\n");
-                printf("  -I, --int              SIGINT\n");
-                printf("  -i, --ill              SIGILL\n");
-                printf("  -R, --hup              SIGHUP\n");
-                printf("  -T, --term             SIGTERM\n");
-                printf("  -0, --zero             kill(1, 0)\n");
-                printf("  -1, --usr1             SIGUSR1\n");
-                printf("  -2, --usr2             SIGUSR2\n");
-                printf("  -?, --help             Show this usage information\n");
-                return 1;
+                return usage();
 
             // Set the number of seconds to delay sending the signal (--delay)
             case 'd':
@@ -127,6 +124,6 @@ int main(int argc, char *argv[])
     }
 
     // Finish
-    printf("Signal-Interfere is now running in the background with pid %d.\n", daemon);
+    printf(CYAN "* " WHITE "Signal-Interfere is now running in the background with pid %d." RESET "\n", daemon);
     return 0;
 }

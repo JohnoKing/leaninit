@@ -24,7 +24,7 @@
  * halt - Shutdown, reboot or halt system
  */
 
-#include "inc.h"
+#include <leaninit.h>
 
 // Main function for halt
 int main(int argc, char *argv[])
