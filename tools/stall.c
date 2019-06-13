@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Johnothan King. All rights reserved.
+ * Copyright (c) 2018-2019 Johnothan King. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,21 +31,25 @@
 
 int main(int argc, char *argv[])
 {
+    // This program must be run as root
+    if(getuid() != 0) {
+        printf("Permission denied!");
+        return 1;
+    }
     // SIGSTOP mode can be enabled by passing --sigstop to stall
     unsigned int sigstop = 1;
-    if((argc > 1) && (strstr(argv[1], "--sigstop") != 0))
+    if(argc > 2 && strstr(argv[1], "--sigstop") != 0)
         sigstop = 0;
 
     // Create the stall process itself
     pid_t stall_pid = fork();
     if(stall_pid == 0) {
 
-        // Ignore SIGINT and SIGTERM when stall is not in SIGSTOP mode
+        // Ignore SIGTERM when stall is not in SIGSTOP mode
         if(sigstop != 0) {
             struct sigaction actor;
             memset(&actor, 0, sizeof(actor));
             actor.sa_handler = SIG_IGN;
-            sigaction(SIGINT, &actor, NULL);
             sigaction(SIGTERM, &actor, NULL);
         }
 

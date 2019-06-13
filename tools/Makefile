@@ -1,4 +1,4 @@
-# Copyright (c) 2018 Johnothan King. All rights reserved.
+# Copyright (c) 2018-2019 Johnothan King. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,15 @@ LDFLAGS := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 
 # Compile stall
 all: clean
-	@$(CC) $(CFLAGS) $(WFLAGS) -o stall stall.c $(LDFLAGS)
-	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version stall
-	@echo "Successfully built stall!"
+	@mkdir -p out
+	@$(CC) $(CFLAGS) $(WFLAGS) -o out/signal-interfere signal-interfere.c $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(WFLAGS) -o out/stall stall.c $(LDFLAGS)
+	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version out/*
+	@echo "Successfully built the LeanInit debugging tools!"
 
 # Clean this directory
 clean:
-	@rm -f stall
+	@rm -rf out
 
 # Alias for clean
 clobber: clean

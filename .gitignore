@@ -6,4 +6,4 @@
 
 # Ignore built files
 out
-tools/stall/stall
+tools/out
