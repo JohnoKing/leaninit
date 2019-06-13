@@ -16,7 +16,7 @@ W.I.P. changelog for LeanInit v2.0.0
     * Archaic usage of `\` has been removed from rc.svc(8).
     * The .gitignore file is now a little bit shorter.
 * Added support for standard getty implementations such as agetty(8) and the FreeBSD getty(8).
-    * The format for `/etc/leaninit/ttys` has been drastically changed and is now very similar to the BSD format.
+    * The format for `/etc/leaninit/ttys` has been drastically changed.
     * LGetty as a result has been removed from the main LeanInit source tree.
 * Ported os-indications(8) to FreeBSD using the libefivar API.
 * Moved the services folder from `/etc/leaninit/svc.d` to `/etc/leaninit/svc`.
