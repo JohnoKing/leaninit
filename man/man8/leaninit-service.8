@@ -18,16 +18,16 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 11, 2019
-.Dt LSERVICE 8
+.Dd June 13, 2019
+.Dt LEANINIT-SERVICE 8
 .Os
 .Sh NAME
-.Nm lservice
+.Nm leaninit-service
 .Nd service manager for
 .Nm LeanInit
 .Sh SYNOPSIS
-.Nm lservice service-name action
-.Nm lservice --status-all
+.Nm leaninit-service service-name action
+.Nm leaninit-service --status-all
 .Sh DESCRIPTION
 .Nm LeanInit's
 service utility can do the following actions:
@@ -90,6 +90,6 @@ service ntpd status
 Restart the X Server:
 service xdm restart
 .Sh SEE ALSO
-rc(8), rc.svc(8)
+leaninit-rc(8), leaninit-rc.svc(8)
 .Sh AUTHOR
 Johnothan King

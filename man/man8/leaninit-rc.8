@@ -18,30 +18,51 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 11, 2019
-.Dt TTYS 5
+.Dd June 13, 2019
+.Dt LEANINIT-RC 8
 .Os
 .Sh NAME
-.Em /etc/leaninit/ttys
+.Nm rc
+.Nd init script
 .Sh DESCRIPTION
-.Em /etc/leaninit/ttys
-is the file the
-.Nm lgetty(8)
-service reads from for the list of ttys to launch
-.Nm lgetty(8)
-on.
 The
-.Nm ttys
-file may have comments that start with '#', although
-all comments must be placed on their own line.
-.Sh EXAMPLE
-# This will cause
-.Nm LGetty
-to launch on /dev/console and /dev/tty2
+.Nm rc
+script is responsible for mounting all file systems and starting all services in
+.Em /etc/leaninit/svc.e
+concurrently.
+If either
+.Em /etc/rc.local
+or
+.Em /etc/leaninit/rc.local
+exist and are executable,
+.Nm rc
+will run them after it launches all services.
+.Pp
+.Nm RC
+will log the output from booting the system to
+.Em /var/log/leaninit.log
+by default.
+.Sh FILES
+.Em /etc/rc.local
+Optional script run by
+.Nm rc
+if it exists.
 
- console
- tty2
+.Em /etc/leaninit/rc.svc
+Provides variables and functions to
+.Nm rc
+
+.Em /etc/leaninit/rc.conf
+Config file for
+.Nm rc
+and
+.Nm LeanInit
+services
+
+.Em /var/log/leaninit.log
+Default log file for
+.Nm LeanInit
 .Sh SEE ALSO
-leaninit(8)
+leaninit-rc.conf(5), leaninit-rc.svc(8)
 .Sh AUTHOR
 Johnothan King

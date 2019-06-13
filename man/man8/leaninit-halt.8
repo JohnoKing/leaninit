@@ -18,8 +18,8 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 11, 2019
-.Dt HALT 8
+.Dd June 13, 2019
+.Dt LEANINIT-HALT 8
 .Os
 .Sh NAME
 .Nm halt
@@ -58,7 +58,7 @@ Reboot into the system firmware's UI (only supported on UEFI systems).
 .Pp
 .Nm -h, --halt
 Forces halt, even when
-.Nm lhalt
+.Nm halt
 is called as
 .Nm poweroff
 or
@@ -71,7 +71,7 @@ before rebooting.
 .Pp
 .Nm -p, --poweroff
 Forces poweroff, even when
-.Nm lhalt
+.Nm halt
 is called as
 .Nm halt
 or
@@ -79,7 +79,7 @@ or
 .Pp
 .Nm -r, --reboot
 Forces reboot, even when
-.Nm lhalt
+.Nm halt
 is called as
 .Nm halt
 or
@@ -89,6 +89,6 @@ or
 Display usage information for
 .Nm halt.
 .Sh SEE ALSO
-init(8), rc.shutdown(8), reboot(2)
+leaninit(8), leaninit-rc.shutdown(8), leaninit-reboot(2)
 .Sh AUTHOR
 Johnothan King

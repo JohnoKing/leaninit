@@ -18,20 +18,30 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 11, 2019
-.Dt RC.SHUTDOWN 8
+.Dd June 13, 2019
+.Dt LEANINIT-TTYS 5
 .Os
 .Sh NAME
-.Nm rc.shutdown
-.Nd executed by init during shutdown
+.Em /etc/leaninit/ttys
 .Sh DESCRIPTION
+.Em /etc/leaninit/ttys
+is the file the
+.Nm lgetty(8)
+service reads from for the list of ttys to launch
+.Nm lgetty(8)
+on.
 The
-.Nm rc.shutdown
-script is responsible for killing all currently running services when executed by
-.Nm LeanInit
-while reloading or switching to a different runlevel.
+.Nm ttys
+file may have comments that start with '#', although
+all comments must be placed on their own line.
+.Sh EXAMPLE
+# This will cause
+.Nm LGetty
+to launch on /dev/console and /dev/tty2
 
+ console
+ tty2
 .Sh SEE ALSO
-leaninit(8), halt(8)
+leaninit(8)
 .Sh AUTHOR
 Johnothan King

@@ -7,7 +7,7 @@ W.I.P. changelog for LeanInit v2.0.0
     * ZFS file system mounting is now faster.
     * The `zloop()` thread and system shutdown are now both faster as the `zstatus` variable has been replaced with usage of waitpid(3).
     * Services that are not compatible with the target OS will no longer be installed with `make install`.
-    * `lservice --status-all` is now faster.
+    * `leaninit-service --status-all` is now faster.
     * Various parts of rc.svc(8) are now faster.
     * Removed the useless usage of `return` from the LeanInit signal handler and stall.
     * `unsigned int` is now used in place of `size_t`.
@@ -23,7 +23,7 @@ W.I.P. changelog for LeanInit v2.0.0
 * The consolekit and fstrim services have been removed.
 * run() is now called automatically when rc.svc(8) is sourced if the environment variable `$__SVC` is not set to false.
 * Reimplemented the old fork() function from pre-1.0 commits with the purpose of writing the PIDs of forked commands.
-* Support for `--firmware-setup` has been added to lreboot(8).
+* Support for `--firmware-setup` has been added to halt(8).
 * os-indications(8) now supports the `--quiet` flag, which disables output.
 * Added support for a new function called restart() to LeanInit services. This function will be run instead of main() when a service is restarted (if this function exists).
 * The elogind service now has more comments to improve readability.
@@ -42,12 +42,9 @@ W.I.P. changelog for LeanInit v2.0.0
 * Spaces are now used instead of tabs to improve formatting.
 * Improved the formatting of `init.c` specifically.
 * Made various improvements to the man pages:
-    * Added information about `$__svcname` and `$__svcpid` to the rc.svc(8) man page.
-    * Changed 'path' to 'default path' in the rc.svc(8) man page.
-	* Improved the formatting of the rc.conf(5) and rc.svc(8) man pages.
+    * Added information about `$__svcname` and `$__svcpid` to the leaninit-rc.svc(8) man page.
+    * Changed 'path' to 'default path' in the leaninit-rc.svc(8) man page.
+	* Improved the formatting of the leaninit-rc.conf(5) and leaninit-rc.svc(8) man pages.
     * Fixed some grammar in the os-indications(8) man page.
-    * Changed the self reference of `halt(8)` to `halt` in the lhalt(8) man page.
+    * Changed the self reference of `halt(8)` to `halt` in the leaninit-halt(8) man page.
     * Updated the dates in every single man page.
-    * Updated the copyright notice in the rc.shutdown(8) man page.
-
-To upgrade from LeanInit v1 to v2, run `make upgrade`.

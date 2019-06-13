@@ -18,51 +18,20 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 11, 2019
-.Dt RC 8
+.Dd June 13, 2019
+.Dt LEANINIT-RC.SHUTDOWN 8
 .Os
 .Sh NAME
-.Nm rc
-.Nd init script
+.Nm rc.shutdown
+.Nd executed by init during shutdown
 .Sh DESCRIPTION
 The
-.Nm rc
-script is responsible for mounting all file systems and starting all services in
-.Em /etc/leaninit/svc.e
-concurrently.
-If either
-.Em /etc/rc.local
-or
-.Em /etc/leaninit/rc.local
-exist and are executable,
-.Nm rc
-will run them after it launches all services.
-.Pp
-.Nm RC
-will log the output from booting the system to
-.Em /var/log/leaninit.log
-by default.
-.Sh FILES
-.Em /etc/rc.local
-Optional script run by
-.Nm rc
-if it exists.
-
-.Em /etc/leaninit/rc.svc
-Provides variables and functions to
-.Nm rc
-
-.Em /etc/leaninit/rc.conf
-Config file for
-.Nm rc
-and
+.Nm rc.shutdown
+script is responsible for killing all currently running services when executed by
 .Nm LeanInit
-services
+while reloading or switching to a different runlevel.
 
-.Em /var/log/leaninit.log
-Default log file for
-.Nm LeanInit
 .Sh SEE ALSO
-rc.conf(5), rc.svc(8)
+leaninit(8), leaninit-halt(8)
 .Sh AUTHOR
 Johnothan King
