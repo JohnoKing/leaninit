@@ -5,5 +5,5 @@
 *.directory
 
 # Ignore built files
+debug/out
 out
-tools/out

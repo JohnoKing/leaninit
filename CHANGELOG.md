@@ -27,9 +27,9 @@ W.I.P. changelog for LeanInit v2.0.0
 * os-indications(8) now supports the `--quiet` flag, which disables output.
 * Added support for a new function called restart() to LeanInit services. This function will be run instead of main() when a service is restarted (if this function exists).
 * The naming format for programs and man pages has been changed from lPROGNAME to leaninit-PROGNAME (e.g. lservice -> leaninit-service).
-* Added a debug program to tools called `signal-interfere`. This tool will attempt to override the first signal sent to init(8) by quickly sending another signal to init before the signal-interfere daemon is closed. Sending `SIGALRM` can cause certain init systems to prematurely shutdown when using timers based on alarm(2). Sending `SIGTERM` after sending a different signal (such as `SIGINT`) can override the target runlevel and put init into the wrong state.
+* The debug programs have been moved to `./debug`.
+* Added a debug program to `./debug` called `signal-interfere`. This tool will attempt to override the first signal sent to init(8) by quickly sending another signal to init before the signal-interfere daemon is closed. Sending `SIGALRM` can cause certain init systems to prematurely shutdown when using timers based on alarm(2). Sending `SIGTERM` after sending a different signal (such as `SIGINT`) can override the target runlevel and put init into the wrong state.
 * Improved the error checking in the stall debug program.
-* Moved the debug programs to `./tools` and `./tools/out`
 * The elogind service now has more comments to improve readability.
 * Replaced the erroneous 'NetworkManager' comment in the wicd service with a 'Wicd' comment.
 * Removed support for runlevel variables as they were useless and caused race conditions.
@@ -50,6 +50,6 @@ W.I.P. changelog for LeanInit v2.0.0
 	* Improved the formatting of the leaninit-rc.conf(5) and leaninit-rc.svc(8) man pages.
     * Fixed some grammar in the os-indications(8) man page.
     * Changed the self reference of `halt(8)` to `halt` in the leaninit-halt(8) man page.
-    * Updated the dates in every single man page and in `./tools`.
+    * Updated the dates in every single man page and in the debug tools.
 
 To upgrade from LeanInit v1, run `make uninstall` in the v1 branch, then run `make install` in the master branch.
