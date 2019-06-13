@@ -86,7 +86,6 @@ static void sh(char *script)
 }
 
 // Spawn a getty on the given tty then return its PID
-#ifdef DEBUG
 static pid_t spawn_getty(char *argv[])
 {
     // Create the getty
@@ -101,7 +100,6 @@ static pid_t spawn_getty(char *argv[])
     // Return the PID
     return pid;
 }
-#endif
 
 // Single user mode
 static void single(void)
@@ -149,7 +147,6 @@ static void multi(void)
     sh(rc);
 
     // Locate login(1)
-#   ifdef DEBUG
     char login[16];
     if(access("/usr/bin/login", X_OK) == 0)
         memcpy(login, "/usr/bin/login", 15);
@@ -175,7 +172,6 @@ static void multi(void)
 
     //int status;
     //waitpid(0 || -2, &status, WEXITSTATUS);
-#   endif
 }
 
 // Run either single() or multi() depending on the runlevel
