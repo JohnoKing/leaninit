@@ -21,7 +21,7 @@
  */
 
 /*
- * signal-interfere - This program exploits the init(8) signal handler
+ * signal-interfere - This program exploits the LeanInit v1.3.6 signal handler
  */
 
 #include <leaninit.h>
