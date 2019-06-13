@@ -28,6 +28,7 @@
 #include <getopt.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 extern char *__progname;
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
 
     // Long options struct
     struct option long_options[] = {
+        { "delay", required_argument, 0, 'd' },
         { "alarm", no_argument, 0, 'A' },
         { "int",   no_argument, 0, 'I' },
         { "ill",   no_argument, 0, 'i' },
@@ -57,6 +59,7 @@ int main(int argc, char *argv[])
     };
 
     // Get options
+    unsigned int delay = 0;
     int signal = 0;
     int args;
     while((args = getopt_long(argc, argv, "AIiRT012?", long_options, NULL)) != -1) {
@@ -75,6 +78,11 @@ int main(int argc, char *argv[])
                 printf("  -2, --usr2             SIGUSR2\n");
                 printf("  -?, --help             Show this usage information\n");
                 return 1;
+
+            // Set the number of seconds to delay sending the signal (--delay)
+            case 'd':
+                delay = (unsigned int)strtoul(optarg, NULL, 10);
+                break;
 
             case 'A':
                 signal = SIGALRM;
@@ -114,6 +122,7 @@ int main(int argc, char *argv[])
         actor.sa_handler = SIG_IGN;
         sigaction(SIGTERM, &actor, NULL);
         wait(NULL);
+        if(delay != 0) sleep(delay);
         return kill(1, signal);
     }
 
