@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
             // Display usage info
             case '?':
-                printf("Usage: %s [-fFhlpr?]\n",  __progname);
+                printf("Usage: %s [-fFhlpr?]\n", __progname);
                 printf("  -f, --force            Do not send a signal to init, call reboot(2) directly\n");
                 printf("  -F, --firmware-setup   Reboot into the firmware setup\n");
                 printf("  -h, --halt             Force halt, even when called as poweroff or reboot\n");

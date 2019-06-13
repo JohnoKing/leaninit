@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
             // Display usage info
             case '?':
-                printf("Usage: %s [-AIiRT012?]\n",  __progname);
+                printf("Usage: %s [-AIiRT012?]\n", __progname);
                 printf("  -A, --alarm            SIGALRM\n");
                 printf("  -I, --int              SIGINT\n");
                 printf("  -i, --ill              SIGILL\n");
