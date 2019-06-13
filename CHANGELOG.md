@@ -30,6 +30,7 @@ W.I.P. changelog for LeanInit v2.0.0
 * The debug programs have been moved to `./debug`.
 * Added a debug program to `./debug` called `signal-interfere`. This tool will attempt to override the first signal sent to init(8) by quickly sending another signal to init before the signal-interfere daemon is closed. Sending `SIGALRM` can cause certain init systems to prematurely shutdown when using timers based on alarm(2). Sending `SIGTERM` after sending a different signal (such as `SIGINT`) can override the target runlevel and put init into the wrong state.
 * Improved the error checking in the stall debug program and gave it colored output.
+* Stall will no longer block the signal `SIGINT`.
 * Moved the universal include file to the include folder, renamed it to `leaninit.h` and made the debug programs use this header.
 * The elogind service now has more comments to improve readability.
 * Replaced the erroneous 'NetworkManager' comment in the wicd service with a 'Wicd' comment.
