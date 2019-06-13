@@ -26,6 +26,7 @@ W.I.P. changelog for LeanInit v2.0.0
 * Support for `--firmware-setup` has been added to halt(8).
 * os-indications(8) now supports the `--quiet` flag, which disables output.
 * Added support for a new function called restart() to LeanInit services. This function will be run instead of main() when a service is restarted (if this function exists).
+* The naming format for programs and man pages has been changed from lPROGNAME to leaninit-PROGNAME (e.g. lservice -> leaninit-service).
 * The elogind service now has more comments to improve readability.
 * Replaced the erroneous 'NetworkManager' comment in the wicd service with a 'Wicd' comment.
 * Removed support for runlevel variables as they were useless and caused race conditions.
