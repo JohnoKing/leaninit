@@ -45,14 +45,12 @@ all: clean
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" $(RC) ;\
 		$(SED) -i '' "/#DEF FreeBSD/d" $(RC) ;\
 		$(SED) -i '' "/#ENDEF/d"       $(RC) ;\
-		$(SED) -i '' "s:TTY:ttyv:g"  out/rc/ttys ;\
 		$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
 		$(SED) -i "/#DEF Linux/d" $(RC) ;\
 		$(SED) -i "/#ENDEF/d"     $(RC) ;\
-		$(SED) -i "s:TTY:tty:g" out/rc/ttys ;\
 		$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
@@ -60,8 +58,7 @@ all: clean
 	fi
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit cmd/init.c   $(LDFLAGS) $(LIBS)
 	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lhalt    cmd/halt.c   $(LDFLAGS) $(LIBS)
-	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/lgetty   cmd/lgetty.c $(LDFLAGS) $(LIBS)
-	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/lhalt out/lgetty out/os-indications
+	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/lhalt out/os-indications
 	@echo "Successfully built LeanInit!"
 
 # Install LeanInit (compatible with other init systems)
@@ -82,7 +79,7 @@ install:
 	[ -r lpoweroff.8 ] || ln -sf lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
-	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/os-indications out/rc/lservice out/lgetty $(DESTDIR)/sbin
+	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/os-indications out/rc/lservice $(DESTDIR)/sbin
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi
@@ -106,13 +103,13 @@ upgrade:
 	@if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
 		$(INSTALL) -Dm0644 out/rc/rc.conf $(DESTDIR)/etc/leaninit ;\
 	fi
-	@$(INSTALL) -Dm0644 out/rc/ttys $(DESTDIR)/etc/leaninit ;\
+	@$(INSTALL) -Dm0644 out/rc/ttys $(DESTDIR)/etc/leaninit
 	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
 	@cd $(DESTDIR)/usr/share/man/man8 ;\
 	[ -r lpoweroff.8 ] || ln -sf lhalt.8 lpoweroff.8 ;\
 	[ -r lreboot.8 ] || ln -sf lhalt.8 lreboot.8 ;\
 	if [ `uname` = Linux ]; then [ -r lzzz.8 ] || ln -sf lhalt.8 lzzz.8; fi
-	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/os-indications out/rc/lservice out/lgetty $(DESTDIR)/sbin
+	@$(INSTALL) -Dm0755 out/leaninit out/lhalt out/os-indications out/rc/lservice $(DESTDIR)/sbin
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lpoweroff
 	@cd $(DESTDIR)/sbin; ln -sf lhalt lreboot
 	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf lhalt lzzz; fi

@@ -1,15 +1,26 @@
 # /etc/leaninit/ttys
 #
-# This file lists the ttys to spawn lgetty(8) on.
-# All comments must be on their own line.
+# This file lists the ttys to spawn getty(8) on.
+# All comments must be placed on their own line.
 #
 
+# NOTE: Fix the FreeBSD ttys later
 #DEF FreeBSD
-TTY0
+# GETTY COMMAND             TTY
+"/usr/bin/getty ttyv0 tyy" "/dev/ttyv0"
+"/usr/bin/getty ttyv1 tyy" "/dev/ttyv1"
+"/usr/bin/getty ttyv2 tyy" "/dev/ttyv2"
+"/usr/bin/getty ttyv3 tyy" "/dev/ttyv3"
+"/usr/bin/getty ttyv4 tyy" "/dev/ttyv4"
+"/usr/bin/getty ttyv5 tyy" "/dev/ttyv5"
+"/usr/bin/getty ttyv6 tyy" "/dev/ttyv6"
 #ENDEF
-TTY1
-TTY2
-TTY3
-TTY4
-TTY5
-TTY6
+#DEF Linux
+# GETTY COMMAND                  TTY
+"/sbin/agetty tty1 38400 linux" "/dev/tty1"
+"/sbin/agetty tty2 38400 linux" "/dev/tty2"
+"/sbin/agetty tty3 38400 linux" "/dev/tty3"
+"/sbin/agetty tty4 38400 linux" "/dev/tty4"
+"/sbin/agetty tty5 38400 linux" "/dev/tty5"
+"/sbin/agetty tty6 38400 linux" "/dev/tty6"
+#ENDEF
