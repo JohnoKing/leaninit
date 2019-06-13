@@ -157,6 +157,23 @@ static void multi(void)
         return;
     }
 
+    // Locate ttys(5)
+    char ttys_file_path[19];
+    if(access("/etc/leaninit/ttys", R_OK) == 0)
+        memcpy(ttys_file_path, "/etc/leaninit/ttys", 19);
+    else if(access("/etc/ttys", R_OK) == 0)
+        memcpy(ttys_file_path, "/etc/ttys", 10);
+    else {
+        printf(RED "* Could not find either /etc/leaninit/ttys or /etc/ttys" RESET "\n");
+        return;
+    }
+
+    // Open ttys(5) and write the data to ttys_file_data (it can have 300 lines each 200 bytes long)
+    char ttys_file_data[50001];
+    FILE *ttys_file = fopen(ttys_file_path, "r");
+    fread(ttys_file_data, 200, 300, ttys_file);
+    fclose(ttys_file);
+
     // This loop creates tty paths then calls spawn_getty()
     pid_t getty[7];
     for(int t = 1; t < 7; t++) {
@@ -170,6 +187,7 @@ static void multi(void)
         getty[t] = spawn_getty(gargv);
     }
 
+    // TODO: When a getty exits, restart it unless there was an error
     //int status;
     //waitpid(0 || -2, &status, WEXITSTATUS);
 }
