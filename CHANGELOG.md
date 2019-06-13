@@ -48,3 +48,5 @@ W.I.P. changelog for LeanInit v2.0.0
     * Fixed some grammar in the os-indications(8) man page.
     * Changed the self reference of `halt(8)` to `halt` in the leaninit-halt(8) man page.
     * Updated the dates in every single man page.
+
+To upgrade from v1, run `make uninstall` in the v1 repo (v1 branch), then run `make install` in the master branch.
