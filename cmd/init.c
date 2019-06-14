@@ -353,14 +353,14 @@ int main(int argc, char *argv[])
                         break;
                 }
 
-                // Reopen the console (this must be done after single_user is set)
+                // Reopen the console and reload the runlevel
                 close(tty);
                 tty = open_tty(DEFAULT_TTY);
-
-                // Reload the runlevel thread and reset the signal
                 pthread_create(&runlvl, NULL, chlvl, NULL);
-                current_signal = 0;
             }
+
+            // Reset the signal
+            current_signal = 0;
         }
     }
 
