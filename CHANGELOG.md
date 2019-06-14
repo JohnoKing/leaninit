@@ -10,6 +10,7 @@ W.I.P. changelog for LeanInit v2.0.0
     * `leaninit-service --status-all` is now faster.
     * Various parts of rc.svc(8) are now faster.
     * Removed the useless usage of `return` from the LeanInit signal handler and stall.
+    * The current_signal variable will now always be reset at the end of the main `for(;;)` loop.
     * `unsigned int` is now used in place of `size_t`.
     * More strings are globbed to increase stability and performance.
     * Globs are now used in place of executing ls(1) when desirable.
