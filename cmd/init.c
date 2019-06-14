@@ -92,7 +92,7 @@ static pid_t spawn_getty(const char *cmd, const char *tty)
     pid_t pid = fork();
     if(pid == 0) {
         open_tty(tty);
-        execl("/bin/sh", "/bin/sh", "-mc", cmd, NULL);
+        execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
     }
 
     // Return the PID
