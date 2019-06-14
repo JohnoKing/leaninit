@@ -174,8 +174,8 @@ static void multi(void)
     while(fgets(data, 50001, ttys_file)) {
         if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
         const char *getty_cmd = strtok_r(data, ":", &data);
-        if(getty_cmd == NULL) continue;
-        printf("%s    %s", getty_cmd, data);
+        if(strlen(getty_cmd) < 2 || strlen (data) < 2) continue;
+        printf("%s    %s", getty_cmd, data);  // DEBUG
     }
     fclose(ttys_file);
 
