@@ -18,7 +18,7 @@ W.I.P. changelog for LeanInit v2.0.0
     * The .gitignore file is now a little bit shorter.
 * Added support for standard getty implementations such as agetty(8) and the FreeBSD getty(8).
     * LGetty as a result has been removed from the main LeanInit source tree.
-    * The format for `/etc/leaninit/ttys` has been drastically changed.
+    * The format for `/etc/leaninit/ttys` has been drastically changed. The LeanInit ttys(5) file is now styled after inittab(5).
 * Ported os-indications(8) to FreeBSD using the libefivar API.
 * Moved the services folder from `/etc/leaninit/svc.d` to `/etc/leaninit/svc`.
 * The consolekit and fstrim services have been removed.
