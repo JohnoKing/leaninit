@@ -168,12 +168,14 @@ static void multi(void)
         return;
     }
 
-    // Open ttys(5) and write the data to ttys_file_data (it can have 300 lines each 200 bytes long)
-    char data[50001];
+    // Open ttys(5) and parse the data (max size 50000 bytes)
+    char *data = malloc(50001);
     FILE *ttys_file = fopen(ttys_file_path, "r");
     while(fgets(data, 50001, ttys_file)) {
-        if(strchr(data, '#') != NULL) continue;
-        printf("%s", data);  // TEMP DEBUG CODE
+        if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
+        const char *getty_cmd = strtok_r(data, ":", &data);
+        if(getty_cmd == NULL) continue;
+        printf("%s    %s", getty_cmd, data);
     }
     fclose(ttys_file);
 
