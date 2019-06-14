@@ -173,7 +173,7 @@ static void multi(void)
     FILE *ttys_file = fopen(ttys_file_path, "r");
     while(fgets(data, 50001, ttys_file)) {
         if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
-        const char *getty_cmd = strtok_r(data, ":", &data);
+        const char *getty_cmd = strsep(&data, ":");
         if(strlen(getty_cmd) < 2 || strlen (data) < 2) continue;
         printf("%s    %s", getty_cmd, data);  // DEBUG
     }
