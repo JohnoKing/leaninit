@@ -86,15 +86,13 @@ static void sh(char *script)
 }
 
 // Spawn a getty on the given tty then return its PID
-static pid_t spawn_getty(char *argv[])
+static pid_t spawn_getty(const char *cmd, const char *tty)
 {
     // Create the getty
     pid_t pid = fork();
     if(pid == 0) {
-        char tty[10] = "/dev/";
-        strncat(tty, argv[1], 5);
         open_tty(tty);
-        execve(argv[0], argv, environ);
+        execl("/bin/sh", "/bin/sh", "-mc", cmd, NULL);
     }
 
     // Return the PID
@@ -175,26 +173,11 @@ static void multi(void)
         if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
         const char *getty_cmd = strsep(&data, ":");
         if(strlen(getty_cmd) < 2 || strlen (data) < 2) continue;
-        printf("%s    %s", getty_cmd, data);  // DEBUG
+        spawn_getty(getty_cmd, data);
     }
     fclose(ttys_file);
 
-    // This loop creates tty paths then calls spawn_getty()
-    pid_t getty[7];
-    for(int t = 1; t < 7; t++) {
-
-        // Create the path to the tty
-        char tty[5];
-        snprintf(tty, 5, "tty%d", t);
-
-        // Create the arguments (getty, tty, mode) then call spawn_getty()
-        char *gargv[] = { "/sbin/agetty", tty, "38400" };
-        getty[t] = spawn_getty(gargv);
-    }
-
-    // TODO: When a getty exits, restart it unless there was an error
-    //int status;
-    //waitpid(0 || -2, &status, WEXITSTATUS);
+    // TODO: Restart closed getty processes unless there was an error
 }
 
 // Run either single() or multi() depending on the runlevel
