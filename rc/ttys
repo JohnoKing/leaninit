@@ -7,12 +7,12 @@
 # GETTY COMMAND:TTY PATH
 #DEF FreeBSD
 /usr/libexec/getty Pc ttyv0:/dev/ttyv0
-/usr/libexec/getty Pc ttyv1:/dev/ttyv0
-/usr/libexec/getty Pc ttyv2:/dev/ttyv0
-/usr/libexec/getty Pc ttyv3:/dev/ttyv0
-/usr/libexec/getty Pc ttyv4:/dev/ttyv0
-/usr/libexec/getty Pc ttyv5:/dev/ttyv0
-/usr/libexec/getty Pc ttyv6:/dev/ttyv0
+/usr/libexec/getty Pc ttyv1:/dev/ttyv1
+/usr/libexec/getty Pc ttyv2:/dev/ttyv2
+/usr/libexec/getty Pc ttyv3:/dev/ttyv3
+/usr/libexec/getty Pc ttyv4:/dev/ttyv4
+/usr/libexec/getty Pc ttyv5:/dev/ttyv5
+/usr/libexec/getty Pc ttyv6:/dev/ttyv6
 
 # Dialin terminal
 #/usr/libexec/getty 3wire ttyv0:/dev/ttyv0
