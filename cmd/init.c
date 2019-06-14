@@ -167,7 +167,8 @@ static void multi(void)
     }
 
     // Open ttys(5) and parse the data (max size 50000 bytes)
-    char *data = malloc(50001);
+    char buffer[50001];
+    char *data = buffer;
     FILE *ttys_file = fopen(ttys_file_path, "r");
     while(fgets(data, 50001, ttys_file)) {
         if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
