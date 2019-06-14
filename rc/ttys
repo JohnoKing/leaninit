@@ -4,16 +4,18 @@
 # All comments must be placed on their own line.
 #
 
-# NOTE: Fix the FreeBSD ttys later
 # GETTY COMMAND:TTY PATH
 #DEF FreeBSD
-/usr/bin/getty ttyv0 tyy:/dev/ttyv0
-/usr/bin/getty ttyv1 tyy:/dev/ttyv1
-/usr/bin/getty ttyv2 tyy:/dev/ttyv2
-/usr/bin/getty ttyv3 tyy:/dev/ttyv3
-/usr/bin/getty ttyv4 tyy:/dev/ttyv4
-/usr/bin/getty ttyv5 tyy:/dev/ttyv5
-/usr/bin/getty ttyv6 tyy:/dev/ttyv6
+/usr/libexec/getty Pc ttyv0:/dev/ttyv0
+/usr/libexec/getty Pc ttyv1:/dev/ttyv0
+/usr/libexec/getty Pc ttyv2:/dev/ttyv0
+/usr/libexec/getty Pc ttyv3:/dev/ttyv0
+/usr/libexec/getty Pc ttyv4:/dev/ttyv0
+/usr/libexec/getty Pc ttyv5:/dev/ttyv0
+/usr/libexec/getty Pc ttyv6:/dev/ttyv0
+
+# Dialin terminal
+#/usr/libexec/getty 3wire ttyv0:/dev/ttyv0
 #ENDEF
 #DEF Linux
 /sbin/agetty tty1 38400 linux:/dev/tty1
