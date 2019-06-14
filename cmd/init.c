@@ -169,9 +169,10 @@ static void multi(void)
     }
 
     // Open ttys(5) and write the data to ttys_file_data (it can have 300 lines each 200 bytes long)
-    char ttys_file_data[50001];
+    char data[50001];
     FILE *ttys_file = fopen(ttys_file_path, "r");
-    fread(ttys_file_data, 200, 300, ttys_file);
+    while(fread(data, 200, 300, ttys_file))
+        printf("%s\n", data);  // TEMP DEBUG CODE
     fclose(ttys_file);
 
     // This loop creates tty paths then calls spawn_getty()
