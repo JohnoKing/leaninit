@@ -335,7 +335,7 @@ __status() {
 }
 
 # This function will be run if $__SVC is not set to 'false'
-run() {
+__run() {
 
     # Return an error if the service was not written correctly
     if [ -z "$NAME" ] || ! isfunc main; then
@@ -482,5 +482,5 @@ run() {
 }
 
 if [ "$__SVC" != "false" ]; then
-    run "$@"
+    __run "$@"
 fi

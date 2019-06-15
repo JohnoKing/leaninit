@@ -1,0 +1,112 @@
+#!/bin/sh
+# This is an example LeanInit service script.
+# All scripts must be executable (0755) to work correctly.
+
+
+# If the script depends on variables from rc.conf, it should be sourced at the beginning of the script.
+. /etc/leaninit/rc.conf
+
+# Using `source` instead of `.` will source rc.conf without executing it (making the script more secure),
+# with the trade-off that source is not POSIX compliant. If you use source (or any bash-specific feature),
+# replace #!/bin/sh with #!/bin/bash to signify your script is not compatible with POSIX. Keep in mind
+# bash is significantly slower than POSIX compliant shells such as dash and ksh93.
+#source /etc/leaninit/rc.conf
+
+
+# The $NAME variable defines the full name of the service as displayed by leaninit-service(8).
+NAME=ExampleService
+
+
+# The optional $TYPE variable defines the type of service the init script is. This variable is
+# used exclusively for dependency management in conjunction with the waitfor function. LeanInit's
+# main init scripts currently recognize the following types: networking, login-daemon, display-manager, bluetooth
+# Init scripts are not limited to the above types, however. Custom types can be used as well.
+# For demonstration, a custom type called 'tutorialType' will be defined.
+TYPE=tutorialType
+
+
+# The optional $TARGET variable defines the target platform for the script. It should match the output of uname(1).
+#TARGET=Linux
+#TARGET=FreeBSD
+
+
+# On the off chance you don't want rc.svc to automatically call main() or restart(), set $__SVC to false.
+# This variable usually should not be changed.
+#__SVC=false
+
+
+# This is an example function that is used later
+example_function() {
+    return 0
+}
+
+
+# This the main function is the first function of the init script that rc.svc will call unless $__SVC
+# is set to false or the restart function (described later) exists and the service is being restarted.
+# The main function is the only function required for an init script to work. All other functions are
+# optional.
+main() {
+
+    # The waitfor command will wait for a file, process, service or a type of service for a total of
+    # seven seconds before giving an error. This command is the primary form of dependency management
+    # used in LeanInit scripts.
+    waitfor file /var/run/example-file   # Wait for a file
+    waitfor service dbus                 # Wait for the dbus service to start
+    waitfor process Xorg                 # Wait for the X server by using the process name Xorg
+    waitfor anotherType                  # Wait for any service that defines the type 'anotherType'
+
+    # The fork command will fork the given command into a child process, then write the PID of
+    # the child process to $__svcpidfile
+    fork /bin/sleep 100
+
+    # The print command will print formatted colored output to the console, then unformatted output
+    # to the log file defined in rc.conf if the second argument is 'log'. The third argument defines
+    # the color of either the entire message, or if the fourth argument is used the the third argument
+    # will only color the star. The fourth argument will then define the color for the rest of the
+    # message. The default color variables are bold, although custom colors can be used as well.
+    print "EXAMPLE OUTPUT" nolog "\033[38;5;27m" "$WHITE"  # Print the string 'EXAMPLE OUTPUT' in bold white with a star colored #005FFF to stdout and no log file.
+
+    # Execute If Exists will run a command if it exists
+    exifex uname -m
+
+    # Similarly, isfunc will return 0 if the given command is a shell function
+    if isfunc example_function; then
+        print "The example function exists" nolog "$BLACK" "$GREEN" # Be warned that black text is invisible on black console backgrounds.
+    fi
+}
+
+
+# This function will be run when the init script is reloaded.
+# It is required for init scripts to support normal reloading.
+reload() {
+    # $__svcpid is the same as $(cat $__svcpidfile), just shorter.
+    # NEVER use double quotes with this variable when running kill(1).
+    kill -HUP $__svcpid  # Send SIGHUP to the service.
+}
+
+
+# This function will be run when an init script stops.
+stop() {
+    # $__svcname is the name of the init script in /etc/leaninit/svc
+    print "$__svcname is currently stopping" nolog "$RED" "$YELLOW"
+}
+
+
+# This function will run instead of main when the init script is restarted.
+restart() {
+    print "Restarting the example script!" log "$YELLOW" # This message is logged and printed only in bold yellow.
+}
+
+# This function is run when the init script is enabled.
+# It will override the `enable` command when run under bash.
+enable() {
+    print "Running the enable function!" nolog "$PURPLE" "$WHITE" # Purple and white are the standard colors for messages that are not logged.
+}
+
+# This function is run when the init script is disabled.
+disable() {
+    print "Running the disable function!" log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
+}
+
+# Every script must source leaninit-rc.svc(8) with `.` to function (source does not work as rc.svc must be executed)
+. /etc/leaninit/rc.svc
