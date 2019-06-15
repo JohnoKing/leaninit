@@ -97,20 +97,15 @@ int main(int argc, char *argv[]) {
     // Linux efivarfs section
 #   else
 
-    // Write efi_attr (0x0000000000000007)
+    // Write efi_attr and efi_boot
     if(unset != 0) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
         unsigned long efi_attr = 0x0000000000000007;
-        if(fwrite(&efi_attr, 1, 4, fd) == 0) {
+        if(fwrite(&efi_attr, 1, 4, fd) == 0 || fwrite(&efi_boot, 1, 1, fd) == 0) {
             fclose(fd);
             printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
             return 1;
         }
-
-        // Write efi_boot (0x0000000000000001)
-        fwrite(&efi_boot, 1, 1, fd);
-
-        // Close the file
         fclose(fd);
 
     // Delete OsIndications to unset it
