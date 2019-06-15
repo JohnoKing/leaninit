@@ -86,17 +86,31 @@ static void sh(char *script)
 }
 
 // Spawn a getty on the given tty then return its PID
-static pid_t spawn_getty(const char *cmd, const char *tty)
+// TODO: Only spawn one looping child process or none at all
+static void spawn_getty(const char *cmd, const char *tty)
 {
-    // Create the getty
-    pid_t pid = fork();
-    if(pid == 0) {
-        open_tty(tty);
-        execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
-    }
+    // Create the looping child process
+    if(fork() != 0) return;
+    for(;;) {
 
-    // Return the PID
-    return pid;
+        // Create the seperate child process for the getty
+        pid_t getty = fork();
+        if(getty == 0) {
+            open_tty(tty);
+            execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
+        }
+
+        // Do not spam the tty if the getty fails
+        int status;
+        wait(&status);
+        if(WEXITSTATUS(status) != 0) {
+#           ifdef FreeBSD
+            open_tty(tty);
+#           endif
+            printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", tty, WEXITSTATUS(status));
+            return;
+        }
+    }
 }
 
 // Single user mode
@@ -166,19 +180,23 @@ static void multi(void)
         return;
     }
 
-    // Open ttys(5) and parse the data (max size 50000 bytes)
-    char buffer[50001];
+    // Open ttys(5) (max file size 40000 bytes)
+    char buffer[40001];
     char *data = buffer;
     FILE *ttys_file = fopen(ttys_file_path, "r");
-    while(fgets(data, 50001, ttys_file)) {
-        if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
-        const char *getty_cmd = strsep(&data, ":");
-        if(strlen(getty_cmd) < 2 || strlen (data) < 2) continue;
-        spawn_getty(getty_cmd, data);
-    }
-    fclose(ttys_file);
+    while(fgets(data, 40001, ttys_file)) {
 
-    // TODO: Restart closed getty processes unless there was an error
+        // Error checking
+        if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
+        const char *cmd = strsep(&data, ":");
+        if(strlen(cmd) < 2 || strlen (data) < 2) continue;
+
+        // Spawn getty(8)
+        spawn_getty(cmd, data);
+    }
+
+    // Close ttys(5)
+    fclose(ttys_file);
 }
 
 // Run either single() or multi() depending on the runlevel
