@@ -3,14 +3,7 @@ LeanInit
 _A fast init system_
 
 ## What is this
-This is a somewhat small init system that I made for myself, written from scratch.
-I was motivated to make this init system, because when I was cleaning up
-[v7init](https://gitlab.com/JohnoKing/v7init) (my port of the UNIX V7 init system to Linux), I found there was so much useless
-code I would be better off rewriting an init system from scratch, using a
-whole new code base. In addition to allowing me to write a much faster init
-system, I could put it under the much more permissive MIT license, rather
-than the 4-clause BSD license v7init was under; as LeanInit contains none
-of the UNIX code at all.
+This is a speedy BSD-style init system that I created for myself, written from scratch.
 
 ## Building and Installing
 ### Linux
