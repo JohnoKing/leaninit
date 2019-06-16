@@ -118,7 +118,6 @@ static void single(void)
     if(access(shell, X_OK) != 0) {
         printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
         memcpy(shell, "/bin/sh", 8);
-        printf("\n");
     }
 
     // Fork the shell into a separate process
