@@ -86,31 +86,23 @@ static void sh(char *script)
 }
 
 // Spawn a getty on the given tty then return its PID
-// TODO: Only spawn one looping child process or none at all
-static void spawn_getty(const char *cmd, const char *tty)
+static pid_t spawn_getty(const char *cmd, const char *tty)
 {
-    // Create the looping child process
-    if(fork() != 0) return;
-    for(;;) {
-
-        // Create the seperate child process for the getty
-        pid_t getty = fork();
-        if(getty == 0) {
-            open_tty(tty);
-            execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
-        }
-
-        // Do not spam the tty if the getty fails
-        int status;
-        wait(&status);
-        if(WEXITSTATUS(status) != 0) {
-#           ifdef FreeBSD
-            open_tty(tty);
-#           endif
-            printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", tty, WEXITSTATUS(status));
-            return;
-        }
+    pid_t getty = fork();
+    if(getty == 0) {
+        open_tty(tty);
+        return execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
     }
+
+    return getty;
+}
+
+// Return the accessible file path or NULL if neither are
+static char *write_file_path(char *primary, char *fallback, int amode)
+{
+    if(access(primary, amode) == 0) return primary;
+    else if(access(fallback, amode) == 0) return fallback;
+    else return NULL;
 }
 
 // Single user mode
@@ -142,16 +134,11 @@ static void single(void)
 static void multi(void)
 {
     // Locate rc(8)
-    char rc[17];
-    if(access("/etc/leaninit/rc", X_OK) == 0)
-        memcpy(rc, "/etc/leaninit/rc", 17);
-    else if(access("/etc/rc", X_OK) == 0)
-        memcpy(rc, "/etc/rc", 8);
-    else {
+    char *rc = write_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
+    if(rc == NULL) {
         printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
         single_user = 0;
-        single();
-        return;
+        return single();
     }
 
     // Run rc(8)
@@ -159,44 +146,53 @@ static void multi(void)
     sh(rc);
 
     // Locate login(1)
-    char login[16];
-    if(access("/usr/bin/login", X_OK) == 0)
-        memcpy(login, "/usr/bin/login", 15);
-    else if(access("/bin/login", X_OK) == 0)
-        memcpy(login, "/bin/login", 11);
-    else {
+    const char *login_path = write_file_path("/usr/bin/login", "/bin/login", X_OK);
+    if(login_path == NULL) {
         printf(RED "* Could not find login(1) (please symlink it to either /usr/bin/login or /bin/login and give it executable permissions)" RESET "\n");
         return;
     }
 
     // Locate ttys(5)
-    char ttys_file_path[19];
-    if(access("/etc/leaninit/ttys", R_OK) == 0)
-        memcpy(ttys_file_path, "/etc/leaninit/ttys", 19);
-    else if(access("/etc/ttys", R_OK) == 0)
-        memcpy(ttys_file_path, "/etc/ttys", 10);
-    else {
+    const char *ttys_file_path = write_file_path("/etc/leaninit/ttys", "/etc/ttys", R_OK);
+    if(ttys_file_path == NULL) {
         printf(RED "* Could not find either /etc/leaninit/ttys or /etc/ttys" RESET "\n");
         return;
     }
 
-    // Open ttys(5) (max file size 40000 bytes)
-    char buffer[40001];
-    char *data = buffer;
-    FILE *ttys_file = fopen(ttys_file_path, "r");
-    while(fgets(data, 40001, ttys_file)) {
 
-        // Error checking
-        if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
-        const char *cmd = strsep(&data, ":");
-        if(strlen(cmd) < 2 || strlen (data) < 2) continue;
+    // Start a looping child process
+    if(fork() != 0) return;
+    for(;;) {
 
-        // Spawn getty(8)
-        spawn_getty(cmd, data);
+        // Open ttys(5) (max file size 40000 bytes)
+        char buffer[40001];
+        char *data = buffer;
+        FILE *ttys_file = fopen(ttys_file_path, "r");
+        while(fgets(data, 40001, ttys_file)) {
+
+            // Error checking
+            if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
+            const char *cmd = strsep(&data, ":");
+            if(strlen(cmd) < 2 || strlen (data) < 2) continue;
+
+            // Spawn getty(8)
+            spawn_getty(cmd, data);
+        }
+
+        // Close ttys(5)
+        fclose(ttys_file);
+
+        // Do not spam the tty if the getty fails
+        int status;
+        wait(&status);
+        if(WEXITSTATUS(status) != 0) {
+#           ifdef FreeBSD
+            open_tty(tty);
+#           endif
+            printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", data, WEXITSTATUS(status));
+            return;
+        }
     }
-
-    // Close ttys(5)
-    fclose(ttys_file);
 }
 
 // Run either single() or multi() depending on the runlevel
@@ -305,10 +301,8 @@ int main(int argc, char *argv[])
                 sync();
 
                 // Run rc.shutdown (multi-user)
-                if(access("/etc/leaninit/rc.shutdown", W_OK | X_OK) == 0)
-                    sh("/etc/leaninit/rc.shutdown");
-                else if(access("/etc/rc.shutdown", W_OK | X_OK) == 0)
-                    sh("/etc/rc.shutdown");
+                char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
+                if(rc_shutdown != NULL) sh(rc_shutdown);
 
                 // Kill all remaining processes
                 pthread_kill(runlvl, SIGKILL);
