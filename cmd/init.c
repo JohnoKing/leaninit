@@ -160,37 +160,58 @@ static void multi(void)
     }
 
 
-    // Start a looping child process
+    // Start a child process (for managing getty with plain wait(2))
     if(fork() != 0) return;
+
+    // Open ttys(5) (max file size 40000 bytes with 90 entries)
+    FILE *ttys_file = fopen(ttys_file_path, "r");
+    char buffer[40001];
+    char *data = buffer;
+    unsigned int entry = 0;
+    struct getty_t {
+        const char *cmd;
+        const char *tty;
+        pid_t pid;
+    } getty[90];
+    while(fgets(data, 40001, ttys_file) && entry != 90) {
+
+        // Error checking
+        if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
+        const char *cmd = strsep(&data, ":");
+        if(strlen(cmd) < 2 || strlen (data) < 2) continue;
+
+        // Spawn getty(8)
+        entry++;
+        getty[entry].pid = spawn_getty(cmd, data);
+        getty[entry].cmd = cmd;
+        getty[entry].tty = data;
+    }
+
+    // Close ttys(5)
+    fclose(ttys_file);
+
+    // Start the loop
     for(;;) {
-
-        // Open ttys(5) (max file size 40000 bytes)
-        char buffer[40001];
-        char *data = buffer;
-        FILE *ttys_file = fopen(ttys_file_path, "r");
-        while(fgets(data, 40001, ttys_file)) {
-
-            // Error checking
-            if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
-            const char *cmd = strsep(&data, ":");
-            if(strlen(cmd) < 2 || strlen (data) < 2) continue;
-
-            // Spawn getty(8)
-            spawn_getty(cmd, data);
-        }
-
-        // Close ttys(5)
-        fclose(ttys_file);
-
-        // Do not spam the tty if the getty fails
         int status;
-        wait(&status);
-        if(WEXITSTATUS(status) != 0) {
-#           ifdef FreeBSD
-            open_tty(tty);
-#           endif
-            printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", data, WEXITSTATUS(status));
-            return;
+        pid_t closed_pid = wait(&status);
+
+        // Match the closed pid to the getty in the index
+        for(unsigned int e = 1; e < entry; e++) {
+            if(getty[e].pid != closed_pid) continue;
+
+            // Do not spam the tty if the getty failed
+            if(WEXITSTATUS(status) != 0) {
+#               ifdef FreeBSD
+                open_tty(getty[e].tty);
+#               endif
+                printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", getty[e].tty, WEXITSTATUS(status));
+                getty[e].pid = 0;
+                break;
+            }
+
+            // Respawn the getty
+            getty[e].pid = spawn_getty(getty[e].cmd, getty[e].tty);
+            break;
         }
     }
 }
