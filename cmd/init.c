@@ -196,7 +196,7 @@ static void multi(void)
         pid_t closed_pid = wait(&status);
 
         // Match the closed pid to the getty in the index
-        for(unsigned int e = 1; e < entry; e++) {
+        for(unsigned int e = 1; e <= entry; e++) {
             if(getty[e].pid != closed_pid) continue;
 
             // Do not spam the tty if the getty failed
