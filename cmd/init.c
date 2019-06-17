@@ -73,16 +73,25 @@ static int open_tty(const char *tty_path)
 }
 
 // Execute a script
-static void sh(char *script)
+static int sh(char *script)
 {
     pid_t child = fork();
     if(child == 0) {
         setsid();
         char *sargv[] = { script, silent_flag, NULL };
         execve(script, sargv, environ);
+        printf(RED "* Failed to run %s" RESET "\n", script);
+        perror(RED "* execve()" RESET);
+        return 1;
+    } else if(child == -1) {
+        printf(RED "* Failed to run %s" RESET "\n", script);
+        perror(RED "* fork()" RESET);
+        return 1;
     }
 
-    waitpid(child, NULL, 0);
+    int status;
+    waitpid(child, &status, 0);
+    return WEXITSTATUS(status);
 }
 
 // Spawn a getty on the given tty then return its PID
@@ -121,11 +130,20 @@ static void single(void)
     }
 
     // Fork the shell into a separate process
-    single_shell_pid = fork();
-    if(single_shell_pid == 0) {
+    pid_t child = fork();
+    if(child == 0) {
         open_tty(DEFAULT_TTY);
         char *sargv[] = { shell, NULL };
         execve(shell, sargv, environ);
+        printf(RED "* Failed to run %s" RESET "\n", shell);
+        perror(RED "* execve()" RESET);
+        printf(RED "* Shutting down the system..." RESET "\n");
+        kill(1, SIGUSR2);
+    } else if(child == -1) {
+        printf(RED "* Failed to run %s" RESET "\n", shell);
+        perror(RED "* fork()" RESET);
+        printf(RED "* Shutting down the system..." RESET "\n");
+        kill(1, SIGUSR2);
     }
 }
 
@@ -142,7 +160,11 @@ static void multi(void)
 
     // Run rc(8)
     if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
-    sh(rc);
+    if(sh(rc) != 0) {
+        printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
+        single_user = 0;
+        return single();
+    }
 
     // Locate login(1)
     const char *login_path = write_file_path("/usr/bin/login", "/bin/login", X_OK);
