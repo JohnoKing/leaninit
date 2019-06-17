@@ -137,13 +137,13 @@ static void single(void)
         execve(shell, sargv, environ);
         printf(RED "* Failed to run %s" RESET "\n", shell);
         perror(RED "* execve()" RESET);
-        printf(RED "* Shutting down the system..." RESET "\n");
-        kill(1, SIGUSR2);
+        printf(RED "* This system will now shutdown in three seconds..." RESET "\n");
+        kill(1, SIGLOST);
     } else if(child == -1) {
         printf(RED "* Failed to run %s" RESET "\n", shell);
         perror(RED "* fork()" RESET);
-        printf(RED "* Shutting down the system..." RESET "\n");
-        kill(1, SIGUSR2);
+        printf(RED "* This system will now shutdown in three seconds..." RESET "\n");
+        kill(1, SIGLOST);
     }
 }
 
@@ -318,6 +318,7 @@ int main(int argc, char *argv[])
         actor.sa_handler = sighandle;     // Set the handler to sighandle()
         sigaction(SIGUSR1, &actor, NULL); // Halt
         sigaction(SIGUSR2, &actor, NULL); // Poweroff
+        sigaction(SIGLOST, &actor, NULL); // Poweroff (delayed)
         sigaction(SIGTERM, &actor, NULL); // Single-user
         sigaction(SIGILL,  &actor, NULL); // Multi-user
         sigaction(SIGHUP,  &actor, NULL); // Reloads everything
@@ -378,6 +379,8 @@ int main(int argc, char *argv[])
                         return reboot(SYS_HALT);
 
                     // Poweroff
+                    case SIGLOST:  // Delay
+                        sleep(3);
                     case SIGUSR2:
                         return reboot(SYS_POWEROFF);
 
