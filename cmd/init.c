@@ -228,7 +228,7 @@ static void *chlvl(void *nullptr)
 // This perpetual loop kills all zombie processes
 __attribute((noreturn)) static void *zloop(void *nullptr)
 {
-    for(;;) wait(nullptr);
+    for(;;) if(wait(nullptr) == -1) sleep(1);
 }
 
 // Set current_signal to the signal sent to PID 1
