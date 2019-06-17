@@ -190,7 +190,9 @@ static void multi(void)
     fclose(ttys_file);
 
     // Start the loop
+    unsigned int entry_total = entry;
     for(;;) {
+        if(entry_total == 0) break;
         int status;
         pid_t closed_pid = wait(&status);
 
@@ -205,6 +207,7 @@ static void multi(void)
 #               endif
                 printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", getty[e].tty, WEXITSTATUS(status));
                 getty[e].pid = 0;
+                entry_total--;
                 break;
             }
 

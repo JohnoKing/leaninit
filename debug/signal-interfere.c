@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
         memset(&actor, 0, sizeof(actor));
         actor.sa_handler = SIG_IGN;
         sigaction(SIGTERM, &actor, NULL);
-        wait(NULL);
+        pause();
         if(delay != 0) sleep(delay);
         return kill(1, signal);
     } else if(daemon == -1) {
