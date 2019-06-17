@@ -131,10 +131,13 @@ int main(int argc, char *argv[])
         pid_t child = fork();
         if(child == 0) {
             char *cargv[] = { "os-indications", "-q", NULL };
-            execve("/sbin/os-indications", cargv, environ);
+            return execve("/sbin/os-indications", cargv, environ);
+        } else if(child == -1) {
+            perror(RED "* fork() failed with" RESET);
+            printf(RED "* OsIndications will not be set" RESET "\n");
         }
 
-        waitpid(child, NULL, 0);
+        wait(NULL);
     }
 
     // Skip init if force is true

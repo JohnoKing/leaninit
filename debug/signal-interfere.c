@@ -121,6 +121,9 @@ int main(int argc, char *argv[])
         wait(NULL);
         if(delay != 0) sleep(delay);
         return kill(1, signal);
+    } else if(daemon == -1) {
+        perror(RED "* fork() failed with" RESET);
+        return 1;
     }
 
     // Finish

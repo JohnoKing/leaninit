@@ -53,6 +53,9 @@ int main(int argc, char *argv[])
         // Eternal loop
         for(;;)
             sleep(100);
+    } else if(stall_pid == -1) {
+        perror(RED "* fork() failed with" RESET);
+        return 1;
     }
 
     // Output info
