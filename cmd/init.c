@@ -27,10 +27,10 @@
 #include <leaninit.h>
 
 // Universal variables
-static unsigned int single_user =  1;
-static pid_t single_shell_pid   = -1;
-static unsigned int verbose = 0;
-static int current_signal   = 0;
+static pid_t single_shell_pid = -1;
+static vint_t single_user = 1;
+static int current_signal = 0;
+static vint_t verbose     = 0;
 static char silent_flag[2];
 
 // Shows usage for init
@@ -188,7 +188,7 @@ static void multi(void)
     FILE *ttys_file = fopen(ttys_file_path, "r");
     char buffer[40001];
     char *data = buffer;
-    unsigned int entry = 0;
+    vint_t entry = 0;
     struct getty_t {
         const char *cmd;
         const char *tty;
@@ -218,7 +218,7 @@ static void multi(void)
         if(closed_pid == -1) return;
 
         // Match the closed pid to the getty in the index
-        for(unsigned int e = 1; e <= entry; e++) {
+        for(vint_t e = 1; e <= entry; e++) {
             if(getty[e].pid != closed_pid) continue;
 
             // Do not spam the tty if the getty failed
@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
                 // Give processes about seven seconds to comply with SIGTERM before sending SIGKILL
                 struct timespec rest  = {0};
                 rest.tv_nsec          = 100000000;
-                unsigned int timer    = 0;
+                vint_t timer = 0;
                 while(waitpid(-1, NULL, WNOHANG) != -1 && timer < 70) {
                     nanosleep(&rest, NULL);
                     timer++;

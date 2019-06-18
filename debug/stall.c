@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     // SIGSTOP mode can be enabled by passing --sigstop to stall
-    unsigned int sigstop = 1;
+    vint_t sigstop = 1;
     if(argc > 2 && strstr(argv[1], "--sigstop") != 0)
         sigstop = 0;
 

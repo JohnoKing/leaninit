@@ -49,9 +49,9 @@ int main(int argc, char *argv[]) {
     }
 
     // Long options and other variables
-    unsigned char efi_boot = 0x0000000000000001;
-    unsigned int  verbose  = 0;
-    unsigned int  unset    = 1;
+    vint_t efi_boot = 0x0000000000000001;
+    vint_t verbose  = 0;
+    vint_t unset    = 1;
     struct option long_options[] = {
         { "quiet", no_argument, 0, 'q' },
         { "unset", no_argument, 0, 'u' },
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
     // Write efi_attr and efi_boot
     if(unset != 0) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
-        unsigned long efi_attr = 0x0000000000000007;
+        vint_t efi_attr = 0x0000000000000007;
         if(fwrite(&efi_attr, 1, 4, fd) == 0 || fwrite(&efi_boot, 1, 1, fd) == 0) {
             fclose(fd);
             printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");

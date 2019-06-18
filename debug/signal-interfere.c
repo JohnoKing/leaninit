@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
             // Set the number of seconds to delay sending the signal (--delay)
             case 'd':
-                delay = (unsigned int)strtoul(optarg, NULL, 10);
+                delay = (unsigned int)atoi(optarg);
                 break;
 
             case 'A':
