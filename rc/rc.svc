@@ -42,445 +42,445 @@ WHITE='\033[1;37m'
 
 # Make sure $LOGFILE is set
 if [ -z "$LOGFILE" ]; then
-    LOGFILE=/var/log/leaninit.log
+	LOGFILE=/var/log/leaninit.log
 fi
 
 # Execute If Exists
 exifex() {
-    if command -v "$1" >> /dev/null; then
-        "$@"
-    fi
+	if command -v "$1" >> /dev/null; then
+		"$@"
+	fi
 }
 
 # Return 0 if the given command is a shell function, otherwise return 1
 isfunc() {
-    if [ "$(command -V "$1" 2> /dev/null | sed 's/ shell//g' | head -n1)" = "$1 is a function" ]; then
-        return 0
-    else
-        return 1
-    fi
+	if [ "$(command -V "$1" 2> /dev/null | sed 's/ shell//g' | head -n1)" = "$1 is a function" ]; then
+		return 0
+	else
+		return 1
+	fi
 }
 
 # Print formatted output to stdout and unformatted output to $LOGFILE (use this instead of echo)
 print() {
-    if [ "$SILENT_MODE" != "true" ]; then
-        printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
-    fi
-    if [ "$2" = "log" ]; then
-        echo "$1" >> "$LOGFILE"
-    fi
+	if [ "$SILENT_MODE" != "true" ]; then
+		printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
+	fi
+	if [ "$2" = "log" ]; then
+		echo "$1" >> "$LOGFILE"
+	fi
 }
 
 # Fork the given command into a separate process and put the PID into $__svcpidfile
 fork() {
-    "$@" &
-    echo " $(jobs -p %+)" >> "$__svcpidfile"
+	"$@" &
+	echo " $(jobs -p %+)" >> "$__svcpidfile"
 }
 
 # Check for uid 0
 __rootcheck() {
-    if [ "$(id -u)" != "0" ]; then
-        print "This must be run as root!" nolog "$RED"
-        exit 4
-    fi
+	if [ "$(id -u)" != "0" ]; then
+		print "This must be run as root!" nolog "$RED"
+		exit 4
+	fi
 }
 
 # Checks for $__svcname.status
 __svccheck() {
-    if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
-        if [ "$1" = "return" ]; then
-            return 7
-        fi
-        print "$NAME is not running!" nolog "$RED"
-        exit 7
-    fi
+	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+		if [ "$1" = "return" ]; then
+			return 7
+		fi
+		print "$NAME is not running!" nolog "$RED"
+		exit 7
+	fi
 }
 
 # Makes sure the service has $__svcpid set
 __proccheck() {
-    if [ -z "$__svcpid" ]; then
-        if [ "$1" = "return" ]; then
-            return 3
-        fi
-        print "$NAME does not have a process to send a signal to!" nolog "$RED"
-        exit 3
-    fi
+	if [ -z "$__svcpid" ]; then
+		if [ "$1" = "return" ]; then
+			return 3
+		fi
+		print "$NAME does not have a process to send a signal to!" nolog "$RED"
+		exit 3
+	fi
 }
 
 # Change the status of a service to 'Failure', then exit with the specified exit code
 __fail() {
-    echo 'Failure' > "/var/run/leaninit/$__svcname.status"
-    exit $1
+	echo 'Failure' > "/var/run/leaninit/$__svcname.status"
+	exit $1
 }
 
 # Show init script usage info dynamically
 __usage() {
-    if [ "$(id -u)" != "0" ]; then
-        echo "Usage: $0 [status|help]"
-        exit $1
-    fi
-    printf "%s" "Usage: $0 [enable|disable|start|stop|restart"
-    if __svccheck return; then
-        printf "|try-restart|force-reload"
-        if isfunc reload; then
-            printf "|reload"
-        fi
-    fi
-    if __proccheck return; then
+	if [ "$(id -u)" != "0" ]; then
+		echo "Usage: $0 [status|help]"
+		exit $1
+	fi
+	printf "%s" "Usage: $0 [enable|disable|start|stop|restart"
+	if __svccheck return; then
+		printf "|try-restart|force-reload"
+		if isfunc reload; then
+			printf "|reload"
+		fi
+	fi
+	if __proccheck return; then
 #DEF FreeBSD
-        printf "|info|pause|cont"
+		printf "|info|pause|cont"
 #ENDEF
 #DEF Linux
-        printf "|pause|cont"
+		printf "|pause|cont"
 #ENDEF
-    fi
-    printf "|status|help]\n"
-    exit $1
+	fi
+	printf "|status|help]\n"
+	exit $1
 }
 
 # Wait for a file using a loop that checks for it every tenth of a second (until loops are too slow)
 __waitfor_loop_file() {
-    __TIMER=0
-    while true; do
-        if [ -r "$1" ]; then break; fi
-        sleep 0.1
-        __TIMER=$((__TIMER + 1))
-        if [ "$((__TIMER > 69))" = "1" ]; then
-            print "$2" log "$RED"
-            __fail 1
-        fi
-    done
-    if [ -n "$3" ] && [ "$(cat "$1")" = "Failure" ]; then
-        print "$3" log "$RED"
-        __fail 1
-    fi
+	__TIMER=0
+	while true; do
+		if [ -r "$1" ]; then break; fi
+		sleep 0.1
+		__TIMER=$((__TIMER + 1))
+		if [ "$((__TIMER > 69))" = "1" ]; then
+			print "$2" log "$RED"
+			__fail 1
+		fi
+	done
+	if [ -n "$3" ] && [ "$(cat "$1")" = "Failure" ]; then
+		print "$3" log "$RED"
+		__fail 1
+	fi
 }
 
 # Wait for a process using a loop that checks for it every tenth of a second
 __waitfor_loop_proc() {
-    __TIMER=0
-    while true; do
-        if [ -n "$(pgrep -x "$1")" ]; then break; fi
-        sleep 0.1
-        __TIMER=$((__TIMER + 1))
-        if [ "$((__TIMER > 69))" = "1" ]; then
-            if [ "$3" != "return" ]; then
-                print "$2" log "$RED"
-                __fail 1
-            else
-                return 1
-            fi
-        fi
-    done
+	__TIMER=0
+	while true; do
+		if [ -n "$(pgrep -x "$1")" ]; then break; fi
+		sleep 0.1
+		__TIMER=$((__TIMER + 1))
+		if [ "$((__TIMER > 69))" = "1" ]; then
+			if [ "$3" != "return" ]; then
+				print "$2" log "$RED"
+				__fail 1
+			else
+				return 1
+			fi
+		fi
+	done
 }
 
 # Wait for either a file, process or service for up to seven seconds
 waitfor() {
-    case "$1" in
-        file)
-            __waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!"
-            ;;
-        process)
-            __waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
-            ;;
-        service)
-            if [ ! -r "/etc/leaninit/svc.e/$2" ]; then
-                if [ "$3" = "optional" ]; then
-                    return 0
-                else
-                    print "$NAME failed to start because the service $2 is not enabled!" log "$RED"
-                    __fail 1
-                fi
-            fi
-            __waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start!" "$NAME failed to start because the service $2 failed to start!"
-            ;;
-        *)
-            if [ ! -r "/etc/leaninit/svc.e/$1.type" ]; then
-                if  [ "$2" != "optional" ]; then
-                    print "$NAME failed to start because no currently enabled services satisfy the type $1!" log "$RED"
-                    __fail 1
-                else
-                    return 0
-                fi
-            fi
-            __waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat "/etc/leaninit/svc.e/$1.type") failed to start!"
-            ;;
-    esac
+	case "$1" in
+		file)
+			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!"
+			;;
+		process)
+			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
+			;;
+		service)
+			if [ ! -r "/etc/leaninit/svc.e/$2" ]; then
+				if [ "$3" = "optional" ]; then
+					return 0
+				else
+					print "$NAME failed to start because the service $2 is not enabled!" log "$RED"
+					__fail 1
+				fi
+			fi
+			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start!" "$NAME failed to start because the service $2 failed to start!"
+			;;
+		*)
+			if [ ! -r "/etc/leaninit/svc.e/$1.type" ]; then
+				if  [ "$2" != "optional" ]; then
+					print "$NAME failed to start because no currently enabled services satisfy the type $1!" log "$RED"
+					__fail 1
+				else
+					return 0
+				fi
+			fi
+			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat "/etc/leaninit/svc.e/$1.type") failed to start!"
+			;;
+	esac
 }
 
 # Start a service
 __start() {
-    # Return if the service is active
-    if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Failure" ]; then
-        print "$NAME is already running..." nolog "$PURPLE" "$YELLOW"
-        return 0
-    elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
-        print "$(cat "/var/run/leaninit/$TYPE.type") is currently running and conflicts with $NAME!" nolog "$RED"
-        return 1
-    fi
+	# Return if the service is active
+	if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Failure" ]; then
+		print "$NAME is already running..." nolog "$PURPLE" "$YELLOW"
+		return 0
+	elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
+		print "$(cat "/var/run/leaninit/$TYPE.type") is currently running and conflicts with $NAME!" nolog "$RED"
+		return 1
+	fi
 
-    # Run main() when starting and restart() when restarting
-    print "$1ing $NAME..." log "$BLUE" "$WHITE"
-    if [ "$1" = "Restart" ] && isfunc restart; then
-        restart 2> /dev/null
-    else
-        main 2> /dev/null
-    fi
+	# Run main() when starting and restart() when restarting
+	print "$1ing $NAME..." log "$BLUE" "$WHITE"
+	if [ "$1" = "Restart" ] && isfunc restart; then
+		restart 2> /dev/null
+	else
+		main 2> /dev/null
+	fi
 
-    # Finish by creating the service's .status and .type files
-    RET=$?
-    if [ $RET = 0 ]; then
-        print "$1ed $NAME successfully!" log "$GREEN" "$WHITE"
-        echo "$1ed" > "/var/run/leaninit/$__svcname.status"
-        if [ -n "$TYPE" ]; then
-            echo "$__svcname" > "/var/run/leaninit/$TYPE.type"
-        fi
-    else
-        print "$NAME failed to start!" log "$RED"
-        echo "Failure" > "/var/run/leaninit/$__svcname.status"
-    fi
+	# Finish by creating the service's .status and .type files
+	RET=$?
+	if [ $RET = 0 ]; then
+		print "$1ed $NAME successfully!" log "$GREEN" "$WHITE"
+		echo "$1ed" > "/var/run/leaninit/$__svcname.status"
+		if [ -n "$TYPE" ]; then
+			echo "$__svcname" > "/var/run/leaninit/$TYPE.type"
+		fi
+	else
+		print "$NAME failed to start!" log "$RED"
+		echo "Failure" > "/var/run/leaninit/$__svcname.status"
+	fi
 
-    return $RET
+	return $RET
 }
 
 # Stop a service
 __stop() {
-    # Return if the service is not active
-    if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
-        print "$NAME is not running..." nolog "$PURPLE" "$YELLOW"
-        return 0
-    fi
+	# Return if the service is not active
+	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+		print "$NAME is not running..." nolog "$PURPLE" "$YELLOW"
+		return 0
+	fi
 
-    # Execute stop()
-    if isfunc stop; then
-        stop
-    fi
+	# Execute stop()
+	if isfunc stop; then
+		stop
+	fi
 
-    # Stop the specified pids in the pid file (if there are any)
-    if [ -n "$__svcpid" ]; then
-        print "Sending $NAME SIGCONT and SIGTERM..." log "$BLUE" "$WHITE"
-        kill -CONT $__svcpid 2> /dev/null
-        kill -TERM $__svcpid 2> /dev/null
-        for pid in $__svcpid; do
-            __TIMER=0
-            while true; do
-                if ! kill -0 $pid 2> /dev/null; then break; fi
-                sleep 0.1
-                __TIMER=$((__TIMER + 1))
-                if [ "$((__TIMER > 69))" = "1" ]; then
-                    print "Sending SIGKILL to $NAME PID $pid..." log "$PURPLE" "$YELLOW"
-                    kill -KILL $pid 2> /dev/null
-                    break
-                fi
-            done &
-        done
-        wait
-    fi
+	# Stop the specified pids in the pid file (if there are any)
+	if [ -n "$__svcpid" ]; then
+		print "Sending $NAME SIGCONT and SIGTERM..." log "$BLUE" "$WHITE"
+		kill -CONT $__svcpid 2> /dev/null
+		kill -TERM $__svcpid 2> /dev/null
+		for pid in $__svcpid; do
+			__TIMER=0
+			while true; do
+				if ! kill -0 $pid 2> /dev/null; then break; fi
+				sleep 0.1
+				__TIMER=$((__TIMER + 1))
+				if [ "$((__TIMER > 69))" = "1" ]; then
+					print "Sending SIGKILL to $NAME PID $pid..." log "$PURPLE" "$YELLOW"
+					kill -KILL $pid 2> /dev/null
+					break
+				fi
+			done &
+		done
+		wait
+	fi
 
-    # Remove the .status, .pid and .type files for the service
-    rm -f "/var/run/leaninit/$__svcname.status" "$__svcpidfile"
-    if [ -n "$TYPE" ]; then
-        rm -f "/var/run/leaninit/$TYPE.type"
-    fi
+	# Remove the .status, .pid and .type files for the service
+	rm -f "/var/run/leaninit/$__svcname.status" "$__svcpidfile"
+	if [ -n "$TYPE" ]; then
+		rm -f "/var/run/leaninit/$TYPE.type"
+	fi
 
-    # Finish
-    print "Stopped $NAME successfully!" log "$GREEN" "$WHITE"
+	# Finish
+	print "Stopped $NAME successfully!" log "$GREEN" "$WHITE"
 }
 
 # Restart a service by running __stop() and __start(), then set the status of the service to 'Restarted'
 __restart() {
-    __rootcheck
-    __stop
-    __start Restart
+	__rootcheck
+	__stop
+	__start Restart
 }
 
 # Reload a service if it has a reload function
 __reload() {
-    print "Reloading $NAME..." log "$BLUE" "$WHITE"
-    reload
-    RET=$?
-    if [ $RET = 0 ]; then
-        print "Successfully reloaded $NAME!" log "$GREEN" "$WHITE"
-        echo "Reloaded" > "/var/run/leaninit/$__svcname.status"
-    else
-        print "Failed to reload $NAME!" log "$RED"
-    fi
-    return $RET
+	print "Reloading $NAME..." log "$BLUE" "$WHITE"
+	reload
+	RET=$?
+	if [ $RET = 0 ]; then
+		print "Successfully reloaded $NAME!" log "$GREEN" "$WHITE"
+		echo "Reloaded" > "/var/run/leaninit/$__svcname.status"
+	else
+		print "Failed to reload $NAME!" log "$RED"
+	fi
+	return $RET
 }
 
 # Get the current status of a service
 __status() {
 
-    # Look for the service in /etc/leaninit/svc.e
-    if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
-        __STAT="Enabled"
-    else
-        __STAT="Disabled"
-    fi
+	# Look for the service in /etc/leaninit/svc.e
+	if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
+		__STAT="Enabled"
+	else
+		__STAT="Disabled"
+	fi
 
-    # Get the service's status
-    if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
-        __STATUS="Not Running"
-    else
-        __STATUS="$(cat "/var/run/leaninit/$__svcname.status")"
-    fi
+	# Get the service's status
+	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+		__STATUS="Not Running"
+	else
+		__STATUS="$(cat "/var/run/leaninit/$__svcname.status")"
+	fi
 
-    # Print the output without a star (for --status-all)
+	# Print the output without a star (for --status-all)
 #DEF FreeBSD
-    echo "$NAME  |  $__STAT  |  $__STATUS"
+	echo "$NAME  |  $__STAT  |  $__STATUS"
 #ENDEF
 #DEF Linux
-    echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
+	echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
 #ENDEF
 }
 
 # This function will be run if $__SVC is not set to 'false'
 __run() {
 
-    # Return an error if the service was not written correctly
-    if [ -z "$NAME" ] || ! isfunc main; then
-        print "Service syntax is invalid!" nolog "$RED"
-        exit 128
+	# Return an error if the service was not written correctly
+	if [ -z "$NAME" ] || ! isfunc main; then
+		print "Service syntax is invalid!" nolog "$RED"
+		exit 128
 
-    # If the service does not support the current OS, exit
-    elif [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
-        print "$NAME is not compatible with $(uname)!" nolog "$RED"
-        exit 5
-    fi
+	# If the service does not support the current OS, exit
+	elif [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
+		print "$NAME is not compatible with $(uname)!" nolog "$RED"
+		exit 5
+	fi
 
-    # Set $__svc variables
-    __svcname="$(basename "$0")"
-    __svcpidfile="/var/run/leaninit/$__svcname.pid"
-    if [ -r "$__svcpidfile" ]; then
-        __svcpid="$(cat "$__svcpidfile")"
-    fi
+	# Set $__svc variables
+	__svcname="$(basename "$0")"
+	__svcpidfile="/var/run/leaninit/$__svcname.pid"
+	if [ -r "$__svcpidfile" ]; then
+		__svcpid="$(cat "$__svcpidfile")"
+	fi
 
-    # Handle arguments
-    case "$1" in
-        enable)
-            __rootcheck
-            if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
-                print "$NAME is already enabled..." nolog "$PURPLE" "$YELLOW"
-                exit 0
-            fi
-            if [ -n "$TYPE" ] && [ -r "/etc/leaninit/svc.e/$TYPE.type" ]; then
-                print "$NAME could not be enabled because $(cat "/etc/leaninit/svc.e/$TYPE.type") conflicts with $NAME!" log "$RED"
-                exit 1
-            fi
-            touch "/etc/leaninit/svc.e/$__svcname"
-            if [ -n "$TYPE" ]; then
-                echo "$__svcname" > "/etc/leaninit/svc.e/$TYPE.type"
-            fi
-            print "$NAME has been enabled!" log "$GREEN" "$WHITE"
-            if isfunc enable; then
-                enable
-            fi ;;
+	# Handle arguments
+	case "$1" in
+		enable)
+			__rootcheck
+			if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
+				print "$NAME is already enabled..." nolog "$PURPLE" "$YELLOW"
+				exit 0
+			fi
+			if [ -n "$TYPE" ] && [ -r "/etc/leaninit/svc.e/$TYPE.type" ]; then
+				print "$NAME could not be enabled because $(cat "/etc/leaninit/svc.e/$TYPE.type") conflicts with $NAME!" log "$RED"
+				exit 1
+			fi
+			touch "/etc/leaninit/svc.e/$__svcname"
+			if [ -n "$TYPE" ]; then
+				echo "$__svcname" > "/etc/leaninit/svc.e/$TYPE.type"
+			fi
+			print "$NAME has been enabled!" log "$GREEN" "$WHITE"
+			if isfunc enable; then
+				enable
+			fi ;;
 
-        disable)
-            __rootcheck
-            if [ ! -r "/etc/leaninit/svc.e/$__svcname" ]; then
-                print "$NAME is already disabled..." nolog "$PURPLE" "$YELLOW"
-                exit 0
-            fi
-            rm "/etc/leaninit/svc.e/$__svcname"
-            if [ -n "$TYPE" ]; then
-                if ! rm "/etc/leaninit/svc.e/$TYPE.type"; then
-                    print "Could not disable $NAME!" log "$RED"
-                    exit 1
-                fi
-            fi
-            print "$NAME has been disabled!" log "$GREEN" "$WHITE"
-            if isfunc disable; then
-                disable
-            fi ;;
+		disable)
+			__rootcheck
+			if [ ! -r "/etc/leaninit/svc.e/$__svcname" ]; then
+				print "$NAME is already disabled..." nolog "$PURPLE" "$YELLOW"
+				exit 0
+			fi
+			rm "/etc/leaninit/svc.e/$__svcname"
+			if [ -n "$TYPE" ]; then
+				if ! rm "/etc/leaninit/svc.e/$TYPE.type"; then
+					print "Could not disable $NAME!" log "$RED"
+					exit 1
+				fi
+			fi
+			print "$NAME has been disabled!" log "$GREEN" "$WHITE"
+			if isfunc disable; then
+				disable
+			fi ;;
 
-        start)
-            __rootcheck
-            __start Start ;;
+		start)
+			__rootcheck
+			__start Start ;;
 
-        stop)
-            __rootcheck
-            __stop ;;
+		stop)
+			__rootcheck
+			__stop ;;
 
-        restart)
-            __restart ;;
+		restart)
+			__restart ;;
 
-        try-restart)
-            __svccheck
-            __restart ;;
+		try-restart)
+			__svccheck
+			__restart ;;
 
-        reload)
-            __rootcheck
-            __svccheck
-            if isfunc reload; then
-                __reload
-            else
-                print "$NAME cannot be reloaded!" log "$RED"
-                exit 3
-            fi ;;
+		reload)
+			__rootcheck
+			__svccheck
+			if isfunc reload; then
+				__reload
+			else
+				print "$NAME cannot be reloaded!" log "$RED"
+				exit 3
+			fi ;;
 
-        force-reload)
-            __rootcheck
-            __svccheck
-            if isfunc reload; then
-                __reload
-            else
-                print "Forcing $NAME to restart..." log "$BLUE" "$WHITE"
-                __restart
-            fi ;;
+		force-reload)
+			__rootcheck
+			__svccheck
+			if isfunc reload; then
+				__reload
+			else
+				print "Forcing $NAME to restart..." log "$BLUE" "$WHITE"
+				__restart
+			fi ;;
 
-        status)
-            __status ;;
+		status)
+			__status ;;
 
 #DEF FreeBSD
-        info)
-            __rootcheck
-            __proccheck
-            print "Sending SIGINFO to $NAME..." nolog "$PURPLE" "$WHITE"
-            for pid in $__svcpid; do
-                print "PID $pid:" nolog "$PURPLE" "$WHITE"
-                kill -INFO $pid
-            done ;;
+		info)
+			__rootcheck
+			__proccheck
+			print "Sending SIGINFO to $NAME..." nolog "$PURPLE" "$WHITE"
+			for pid in $__svcpid; do
+				print "PID $pid:" nolog "$PURPLE" "$WHITE"
+				kill -INFO $pid
+			done ;;
 #ENDEF
 
-        pause)
-            __rootcheck
-            __proccheck
-            if [ "$(cat "/var/run/leaninit/$__svcname.status")" = "Paused" ]; then
-                print "$NAME is already paused..." nolog "$PURPLE" "$YELLOW"
-                exit 0
-            fi
-            print "Pausing $NAME with SIGSTOP (PIDs $__svcpid)..." log "$BLUE" "$WHITE"
-            kill -STOP $__svcpid
-            echo "Paused" > "/var/run/leaninit/$__svcname.status"
-            print "Successfully paused $NAME!" log "$GREEN" "$WHITE" ;;
+		pause)
+			__rootcheck
+			__proccheck
+			if [ "$(cat "/var/run/leaninit/$__svcname.status")" = "Paused" ]; then
+				print "$NAME is already paused..." nolog "$PURPLE" "$YELLOW"
+				exit 0
+			fi
+			print "Pausing $NAME with SIGSTOP (PIDs $__svcpid)..." log "$BLUE" "$WHITE"
+			kill -STOP $__svcpid
+			echo "Paused" > "/var/run/leaninit/$__svcname.status"
+			print "Successfully paused $NAME!" log "$GREEN" "$WHITE" ;;
 
-        cont)
-            __rootcheck
-            __proccheck
-            if [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Paused" ]; then
-                print "$NAME is not paused..." nolog "$PURPLE" "$YELLOW"
-                exit 0
-            fi
-            print "Unpausing $NAME with SIGCONT (PIDs $__svcpid)..." log "$BLUE" "$WHITE"
-            kill -CONT $__svcpid
-            echo "Continued" > "/var/run/leaninit/$__svcname.status"
-            print "Successfully unpaused $NAME!" log "$GREEN" "$WHITE" ;;
+		cont)
+			__rootcheck
+			__proccheck
+			if [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Paused" ]; then
+				print "$NAME is not paused..." nolog "$PURPLE" "$YELLOW"
+				exit 0
+			fi
+			print "Unpausing $NAME with SIGCONT (PIDs $__svcpid)..." log "$BLUE" "$WHITE"
+			kill -CONT $__svcpid
+			echo "Continued" > "/var/run/leaninit/$__svcname.status"
+			print "Successfully unpaused $NAME!" log "$GREEN" "$WHITE" ;;
 
-        help)
-            print "Showing usage information for $NAME:" nolog "$PURPLE" "$WHITE"
-            __usage 0 ;;
+		help)
+			print "Showing usage information for $NAME:" nolog "$PURPLE" "$WHITE"
+			__usage 0 ;;
 
-        "")
-            print "No argument given" nolog "$RED"
-            __usage 2 ;;
+		"")
+			print "No argument given" nolog "$RED"
+			__usage 2 ;;
 
-        *)
-            print "Illegal action - $1" nolog "$RED"
-            __usage 2 ;;
-    esac
+		*)
+			print "Illegal action - $1" nolog "$RED"
+			__usage 2 ;;
+	esac
 }
 
 if [ "$__SVC" != "false" ]; then
-    __run "$@"
+	__run "$@"
 fi

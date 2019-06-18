@@ -4,16 +4,16 @@
 NAME="Apache Web Server"
 
 main() {
-    mkdir -p /run/httpd /var/run/httpd
-    fork httpd -k start -DFOREGROUND
+	mkdir -p /run/httpd /var/run/httpd
+	fork httpd -k start -DFOREGROUND
 }
 
 stop() {
-    httpd -k graceful-stop
+	httpd -k graceful-stop
 }
 
 reload() {
-    pkill -HUP -x httpd
+	pkill -HUP -x httpd
 }
 
 . /etc/leaninit/rc.svc

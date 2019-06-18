@@ -5,8 +5,8 @@ NAME="ACPI Daemon"
 TARGET=Linux
 
 main() {
-    waitfor service dbus optional
-    acpid -p "$__svcpidfile"
+	waitfor service dbus optional
+	acpid -p "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

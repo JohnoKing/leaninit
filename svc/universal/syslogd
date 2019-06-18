@@ -4,11 +4,11 @@
 NAME="SyslogD"
 
 main() {
-    syslogd -ss -P "$__svcpidfile"
+	syslogd -ss -P "$__svcpidfile"
 }
 
 reload() {
-    pkill -HUP -x syslogd
+	pkill -HUP -x syslogd
 }
 
 . /etc/leaninit/rc.svc

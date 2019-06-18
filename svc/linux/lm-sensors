@@ -5,11 +5,11 @@ NAME="Linux Monitoring Sensors"
 TARGET=Linux
 
 main() {
-    sensors -s
+	sensors -s
 }
 
 reload() {
-    sensors -s
+	sensors -s
 }
 
 . /etc/leaninit/rc.svc

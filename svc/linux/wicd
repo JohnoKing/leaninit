@@ -6,13 +6,13 @@ TYPE=networking
 TARGET=Linux
 
 main() {
-    waitfor service dbus
-    wicd
-    ln -s /var/run/wicd/wicd.pid "$__svcpidfile"
+	waitfor service dbus
+	wicd
+	ln -s /var/run/wicd/wicd.pid "$__svcpidfile"
 }
 
 stop() {
-    rm -f /var/run/wicd/wicd.pid
+	rm -f /var/run/wicd/wicd.pid
 }
 
 . /etc/leaninit/rc.svc

@@ -5,17 +5,17 @@ NAME="D-Bus"
 
 # Launch D-Bus
 main() {
-    mkdir -p /run/dbus /var/run/dbus
-    rm -f /run/dbus/pid /var/run/dbus/pid
-    dbus-daemon --fork --system --print-pid > "$__svcpidfile"
-    if [ ! -r /etc/machine-id ]; then
-        dbus-uuidgen > /etc/machine-id
-    fi
+	mkdir -p /run/dbus /var/run/dbus
+	rm -f /run/dbus/pid /var/run/dbus/pid
+	dbus-daemon --fork --system --print-pid > "$__svcpidfile"
+	if [ ! -r /etc/machine-id ]; then
+		dbus-uuidgen > /etc/machine-id
+	fi
 }
 
 # This causes D-Bus to partially reload
 reload() {
-    pkill -HUP -x dbus-daemon
+	pkill -HUP -x dbus-daemon
 }
 
 . /etc/leaninit/rc.svc
