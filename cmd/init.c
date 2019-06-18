@@ -27,11 +27,11 @@
 #include <leaninit.h>
 
 // Universal variables
-static pid_t single_shell_pid = -1;
+static pid_t  single_shell_pid = -1;
+static int    current_signal = 0;
 static vint_t single_user = 1;
-static int current_signal = 0;
 static vint_t verbose     = 0;
-static char silent_flag[2];
+static char   silent_flag[2];
 
 // Shows usage for init
 static int usage(int ret)

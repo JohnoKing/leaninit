@@ -88,14 +88,14 @@ mount --bind /run/shm /dev/shm &
 # Launch either udev or mdev
 if [ "$DEV" = "udev" ]; then
 	print "Starting udev..." nolog "$PURPLE" "$WHITE"
-	$DEVEXEC --daemon
+	"$DEVEXEC" --daemon
 	udevadm info --cleanup-db   # Clean the udev database
 	udevadm trigger --action=add
 	udevadm settle
 elif [ "$DEV" = "mdev" ]; then
 	print "Starting mdev..." nolog "$PURPLE" "$WHITE"
-	$DEVEXEC -s
-	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
+	"$DEVEXEC" -s
+	echo "$DEVEXEC" > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
 fi &
 
 # Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
