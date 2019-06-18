@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 13, 2019
+.Dd June 18, 2019
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -42,13 +42,11 @@ If it is
 .Nm PID
 1,
 .Nm LeanInit
-will open
-.Em /dev/console
-using
+will open the console using
 .Nm login_tty(3)
 then launch two threads, one to kill all zombie processes, the other to run
-.Nm lrc(8)
-in multi-user mode or a shell in single user mode.
+.Nm leaninit-rc(8)
+and getty(8) in multi-user mode or a shell of the user's choice in single user mode.
 .Pp
 If it is not
 .Nm PID
@@ -60,10 +58,10 @@ will instead read argv and do the following for each option:
 Kill all processes then power off the system.
 
 .Nm 1, S, s
-Switch the runlevel to single user (1).
+Switch the runlevel to single user mode.
 
 .Nm 2, 3, 4, 5
-Switch the runlevel to multi-user (5).
+Switch the runlevel to multi-user mode.
 
 .Nm 6
 Kill all processes then reboot the system.
@@ -163,7 +161,7 @@ does not exist
 
 .Em /etc/leaninit/rc.conf
 Provides config settings for
-.Nm lrc(8)
+.Nm leaninit-rc(8)
 and
 .Nm LeanInit
 scripts
@@ -188,11 +186,19 @@ Folder containing scripts for starting various services (such as D-Bus)
 .Em /etc/leaninit/svc.e
 Location of all files used to determine which services are enabled
 
+.Em /etc/leaninit/ttys
+LeanInit will read from this file for a list of ttys to launch the specified getty on
+
+.Em /etc/ttys
+Alternate file LeanInit will read from if
+.Em /etc/leaninit/ttys
+does not exist.
+
 .Em /var/log/leaninit.log
 Default log file for
 .Nm LeanInit,
 used by
-.Nm rc.svc(8)
+.Nm leaninit-rc.svc(8)
 
 .Em /var/run/leaninit
 Default location for

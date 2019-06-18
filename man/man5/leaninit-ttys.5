@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 13, 2019
+.Dd June 18, 2019
 .Dt LEANINIT-TTYS 5
 .Os
 .Sh NAME
@@ -26,22 +26,32 @@
 .Sh DESCRIPTION
 .Em /etc/leaninit/ttys
 is the file the
-.Nm lgetty(8)
-service reads from for the list of ttys to launch
-.Nm lgetty(8)
+.Nm LeanInit
+reads from for the list of ttys to launch
+.Nm getty(8)
 on.
+Each line should consist of two arguments seperated by the ':' delimiter.
+The first argument is the command that LeanInit will run (this command
+must have the
+.Nm getty(8)
+file path as the
+.Em $PATH
+variable is not used).
+The second argument should have the path to the tty that the
+.Nm getty
+will run on.
 The
 .Nm ttys
 file may have comments that start with '#', although
 all comments must be placed on their own line.
 .Sh EXAMPLE
 # This will cause
-.Nm LGetty
-to launch on /dev/console and /dev/tty2
+.Nm agetty(8)
+to launch on /dev/console and /dev/tty4
 
- console
- tty2
+ /sbin/agetty console 38400 linux:/dev/console
+ /sbin/agetty tty4 38400 linux:/dev/tty4
 .Sh SEE ALSO
-leaninit(8)
+leaninit(8), getty(8)
 .Sh AUTHOR
 Johnothan King
