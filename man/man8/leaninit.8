@@ -57,7 +57,7 @@ If it is not
 will instead read argv and do the following for each option:
 .Pp
 .Nm 0
-Turn off the system.
+Kill all processes then power off the system.
 
 .Nm 1, S, s
 Switch the runlevel to single user (1).
@@ -66,13 +66,13 @@ Switch the runlevel to single user (1).
 Switch the runlevel to multi-user (5).
 
 .Nm 6
-Reboot the system.
+Kill all processes then reboot the system.
 
 .Nm 7
-Halt the system.
+Kill all processes then halt the system.
 
 .Nm 8
-Hibernate the system (Linux only).
+Send the system into hibernation (Linux only).
 
 .Nm Q, q
 Reload the current runlevel.
@@ -120,7 +120,7 @@ Kill all processes then halt the system.
 .Nm SIGUSR2
 Kill all processes then power off the system.
 
-.Nm SIGLOST
+.Nm SIGFPE
 Same as SIGUSR2 (the system will turn off), but there will be a three second delay before reboot(2) is called.
 .Nm LeanInit
 uses this signal for handling critical errors in single user mode.
