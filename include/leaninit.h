@@ -71,7 +71,6 @@ extern char **environ;   // This is used with execve(2)
 
 /*
  * Typedef for vint_t (can either be char or int depending on -DUINT32)
- * Int variables are faster than char variables, but use more memory
  * This variable should be assumed to be 8-bit when used, with the 32-bit
  * int form used exclusively for better performance at the cost of memory.
  * vint_t is always an unsigned variable for better performance and memory
