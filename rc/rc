@@ -131,7 +131,7 @@ fi
 touch "$LOGFILE"
 mv "$LOGFILE" "$LOGFILE.old"
 echo "LeanInit has started logging on $(uname -srm)" > "$LOGFILE"
-print "LeanInit has started logging!" nolog "$BLUE" "$WHITE" # This message is logged using the previous command above this one
+print "LeanInit has started logging!" nolog "$BLUE" "$WHITE" # This message is logged using the previous command
 
 # Swap
 print "Turning on all swap partitions..." log "$BLUE" "$WHITE"
