@@ -20,16 +20,17 @@
 #
 
 # Variables (each one may be overridden)
-CC       := cc
-SED      := sed
-STRIP    := strip
-INSTALL  := install
-CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe -I./include
-WFLAGS   := -Wall -Wextra
-LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
-LIBS     := -lpthread -lutil
-RC       := out/*/*
-MANPAGES := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5 $(DESTDIR)/usr/share/man/man5/leaninit-ttys.5 $(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8 \
+CC        := cc
+CFLAGS    := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe -I./include
+#CPPFLAGS := -DUINT32
+WFLAGS    := -Wall -Wextra
+LDFLAGS   := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+LIBS      := -lpthread -lutil
+SED       := sed
+STRIP     := strip
+INSTALL   := install
+RC        := out/*/*
+MANPAGES  := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5 $(DESTDIR)/usr/share/man/man5/leaninit-ttys.5 $(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8 \
 	$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/leaninit-halt.8 $(DESTDIR)/usr/share/man/man8/leaninit-rc.8 \
 	$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8 $(DESTDIR)/usr/share/man/man8/leaninit-service.8 $(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8 \
 	$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8 $(DESTDIR)/usr/share/man/man8/leaninit-zzz.8 $(DESTDIR)/usr/share/man/man8/os-indications.8
@@ -45,19 +46,19 @@ all: clean
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" $(RC) ;\
 		$(SED) -i '' "/#DEF FreeBSD/d" $(RC) ;\
 		$(SED) -i '' "/#ENDEF/d"       $(RC) ;\
-		$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) -lefivar ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
 		$(SED) -i "/#DEF Linux/d" $(RC) ;\
 		$(SED) -i "/#ENDEF/d"     $(RC) ;\
-		$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
-	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit      cmd/init.c $(LDFLAGS) $(LIBS)
-	@$(CC) $(CFLAGS) $(WFLAGS) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS) $(LIBS)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit      cmd/init.c $(LDFLAGS) $(LIBS)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS) $(LIBS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
 	@echo "Successfully built LeanInit!"
 

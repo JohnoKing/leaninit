@@ -5,8 +5,8 @@ NAME="LVM metadata cache daemon"
 TARGET=Linux
 
 main() {
-    mkdir -p /run/lvm /var/run/lvm
-    lvmetad -p "$__svcpidfile"
+	mkdir -p /run/lvm /var/run/lvm
+	lvmetad -p "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

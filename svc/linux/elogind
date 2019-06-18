@@ -7,32 +7,32 @@ TARGET=Linux
 
 main() {
 
-    # elogind requires D-Bus
-    waitfor service dbus
+	# elogind requires D-Bus
+	waitfor service dbus
 
-    # Run elogind
-    if [ -n "$(command -v elogind)" ]; then
-        fork elogind
-    elif [ -x /usr/libexec/elogind/elogind ]; then
-        fork /usr/libexec/elogind/elogind
-    elif [ -x /usr/lib/elogind/elogind ]; then
-        fork /usr/lib/elogind/elogind
-    else
-        print "Could not find the elogind binary!" log "$RED"
-        return 1
-    fi
+	# Run elogind
+	if [ -n "$(command -v elogind)" ]; then
+		fork elogind
+	elif [ -x /usr/libexec/elogind/elogind ]; then
+		fork /usr/libexec/elogind/elogind
+	elif [ -x /usr/lib/elogind/elogind ]; then
+		fork /usr/lib/elogind/elogind
+	else
+		print "Could not find the elogind binary!" log "$RED"
+		return 1
+	fi
 
-    # If elogind-uaccess-command exists, run it
-    if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
-        EUACCESS=/usr/libexec/elogind/elogind-uaccess-command
-    elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then
-        EUACCESS=/usr/lib/elogind/elogind-uaccess-command
-    fi
-    if [ -n "$EUACCESS" ]; then
-        for fs in /dev $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
-            "$EUACCESS" $fs
-        done
-    fi
+	# If elogind-uaccess-command exists, run it
+	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
+		EUACCESS=/usr/libexec/elogind/elogind-uaccess-command
+	elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then
+		EUACCESS=/usr/lib/elogind/elogind-uaccess-command
+	fi
+	if [ -n "$EUACCESS" ]; then
+		for fs in /dev $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
+			"$EUACCESS" $fs
+		done
+	fi
 }
 
 . /etc/leaninit/rc.svc

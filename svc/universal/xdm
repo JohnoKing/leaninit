@@ -7,19 +7,19 @@ TYPE=display-manager
 
 # The main function
 main() {
-    if [ -z "$DM" ] || [ ! -x "$(command -v $DM)" ]; then
-        print 'The xdm service failed to start due to $DM being invalid!' log "$RED"
-        return 1
-    fi
-    waitfor service dbus
-    waitfor login-daemon optional
-    install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
-    fork "$DM"
+	if [ -z "$DM" ] || [ ! -x "$(command -v $DM)" ]; then
+		print 'The xdm service failed to start due to $DM being invalid!' log "$RED"
+		return 1
+	fi
+	waitfor service dbus
+	waitfor login-daemon optional
+	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
+	fork "$DM"
 }
 
 # Kill the X server manually
 stop() {
-    pkill -x Xorg
+	pkill -x Xorg
 }
 
 . /etc/leaninit/rc.svc

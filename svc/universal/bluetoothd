@@ -5,8 +5,8 @@ NAME="Bluetooth daemon"
 TYPE=bluetooth
 
 main() {
-    waitfor service dbus
-    fork bluetoothd
+	waitfor service dbus
+	fork bluetoothd
 }
 
 . /etc/leaninit/rc.svc
