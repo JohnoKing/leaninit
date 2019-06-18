@@ -62,11 +62,6 @@ static int open_tty(const char *tty_path)
 
     // Open the tty
     int tty = open(tty_path, O_RDWR | O_NOCTTY);
-    if(isatty(tty) == 0) {
-        close(tty);
-        printf(RED "* %s is not a valid tty!" RESET "\n", tty_path);
-        return -1;
-    }
     login_tty(tty);
     dup2(tty, STDIN_FILENO);
     dup2(tty, STDOUT_FILENO);
@@ -104,7 +99,7 @@ static pid_t spawn_getty(const char *cmd, const char *tty)
 {
     pid_t getty = fork();
     if(getty == 0) {
-        if(open_tty(tty) == -1) return 1;
+        open_tty(tty);
         return execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
     }
 
