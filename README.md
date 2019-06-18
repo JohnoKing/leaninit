@@ -11,6 +11,11 @@ Run `make` will compile LeanInit (compiled files are placed in `./out`).
 Running `make install` as root will install
 LeanInit, without overriding other existing init systems. 
 You can change the destination LeanInit is installed to by using `$DESTDIR`.
+LeanInit will use `unsigned char` variables for small variables by default
+to decrease the amount of RAM LeanInit uses during runtime.
+This can be changed to `unsigned int` by building LeanInit with the command
+`make CPPFLAGS=-DUINT32 install` to increase performance at the cost of
+increased RAM usage.
 
 To boot into LeanInit, add `init=/sbin/leaninit` to your kernel command
 line. Make sure eudev and iproute2 are installed, as they are required on Linux.
