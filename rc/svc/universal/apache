@@ -1,6 +1,4 @@
 #!/bin/sh
-
-# Service for apache httpd
 NAME="Apache Web Server"
 
 main() {

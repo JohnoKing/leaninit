@@ -1,6 +1,4 @@
 #!/bin/sh
-
-# Secure SHell Daemon
 NAME="SSH"
 
 main() {

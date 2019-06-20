@@ -1,6 +1,4 @@
 #!/bin/sh
-
-# Daemon for syslog(3)
 NAME="SyslogD"
 
 main() {

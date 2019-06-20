@@ -1,9 +1,6 @@
 #!/bin/sh
-
-# Samba
 NAME="Samba"
 
-# Main function
 main() {
 	waitfor networking
 	fork smbd -F

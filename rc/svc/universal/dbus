@@ -1,9 +1,6 @@
 #!/bin/sh
-
-# D-Bus (required by many other services)
 NAME="D-Bus"
 
-# Launch D-Bus
 main() {
 	mkdir -p /run/dbus /var/run/dbus
 	rm -f /run/dbus/pid /var/run/dbus/pid

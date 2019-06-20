@@ -1,9 +1,7 @@
 #!/bin/sh
-
-# elogind
 NAME="elogind"
-TYPE=login-daemon
-TARGET=Linux
+TYPE="login-daemon"
+TARGET="Linux"
 
 main() {
 

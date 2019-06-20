@@ -1,6 +1,4 @@
 #!/bin/sh
-
-# Service for setupcon(1)
 NAME="Console Setup"
 
 main() {

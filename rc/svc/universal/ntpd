@@ -1,6 +1,4 @@
 #!/bin/sh
-
-# Network Time Protocol Daemon
 NAME="ntpd"
 
 main() {

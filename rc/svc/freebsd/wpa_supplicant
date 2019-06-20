@@ -1,9 +1,7 @@
 #!/bin/sh
-
-# WPA Supplicant service (for FreeBSD)
 NAME="WPA Supplicant"
-TYPE=networking
-TARGET=FreeBSD
+TYPE="networking"
+TARGET="FreeBSD"
 
 main() {
 	waitfor process wpa_supplicant

@@ -1,8 +1,6 @@
 #!/bin/sh
-
-# Service for nvidia-persistenced
 NAME="nvidia-persistenced"
-TARGET=Linux
+TARGET="Linux"
 
 main() {
 	nvidia-persistenced

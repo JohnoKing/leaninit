@@ -1,6 +1,4 @@
 #!/bin/sh
-
-# Avahi
 NAME="Avahi"
 
 main() {

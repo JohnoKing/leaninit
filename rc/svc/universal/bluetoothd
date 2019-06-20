@@ -1,8 +1,6 @@
 #!/bin/sh
-
-# Bluetooth daemon
 NAME="Bluetooth daemon"
-TYPE=bluetooth
+TYPE="bluetooth"
 
 main() {
 	waitfor service dbus

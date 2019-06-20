@@ -1,8 +1,6 @@
 #!/bin/sh
-
-# Service for CUPS
 NAME="CUPS"
-TYPE=printing-daemon
+TYPE="printing-daemon"
 
 main() {
 	waitfor service avahi

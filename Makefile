@@ -29,7 +29,6 @@ LIBS      := -lpthread -lutil
 SED       := sed
 STRIP     := strip
 INSTALL   := install
-RC        := out/*/*
 MANPAGES  := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5 $(DESTDIR)/usr/share/man/man5/leaninit-ttys.5 $(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8 \
 	$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/leaninit-halt.8 $(DESTDIR)/usr/share/man/man8/leaninit-rc.8 \
 	$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8 $(DESTDIR)/usr/share/man/man8/leaninit-service.8 $(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8 \
@@ -39,19 +38,21 @@ MANPAGES  := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5 $(DESTDIR)/usr/sha
 all: clean
 	@mkdir -p out
 	@cp -r rc out/rc
-	@cp -r svc/universal out/svc
+	@cp -r rc/svc/universal out/svc
+	@mv out/rc/rc.conf.d out/rc.conf.d
+	@rm -r out/rc/svc
 	@cp cmd/service.sh out/rc/leaninit-service
 	@if [ `uname` = FreeBSD ]; then \
-		cp -r svc/freebsd/* out/svc ;\
-		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" $(RC) ;\
-		$(SED) -i '' "/#DEF FreeBSD/d" $(RC) ;\
-		$(SED) -i '' "/#ENDEF/d"       $(RC) ;\
+		cp -r rc/svc/freebsd/* out/svc ;\
+		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
+		$(SED) -i '' "/#DEF FreeBSD/d"        out/*/* ;\
+		$(SED) -i '' "/#ENDEF/d"              out/*/* ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
-		cp -r svc/linux/* out/svc ;\
-		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" $(RC) ;\
-		$(SED) -i "/#DEF Linux/d" $(RC) ;\
-		$(SED) -i "/#ENDEF/d"     $(RC) ;\
+		cp -r rc/svc/linux/* out/svc ;\
+		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
+		$(SED) -i "/#DEF Linux/d"            out/*/* ;\
+		$(SED) -i "/#ENDEF/d"                out/*/* ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
@@ -66,7 +67,8 @@ all: clean
 install:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
 	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	@cp -r out/svc $(DESTDIR)/etc/leaninit
+	@cp -r out/rc.conf.d $(DESTDIR)/etc/leaninit
+	@cp -r out/svc       $(DESTDIR)/etc/leaninit
 	@cp -r man $(DESTDIR)/usr/share
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	@if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \

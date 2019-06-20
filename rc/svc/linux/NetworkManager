@@ -1,9 +1,7 @@
 #!/bin/sh
-
-# Linux NetworkManager
 NAME="NetworkManager"
-TYPE=networking
-TARGET=Linux
+TYPE="networking"
+TARGET="Linux"
 
 main() {
 	waitfor service dbus

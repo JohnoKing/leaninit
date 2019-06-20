@@ -1,8 +1,6 @@
 #!/bin/sh
-
-# CPU frequency control (FreeBSD)
 NAME="PowerD"
-TARGET=FreeBSD
+TARGET="FreeBSD"
 
 main() {
 	powerd -P "$__svcpidfile"

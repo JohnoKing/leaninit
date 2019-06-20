@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 18, 2019
+.Dd June 19, 2019
 .Dt LEANINIT-RC.CONF 5
 .Os
 .Sh NAME
@@ -34,6 +34,14 @@ script.
 .Sh OPTIONS
 .Em /etc/leaninit/rc.conf
 allows you to change the following settings:
+
+.Em LOGFILE
+Sets the location of
+.Nm LeanInit's
+log file.
+Set to
+.Em /var/log/leaninit.log
+by default.
 
 .Em HOSTNAME:
 Changes the hostname using
@@ -55,14 +63,8 @@ Sets the networking interface(s) used for services.
 Set to wlan0 (and eth0 on Linux) by default.
 
 .Em NETDRIVER:
-Sets the driver to use for the networking interfaces.
-Set to 'wext' on Linux and 'bsd' on FreeBSD.
-
-.Em XDMNAME:
-Sets the name of the Display Manager used by the xdm service.
-
-.Em DM:
-Sets the executable for the Display Manager used by the xdm service.
+Sets the driver to use for the networking interfaces (FreeBSD only).
+Set to the bsd driver by default.
 
 .Em DEV
 Allows you to choose between either udev or mdev (Linux only). Set to udev by default.
@@ -73,14 +75,15 @@ Sets the location of udev or mdev. Set to
 for udev and
 .Em /sbin/mdev
 for mdev.
+.Sh ADDITIONAL OPTIONS
+The following settings can be set in config files located in
+.Em /etc/leaninit/rc.conf.d:
 
-.Em LOGFILE
-Sets the location of
-.Nm LeanInit's
-log file.
-Set to
-.Em /var/log/leaninit.log
-by default.
+.Em XDMNAME (xdm.conf):
+Sets the name of the Display Manager used by the xdm service.
+
+.Em DM (xdm.conf):
+Sets the executable for the Display Manager used by the xdm service.
 .Sh SEE ALSO
 leaninit-rc(8), leaninit-rc.svc(8), leaninit-ttys(5)
 .Sh AUTHOR

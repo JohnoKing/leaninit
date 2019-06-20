@@ -1,9 +1,7 @@
 #!/bin/sh
-
-# Wicd
 NAME="Wicd"
-TYPE=networking
-TARGET=Linux
+TYPE="networking"
+TARGET="Linux"
 
 main() {
 	waitfor service dbus
@@ -11,6 +9,7 @@ main() {
 	ln -s /var/run/wicd/wicd.pid "$__svcpidfile"
 }
 
+# The PID file must be removed manually
 stop() {
 	rm -f /var/run/wicd/wicd.pid
 }

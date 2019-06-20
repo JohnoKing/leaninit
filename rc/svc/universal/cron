@@ -1,6 +1,4 @@
 #!/bin/sh
-
-# Service for cron
 NAME="cron"
 
 main() {
