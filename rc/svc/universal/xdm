@@ -20,6 +20,7 @@ main() {
 
 # Kill the X server manually
 stop() {
+	pkill -x "$DM"
 	pkill -x Xorg
 }
 
