@@ -2,7 +2,6 @@
 
 # Service for X Server Display Managers
 . /etc/leaninit/rc.conf.d/xdm.conf
-. /etc/leaninit/rc.conf # This line is kept for backward compatibility. It will be removed in a later major update.
 NAME="$XDMNAME"
 TYPE="display-manager"
 
