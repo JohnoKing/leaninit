@@ -3,15 +3,18 @@ NAME="WPA Supplicant"
 TYPE="networking"
 TARGET="FreeBSD"
 
+# Run wpa_supplicant
+restart() {
+	for n in $NETFACE; do
+		fork wpa_supplicant -s "-D${NETDRIVER}" "-i${n}" -c/etc/wpa_supplicant.conf
+	done
+}
+
 main() {
 	waitfor process wpa_supplicant
 	sleep 0.5
 	pkill -KILL -x wpa_supplicant
-	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
-}
-
-restart() {
-	wpa_supplicant -s -B -D${NETDRIVER} -i${NETFACE} -c/etc/wpa_supplicant.conf -P "$__svcpidfile"
+	restart  # Run wpa_supplicant
 }
 
 . /etc/leaninit/rc.svc
