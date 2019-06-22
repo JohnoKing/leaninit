@@ -28,7 +28,7 @@ main() {
 	fi
 	if [ -n "$EUACCESS" ]; then
 		for fs in /dev $(df -t tmpfs | tail -n +2 | awk '{print $6}'); do
-			"$EUACCESS" $fs
+			"$EUACCESS" "$fs"
 		done
 	fi
 }

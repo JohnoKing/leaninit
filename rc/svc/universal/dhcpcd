@@ -4,7 +4,7 @@ TYPE="networking"
 
 main() {
 	for n in $NETFACE; do
-		fork dhcpcd -B $n
+		fork dhcpcd -B "$n"
 	done
 }
 
