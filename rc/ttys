@@ -25,6 +25,6 @@
 /sbin/agetty tty5 38400 linux:/dev/tty5
 /sbin/agetty tty6 38400 linux:/dev/tty6
 
-# mingetty in /usr/bin
-#/usr/bin/mingetty tty1 38400 linux:/dev/tty1
+# Uses busybox getty when symlinked to /usr/bin/getty
+#/usr/bin/getty 38400 tty1 linux:/dev/tty1
 #ENDEF
