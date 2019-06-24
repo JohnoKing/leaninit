@@ -27,11 +27,11 @@
 #include <leaninit.h>
 
 // Universal variables
-static pid_t  single_shell_pid = -1;
-static int    current_signal = 0;
+static int current_signal = 0;
 static vint_t single_user = 1;
-static vint_t verbose     = 0;
-static char   silent_flag[2];
+static vint_t verbose =  0;
+static pid_t su_shell = -1;
+static char silent_flag[2];
 
 // Shows usage for init
 static int usage(int ret)
@@ -130,8 +130,8 @@ static void single(void)
     }
 
     // Fork the shell into a separate process
-    pid_t child = fork();
-    if(child == 0) {
+    su_shell = fork();
+    if(su_shell == 0) {
         open_tty(DEFAULT_TTY);
         char *sargv[] = { shell, NULL };
         execve(shell, sargv, environ);
@@ -139,7 +139,7 @@ static void single(void)
         perror(RED "* execve()" RESET);
         printf(RED "* This system will now shutdown in three seconds..." RESET "\n");
         kill(1, SIGFPE);
-    } else if(child == -1) {
+    } else if(su_shell == -1) {
         printf(RED "* Failed to run %s" RESET "\n", shell);
         perror(RED "* fork()" RESET);
         printf(RED "* This system will now shutdown in three seconds..." RESET "\n");
@@ -351,9 +351,9 @@ int main(int argc, char *argv[])
                 // Kill all remaining processes
                 pthread_kill(runlvl, SIGKILL);
                 pthread_join(runlvl, NULL);
-                if(single_shell_pid != -1) {
-                    kill(single_shell_pid, SIGKILL);
-                    single_shell_pid = -1;
+                if(su_shell != -1) {
+                    kill(su_shell, SIGKILL);
+                    su_shell = -1;
                 }
                 kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
                 kill(-1, SIGTERM);
@@ -381,7 +381,6 @@ int main(int argc, char *argv[])
                     // Poweroff
                     case SIGFPE:  // Delay
                         sleep(3);
-
                     /*FALLTHRU*/
                     case SIGUSR2:
                         return reboot(SYS_POWEROFF);
