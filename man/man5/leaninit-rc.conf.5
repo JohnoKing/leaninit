@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 19, 2019
+.Dd June 23, 2019
 .Dt LEANINIT-RC.CONF 5
 .Os
 .Sh NAME
@@ -54,10 +54,6 @@ Changes the timezone by forcefully making a symlink. Commented out by default.
 .Em KEYMAP:
 Changes the keyboard layout (Linux only). Commented out by default.
 
-.Em ZFS_ENABLE:
-Allows you to configure support for ZFS.
-Enabled by default on FreeBSD, disabled by default on Linux.
-
 .Em NETFACE:
 Sets the networking interface(s) used for services.
 Set to wlan0 (and eth0 on Linux) by default.
@@ -75,6 +71,23 @@ Sets the location of udev or mdev. Set to
 for udev and
 .Em /sbin/mdev
 for mdev.
+
+.Em ZFS_ENABLE:
+Allows you to configure support for ZFS.
+Enabled by default on FreeBSD, disabled by default on Linux.
+
+.Em DELAY:
+Have rc(8) wait for all services and
+.Nm rc.local
+scripts to exit before having
+.Nm rc
+itself exit.
+This will prevent LeanInit from launching any getty from
+.Nm ttys(5)
+if a service or
+.Nm rc.local
+script fails to exit.
+This setting should only be used for debugging.
 .Sh ADDITIONAL OPTIONS
 The following settings can be set in config files located in
 .Em /etc/leaninit/rc.conf.d:

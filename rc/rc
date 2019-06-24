@@ -212,5 +212,10 @@ for rc in /etc/leaninit/rc.local /etc/rc.local; do
 	fi
 done
 
+# Delay transition back to init by waiting for all services to start (optional, may break getty(8))
+if [ "$DELAY" = "true" ]; then
+	wait
+fi
+
 # Return to init
 exit 0
