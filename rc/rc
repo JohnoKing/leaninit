@@ -46,31 +46,31 @@ print "Mounting all drives..." nolog "$PURPLE" "$WHITE"
 mount -a &
 
 # Remount root (/) as read-write
-mount -o remount,rw / 2> /dev/null &
+mount -o remount,rw,noatime / 2> /dev/null &
 
 #DEF Linux
 # Mount pseudo file systems
 print "Mounting pseudo file systems..." nolog "$PURPLE" "$WHITE"
 rm -rf /tmp/*
-mountpoint -q /dev  || mount -o nosuid,relatime -t udev devtmpfs /dev &
-mountpoint -q /proc || mount -o nosuid,nodev,noexec,relatime -t proc proc /proc &
-mountpoint -q /sys  || mount -o nosuid,nodev,noexec,relatime -t sysfs sysfs /sys &
+mountpoint -q /dev  || mount -o nosuid,noatime -t devtmpfs dev /dev &
+mountpoint -q /proc || mount -o nosuid,nodev,noexec,noatime -t proc proc /proc &
+mountpoint -q /sys  || mount -o nosuid,nodev,noexec,noatime -t sysfs sysfs /sys &
 mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
-mountpoint -q /run  || mount -o nosuid,nodev,relatime -t tmpfs tmpfs /run &
+mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
 
 # Cgroups support (this function must be run in its own subshell)
 mount_cgroups() {
 	# Mount a tmpfs at /sys/fs/cgroup
 	print "Mounting cgroups..." nolog "$PURPLE" "$WHITE"
 	mkdir -p /sys/fs/cgroup
-	mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,relatime -t tmpfs cgroup /sys/fs/cgroup
+	mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,noatime -t tmpfs cgroup /sys/fs/cgroup
 
 	# elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
 	mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
-	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,relatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
+	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
 
 	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
-	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,relatime -t cgroup controllers /sys/fs/cgroup/controllers &
+	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers &
 	wait
 }
 
@@ -78,11 +78,11 @@ mount_cgroups() {
 wait
 mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
 mount_cgroups &
-mountpoint -q /dev/pts             || mount -o nosuid,noexec,relatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
-mountpoint -q /dev/mqueue          || mount -o relatime -t mqueue none /dev/mqueue &
-mountpoint -q /sys/kernel/security || mount -o relatime -t securityfs securityfs /sys/kernel/security &
-mountpoint -q /sys/fs/pstore       || mount -o relatime -t pstore pstore /sys/fs/pstore &
-mountpoint -q /run/shm             || mount -n -o nosuid,nodev,mode=1777,relatime -t tmpfs tmpfs /run/shm
+mountpoint -q /dev/pts             || mount -o nosuid,noexec,noatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
+mountpoint -q /dev/mqueue          || mount -o noatime -t mqueue none /dev/mqueue &
+mountpoint -q /sys/kernel/security || mount -o noatime -t securityfs securityfs /sys/kernel/security &
+mountpoint -q /sys/fs/pstore       || mount -o noatime -t pstore pstore /sys/fs/pstore &
+mountpoint -q /run/shm             || mount -n -o nosuid,nodev,mode=1777,noatime -t tmpfs tmpfs /run/shm
 mount --bind /run/shm /dev/shm &
 
 # Launch either udev or mdev
