@@ -1,13 +1,15 @@
 #!/bin/sh
 NAME="HALD"
 
-main() {
+main()
+{
 	waitfor service dbus
 	fork hald --daemon=no --use-syslog
 }
 
 # Kill all hald related processes
-stop() {
+stop()
+{
 	pkill hald
 }
 

@@ -4,13 +4,16 @@ TYPE="networking"
 TARGET="FreeBSD"
 
 # Run wpa_supplicant
-restart() {
+restart()
+{
 	for n in $NETFACE; do
 		fork wpa_supplicant -s "-D${NETDRIVER}" "-i${n}" -c/etc/wpa_supplicant.conf
 	done
 }
 
-main() {
+# The main function
+main()
+{
 	waitfor process wpa_supplicant
 	sleep 0.5
 	pkill -KILL -x wpa_supplicant

@@ -3,14 +3,16 @@ NAME="Wicd"
 TYPE="networking"
 TARGET="Linux"
 
-main() {
+main()
+{
 	waitfor service dbus
 	wicd
 	ln -s /var/run/wicd/wicd.pid "$__svcpidfile"
 }
 
 # The PID file must be removed manually
-stop() {
+stop()
+{
 	rm -f /var/run/wicd/wicd.pid
 }
 

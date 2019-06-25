@@ -1,7 +1,8 @@
 #!/bin/sh
 NAME="ntpd"
 
-main() {
+main()
+{
 	waitfor networking
 	ntpd -p "$__svcpidfile"
 }

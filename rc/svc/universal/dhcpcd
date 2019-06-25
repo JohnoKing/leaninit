@@ -2,7 +2,8 @@
 NAME="dhcpcd"
 TYPE="networking"
 
-main() {
+main()
+{
 	for n in $NETFACE; do
 		fork dhcpcd -B "$n"
 	done

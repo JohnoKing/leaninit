@@ -1,12 +1,14 @@
 #!/bin/sh
 NAME="Samba"
 
-main() {
+main()
+{
 	waitfor networking
 	fork smbd -F
 }
 
-reload() {
+reload()
+{
 	pkill -HUP -x smbd
 }
 

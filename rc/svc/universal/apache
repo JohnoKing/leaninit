@@ -1,16 +1,19 @@
 #!/bin/sh
 NAME="Apache Web Server"
 
-main() {
+main()
+{
 	mkdir -p /run/httpd /var/run/httpd
 	fork httpd -k start -DFOREGROUND
 }
 
-stop() {
+stop()
+{
 	httpd -k graceful-stop
 }
 
-reload() {
+reload()
+{
 	pkill -HUP -x httpd
 }
 

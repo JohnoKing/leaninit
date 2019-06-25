@@ -3,8 +3,8 @@ NAME="elogind"
 TYPE="login-daemon"
 TARGET="Linux"
 
-main() {
-
+main()
+{
 	# elogind requires D-Bus
 	waitfor service dbus
 

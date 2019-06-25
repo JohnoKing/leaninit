@@ -46,14 +46,16 @@ if [ -z "$LOGFILE" ]; then
 fi
 
 # Execute If Exists
-exifex() {
+exifex()
+{
 	if command -v "$1" >> /dev/null; then
 		"$@"
 	fi
 }
 
 # Return 0 if the given command is a shell function, otherwise return 1
-isfunc() {
+isfunc()
+{
 	if [ "$(command -V "$1" 2> /dev/null | sed 's/ shell//g' | head -n1)" = "$1 is a function" ]; then
 		return 0
 	else
@@ -62,7 +64,8 @@ isfunc() {
 }
 
 # Print formatted output to stdout and unformatted output to $LOGFILE (use this instead of echo)
-print() {
+print()
+{
 	if [ "$SILENT_MODE" != "true" ]; then
 		printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
 	fi
@@ -72,13 +75,15 @@ print() {
 }
 
 # Fork the given command into a separate process and put the PID into $__svcpidfile
-fork() {
+fork()
+{
 	"$@" &
 	echo " $(jobs -p %+)" >> "$__svcpidfile"
 }
 
 # Check for uid 0
-__rootcheck() {
+__rootcheck()
+{
 	if [ "$(id -u)" != "0" ]; then
 		print "This must be run as root!" nolog "$RED"
 		exit 4
@@ -86,7 +91,8 @@ __rootcheck() {
 }
 
 # Checks for $__svcname.status
-__svccheck() {
+__svccheck()
+{
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
 		if [ "$1" = "return" ]; then
 			return 7
@@ -97,7 +103,8 @@ __svccheck() {
 }
 
 # Makes sure the service has $__svcpid set
-__proccheck() {
+__proccheck()
+{
 	if [ -z "$__svcpid" ]; then
 		if [ "$1" = "return" ]; then
 			return 3
@@ -108,13 +115,15 @@ __proccheck() {
 }
 
 # Change the status of a service to 'Failure', then exit with the specified exit code
-__fail() {
+__fail()
+{
 	echo 'Failure' > "/var/run/leaninit/$__svcname.status"
 	exit $1
 }
 
 # Show init script usage info dynamically
-__usage() {
+__usage()
+{
 	if [ "$(id -u)" != "0" ]; then
 		echo "Usage: $0 [status|help]"
 		exit $1
@@ -139,7 +148,8 @@ __usage() {
 }
 
 # Wait for a file using a loop that checks for it every tenth of a second (until loops are too slow)
-__waitfor_loop_file() {
+__waitfor_loop_file()
+{
 	__TIMER=0
 	while true; do
 		if [ -r "$1" ]; then break; fi
@@ -157,7 +167,8 @@ __waitfor_loop_file() {
 }
 
 # Wait for a process using a loop that checks for it every tenth of a second
-__waitfor_loop_proc() {
+__waitfor_loop_proc()
+{
 	__TIMER=0
 	while true; do
 		if [ -n "$(pgrep -x "$1")" ]; then break; fi
@@ -175,7 +186,8 @@ __waitfor_loop_proc() {
 }
 
 # Wait for either a file, process or service for up to seven seconds
-waitfor() {
+waitfor()
+{
 	case "$1" in
 		file)
 			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!"
@@ -209,7 +221,8 @@ waitfor() {
 }
 
 # Start a service
-__start() {
+__start()
+{
 	# Return if the service is active
 	if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Failure" ]; then
 		print "$NAME is already running..." nolog "$PURPLE" "$YELLOW"
@@ -244,7 +257,8 @@ __start() {
 }
 
 # Stop a service
-__stop() {
+__stop()
+{
 	# Return if the service is not active
 	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
 		print "$NAME is not running..." nolog "$PURPLE" "$YELLOW"
@@ -288,14 +302,16 @@ __stop() {
 }
 
 # Restart a service by running __stop() and __start(), then set the status of the service to 'Restarted'
-__restart() {
+__restart()
+{
 	__rootcheck
 	__stop
 	__start Restart
 }
 
 # Reload a service if it has a reload function
-__reload() {
+__reload()
+{
 	print "Reloading $NAME..." log "$BLUE" "$WHITE"
 	reload
 	RET=$?
@@ -309,8 +325,8 @@ __reload() {
 }
 
 # Get the current status of a service
-__status() {
-
+__status()
+{
 	# Look for the service in /etc/leaninit/svc.e
 	if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
 		__STAT="Enabled"
@@ -335,8 +351,8 @@ __status() {
 }
 
 # This function will be run if $__SVC is not set to 'false'
-__run() {
-
+__run()
+{
 	# Return an error if the service was not written correctly
 	if [ -z "$NAME" ] || ! isfunc main; then
 		print "Service syntax is invalid!" nolog "$RED"

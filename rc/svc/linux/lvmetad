@@ -2,7 +2,8 @@
 NAME="LVM metadata cache daemon"
 TARGET="Linux"
 
-main() {
+main()
+{
 	mkdir -p /run/lvm /var/run/lvm
 	lvmetad -p "$__svcpidfile"
 }

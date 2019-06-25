@@ -59,7 +59,8 @@ mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /t
 mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
 
 # Cgroups support (this function must be run in its own subshell)
-mount_cgroups() {
+mount_cgroups()
+{
 	# Mount a tmpfs at /sys/fs/cgroup
 	print "Mounting cgroups..." nolog "$PURPLE" "$WHITE"
 	mkdir -p /sys/fs/cgroup

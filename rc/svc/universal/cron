@@ -1,7 +1,8 @@
 #!/bin/sh
 NAME="cron"
 
-main() {
+main()
+{
 #DEF FreeBSD
 	fork cron -ns
 #ENDEF

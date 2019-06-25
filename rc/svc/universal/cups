@@ -2,7 +2,8 @@
 NAME="CUPS"
 TYPE="printing-daemon"
 
-main() {
+main()
+{
 	waitfor service avahi
 	fork cupsd -f
 }

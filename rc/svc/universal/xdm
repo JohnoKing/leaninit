@@ -6,7 +6,8 @@ NAME="$XDMNAME"
 TYPE="display-manager"
 
 # The main function
-main() {
+main()
+{
 	if [ -z "$DM" ] || [ ! -x "$(command -v $DM)" ]; then
 		print 'The xdm service failed to start due to $DM being invalid!' log "$RED"
 		return 1
@@ -18,7 +19,8 @@ main() {
 }
 
 # Kill the X server manually
-stop() {
+stop()
+{
 	pkill -x "$DM"
 	pkill -x Xorg
 }

@@ -28,7 +28,8 @@ __SVC=false
 . /etc/leaninit/rc.svc
 
 # Usage info
-usage() {
+usage()
+{
 	print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
 	print "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
 	echo "Potential actions:"

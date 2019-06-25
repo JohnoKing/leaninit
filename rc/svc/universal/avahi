@@ -1,12 +1,14 @@
 #!/bin/sh
 NAME="Avahi"
 
-main() {
+main()
+{
 	waitfor service dbus
 	fork avahi-daemon
 }
 
-reload() {
+reload()
+{
 	avahi-daemon --reload
 }
 

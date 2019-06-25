@@ -36,7 +36,8 @@ TYPE=tutorialType
 
 
 # This is an example function that is used later
-example_function() {
+example_function()
+{
 	return 0
 }
 
@@ -45,8 +46,8 @@ example_function() {
 # is set to false or the restart function (described later) exists and the service is being restarted.
 # The main function is the only function required for an init script to work. All other functions are
 # optional.
-main() {
-
+main()
+{
 	# The waitfor command will wait for a file, process, service or a type of service for a total of
 	# seven seconds before giving an error. This command is the primary form of dependency management
 	# used in LeanInit scripts.
@@ -78,7 +79,8 @@ main() {
 
 # This function will be run when the init script is reloaded.
 # It is required for init scripts to support normal reloading.
-reload() {
+reload()
+{
 	# $__svcpid is the same as $(cat $__svcpidfile), just shorter.
 	# NEVER use double quotes with this variable when running kill(1).
 	kill -HUP $__svcpid  # Send SIGHUP to the service.
@@ -86,25 +88,29 @@ reload() {
 
 
 # This function will be run when an init script stops.
-stop() {
+stop()
+{
 	# $__svcname is the name of the init script in /etc/leaninit/svc
 	print "$__svcname is currently stopping" nolog "$RED" "$YELLOW"
 }
 
 
 # This function will run instead of main when the init script is restarted.
-restart() {
+restart()
+{
 	print "Restarting the example script!" log "$YELLOW" # This message is logged and printed only in bold yellow.
 }
 
 # This function is run when the init script is enabled.
 # It will override the `enable` command when run under bash.
-enable() {
+enable()
+{
 	print "Running the enable function!" nolog "$PURPLE" "$WHITE" # Purple and white are the standard colors for messages that are not logged.
 }
 
 # This function is run when the init script is disabled.
-disable() {
+disable()
+{
 	print "Running the disable function!" log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
 }
 

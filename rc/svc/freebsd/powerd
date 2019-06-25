@@ -2,7 +2,8 @@
 NAME="PowerD"
 TARGET="FreeBSD"
 
-main() {
+main()
+{
 	powerd -P "$__svcpidfile"
 }
 

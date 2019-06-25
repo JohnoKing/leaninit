@@ -1,11 +1,13 @@
 #!/bin/sh
 NAME="SyslogD"
 
-main() {
+main()
+{
 	syslogd -ss -P "$__svcpidfile"
 }
 
-reload() {
+reload()
+{
 	pkill -HUP -x syslogd
 }
 

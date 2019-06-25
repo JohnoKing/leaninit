@@ -3,7 +3,8 @@ NAME="NetworkManager"
 TYPE="networking"
 TARGET="Linux"
 
-main() {
+main()
+{
 	waitfor service dbus
 	NetworkManager --pid-file="$__svcpidfile"
 }

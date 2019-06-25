@@ -2,11 +2,13 @@
 NAME="Linux Monitoring Sensors"
 TARGET="Linux"
 
-main() {
+main()
+{
 	sensors -s
 }
 
-reload() {
+reload()
+{
 	sensors -s
 }
 

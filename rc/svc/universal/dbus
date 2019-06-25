@@ -1,7 +1,8 @@
 #!/bin/sh
 NAME="D-Bus"
 
-main() {
+main()
+{
 	mkdir -p /run/dbus /var/run/dbus
 	rm -f /run/dbus/pid /var/run/dbus/pid
 	dbus-daemon --fork --system --print-pid > "$__svcpidfile"
@@ -11,7 +12,8 @@ main() {
 }
 
 # This causes D-Bus to partially reload
-reload() {
+reload()
+{
 	pkill -HUP -x dbus-daemon
 }
 
