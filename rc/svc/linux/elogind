@@ -16,7 +16,7 @@ main()
 	elif [ -x /usr/lib/elogind/elogind ]; then
 		fork /usr/lib/elogind/elogind
 	else
-		print "Could not find the elogind binary!" log "$RED"
+		print 'Could not find the elogind binary!' log "$RED"
 		return 1
 	fi
 

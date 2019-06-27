@@ -85,7 +85,7 @@ fork()
 __rootcheck()
 {
 	if [ "$(id -u)" != "0" ]; then
-		print "This must be run as root!" nolog "$RED"
+		print 'This must be run as root!' nolog "$RED"
 		exit 4
 	fi
 }
@@ -355,7 +355,7 @@ __run()
 {
 	# Return an error if the service was not written correctly
 	if [ -z "$NAME" ] || ! isfunc main; then
-		print "Service syntax is invalid!" nolog "$RED"
+		print 'Service syntax is invalid!' nolog "$RED"
 		exit 128
 
 	# If the service does not support the current OS, exit

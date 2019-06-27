@@ -98,20 +98,20 @@ stop()
 # This function will run instead of main when the init script is restarted.
 restart()
 {
-	print "Restarting the example script!" log "$YELLOW" # This message is logged and printed only in bold yellow.
+	print 'Restarting the example script!' log "$YELLOW" # This message is logged and printed only in bold yellow.
 }
 
 # This function is run when the init script is enabled.
 # It will override the `enable` command when run under bash.
 enable()
 {
-	print "Running the enable function!" nolog "$PURPLE" "$WHITE" # Purple and white are the standard colors for messages that are not logged.
+	print 'Running the enable function!' nolog "$PURPLE" "$WHITE" # Purple and white are the standard colors for messages that are not logged.
 }
 
 # This function is run when the init script is disabled.
 disable()
 {
-	print "Running the disable function!" log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
+	print 'Running the disable function!' log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
 }
 
 # Every script must source leaninit-rc.svc(8) with `.` to function (source does not work as rc.svc must be executed)
