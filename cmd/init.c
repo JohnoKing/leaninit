@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
         if(single_user != 0) {
             int args = argc - 1;
             while(0 < args) {
-                if(strcmp(argv[args], "single") == 0 || strcmp(argv[args], "-s")) single_user = 0;
+                if(strcmp(argv[args], "single") == 0 || strcmp(argv[args], "-s") == 0) single_user = 0;
                 else if(strcmp(argv[args], "silent") == 0) verbose = 1;
 
                 --args;
