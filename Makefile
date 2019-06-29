@@ -67,7 +67,7 @@ all: clean
 install-rc:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
 	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	@cp -n out/rc.conf.d/* $(DESTDIR)/etc/leaninit
+	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d
 	@cp -r out/svc $(DESTDIR)/etc/leaninit
 	@cp -r man $(DESTDIR)/usr/share
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
