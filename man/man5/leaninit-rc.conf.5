@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 28, 2019
+.Dd June 29, 2019
 .Dt LEANINIT-RC.CONF 5
 .Os
 .Sh NAME
@@ -54,13 +54,21 @@ Changes the timezone by forcefully making a symlink. Commented out by default.
 .Em KEYMAP:
 Changes the keyboard layout (Linux only). Commented out by default.
 
-.Em NETFACE:
-Sets the networking interface(s) used for services.
-Set to wlan0 (and eth0 on Linux) by default.
+.Em NETFACE (Linux):
+Sets the networking interface(s) that will be set up by
+.Nm ip(8).
+Set to wlan0 and eth0 by default.
 
-.Em NETDRIVER:
-Sets the driver to use for the networking interfaces (FreeBSD only).
-Set to the bsd driver by default.
+.Em WIRED (FreeBSD):
+Sets the networking interface(s) to use with the wpa_supplicant wired driver.
+Set to eth0 by default.
+
+.Em WIRELESS (FreeBSD):
+Sets the networking interface(s) to use with the wpa_supplicant bsd driver.
+Set to wlan0 by default.
+
+.Em NDIS (FreeBSD):
+Sets the networking interface(s) to use with the wpa_supplicant ndis driver.
 
 .Em DEV
 Allows you to choose between either udev or mdev (Linux only). Set to udev by default.

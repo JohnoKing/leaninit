@@ -3,12 +3,24 @@ NAME="WPA Supplicant"
 TYPE="networking"
 TARGET="FreeBSD"
 
-# Run wpa_supplicant
+# Run wpa_supplicant on all interfaces
 restart()
 {
-	for n in $NETFACE; do
-		fork wpa_supplicant -s "-D${NETDRIVER}" "-i${n}" -c/etc/wpa_supplicant.conf
-	done
+	if [ -n "$WIRED" ]; then
+		for n in $WIRED; do
+			fork wpa_supplicant -s -Dwired"-i$n" -c/etc/wpa_supplicant.conf
+		done
+	fi
+	if [ -n "$WIRELESS" ]; then
+		for n in $WIRELESS; do
+			fork wpa_supplicant -s -Dbsd "-i$n" -c/etc/wpa_supplicant.conf
+		done
+	fi
+	if [ -n "$NDIS" ]; then
+		for n in $NDIS; do
+			fork wpa_supplicant -s -Dndis "-i$n" -c/etc/wpa_supplicant.conf
+		done
+	fi
 }
 
 # The main function
