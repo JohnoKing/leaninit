@@ -324,90 +324,84 @@ int main(int argc, char *argv[])
         sigaction(SIGHUP,  &actor, NULL); // Reloads everything
         sigaction(SIGINT,  &actor, NULL); // Reboot
 
-        // Signal handling loop
+        // Signal handling loop that switches the current runlevel when applicable
         for(;;) {
-            // Wait for a signal to be sent to init
+            // Wait for a signal, then store it in recv_signal to prevent race conditions
             pause();
-
-            // Store the received signal in recv_signal to prevent race conditions
             int recv_signal = current_signal;
 
             // Cancel when the runlevel is already the currently running one
-            if(recv_signal == SIGILL && single_user != 0)
+            if(recv_signal == SIGILL && single_user != 0) {
                 printf("\n" PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
-
-            else if(recv_signal == SIGTERM && single_user == 0)
+                continue;
+            } else if(recv_signal == SIGTERM && single_user == 0) {
                 printf("\n" PURPLE "* " YELLOW "LeanInit is already in single user mode..." RESET "\n");
-
-            // Switch the current runlevel
-            else {
-                // Synchronize all file systems (Pass 1)
-                sync();
-
-                // Run rc.shutdown (multi-user)
-                char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
-                if(rc_shutdown != NULL) sh(rc_shutdown);
-
-                // Kill all remaining processes
-                pthread_kill(runlvl, SIGKILL);
-                pthread_join(runlvl, NULL);
-                if(su_shell != -1) {
-                    kill(su_shell, SIGKILL);
-                    su_shell = -1;
-                }
-                kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
-                kill(-1, SIGTERM);
-
-                // Give processes about seven seconds to comply with SIGTERM before sending SIGKILL
-                struct timespec rest  = {0};
-                rest.tv_nsec          = 100000000;
-                vint_t timer = 0;
-                while(waitpid(-1, NULL, WNOHANG) != -1 && timer < 70) {
-                    nanosleep(&rest, NULL);
-                    timer++;
-                }
-                kill(-1, SIGKILL);
-
-                // Synchronize file systems again (Pass 2)
-                sync();
-
-                // Handle the given signal properly
-                switch(recv_signal) {
-
-                    // Halt
-                    case SIGUSR1:
-                        return reboot(SYS_HALT);
-
-                    // Poweroff
-                    case SIGFPE:  // Delay
-                        sleep(3);
-                    /*FALLTHRU*/
-                    case SIGUSR2:
-                        return reboot(SYS_POWEROFF);
-
-                    // Reboot
-                    case SIGINT:
-                        return reboot(RB_AUTOBOOT);
-
-                    // Switch to single user
-                    case SIGTERM:
-                        single_user = 0;
-                        break;
-
-                    // Switch to multi-user
-                    case SIGILL:
-                        single_user = 1;
-                        break;
-                }
-
-                // Reopen the console and reload the runlevel
-                close(tty);
-                tty = open_tty(DEFAULT_TTY);
-                pthread_create(&runlvl, NULL, chlvl, NULL);
+                continue;
             }
 
-            // Reset the signal
-            current_signal = 0;
+            // Synchronize all file systems (Pass 1)
+            sync();
+
+            // Run rc.shutdown
+            char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
+            if(rc_shutdown != NULL) sh(rc_shutdown);
+
+            // Kill all remaining processes
+            pthread_kill(runlvl, SIGKILL);
+            pthread_join(runlvl, NULL);
+            if(su_shell != -1) {
+                kill(su_shell, SIGKILL);
+                su_shell = -1;
+            }
+            kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
+            kill(-1, SIGTERM);
+
+            // Give processes about seven seconds to comply with SIGTERM before sending SIGKILL
+            struct timespec rest  = {0};
+            rest.tv_nsec          = 100000000;
+            vint_t timer = 0;
+            while(waitpid(-1, NULL, WNOHANG) != -1 && timer < 70) {
+                nanosleep(&rest, NULL);
+                timer++;
+            }
+            kill(-1, SIGKILL);
+
+            // Synchronize file systems again (Pass 2)
+            sync();
+
+            // Handle the given signal properly
+            switch(recv_signal) {
+
+                // Halt
+                case SIGUSR1:
+                    return reboot(SYS_HALT);
+
+                // Poweroff
+                case SIGFPE:  // Delay
+                    sleep(3);
+                /*FALLTHRU*/
+                case SIGUSR2:
+                    return reboot(SYS_POWEROFF);
+
+                // Reboot
+                case SIGINT:
+                    return reboot(RB_AUTOBOOT);
+
+                // Switch to single user
+                case SIGTERM:
+                    single_user = 0;
+                    break;
+
+                // Switch to multi-user
+                case SIGILL:
+                    single_user = 1;
+                    break;
+            }
+
+            // Reopen the console and reload the runlevel
+            close(tty);
+            tty = open_tty(DEFAULT_TTY);
+            pthread_create(&runlvl, NULL, chlvl, NULL);
         }
     }
 
