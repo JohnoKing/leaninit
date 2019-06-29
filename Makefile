@@ -66,8 +66,8 @@ all: clean
 # Install LeanInit (compatible with other init systems)
 install:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
-	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	@cp -r out/rc.conf.d $(DESTDIR)/etc/leaninit
+	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
+	@cp -n out/rc.conf.d/* $(DESTDIR)/etc/leaninit
 	@cp -r out/svc       $(DESTDIR)/etc/leaninit
 	@cp -r man $(DESTDIR)/usr/share
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
