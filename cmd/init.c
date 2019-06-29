@@ -31,7 +31,6 @@ static int current_signal = 0;
 static vint_t single_user = 1;
 static vint_t verbose =  0;
 static pid_t su_shell = -1;
-static char silent_flag[2];
 
 // Shows usage for init
 static int usage(int ret)
@@ -78,7 +77,8 @@ static int sh(char *script)
     pid_t child = fork();
     if(child == 0) {
         setsid();
-        char *sargv[] = { script, silent_flag, NULL };
+        char *sargv[] = { script, "n", NULL };
+        if(verbose != 0) sargv[1] = "s";
         execve(script, sargv, environ);
         printf(RED "* Failed to run %s" RESET "\n", script);
         perror(RED "* execve()" RESET);
@@ -266,41 +266,22 @@ int main(int argc, char *argv[])
     // PID 1
     if(getpid() == 1) {
 
-        // Login as root
+        // Open the console and login as root
+        int tty = open_tty(DEFAULT_TTY);
         setenv("HOME",   "/root", 1);
         setenv("LOGNAME", "root", 1);
         setenv("USER",    "root", 1);
 
-        // Single user support (argv = -s)
-        int args;
-        while((args = getopt(argc, argv, "s")) != -1) {
-            switch(args) {
-                case 's':
-                    single_user = 0;
-                    break;
-            }
-        }
-
-        // Single user (argv = single) and silent mode (argv = silent) support
+        // Single user (argv = single/-s) and silent mode (argv = silent) support
         if(single_user != 0) {
-            args = argc - 1;
+            int args = argc - 1;
             while(0 < args) {
-
-                // Single user mode
-                if(strcmp(argv[args], "single") == 0) single_user = 0;
-
-                // Silent mode
-                else if(strcmp(argv[args], "silent") == 0) {
-                    memcpy(silent_flag, "s", 2);
-                    verbose = 1;
-                }
+                if(strcmp(argv[args], "single") == 0 || strcmp(argv[args], "-s")) single_user = 0;
+                else if(strcmp(argv[args], "silent") == 0) verbose = 1;
 
                 --args;
             }
         }
-
-        // Open the console
-        int tty = open_tty(DEFAULT_TTY);
 
         // Print the current platform LeanInit is running on
         if(verbose == 0) {
@@ -309,7 +290,7 @@ int main(int argc, char *argv[])
             printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
         }
 
-        // Start zloop() and chlvl() in separate threads
+        // Run zloop() and chlvl() in separate threads
         pthread_t loop, runlvl;
         pthread_create(&loop,   NULL, zloop, NULL);
         pthread_create(&runlvl, NULL, chlvl, NULL);
@@ -328,6 +309,7 @@ int main(int argc, char *argv[])
 
         // Signal handling loop that switches the current runlevel when applicable
         for(;;) {
+
             // Wait for a signal, then store it in recv_signal to prevent race conditions
             pause();
             int recv_signal = current_signal;
@@ -418,13 +400,13 @@ int main(int argc, char *argv[])
     } else if(strcmp(argv[1], "--help") == 0)
         return usage(0);
 
-    // Prevent everyone except root from running any of the following code
+    // Only root can send signals to LeanInit
     if(getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
     }
 
-    // Switches runlevels by sending PID 1 the correct signal
+    // Switch runlevels by sending LeanInit the correct signal
     switch(*argv[1]) {
 
         // Poweroff
