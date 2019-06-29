@@ -303,9 +303,11 @@ int main(int argc, char *argv[])
         int tty = open_tty(DEFAULT_TTY);
 
         // Print the current platform LeanInit is running on
-        struct utsname uts;
-        uname(&uts);
-        if(verbose == 0) printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
+        if(verbose == 0) {
+            struct utsname uts;
+            uname(&uts);
+            printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
+        }
 
         // Start zloop() and chlvl() in separate threads
         pthread_t loop, runlvl;
