@@ -63,12 +63,12 @@ all: clean
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
 	@echo "Successfully built LeanInit!"
 
-# Install LeanInit (compatible with other init systems)
-install:
-	@if [ ! -d out ]; then echo 'Please build LeanInit before attempting `make install`'; false; fi
-	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	@cp -r out/rc.conf.d $(DESTDIR)/etc/leaninit
-	@cp -r out/svc       $(DESTDIR)/etc/leaninit
+# Install LeanInit's rc system for use with other BSD-like init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
+install-rc:
+	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
+	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
+	@cp -n out/rc.conf.d/* $(DESTDIR)/etc/leaninit
+	@cp -r out/svc $(DESTDIR)/etc/leaninit
 	@cp -r man $(DESTDIR)/usr/share
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	@if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
@@ -78,15 +78,20 @@ install:
 		$(INSTALL) -Dm0644 out/rc/ttys $(DESTDIR)/etc/leaninit ;\
 	fi
 	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
+	@$(INSTALL) -Dm0755 out/rc/leaninit-service $(DESTDIR)/sbin
+	@echo "Successfully installed LeanInit's RC system!"
+
+# Install LeanInit (does not overwrite other init systems)
+install: install-rc
 	@cd $(DESTDIR)/usr/share/man/man8 ;\
 	[ -r leaninit-poweroff.8 ] || ln -sf leaninit-halt.8 leaninit-poweroff.8 ;\
 	[ -r leaninit-reboot.8 ] || ln -sf leaninit-halt.8 leaninit-reboot.8 ;\
 	if [ `uname` = Linux ]; then [ -r leaninit-zzz.8 ] || ln -sf leaninit-halt.8 leaninit-zzz.8; fi
-	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications out/rc/leaninit-service $(DESTDIR)/sbin
+	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications $(DESTDIR)/sbin
 	@cd $(DESTDIR)/sbin; ln -sf leaninit-halt leaninit-poweroff
 	@cd $(DESTDIR)/sbin; ln -sf leaninit-halt leaninit-reboot
 	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf leaninit-halt leaninit-zzz; fi
-	@echo "Successfully installed LeanInit!"
+	@echo "Successfully installed LeanInit itself!"
 
 # Uninstall (only works with normal installations)
 uninstall:
