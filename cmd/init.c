@@ -323,14 +323,12 @@ int main(int argc, char *argv[])
                 continue;
             }
 
-            // Synchronize all file systems (Pass 1)
+            // Finish any I/O operations before executing rc.shutdown by calling sync(2)
             sync();
 
-            // Run rc.shutdown
+            // Run rc.shutdown and kill all remaining processes
             char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
-
-            // Kill all remaining processes
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
             if(su_shell != -1) {
@@ -340,7 +338,7 @@ int main(int argc, char *argv[])
             kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
             kill(-1, SIGTERM);
 
-            // Give processes about seven seconds to comply with SIGTERM before sending SIGKILL
+            // Give processes about seven seconds to stop before sending SIGKILL and calling sync(2) again
             struct timespec rest  = {0};
             rest.tv_nsec          = 100000000;
             vint_t timer = 0;
@@ -349,8 +347,6 @@ int main(int argc, char *argv[])
                 timer++;
             }
             kill(-1, SIGKILL);
-
-            // Synchronize file systems again (Pass 2)
             sync();
 
             // Handle the given signal properly

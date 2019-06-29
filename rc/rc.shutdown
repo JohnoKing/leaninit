@@ -47,4 +47,5 @@ fi
 
 # Finish
 wait
+sync
 exit 0
