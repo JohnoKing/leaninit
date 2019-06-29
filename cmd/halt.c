@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
         closelog();
     }
 
-    // Run os-indications(8) if --firmware-setup was passed
+    // Run os-indications if --firmware-setup was passed
     if(osin == 0) {
         pid_t child = fork();
         if(child == 0) {
