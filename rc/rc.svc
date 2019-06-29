@@ -56,7 +56,7 @@ exifex()
 # Return 0 if the given command is a shell function, otherwise return 1
 isfunc()
 {
-	if [ "$(command -V "$1" 2> /dev/null | sed 's/ shell//g; 1d')" = "$1 is a function" ]; then
+	if [ "$(command -V "$1" 2> /dev/null | sed 's/ shell//g; 2,$d')" = "$1 is a function" ]; then
 		return 0
 	else
 		return 1
