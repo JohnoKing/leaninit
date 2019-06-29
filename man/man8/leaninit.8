@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 19, 2019
+.Dd June 28, 2019
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -46,7 +46,9 @@ will open the console using
 .Nm login_tty(3)
 then launch two threads, one to kill all zombie processes, the other to run
 .Nm leaninit-rc(8)
-and getty(8) in multi-user mode or a shell of the user's choice in single user mode.
+and
+.Nm getty(8)
+in multi-user mode or a shell of the user's choice in single user mode.
 .Pp
 If it is not
 .Nm PID
@@ -161,7 +163,7 @@ does not exist
 
 .Em /etc/leaninit/rc.conf
 Provides config settings for
-.Nm leaninit-rc(8)
+.Nm leaninit-rc
 and
 .Nm LeanInit
 scripts

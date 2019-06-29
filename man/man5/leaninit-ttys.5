@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 18, 2019
+.Dd June 28, 2019
 .Dt LEANINIT-TTYS 5
 .Os
 .Sh NAME
@@ -32,9 +32,9 @@ reads from for the list of ttys to launch
 on.
 Each line should consist of two arguments seperated by the ':' delimiter.
 The first argument is the command that LeanInit will run (this command
-must have the
-.Nm getty(8)
-file path as the
+must specify the file path to
+.Nm getty
+as the
 .Em $PATH
 variable is not used).
 The second argument should have the path to the tty that the

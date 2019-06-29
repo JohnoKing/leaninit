@@ -147,10 +147,10 @@ static void single(void)
     }
 }
 
-// Execute rc(8) (multi-user)
+// Execute rc(8) and getty(8) (multi-user)
 static void multi(void)
 {
-    // Locate rc(8)
+    // Locate rc
     char *rc = write_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
     if(rc == NULL) {
         printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
@@ -158,7 +158,7 @@ static void multi(void)
         return single();
     }
 
-    // Run rc(8)
+    // Run rc
     if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     if(sh(rc) != 0) {
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
@@ -184,7 +184,7 @@ static void multi(void)
     // Start a child process (for managing getty with plain wait(2))
     if(fork() != 0) return;
 
-    // Open ttys(5) (max file size 40000 bytes with 90 entries)
+    // Open ttys (max file size 40000 bytes with 90 entries)
     FILE *ttys_file = fopen(ttys_file_path, "r");
     char buffer[40001];
     char *data = buffer;
@@ -201,14 +201,14 @@ static void multi(void)
         const char *cmd = strsep(&data, ":");
         if(strlen(cmd) < 2 || strlen (data) < 2) continue;
 
-        // Spawn getty(8)
+        // Spawn getty
         entry++;
         getty[entry].pid = spawn_getty(cmd, data);
         getty[entry].cmd = cmd;
         getty[entry].tty = data;
     }
 
-    // Close ttys(5)
+    // Close ttys
     fclose(ttys_file);
 
     // Start the loop
@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
     // PID 1
     if(getpid() == 1) {
 
-        // Login as root and set $PREVLEVEL to N
+        // Login as root
         setenv("HOME",   "/root", 1);
         setenv("LOGNAME", "root", 1);
         setenv("USER",    "root", 1);
