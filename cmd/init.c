@@ -385,11 +385,11 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Emulate some SysV-like behavior when re-executed
+    // Parse arguments
     if(argc < 2)
         return usage(1);
 
-    // Show the version number when called with --version
+    // Check for --version and --help
     if(strcmp(argv[1], "--version") == 0) {
         printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
         return 0;
