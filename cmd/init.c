@@ -199,7 +199,7 @@ static void multi(void)
         // Error checking
         if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
         const char *cmd = strsep(&data, ":");
-        if(strlen(cmd) < 2 || strlen (data) < 2) continue;
+        if(strlen(cmd) < 2 || strlen(data) < 2) continue;
 
         // Spawn getty
         entry++;
