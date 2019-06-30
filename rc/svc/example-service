@@ -65,7 +65,9 @@ main()
 	# the color of either the entire message, or if the fourth argument is used the the third argument
 	# will only color the star. The fourth argument will then define the color for the rest of the
 	# message. The default color variables are bold, although custom colors can be used as well.
-	print "EXAMPLE OUTPUT" nolog "\033[38;5;27m" "$WHITE"  # Print the string 'EXAMPLE OUTPUT' in bold white with a star colored #005FFF to stdout and no log file.
+	# The following example will print the string 'EXAMPLE OUTPUT' in bold white with a star colored
+	# #005FFF to stdout and no log file.
+	print "EXAMPLE OUTPUT" nolog "\033[38;5;27m" "$WHITE"
 
 	# Execute If Exists will run a command if it exists
 	exifex uname -m
