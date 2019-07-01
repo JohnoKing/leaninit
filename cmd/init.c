@@ -274,12 +274,11 @@ int main(int argc, char *argv[])
 
         // Single user (argv = single/-s) and silent mode (argv = silent) support
         if(single_user != 0) {
-            int args = argc - 1;
-            while(0 < args) {
-                if(strcmp(argv[args], "single") == 0 || strcmp(argv[args], "-s") == 0) single_user = 0;
-                else if(strcmp(argv[args], "silent") == 0) verbose = 1;
-
-                --args;
+            --argc;
+            while(0 < argc) {
+                if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) single_user = 0;
+                else if(strcmp(argv[argc], "silent") == 0) verbose = 1;
+                --argc;
             }
         }
 
