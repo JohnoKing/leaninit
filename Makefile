@@ -67,16 +67,11 @@ all: clean
 install-rc:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
 	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
-	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d
 	@cp -r out/svc $(DESTDIR)/etc/leaninit
 	@cp -r man $(DESTDIR)/usr/share
+	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d
+	@cp -i out/rc/rc.conf out/rc/ttys $(DESTDIR)/etc/leaninit
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	@if [ ! -r $(DESTDIR)/etc/leaninit/rc.conf ]; then \
-		$(INSTALL) -Dm0644 out/rc/rc.conf $(DESTDIR)/etc/leaninit ;\
-	fi
-	@if [ ! -r $(DESTDIR)/etc/leaninit/ttys ]; then \
-		$(INSTALL) -Dm0644 out/rc/ttys $(DESTDIR)/etc/leaninit ;\
-	fi
 	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
 	@$(INSTALL) -Dm0755 out/rc/leaninit-service $(DESTDIR)/sbin
 	@echo "Successfully installed LeanInit's RC system!"
