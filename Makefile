@@ -25,13 +25,14 @@ CFLAGS    := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe -I./include
 #CPPFLAGS := -DUINT32
 WFLAGS    := -Wall -Wextra
 LDFLAGS   := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+INSTALL   := install
 SED       := sed
 STRIP     := strip
-INSTALL   := install
-MANPAGES  := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5 $(DESTDIR)/usr/share/man/man5/leaninit-ttys.5 $(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8 \
-	$(DESTDIR)/usr/share/man/man8/leaninit.8 $(DESTDIR)/usr/share/man/man8/leaninit-halt.8 $(DESTDIR)/usr/share/man/man8/leaninit-rc.8 \
-	$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8 $(DESTDIR)/usr/share/man/man8/leaninit-service.8 $(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8 \
-	$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8 $(DESTDIR)/usr/share/man/man8/leaninit-zzz.8 $(DESTDIR)/usr/share/man/man8/os-indications.8
+XZ        := xz
+MANPAGES  := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.xz $(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.xz $(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.xz \
+	$(DESTDIR)/usr/share/man/man8/leaninit.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz \
+	$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-service.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz \
+	$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-zzz.8.xz $(DESTDIR)/usr/share/man/man8/os-indications.8.xz
 
 # Compile LeanInit
 all: clean
@@ -60,6 +61,8 @@ all: clean
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit      cmd/init.c $(LDFLAGS) -lpthread -lutil
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
+	@cp -r man out
+	@$(XZ) -T 0 out/man/*/*
 	@echo "Successfully built LeanInit!"
 
 # Install LeanInit's rc system for use with other BSD-like init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
@@ -67,7 +70,7 @@ install-rc:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
 	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
 	@cp -r out/svc $(DESTDIR)/etc/leaninit
-	@cp -r man $(DESTDIR)/usr/share
+	@cp -r out/man $(DESTDIR)/usr/share
 	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d
 	@cp -i out/rc/rc.conf out/rc/ttys $(DESTDIR)/etc/leaninit
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
