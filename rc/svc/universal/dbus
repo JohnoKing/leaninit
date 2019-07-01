@@ -14,7 +14,7 @@ main()
 # This causes D-Bus to partially reload
 reload()
 {
-	pkill -HUP -x dbus-daemon
+	kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc

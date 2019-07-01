@@ -14,7 +14,7 @@ stop()
 
 reload()
 {
-	pkill -HUP -x httpd
+	kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc

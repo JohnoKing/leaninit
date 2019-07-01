@@ -8,7 +8,7 @@ main()
 
 reload()
 {
-	pkill -HUP -x syslogd
+	kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc

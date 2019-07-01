@@ -9,7 +9,7 @@ main()
 
 reload()
 {
-	pkill -HUP -x smbd
+	kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc
