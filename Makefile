@@ -25,7 +25,6 @@ CFLAGS    := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe -I./include
 #CPPFLAGS := -DUINT32
 WFLAGS    := -Wall -Wextra
 LDFLAGS   := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
-LIBS      := -lpthread -lutil
 SED       := sed
 STRIP     := strip
 INSTALL   := install
@@ -47,19 +46,19 @@ all: clean
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i '' "/#DEF FreeBSD/d"        out/*/* ;\
 		$(SED) -i '' "/#ENDEF/d"              out/*/* ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) -lefivar ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i "/#DEF Linux/d"            out/*/* ;\
 		$(SED) -i "/#ENDEF/d"                out/*/* ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) $(LIBS) ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
-	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit      cmd/init.c $(LDFLAGS) $(LIBS)
-	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS) $(LIBS)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit      cmd/init.c $(LDFLAGS) -lpthread -lutil
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
 	@echo "Successfully built LeanInit!"
 
