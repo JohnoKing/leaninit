@@ -22,15 +22,7 @@
 #
 
 # Source rc.svc
-__SVC=false
 . /etc/leaninit/rc.svc
-
-# Enable silent mode if passed 's'
-if [ "$1" = "s" ]; then
-	SILENT_MODE=true
-else
-	SILENT_MODE=false
-fi
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE"
@@ -201,7 +193,7 @@ if [ -n "$(ls /etc/leaninit/svc.e)" ]; then
 	cd /etc/leaninit/svc.e
 	for sv in *; do
 		if [ -x "/etc/leaninit/svc/$sv" ]; then
-			SILENT_MODE="$SILENT_MODE" "/etc/leaninit/svc/$sv" start &
+			"/etc/leaninit/svc/$sv" start "$1" &
 		fi
 	done
 fi

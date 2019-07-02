@@ -30,11 +30,6 @@ TYPE=tutorialType
 #TARGET=FreeBSD
 
 
-# On the off chance you don't want rc.svc to automatically call main() or restart(), set $__SVC to false.
-# This variable usually should not be changed.
-#__SVC=false
-
-
 # This is an example function that is used later
 example_function()
 {
@@ -42,10 +37,9 @@ example_function()
 }
 
 
-# This the main function is the first function of the init script that rc.svc will call unless $__SVC
-# is set to false or the restart function (described later) exists and the service is being restarted.
-# The main function is the only function required for an init script to work. All other functions are
-# optional.
+# The main function is the first function of the init script that rc.svc will call unless $NAME is not
+# set or the restart function (described later) exists and the service is being restarted. The main
+# function is the only function required for an init script to work. All other functions are optional.
 main()
 {
 	# The waitfor command will wait for a file, process, service or a type of service for a total of

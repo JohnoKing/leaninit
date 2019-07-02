@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 18, 2019
+.Dd July 2, 2019
 .Dt LEANINIT-SERVICE 8
 .Os
 .Sh NAME
@@ -26,7 +26,7 @@
 .Nd service manager for
 .Nm LeanInit
 .Sh SYNOPSIS
-.Nm leaninit-service service-name action
+.Nm leaninit-service service-name action [silent|verbose]
 .Nm leaninit-service --status-all
 .Sh DESCRIPTION
 .Nm LeanInit's
@@ -76,9 +76,21 @@ Equivalent to 'cat /var/run/leaninit/svcname.status'.
 Displays usage information for the service itself.
 
 .Nm --status-all
-Show the current statuses of all
+Shows the current statuses of all
 .Nm LeanInit
 services.
+
+.Pp
+In addition, services will accept an optional second argument that determines if the service has output.
+This is used in
+.Nm leaninit-rc(8)
+to enable silent boot.
+
+.Nm silent
+Disables verbose output when running the service.
+
+.Nm verbose
+Enables verbose output when running the service (default).
 
 .Sh EXAMPLES
 Enable SSH:

@@ -77,8 +77,8 @@ static int sh(char *script)
     pid_t child = fork();
     if(child == 0) {
         setsid();
-        char *sargv[] = { script, "n", NULL };
-        if(verbose != 0) sargv[1] = "s";
+        char *sargv[] = { script, "verbose", NULL };
+        if(verbose != 0) sargv[1] = "silent";
         execve(script, sargv, environ);
         printf(RED "* Failed to run %s" RESET "\n", script);
         perror(RED "* execve()" RESET);

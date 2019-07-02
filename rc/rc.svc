@@ -27,8 +27,9 @@
 . /etc/profile
 . /etc/leaninit/rc.conf
 
-# Set a consistent PATH variable
+# Set a consistent PATH variable and set SILENT_ARG to $2
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+SILENT_ARG="$2"
 
 # Color variables (for use with print())
 RESET='\033[0m'
@@ -66,7 +67,7 @@ isfunc()
 # Print formatted output to stdout and unformatted output to $LOGFILE (use this instead of echo)
 print()
 {
-	if [ "$SILENT_MODE" != "true" ]; then
+	if [ "$SILENT_ARG" != "silent" ]; then
 		printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
 	fi
 	if [ "$2" = "log" ]; then
@@ -125,10 +126,10 @@ __fail()
 __usage()
 {
 	if [ $(id -u) -ne 0 ]; then
-		echo "Usage: $0 [status|help]"
+		echo "Usage: $0 status|help"
 		exit $1
 	fi
-	printf "%s" "Usage: $0 [enable|disable|start|stop|restart"
+	printf "%s" "Usage: $0 enable|disable|start|stop|restart"
 	if __svccheck return; then
 		printf "|try-restart|force-reload"
 		if isfunc reload; then
@@ -143,7 +144,7 @@ __usage()
 		printf "|pause|cont"
 #ENDEF
 	fi
-	printf "|status|help]\n"
+	printf "|status|help [silent|verbose]\n"
 	exit $1
 }
 
@@ -350,7 +351,7 @@ __status()
 #ENDEF
 }
 
-# This function will be run if $__SVC is not set to 'false'
+# This function will be run if $NAME is set
 __run()
 {
 	# Return an error if the service was not written correctly
@@ -497,6 +498,6 @@ __run()
 	esac
 }
 
-if [ "$__SVC" != "false" ]; then
+if [ -n "$NAME" ]; then
 	__run "$@"
 fi

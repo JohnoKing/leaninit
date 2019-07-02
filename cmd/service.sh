@@ -23,11 +23,8 @@
 # service - Utility used to run init scripts
 #
 
-# Load rc.svc
-__SVC=false
+# Load rc.svc, usage function
 . /etc/leaninit/rc.svc
-
-# Usage info
 usage()
 {
 	print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
@@ -81,4 +78,4 @@ elif [ ! -x "/etc/leaninit/svc/$1" ]; then
 fi
 
 # Execute the service directly
-exec "/etc/leaninit/svc/$1" "$2"
+exec "/etc/leaninit/svc/$1" "$2" "$3"
