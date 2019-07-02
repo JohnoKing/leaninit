@@ -9,7 +9,7 @@ This is a speedy BSD-style init system that I created for myself, written from s
 ### Linux
 Run `make` will compile LeanInit (compiled files are placed in `./out`).
 Running `make install` as root will install
-LeanInit, without overriding other existing init systems. 
+LeanInit, without overriding other existing init systems.
 You can change the destination LeanInit is installed to by using `$DESTDIR`.
 LeanInit will use `unsigned char` variables for small variables by default
 to decrease the amount of RAM LeanInit uses during runtime.
@@ -35,5 +35,5 @@ and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanI
 `ln -s /etc/leaninit/rc /etc/rc && ln -s /etc/leaninit/rc.shutdown /etc/rc.shutdown`.
 
 ## Usage
-Most information on LeanInit is located in its man pages. 
+Most information on LeanInit is located in its man pages.
 To read the main man page, run `man leaninit`.

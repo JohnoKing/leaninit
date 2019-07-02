@@ -38,8 +38,6 @@ all: clean
 clean:
 	@rm -rf out
 
-# Alias for clean
+# Aliases for clean
 clobber: clean
-
-# Alias for clean
-mrproper: clobber
+mrproper: clean
