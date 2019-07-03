@@ -14,6 +14,8 @@
 
 
 # The $NAME variable defines the full name of the service as displayed by leaninit-service(8).
+# If the $NAME variable is not set, the script that calls leaninit-rc.svc(8) will not be run
+# as a service, rather only the environment variables and functions from rc.svc will be loaded.
 NAME=ExampleService
 
 
@@ -110,5 +112,5 @@ disable()
 	print 'Running the disable function!' log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
 }
 
-# Every script must source leaninit-rc.svc(8) with `.` to function (source does not work as rc.svc must be executed)
+# Every script must source rc.svc with `.` to function (source does not work as rc.svc must be executed)
 . /etc/leaninit/rc.svc
