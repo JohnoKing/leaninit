@@ -8,7 +8,7 @@ restart()
 {
 	if [ -n "$WIRED" ]; then
 		for n in $WIRED; do
-			fork wpa_supplicant -s -Dwired"-i$n" -c/etc/wpa_supplicant.conf
+			fork wpa_supplicant -s -Dwired "-i$n" -c/etc/wpa_supplicant.conf
 		done
 	fi
 	if [ -n "$WIRELESS" ]; then
