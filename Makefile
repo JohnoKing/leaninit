@@ -41,7 +41,7 @@ all: clean
 	@cp -r rc/svc/universal out/svc
 	@mv out/rc/rc.conf.d out/rc.conf.d
 	@rm -r out/rc/svc
-	@cp cmd/service.sh out/rc/leaninit-service
+	@cp rc/service.sh out/rc/leaninit-service
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
