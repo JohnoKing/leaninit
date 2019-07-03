@@ -65,7 +65,7 @@ all: clean
 	@$(XZ) -T 0 out/man/*/*
 	@echo "Successfully built LeanInit!"
 
-# Install LeanInit's rc system for use with other BSD-like init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
+# Install LeanInit's rc system for use with other init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
 install-rc:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
 	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit

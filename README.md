@@ -28,7 +28,7 @@ To boot from LeanInit, append the following line to `/boot/loader.conf`:
 `init_path="/sbin/leaninit"`
 
 ### RC-only installation
-To install only the init scripts LeanInit uses for use with other BSD-like init systems,
+To install only the init scripts LeanInit uses for use with other BSD-style init systems,
 build LeanInit then run `make install-rc`.
 For LeanInit RC to be used by init on the next boot, backup the system's current `/etc/rc`
 and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanInit's RC scripts to `/etc`:
