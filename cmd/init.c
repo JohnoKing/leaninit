@@ -46,8 +46,8 @@ static int usage(int ret)
     printf("  8           Hibernate\n");
 #   endif
     printf("  Q, q        Reload the current runlevel\n");
-    printf("  --version   Shows LeanInit's version number\n");
-    printf("  --help      Shows this usage information\n");
+    printf("  --version   Show LeanInit's version number\n");
+    printf("  --help      Show this usage information\n");
     return ret;
 }
 
