@@ -185,7 +185,6 @@ static void multi(void)
     if(fork() != 0) return;
 
     // Open ttys (max file size 40000 bytes with 90 entries)
-    FILE *ttys_file = fopen(ttys_file_path, "r");
     char buffer[40001];
     char *data = buffer;
     vint_t entry = 0;
@@ -194,6 +193,7 @@ static void multi(void)
         const char *tty;
         pid_t pid;
     } getty[90];
+    FILE *ttys_file = fopen(ttys_file_path, "r");
     while(fgets(data, 40001, ttys_file) && entry != 90) {
 
         // Error checking
