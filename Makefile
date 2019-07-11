@@ -71,8 +71,8 @@ install-rc:
 	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
 	@cp -r out/svc $(DESTDIR)/etc/leaninit
 	@cp -r out/man $(DESTDIR)/usr/share
-	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d
-	@cp -i out/rc/rc.conf out/rc/ttys $(DESTDIR)/etc/leaninit
+	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d || true
+	@cp -i out/rc/rc.conf out/rc/ttys $(DESTDIR)/etc/leaninit || true
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
 	@$(INSTALL) -Dm0755 out/rc/leaninit-service $(DESTDIR)/sbin
