@@ -46,18 +46,17 @@ all: clean
 		cp -r rc/svc/freebsd/* out/svc ;\
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i '' "/#DEF FreeBSD/d"        out/*/* ;\
-		$(SED) -i '' "/#ENDEF/d"              out/*/* ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i "/#DEF Linux/d"            out/*/* ;\
-		$(SED) -i "/#ENDEF/d"                out/*/* ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
+	@$(SED) -i "/#ENDEF/d" out/*/*
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit      cmd/init.c $(LDFLAGS) -lpthread -lutil
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
