@@ -137,12 +137,10 @@ static void single(void)
         execve(shell, sargv, environ);
         printf(RED "* Failed to run %s\n", shell);
         perror("* execve()" RESET);
-        printf(RED "* This system will now shutdown in three seconds..." RESET "\n");
         kill(1, SIGFPE);
     } else if(su_shell == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
-        printf(RED "* This system will now shutdown in three seconds..." RESET "\n");
         kill(1, SIGFPE);
     }
 }
