@@ -16,4 +16,9 @@ reload()
 	udevadm trigger
 }
 
+stop()
+{
+	udevadm control --exit
+}
+
 . /etc/leaninit/rc.svc
