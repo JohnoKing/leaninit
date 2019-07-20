@@ -348,10 +348,10 @@ __status()
 
 	# Print the output without a star (for --status-all)
 #DEF FreeBSD
-	echo "$NAME  |  $__STAT  |  $__STATUS"
+	echo "$NAME  |  $__stage  |  $__STAT  |  $__STATUS"
 #ENDEF
 #DEF Linux
-	echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
+	echo "${WHITE}$NAME  |  $__stage  |  $__STAT  |  $__STATUS${RESET}"
 #ENDEF
 }
 
