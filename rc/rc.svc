@@ -368,7 +368,7 @@ __run()
 	fi
 	if [ "$0" = "/etc/leaninit/bootrc/$__svcname" ]; then
 		__stage='bootrc'
-	elif [ "$0" = "/etc/leaninit/svc/$__svcname ]; then
+	elif [ "$0" = "/etc/leaninit/svc/$__svcname" ]; then
 		__stage='svc'
 	else
 		print 'This service is not in a valid stage or location!' nolog "$RED"
