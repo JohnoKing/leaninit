@@ -15,7 +15,7 @@ main()
 
 	# Keyboard layout
 	print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
-	loadkeys $KEYMAP &
+	loadkeys "$KEYMAP" &
 	wait
 }
 

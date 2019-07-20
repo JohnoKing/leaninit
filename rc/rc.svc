@@ -234,7 +234,11 @@ __start()
 	fi
 
 	# Run main() when starting and restart() when restarting
-	print "$1ing $NAME..." log "$BLUE" "$WHITE"
+	if [ -z "$MSG" ]; then
+		print "${1}ing $NAME..." log "$BLUE" "$WHITE"
+	else
+		print "${MSG}..." log "$BLUE" "$WHITE"
+	fi
 	if [ "$1" = "Restart" ] && isfunc restart; then
 		restart 2> /dev/null
 	else
@@ -244,7 +248,7 @@ __start()
 	# Finish by creating the service's .status and .type files
 	RET=$?
 	if [ $RET = 0 ]; then
-		print "$1ed $NAME successfully!" log "$GREEN" "$WHITE"
+		print "Successfully ${1}ed ${NAME}!" log "$GREEN" "$WHITE"
 		echo "$1ed" > "/var/run/leaninit/$__svcname.status"
 		if [ -n "$TYPE" ]; then
 			echo "$__svcname" > "/var/run/leaninit/$TYPE.type"

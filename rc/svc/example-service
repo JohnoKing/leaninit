@@ -27,14 +27,14 @@ NAME=ExampleService
 TYPE=tutorialType
 
 
-# The optional $TARGET variable defines the target platform for the script. It should match the output of uname(1).
-#TARGET=Linux
-#TARGET=FreeBSD
+# The optional $MSG variable defines a custom message that will be shown when starting the service in place of the default message.
+MSG="This service is currently starting"
 
 
 # This is an example function that is used later
 example_function()
 {
+	print "The stage of this service is $__stage!" nolog "$GREEN" "$CYAN"  # This will print the stage the service is in, which can be either bootrc or svc.
 	return 0
 }
 
