@@ -271,7 +271,7 @@ __stop()
 		stop
 	fi
 
-	# Stop the specified pids in the pid file (if there are any)
+	# Stop the specified PIDs in the .pid file (if there are any)
 	if [ -n "$__svcpid" ]; then
 		print "Sending $NAME SIGCONT and SIGTERM..." log "$BLUE" "$WHITE"
 		kill -CONT $__svcpid 2> /dev/null

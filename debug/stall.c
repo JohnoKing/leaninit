@@ -60,12 +60,12 @@ int main(int argc, char *argv[])
 
     // Output info
     if(sigstop != 0) {
-        printf(CYAN "* " WHITE "Stall is now running in the background with pid %d." RESET "\n", stall_pid);
+        printf(CYAN "* " WHITE "Stall is now running in the background with PID %d." RESET "\n", stall_pid);
         printf(CYAN "* " WHITE "Stall cannot be killed with SIGTERM (use SIGKILL instead)." RESET "\n");
         printf(CYAN "* " WHITE "To execute stall in SIGSTOP mode, pass --sigstop when executing stall." RESET "\n");
     } else {
         kill(stall_pid, SIGSTOP);
-        printf(CYAN "* " WHITE "Stall is now in the background paused by SIGSTOP with pid %d." RESET "\n", stall_pid);
+        printf(CYAN "* " WHITE "Stall is now in the background paused by SIGSTOP with PID %d." RESET "\n", stall_pid);
         printf(CYAN "* " WHITE "You must send stall SIGCONT then SIGTERM to kill it." RESET "\n");
     }
 

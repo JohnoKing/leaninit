@@ -178,7 +178,6 @@ static void multi(void)
         return;
     }
 
-
     // Start a child process (for managing getty with plain wait(2))
     if(fork() != 0) return;
 
@@ -215,7 +214,7 @@ static void multi(void)
         pid_t closed_pid = wait(&status);
         if(closed_pid == -1) return;
 
-        // Match the closed pid to the getty in the index
+        // Match the closed PID to the getty in the index
         for(vint_t e = 1; e <= entry; e++) {
             if(getty[e].pid != closed_pid) continue;
 
