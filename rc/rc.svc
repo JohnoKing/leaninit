@@ -358,6 +358,7 @@ __run()
 	if [ -z "$NAME" ] || ! isfunc main; then
 		print 'Service syntax is invalid!' nolog "$RED"
 		exit 128
+	fi
 
 	# Set $__svc variables
 	__svcname="$(basename "$0")"
