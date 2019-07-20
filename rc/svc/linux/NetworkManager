@@ -1,7 +1,6 @@
 #!/bin/sh
 NAME="NetworkManager"
 TYPE="networking"
-TARGET="Linux"
 
 main()
 {

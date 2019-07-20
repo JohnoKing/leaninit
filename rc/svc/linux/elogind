@@ -1,7 +1,6 @@
 #!/bin/sh
 NAME="elogind"
 TYPE="login-daemon"
-TARGET="Linux"
 
 main()
 {

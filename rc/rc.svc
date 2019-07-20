@@ -197,7 +197,7 @@ waitfor()
 			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
 			;;
 		service)
-			if [ ! -r "/etc/leaninit/svc.e/$2" ]; then
+			if [ ! -r "/var/lib/leaninit/$2" ]; then
 				if [ "$3" = "optional" ]; then
 					return 0
 				else
@@ -208,7 +208,7 @@ waitfor()
 			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start!" "$NAME failed to start because the service $2 failed to start!"
 			;;
 		*)
-			if [ ! -r "/etc/leaninit/svc.e/$1.type" ]; then
+			if [ ! -r "/var/lib/leaninit/types/$1.type" ]; then
 				if  [ "$2" != "optional" ]; then
 					print "$NAME failed to start because no currently enabled services satisfy the type $1!" log "$RED"
 					__fail 1
@@ -216,7 +216,7 @@ waitfor()
 					return 0
 				fi
 			fi
-			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat "/etc/leaninit/svc.e/$1.type") failed to start!"
+			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat "/var/lib/leaninit/types/$1.type") failed to start!"
 			;;
 	esac
 }
@@ -328,8 +328,8 @@ __reload()
 # Get the current status of a service
 __status()
 {
-	# Look for the service in /etc/leaninit/svc.e
-	if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
+	# Look for the service in /var/lib/leaninit
+	if [ -r "/var/lib/leaninit/$__svcname" ]; then
 		__STAT="Enabled"
 	else
 		__STAT="Disabled"
@@ -359,12 +359,6 @@ __run()
 		print 'Service syntax is invalid!' nolog "$RED"
 		exit 128
 
-	# If the service does not support the current OS, exit
-	elif [ -n "$TARGET" ] && [ "$TARGET" != "$(uname)" ]; then
-		print "$NAME is not compatible with $(uname)!" nolog "$RED"
-		exit 5
-	fi
-
 	# Set $__svc variables
 	__svcname="$(basename "$0")"
 	__svcpidfile="/var/run/leaninit/$__svcname.pid"
@@ -376,17 +370,17 @@ __run()
 	case "$1" in
 		enable)
 			__rootcheck
-			if [ -r "/etc/leaninit/svc.e/$__svcname" ]; then
+			if [ -r "/var/lib/leaninit/$__svcname" ]; then
 				print "$NAME is already enabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
-			if [ -n "$TYPE" ] && [ -r "/etc/leaninit/svc.e/$TYPE.type" ]; then
-				print "$NAME could not be enabled because $(cat "/etc/leaninit/svc.e/$TYPE.type") conflicts with $NAME!" log "$RED"
+			if [ -n "$TYPE" ] && [ -r "/var/lib/leaninit/types/$TYPE.type" ]; then
+				print "$NAME could not be enabled because $(cat "/var/lib/leaninit/types/$TYPE.type") conflicts with $NAME!" log "$RED"
 				exit 1
 			fi
-			touch "/etc/leaninit/svc.e/$__svcname"
+			touch "/var/lib/leaninit/$__svcname"
 			if [ -n "$TYPE" ]; then
-				echo "$__svcname" > "/etc/leaninit/svc.e/$TYPE.type"
+				echo "$__svcname" > "/var/lib/leaninit/types/$TYPE.type"
 			fi
 			print "$NAME has been enabled!" log "$GREEN" "$WHITE"
 			if isfunc enable; then
@@ -395,13 +389,13 @@ __run()
 
 		disable)
 			__rootcheck
-			if [ ! -r "/etc/leaninit/svc.e/$__svcname" ]; then
+			if [ ! -r "/var/lib/leaninit/$__svcname" ]; then
 				print "$NAME is already disabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
-			rm "/etc/leaninit/svc.e/$__svcname"
+			rm "/var/lib/leaninit/$__svcname"
 			if [ -n "$TYPE" ]; then
-				if ! rm "/etc/leaninit/svc.e/$TYPE.type"; then
+				if ! rm "/var/lib/leaninit/types/$TYPE.type"; then
 					print "Could not disable $NAME!" log "$RED"
 					exit 1
 				fi

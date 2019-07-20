@@ -1,6 +1,5 @@
 #!/bin/sh
 NAME="ACPI Daemon"
-TARGET="Linux"
 
 main()
 {

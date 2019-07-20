@@ -1,0 +1,10 @@
+#!/bin/sh
+NAME="devd"
+
+main()
+{
+	vidcontrol -m on  # This is required for moused to function
+	devd -n
+}
+
+. /etc/leaninit/rc.svc

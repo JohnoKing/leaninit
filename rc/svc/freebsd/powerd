@@ -1,6 +1,5 @@
 #!/bin/sh
 NAME="PowerD"
-TARGET="FreeBSD"
 
 main()
 {

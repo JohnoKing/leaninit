@@ -42,160 +42,29 @@ mount -a &
 mount -o remount,rw,noatime / 2> /dev/null &
 
 #DEF Linux
-# Mount pseudo file systems
-print "Mounting pseudo file systems..." nolog "$PURPLE" "$WHITE"
+# Mount primary pseudo file systems
+print "Mounting primary pseudo file systems..." nolog "$PURPLE" "$WHITE"
 rm -rf /tmp/*
 mountpoint -q /dev  || mount -o nosuid,noatime -t devtmpfs dev /dev &
 mountpoint -q /proc || mount -o nosuid,nodev,noexec,noatime -t proc proc /proc &
 mountpoint -q /sys  || mount -o nosuid,nodev,noexec,noatime -t sysfs sysfs /sys &
 mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
 mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
-
-# Cgroups support (this function must be run in its own subshell)
-mount_cgroups()
-{
-	# Mount a tmpfs at /sys/fs/cgroup
-	print "Mounting cgroups..." nolog "$PURPLE" "$WHITE"
-	mkdir -p /sys/fs/cgroup
-	mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,noatime -t tmpfs cgroup /sys/fs/cgroup
-
-	# elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
-	mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
-	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
-
-	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
-	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers &
-	wait
-}
-
-# Mount the rest of the pseudo file systems
 wait
-mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/pstore /sys/kernel/security
-mount_cgroups &
-mountpoint -q /dev/pts             || mount -o nosuid,noexec,noatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
-mountpoint -q /dev/mqueue          || mount -o noatime -t mqueue none /dev/mqueue &
-mountpoint -q /sys/kernel/security || mount -o noatime -t securityfs securityfs /sys/kernel/security &
-mountpoint -q /sys/fs/pstore       || mount -o noatime -t pstore pstore /sys/fs/pstore &
-mountpoint -q /run/shm             || mount -n -o nosuid,nodev,mode=1777,noatime -t tmpfs tmpfs /run/shm
-mount --bind /run/shm /dev/shm &
-
-# Launch either udev or mdev
-if [ "$DEV" = "udev" ]; then
-	print "Starting udev..." nolog "$PURPLE" "$WHITE"
-	"$DEVEXEC" --daemon
-	udevadm info --cleanup-db   # Clean the udev database
-	udevadm trigger --action=add
-	udevadm settle
-elif [ "$DEV" = "mdev" ]; then
-	print "Starting mdev..." nolog "$PURPLE" "$WHITE"
-	"$DEVEXEC" -s
-	echo "$DEVEXEC" > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
-fi &
-
-# Load all modules specified in /etc/modules-load.d and by `kmod static-nodes`
-print "Loading kernel modules..." nolog "$PURPLE" "$WHITE"
-if [ -d /etc/modules-load.d ] && [ -n "$(ls /etc/modules-load.d)" ]; then
-	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}') $(cat /etc/modules-load.d/* | grep -v '#')
-else
-	modprobe -a $(kmod static-nodes | awk '/Module:/ {print $2}')
-fi
 #ENDEF
 
-# Mount all ZFS file systems
-if [ "$ZFS_ENABLE" = "true" ]; then
-	print "Mounting all ZFS file systems..." nolog "$PURPLE" "$WHITE"
-
-	# Done for compatibility with beadm(1)
-	for z in $(df -t zfs | tail -n +2 | awk '{print $1}'); do
-		zfs mount $z
-	done
-
-	# mount -a equivalent (includes NFS)
-	zfs mount -a
-	zfs share -a
-
-	# Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
-	for z in $(zpool list -Ho name); do
-		print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
-		zfs readonly=off $z
-	done
-fi
-
-# Init logging
-touch "$LOGFILE"
-mv "$LOGFILE" "$LOGFILE.old"
-echo "LeanInit has started logging on $(uname -srm)" > "$LOGFILE"
-print 'LeanInit has started logging!' nolog "$BLUE" "$WHITE" # This message is logged using the previous command
-
-# Swap
-print "Turning on all swap partitions..." log "$BLUE" "$WHITE"
-swapon -a &
-
-# sysctl(8)
-print "Executing sysctl(8)..." log "$BLUE" "$WHITE"
-#DEF FreeBSD
-for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
-	if [ -r $s ]; then
-		sysctl -f /etc/sysctl.conf >> /dev/null &
-	fi
+# Launch all enabled bootrc scripts
+cd /etc/leaninit/bootrc.e
+for br in *; do
+	"/etc/leaninit/bootrc/$br" start "$1" &
 done
-#ENDEF
-#DEF Linux
-sysctl --system >> /dev/null &
-#ENDEF
-
-# Remove the nologin files and reset /var/run/leaninit
-print "Removing any existing nologin files and resetting /var/run/leaninit..." log "$BLUE" "$WHITE"
-rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
-mkdir -p /var/run/leaninit
-
-#DEF FreeBSD
-# Launch devd (vidcontrol -m is required for moused to function)
-print "Starting devd..." log "$BLUE" "$WHITE"
-vidcontrol -m on
-devd -n
-#ENDEF
-
-#DEF Linux
-# Set up network interfaces
-print "Setting up a loopback interface..." log "$BLUE" "$WHITE"
-ip link set up dev lo &
-if [ -n "$NETFACE" ]; then
-	for n in $NETFACE; do
-		print "Setting up $n for networking..." log "$BLUE" "$WHITE"
-		ip link set up dev $n &
-	done
-fi
-
-# Set the keyboard layout (this requires kbd to work)
-if [ -n "$KEYMAP" ]; then
-	print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
-	loadkeys $KEYMAP &
-fi
-#ENDEF
-
-# Set the hostname
-if [ -n "$HOSTNAME" ]; then
-	print "Setting the hostname to $HOSTNAME..." nolog "$PURPLE" "$WHITE"
-	hostname $HOSTNAME &
-fi
-
-# Set the timezone
-if [ -n "$TIMEZONE" ] && [ -r "/usr/share/zoneinfo/$TIMEZONE" ]; then
-	print "Setting the timezone to $TIMEZONE..." nolog "$PURPLE" "$WHITE"
-	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
-fi
-
-# Wait for all jobs to finish
 wait
 
 # Start all enabled services
-if [ -n "$(ls /etc/leaninit/svc.e)" ]; then
-	cd /etc/leaninit/svc.e
+if [ -n "$(ls /var/lib/leaninit)" ]; then
+	cd /var/lib/leaninit
 	for sv in *; do
-		if [ -x "/etc/leaninit/svc/$sv" ]; then
-			"/etc/leaninit/svc/$sv" start "$1" &
-		fi
+		"/etc/leaninit/svc/$sv" start "$1" &
 	done
 fi
 

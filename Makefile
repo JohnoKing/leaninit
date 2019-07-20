@@ -68,7 +68,8 @@ all: clean
 # Install LeanInit's rc system for use with other init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
 install-rc:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
-	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/svc.e $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log $(DESTDIR)/var/run/leaninit
+	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log \
+		$(DESTDIR)/var/run/leaninit $(DESTDIR)/var/lib/leaninit/types $(DESTDIR)/var/lib/leaninit/svc $(DESTDIR)/var/lib/leaninit/bootrc
 	@cp -r out/svc $(DESTDIR)/etc/leaninit
 	@cp -r out/man $(DESTDIR)/usr/share
 	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d || true

@@ -1,0 +1,19 @@
+#!/bin/sh
+NAME="udev"
+TYPE="udev"
+
+main()
+{
+	"$DEVEXEC" --daemon
+	udevadm info --cleanup-db
+	udevadm trigger --action=add
+	udevadm settle
+}
+
+reload()
+{
+	udevadm control --reload-rules
+	udevadm trigger
+}
+
+. /etc/leaninit/rc.svc

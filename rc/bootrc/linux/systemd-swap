@@ -1,0 +1,14 @@
+#!/bin/sh
+NAME="systemd-swap"
+
+main()
+{
+	systemd-swap start
+}
+
+stop()
+{
+	systemd-swap stop
+}
+
+. /etc/leaninit/rc.svc

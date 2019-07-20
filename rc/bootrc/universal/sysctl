@@ -1,0 +1,18 @@
+#!/bin/sh
+NAME="sysctl"
+
+main()
+{
+#DEF FreeBSD
+	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
+		if [ -r $s ]; then
+			sysctl -f /etc/sysctl.conf >> /dev/null &
+		fi
+	done
+#ENDEF
+#DEF Linux
+	sysctl --system >> /dev/null
+#ENDEF
+}
+
+. /etc/leaninit/rc.svc

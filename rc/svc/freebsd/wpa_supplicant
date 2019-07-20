@@ -1,7 +1,6 @@
 #!/bin/sh
 NAME="WPA Supplicant"
 TYPE="networking"
-TARGET="FreeBSD"
 
 # Run wpa_supplicant on all interfaces
 restart()

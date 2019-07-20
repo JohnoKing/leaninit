@@ -40,7 +40,7 @@ fi
 
 #DEF Linux
 # Stop udev
-if [ "$DEV" = "udev" ]; then
+if [ -r "/var/lib/leaninit/udev" ]; then
 	udevadm control --exit &
 fi
 #ENDEF

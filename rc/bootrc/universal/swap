@@ -1,0 +1,15 @@
+#!/bin/sh
+NAME="swap"
+MSG="Turning on all swap partitions"
+
+main()
+{
+	swapon -a
+}
+
+stop()
+{
+	swapoff -a
+}
+
+. /etc/leaninit/rc.svc

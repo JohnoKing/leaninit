@@ -1,0 +1,12 @@
+#!/bin/sh
+NAME="General Settings"
+MSG="Setting the hostname and timezone"
+
+main()
+{
+	hostname "$HOSTNAME" &
+	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
+	wait
+}
+
+. /etc/leaninit/rc.svc
