@@ -197,7 +197,7 @@ waitfor()
 			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
 			;;
 		service)
-			if [ ! -r "/var/lib/leaninit/$2" ]; then
+			if [ ! -r "/var/lib/leaninit/$__stage/$2" ]; then
 				if [ "$3" = "optional" ]; then
 					return 0
 				else
@@ -329,7 +329,7 @@ __reload()
 __status()
 {
 	# Look for the service in /var/lib/leaninit
-	if [ -r "/var/lib/leaninit/$__svcname" ]; then
+	if [ -r "/var/lib/leaninit/$__stage/$__svcname" ]; then
 		__STAT="Enabled"
 	else
 		__STAT="Disabled"
@@ -360,18 +360,26 @@ __run()
 		exit 128
 	fi
 
-	# Set $__svc variables
+	# Set $__stage and $__svc variables
 	__svcname="$(basename "$0")"
 	__svcpidfile="/var/run/leaninit/$__svcname.pid"
 	if [ -r "$__svcpidfile" ]; then
 		__svcpid="$(cat "$__svcpidfile")"
+	fi
+	if [ "$0" = "/etc/leaninit/bootrc/$__svcname" ]; then
+		__stage='bootrc'
+	elif [ "$0" = "/etc/leaninit/svc/$__svcname ]; then
+		__stage='svc'
+	else
+		print 'This service is not in a valid stage or location!' nolog "$RED"
+		exit 128
 	fi
 
 	# Handle arguments
 	case "$1" in
 		enable)
 			__rootcheck
-			if [ -r "/var/lib/leaninit/$__svcname" ]; then
+			if [ -r "/var/lib/leaninit/$__stage/$__svcname" ]; then
 				print "$NAME is already enabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
@@ -379,7 +387,7 @@ __run()
 				print "$NAME could not be enabled because $(cat "/var/lib/leaninit/types/$TYPE.type") conflicts with $NAME!" log "$RED"
 				exit 1
 			fi
-			touch "/var/lib/leaninit/$__svcname"
+			touch "/var/lib/leaninit/$__stage/$__svcname"
 			if [ -n "$TYPE" ]; then
 				echo "$__svcname" > "/var/lib/leaninit/types/$TYPE.type"
 			fi
@@ -390,11 +398,11 @@ __run()
 
 		disable)
 			__rootcheck
-			if [ ! -r "/var/lib/leaninit/$__svcname" ]; then
+			if [ ! -r "/var/lib/leaninit/$__stage/$__svcname" ]; then
 				print "$NAME is already disabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
-			rm "/var/lib/leaninit/$__svcname"
+			rm "/var/lib/leaninit/$__stage/$__svcname"
 			if [ -n "$TYPE" ]; then
 				if ! rm "/var/lib/leaninit/types/$TYPE.type"; then
 					print "Could not disable $NAME!" log "$RED"

@@ -54,15 +54,15 @@ wait
 #ENDEF
 
 # Launch all enabled bootrc scripts
-cd /etc/leaninit/bootrc.e
+cd /var/lib/leaninit/bootrc
 for br in *; do
 	"/etc/leaninit/bootrc/$br" start "$1" &
 done
 wait
 
 # Start all enabled services
-if [ -n "$(ls /var/lib/leaninit)" ]; then
-	cd /var/lib/leaninit
+if [ -n "$(ls /var/lib/leaninit/svc)" ]; then
+	cd /var/lib/leaninit/svc
 	for sv in *; do
 		"/etc/leaninit/svc/$sv" start "$1" &
 	done
