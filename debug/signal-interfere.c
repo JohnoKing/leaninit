@@ -127,6 +127,6 @@ int main(int argc, char *argv[])
     }
 
     // Finish
-    printf(CYAN "* " WHITE "Signal-Interfere is now running in the background with pid %d." RESET "\n", daemon);
+    printf(CYAN "* " WHITE "Signal-Interfere is now running in the background with PID %d." RESET "\n", daemon);
     return 0;
 }
