@@ -81,6 +81,15 @@ install-rc:
 	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
 	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
 	@$(INSTALL) -Dm0755 out/rc/leaninit-service $(DESTDIR)/sbin
+	@if [ `uname` = FreeBSD ]; then \
+		touch $(DESTDIR)/var/lib/leaninit/bootrc/settings $(DESTDIR)/var/lib/leaninit/bootrc/swap $(DESTDIR)/var/lib/leaninit/bootrc/sysctl \
+			$(DESTDIR)/var/lib/leaninit/bootrc/devd $(DESTDIR)/var/lib/leaninit/bootrc/zfs ;\
+	elif [ `uname` = Linux ]; then \
+		touch $(DESTDIR)/var/lib/leaninit/bootrc/kmod $(DESTDIR)/var/lib/leaninit/bootrc/linux-settings $(DESTDIR)/var/lib/leaninit/bootrc/mountpfs \
+			$(DESTDIR)/var/lib/leaninit/bootrc/settings $(DESTDIR)/var/lib/leaninit/bootrc/swap $(DESTDIR)/var/lib/leaninit/bootrc/sysctl \
+			$(DESTDIR)/var/lib/leaninit/bootrc/udev ;\
+		echo "udev" > $(DESTDIR)/var/lib/leaninit/types/udev.type ;\
+	fi
 	@echo "Successfully installed LeanInit's RC system!"
 
 # Install LeanInit (does not overwrite other init systems)
