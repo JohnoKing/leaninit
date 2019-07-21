@@ -3,6 +3,7 @@ NAME="Apache Web Server"
 
 main()
 {
+	waitfor networking
 	mkdir -p /run/httpd /var/run/httpd
 	fork httpd -k start -DFOREGROUND
 }

@@ -38,13 +38,6 @@ if [ -n "$(ls /etc/leaninit/svc)" ]; then
 	done
 fi
 
-#DEF Linux
-# Stop udev
-if [ -r "/var/lib/leaninit/bootrc/udev" ]; then
-	udevadm control --exit &
-fi
-#ENDEF
-
 # Finish
 wait
 sync

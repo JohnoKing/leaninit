@@ -3,6 +3,7 @@ NAME="Avahi"
 
 main()
 {
+	waitfor networking
 	waitfor service dbus
 	fork avahi-daemon
 }

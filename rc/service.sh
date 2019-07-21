@@ -51,7 +51,7 @@ usage()
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
 	__TMP=$(mktemp)
-	for svc in /etc/leaninit/bootrc/* /etc/leaninit/svc/*; do
+	for svc in /etc/leaninit/svc/*; do
 		"$svc" status >> "$__TMP" &
 	done
 	wait
@@ -69,17 +69,13 @@ if [ "$1" = "--status-all" ]; then
 	exit 0
 fi
 
-# Get $__stage and exit when not given proper arguments
+# Exit when not given proper arguments
 if [ -z "$2" ]; then
 	usage
-elif [ -x "/etc/leaninit/bootrc/$1" ]; then
-	__stage=bootrc
-elif [ -x "/etc/leaninit/svc/$1" ]; then
-	__stage=svc
-else
+elif [ ! -x "/etc/leaninit/svc/$1" ]; then
 	print "The service '$1' does not exist" nolog "$RED!"
 	usage
 fi
 
 # Execute the service directly
-exec "/etc/leaninit/$__stage/$1" "$2" "$3"
+exec "/etc/leaninit/svc/$1" "$2" "$3"

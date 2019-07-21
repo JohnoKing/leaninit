@@ -12,9 +12,16 @@ main()
 		print 'The xdm service failed to start due to $DM being invalid!' log "$RED"
 		return 1
 	fi
+
+	# Dependencies of the X Server
+#DEF Linux
+	waitfor udev
+#ENDEF
 	waitfor service dbus
 	waitfor login-daemon optional
 	install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
+
+	# Launch the display manager
 	fork "$DM"
 }
 

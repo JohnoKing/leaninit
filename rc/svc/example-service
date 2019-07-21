@@ -34,7 +34,6 @@ MSG="This service is currently starting"
 # This is an example function that is used later
 example_function()
 {
-	print "The stage of this service is $__stage!" nolog "$GREEN" "$CYAN"  # This will print the stage the service is in, which can be either bootrc or svc.
 	return 0
 }
 

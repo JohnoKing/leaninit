@@ -25,6 +25,7 @@ restart()
 # The main function
 main()
 {
+	waitfor service devd
 	waitfor process wpa_supplicant
 	sleep 0.5
 	pkill -KILL -x wpa_supplicant

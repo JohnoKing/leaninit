@@ -4,7 +4,8 @@ TYPE="login-daemon"
 
 main()
 {
-	# elogind requires D-Bus
+	# elogind requires D-Bus and Cgroups
+	waitfor service mountpfs
 	waitfor service dbus
 
 	# Run elogind

@@ -64,13 +64,6 @@ print "Removing any existing nologin files and resetting /var/run/leaninit..." l
 rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
 
-# Launch all enabled bootrc scripts
-cd /var/lib/leaninit/bootrc
-for br in *; do
-	"/etc/leaninit/bootrc/$br" start "$1" &
-done
-wait
-
 # Start all enabled services
 if [ -n "$(ls /var/lib/leaninit/svc)" ]; then
 	cd /var/lib/leaninit/svc
