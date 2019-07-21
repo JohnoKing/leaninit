@@ -42,13 +42,13 @@ all: clean
 	@mv out/rc/rc.conf.d out/rc.conf.d
 	@cp rc/service.sh out/rc/leaninit-service
 	@if [ `uname` = FreeBSD ]; then \
-		cp -r rc/svc/freebsd/* out/svc ;\
+		cp -r rc/svc/freebsd/* out/svc && rm -r out/rc/svc ;\
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i '' "/#DEF FreeBSD/d"        out/*/* ;\
 		$(SED) -i '' "/#ENDEF/d"              out/*/* ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
-		cp -r rc/svc/linux/* out/svc ;\
+		cp -r rc/svc/linux/* out/svc && rm -r out/rc/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i "/#DEF Linux/d"            out/*/* ;\
 		$(SED) -i "/#ENDEF/d"                out/*/* ;\
