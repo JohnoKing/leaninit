@@ -29,10 +29,10 @@ INSTALL   := install
 SED       := sed
 STRIP     := strip
 XZ        := xz
-MANPAGES  := $(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.xz $(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.xz $(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.xz \
-	$(DESTDIR)/usr/share/man/man8/leaninit.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz \
-	$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-service.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz \
-	$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz $(DESTDIR)/usr/share/man/man8/leaninit-zzz.8.xz $(DESTDIR)/usr/share/man/man8/os-indications.8.xz
+MANPAGES  := "$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.xz" "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.xz" \
+	"$(DESTDIR)/usr/share/man/man8/leaninit.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz" \
+	"$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-service.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
+	"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-zzz.8.xz" "$(DESTDIR)/usr/share/man/man8/os-indications.8.xz"
 
 # Compile LeanInit
 all: clean
@@ -68,37 +68,38 @@ all: clean
 # Install LeanInit's rc system for use with other init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
 install-rc:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
-	@mkdir -p  $(DESTDIR)/sbin $(DESTDIR)/etc/leaninit/rc.conf.d $(DESTDIR)/usr/share/licenses/leaninit $(DESTDIR)/var/log \
-		$(DESTDIR)/var/run/leaninit $(DESTDIR)/var/lib/leaninit/types $(DESTDIR)/var/lib/leaninit/svc
-	@cp -r out/svc    $(DESTDIR)/etc/leaninit
-	@cp -r out/man    $(DESTDIR)/usr/share
-	@cp -i out/rc.conf.d/* $(DESTDIR)/etc/leaninit/rc.conf.d || true
-	@cp -i out/rc/rc.conf out/rc/ttys $(DESTDIR)/etc/leaninit || true
-	@$(INSTALL) -Dm0644 LICENSE $(DESTDIR)/usr/share/licenses/leaninit/MIT
-	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown $(DESTDIR)/etc/leaninit
-	@$(INSTALL) -Dm0755 out/rc/leaninit-service $(DESTDIR)/sbin
-	@if [ `uname` = FreeBSD ] && [ ! -r $(DESTDIR)/var/lib/leaninit/install-flag ]; then \
-		touch $(DESTDIR)/var/lib/leaninit/svc/settings $(DESTDIR)/var/lib/leaninit/svc/swap $(DESTDIR)/var/lib/leaninit/svc/sysctl \
-			$(DESTDIR)/var/lib/leaninit/svc/devd $(DESTDIR)/var/lib/leaninit/svc/zfs ;\
-	elif [ `uname` = Linux ] && [ ! -r $(DESTDIR)/var/lib/leaninit/install-flag ]; then \
-		touch $(DESTDIR)/var/lib/leaninit/svc/kmod $(DESTDIR)/var/lib/leaninit/svc/linux-settings $(DESTDIR)/var/lib/leaninit/svc/mountpfs \
-			$(DESTDIR)/var/lib/leaninit/svc/settings $(DESTDIR)/var/lib/leaninit/svc/swap $(DESTDIR)/var/lib/leaninit/svc/sysctl \
-			$(DESTDIR)/var/lib/leaninit/svc/udev ;\
-		echo "udev" > $(DESTDIR)/var/lib/leaninit/types/udev.type ;\
+	@mkdir -p "$(DESTDIR)/sbin" "$(DESTDIR)/etc/leaninit/rc.conf.d" "$(DESTDIR)/usr/share/licenses/leaninit" "$(DESTDIR)/var/log" \
+		"$(DESTDIR)/var/run/leaninit" "$(DESTDIR)/var/lib/leaninit/types" "$(DESTDIR)/var/lib/leaninit/svc"
+	@cp -r out/svc "$(DESTDIR)/etc/leaninit"
+	@cp -r out/man "$(DESTDIR)/usr/share"
+	@cp -i out/rc.conf.d/* "$(DESTDIR)/etc/leaninit/rc.conf.d" || true
+	@cp -i out/rc/rc.conf out/rc/ttys "$(DESTDIR)/etc/leaninit" || true
+	@$(INSTALL) -Dm0644 LICENSE "$(DESTDIR)/usr/share/licenses/leaninit/MIT"
+	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
+	@$(INSTALL) -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
+	@if [ `uname` = FreeBSD ] && [ ! -r "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
+		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
+			"$(DESTDIR)/var/lib/leaninit/svc/devd" "$(DESTDIR)/var/lib/leaninit/svc/zfs" ;\
+	elif [ `uname` = Linux ] && [ ! -r "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
+		touch "$(DESTDIR)/var/lib/leaninit/svc/kmod" "$(DESTDIR)/var/lib/leaninit/svc/linux-settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" \
+			"$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
+			"$(DESTDIR)/var/lib/leaninit/svc/udev" ;\
+		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
 	fi
-	@touch $(DESTDIR)/var/lib/leaninit/install-flag
+	@touch "$(DESTDIR)/var/lib/leaninit/install-flag"
 	@echo "Successfully installed LeanInit's RC system!"
 
 # Install LeanInit (does not overwrite other init systems)
+# cd is used with ln(1) for POSIX-compliant relative symlinks
 install: install-rc
-	@cd $(DESTDIR)/usr/share/man/man8 ;\
-	[ -r leaninit-poweroff.8 ] || ln -sf leaninit-halt.8 leaninit-poweroff.8 ;\
-	[ -r leaninit-reboot.8 ] || ln -sf leaninit-halt.8 leaninit-reboot.8 ;\
-	if [ `uname` = Linux ]; then [ -r leaninit-zzz.8 ] || ln -sf leaninit-halt.8 leaninit-zzz.8; fi
-	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications $(DESTDIR)/sbin
-	@cd $(DESTDIR)/sbin; ln -sf leaninit-halt leaninit-poweroff
-	@cd $(DESTDIR)/sbin; ln -sf leaninit-halt leaninit-reboot
-	@if [ `uname` = Linux ]; then cd $(DESTDIR)/sbin; ln -sf leaninit-halt leaninit-zzz; fi
+	@cd "$(DESTDIR)/usr/share/man/man8" ;\
+	[ -r leaninit-poweroff.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-poweroff.8.xz ;\
+	[ -r leaninit-reboot.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-reboot.8.xz ;\
+	if [ `uname` = Linux ]; then [ -r leaninit-zzz.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-zzz.8.xz; fi
+	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications "$(DESTDIR)/sbin"
+	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
+	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
+	@if [ `uname` = Linux ]; then cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-zzz; fi
 	@echo "Successfully installed LeanInit itself!"
 
 # Uninstall (only works with normal installations)
@@ -107,12 +108,13 @@ uninstall:
 		echo "You must be root to uninstall LeanInit!" ;\
 		false ;\
 	fi
-	@if [ ! -x $(DESTDIR)/sbin/leaninit ]; then \
+	@if [ ! -x "$(DESTDIR)/sbin/leaninit" ]; then \
 		echo "Failed to detect an installation of LeanInit, exiting..." ;\
 		false ;\
 	fi
-	@rm -rf $(DESTDIR)/sbin/leaninit $(DESTDIR)/sbin/leaninit-halt $(DESTDIR)/sbin/leaninit-poweroff $(DESTDIR)/sbin/leaninit-reboot $(DESTDIR)/sbin/os-indications $(DESTDIR)/usr/share/licenses/leaninit \
-		$(DESTDIR)/sbin/leaninit-zzz $(DESTDIR)/sbin/leaninit-service $(DESTDIR)/etc/leaninit $(DESTDIR)/var/log/leaninit.log $(DESTDIR)/var/run/leaninit $(MANPAGES)
+	@rm -rf "$(DESTDIR)/sbin/leaninit" "$(DESTDIR)/sbin/leaninit-halt" "$(DESTDIR)/sbin/leaninit-poweroff" "$(DESTDIR)/sbin/leaninit-reboot" "$(DESTDIR)/sbin/os-indications" "$(DESTDIR)/usr/share/licenses/leaninit" \
+		"$(DESTDIR)/sbin/leaninit-zzz" "$(DESTDIR)/sbin/leaninit-service" "$(DESTDIR)/etc/leaninit" "$(DESTDIR)/var/log/leaninit.log" "$(DESTDIR)/var/run/leaninit" $(MANPAGES) \
+		"$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-zzz.8.xz" "$(DESTDIR)/var/lib/leaninit"
 	@echo "Successfully uninstalled LeanInit!"
 	@echo "Please make sure you remove LeanInit from your bootloader!"
 
