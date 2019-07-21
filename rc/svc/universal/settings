@@ -1,9 +1,25 @@
 #!/bin/sh
-NAME="General Settings"
-MSG="Setting the hostname and timezone"
+NAME="LeanInit Settings"
 
 main()
 {
+#DEF Linux
+	# Set up network interfaces
+	ip link set up dev lo &
+	if [ -n "$NETFACE" ]; then
+		for n in $NETFACE; do
+			print "Setting up $n for networking..." log "$BLUE" "$WHITE"
+			ip link set up dev $n &
+		done
+	fi
+
+	# Keyboard layout
+	print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
+	loadkeys "$KEYMAP" &
+	wait
+
+#ENDEF
+	# Universal settings
 	hostname "$HOSTNAME" &
 	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
 	wait
