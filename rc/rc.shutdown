@@ -23,11 +23,6 @@
 # /etc/leaninit/rc.shutdown - Stops all services
 #
 
-#DEF Linux
-# Load rc.conf
-. /etc/leaninit/rc.conf
-#ENDEF
-
 # Stop all currently running services
 cd /etc/leaninit/svc
 for svc in *; do
