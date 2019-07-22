@@ -46,14 +46,6 @@ if [ -z "$LOGFILE" ]; then
 	LOGFILE=/var/log/leaninit.log
 fi
 
-# Execute If Exists
-exifex()
-{
-	if command -v "$1" >> /dev/null; then
-		"$@"
-	fi
-}
-
 # Return 0 if the given command is a shell function, otherwise return 1
 isfunc()
 {

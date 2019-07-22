@@ -64,9 +64,6 @@ main()
 	# #005FFF to stdout and no log file.
 	print "EXAMPLE OUTPUT" nolog "\033[38;5;27m" "$WHITE"
 
-	# Execute If Exists will run a command if it exists
-	exifex uname -m
-
 	# Similarly, isfunc will return 0 if the given command is a shell function
 	if isfunc example_function; then
 		print "The example function exists" nolog "$BLACK" "$GREEN" # Be warned that black text is invisible on black console backgrounds.
