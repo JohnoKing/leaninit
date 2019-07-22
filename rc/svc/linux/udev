@@ -1,4 +1,5 @@
 #!/bin/sh
+. /etc/leaninit/rc.conf.d/udev.conf
 NAME="udev"
 TYPE="udev"
 
