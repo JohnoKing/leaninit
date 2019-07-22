@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 28, 2019
+.Dd July 22, 2019
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -190,8 +190,19 @@ does not exist
 .Em /etc/leaninit/svc
 Folder containing scripts for starting various services (such as D-Bus)
 
-.Em /var/lib/leaninit
+.Em /var/lib/leaninit/svc
 Location of all files used to determine which services are enabled
+
+.Em /var/lib/leaninit/types
+Location of all files used to determine the different types each enabled service uses
+
+.Em /var/lib/leaninit/install-flag
+This file is used by LeanInit when running `make install` to determine if the essential
+services have been enabled at least once.
+If this file exists, LeanInit will not make any changes to the enabled services when `make install` is run.
+This file is useless if LeanInit is installed exclusively with a package manager,
+and can be safely removed with `rm /var/lib/leaninit/install-flag` as this file is
+only read by LeanInit's Makefile for `make install`.
 
 .Em /etc/leaninit/ttys
 LeanInit will read from this file for a list of ttys to launch the specified getty on

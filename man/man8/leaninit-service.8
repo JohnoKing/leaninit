@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd July 20, 2019
+.Dd July 22, 2019
 .Dt LEANINIT-SERVICE 8
 .Os
 .Sh NAME
@@ -45,11 +45,12 @@ Restart a service, or start one if it isn't running.
 Restart a service if it is currently running, otherwise return an error.
 
 .Nm enable
-Enable a service by creating a file for it in /var/lib/leaninit.
+Enable a service by creating a file for it in /var/lib/leaninit/svc.
+Equivalent to 'touch /var/lib/leaninit/svc/svcname'.
 
 .Nm disable
-Disable a service by removing its file in /var/lib/leaninit.
-Equivalent to 'rm /var/lib/leaninit/svcname'.
+Disable a service by removing its file in /var/lib/leaninit/svc.
+Equivalent to 'rm /var/lib/leaninit/svc/svcname'.
 
 .Nm force-reload
 This will reload services that support reloading and restart services that do not support reloading.

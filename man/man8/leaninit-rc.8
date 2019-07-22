@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 18, 2019
+.Dd July 22, 2019
 .Dt LEANINIT-RC 8
 .Os
 .Sh NAME
@@ -27,8 +27,8 @@
 .Sh DESCRIPTION
 The
 .Nm rc
-script is responsible for mounting all file systems and starting all services in
-.Em /var/lib/leaninit
+script is responsible for mounting all primary file systems and starting all services listed in
+.Em /var/lib/leaninit/svc
 concurrently.
 If either
 .Em /etc/rc.local

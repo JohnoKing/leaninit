@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 29, 2019
+.Dd July 22, 2019
 .Dt LEANINIT-RC.CONF 5
 .Os
 .Sh NAME
@@ -70,13 +70,6 @@ Set to wlan0 by default.
 .Em NDIS (FreeBSD):
 Sets the networking interface(s) to use with the wpa_supplicant ndis driver.
 
-.Em DEVEXEC
-Sets the location of udev or mdev. Set to
-.Em /sbin/udevd
-for udev and
-.Em /sbin/mdev
-for mdev.
-
 .Em DELAY:
 Have
 .Nm rc
@@ -100,6 +93,11 @@ Sets the name of the Display Manager used by the xdm service.
 
 .Em DM (xdm.conf):
 Sets the executable for the Display Manager used by the xdm service.
+
+.Em DEVEXEC (udev.conf, Linux):
+Sets the location of either udev or mdev. Set to
+.Em /sbin/udevd
+for udev by default.
 .Sh SEE ALSO
 leaninit-rc(8), leaninit-rc.svc(8), leaninit-ttys(5)
 .Sh AUTHOR
