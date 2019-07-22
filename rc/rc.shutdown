@@ -24,7 +24,7 @@
 #
 
 # Stop all currently running services
-cd /etc/leaninit/svc
+cd /etc/leaninit/svc || exit 1
 for svc in *; do
 	if [ -r "/var/run/leaninit/$svc.status" ]; then
 		"./$svc" stop &
