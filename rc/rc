@@ -50,10 +50,10 @@ mountpoint -q /proc || mount -o nosuid,nodev,noexec,noatime -t proc proc /proc &
 mountpoint -q /sys  || mount -o nosuid,nodev,noexec,noatime -t sysfs sysfs /sys &
 mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /tmp &
 mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
-wait
 
 #ENDEF
 # If ZFS is enabled, it MUST be run first in case the root fs is a ZFS file system
+wait
 if [ -r /var/lib/leaninit/svc/zfs ]; then
 #DEF Linux
 	/etc/leaninit/svc/kmod start
