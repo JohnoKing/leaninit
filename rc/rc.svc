@@ -248,7 +248,7 @@ __start()
 	# Finish by creating the service's .status and .type files
 	RET=$?
 	if [ $RET = 0 ]; then
-		print "Successfully ${1}ed ${NAME}!" log "$GREEN" "$WHITE"
+		print "${1}ed ${NAME} successfully!" log "$GREEN" "$WHITE"
 		echo "$1ed" > "/var/run/leaninit/$__svcname.status"
 		if [ -n "$TYPE" ]; then
 			echo "$__svcname" > "/var/run/leaninit/$TYPE.type"
