@@ -73,6 +73,7 @@ mkdir -p /var/run/leaninit
 
 # Start all enabled services
 cd /var/lib/leaninit/svc || exit 1
+print "Now starting all enabled services listed in /var/lib/leaninit/svc..." log "$BLUE" "$WHITE"
 for sv in *; do
 	"/etc/leaninit/svc/$sv" start "$1" &
 done
