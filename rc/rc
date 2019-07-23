@@ -71,7 +71,6 @@ print "Removing any existing nologin files and resetting /var/run/leaninit..." l
 rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
 
-#ENDEF
 # Start all enabled services
 cd /var/lib/leaninit/svc || exit 1
 for sv in *; do
