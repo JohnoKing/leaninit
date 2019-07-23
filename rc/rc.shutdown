@@ -33,7 +33,12 @@ done
 
 # Finish with file system sync and unmount, then remount root as read-only
 wait
+#DEF FreeBSD
+umount -A
+#ENDEF
+#DEF Linux
 umount -rat nodevtmpfs,notmpfs,noproc,nosysfs
-mount -fo remount,ro /
+#ENDEF
+mount -o remount,ro /
 sync
 exit 0
