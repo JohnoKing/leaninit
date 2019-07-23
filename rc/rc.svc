@@ -143,20 +143,28 @@ __usage()
 # Wait for a file using a loop that checks for it every tenth of a second (until loops are too slow)
 __waitfor_loop_file()
 {
+	if [ "$(cat "$1")" = "Failure" ]; then
+		if [ "$3" != "optional" ]; then
+			print "$2" log "$RED"
+			__fail 1
+		else
+			return 1
+		fi
+	fi
 	__TIMER=0
 	while true; do
 		if [ -r "$1" ]; then break; fi
 		sleep 0.1
 		__TIMER=$((__TIMER + 1))
 		if [ $((__TIMER > 69)) -ne 0 ]; then
-			print "$2" log "$RED"
-			__fail 1
+			if [ "$3" != "optional" ]; then
+				print "$2" log "$RED"
+				__fail 1
+			else
+				return 1
+			fi
 		fi
 	done
-	if [ -n "$3" ] && [ "$(cat "$1")" = "Failure" ]; then
-		print "$3" log "$RED"
-		__fail 1
-	fi
 }
 
 # Wait for a process using a loop that checks for it every tenth of a second
@@ -197,7 +205,7 @@ waitfor()
 					__fail 1
 				fi
 			fi
-			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 took too long to start!" "$NAME failed to start because the service $2 failed to start!"
+			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 failed to start!" "$3"
 			;;
 		*)
 			if [ ! -r "/var/lib/leaninit/types/$1.type" ]; then
