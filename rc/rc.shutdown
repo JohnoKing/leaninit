@@ -31,7 +31,9 @@ for svc in *; do
 	fi
 done
 
-# Finish
+# Finish with file system sync and unmount, then remount root as read-only
 wait
+umount -rat nodevtmpfs,notmpfs,noproc,nosysfs
+mount -fo remount,ro /
 sync
 exit 0
