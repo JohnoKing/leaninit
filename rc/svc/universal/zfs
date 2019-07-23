@@ -26,4 +26,11 @@ main()
 	done
 }
 
+# Unmount ZFS file systems when this service stops
+stop()
+{
+	zfs unmount -a
+	zfs unshare -a
+}
+
 . /etc/leaninit/rc.svc
