@@ -1,0 +1,11 @@
+#!/bin/sh
+NAME="crond"
+TYPE="cron"
+
+main()
+{
+	crond -s
+	echo "$(pgrep -x crond)" > "$__svcpidfile"
+}
+
+. /etc/leaninit/rc.svc

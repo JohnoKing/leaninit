@@ -1,20 +1,10 @@
 #!/bin/sh
 NAME="cron"
+TYPE="cron"
 
 main()
 {
-	# cron can either be crond or cron
-	if [ -n "$(command -v crond)" ]; then
-		__CRON='crond'
-	else
-		__CRON='cron'
-	fi
-
-	# Due to cron options having a lack of standards, a second attempt is made if cron failed to start
-	fork "$__CRON" -ns
-	if [ "$(cat "$__svcpidfile")" = " " ]; then
-		fork "$__CRON" -f
-	fi
+	fork cron -f
 }
 
 . /etc/leaninit/rc.svc

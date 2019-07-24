@@ -1,5 +1,6 @@
 #!/bin/sh
 NAME="cron"
+TYPE="cron"
 
 main()
 {
