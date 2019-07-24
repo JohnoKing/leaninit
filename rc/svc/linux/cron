@@ -10,13 +10,11 @@ main()
 		__CRON='cron'
 	fi
 
-	# Due to cron options having a lack of standards, a second attempt is made under Linux if cron failed to start
+	# Due to cron options having a lack of standards, a second attempt is made if cron failed to start
 	fork "$__CRON" -ns
-#DEF Linux
 	if [ "$(cat "$__svcpidfile")" = " " ]; then
 		fork "$__CRON" -f
 	fi
-#ENDEF
 }
 
 . /etc/leaninit/rc.svc
