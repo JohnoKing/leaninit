@@ -5,7 +5,7 @@ TYPE="cron"
 main()
 {
 	crond -s
-	echo "$(pgrep -x crond)" > "$__svcpidfile"
+	pgrep -x crond > "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc
