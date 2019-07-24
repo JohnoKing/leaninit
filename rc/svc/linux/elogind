@@ -10,15 +10,18 @@ main()
 
 	# Run elogind
 	if [ -n "$(command -v elogind)" ]; then
-		fork elogind
+		elogind -D
 	elif [ -x /usr/libexec/elogind/elogind ]; then
-		fork /usr/libexec/elogind/elogind
+		/usr/libexec/elogind/elogind -D
 	elif [ -x /usr/lib/elogind/elogind ]; then
-		fork /usr/lib/elogind/elogind
+		/usr/lib/elogind/elogind -D
 	else
 		print 'Could not find the elogind binary!' log "$RED"
 		return 1
 	fi
+
+	# Symlink the elogind PID file to the correct location
+	ln -s /var/run/elogind.pid "$__svcpidfile"
 
 	# If elogind-uaccess-command exists, run it
 	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then

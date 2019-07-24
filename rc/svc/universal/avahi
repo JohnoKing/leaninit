@@ -5,7 +5,8 @@ main()
 {
 	waitfor networking
 	waitfor service dbus
-	fork avahi-daemon
+	avahi-daemon -D
+	ln -s /var/run/avahi-daemon/pid "$__svcpidfile"
 }
 
 reload()

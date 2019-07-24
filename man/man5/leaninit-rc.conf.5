@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd July 22, 2019
+.Dd July 24, 2019
 .Dt LEANINIT-RC.CONF 5
 .Os
 .Sh NAME
@@ -88,11 +88,14 @@ This setting should only be used for debugging.
 The following settings can be set in config files located in
 .Em /etc/leaninit/rc.conf.d:
 
+.Em XDM (xdm.conf):
+Sets the path to the executable of the Display Manager used by the xdm service.
+
 .Em XDMNAME (xdm.conf):
 Sets the name of the Display Manager used by the xdm service.
 
-.Em DM (xdm.conf):
-Sets the executable for the Display Manager used by the xdm service.
+.Em XDMPID (xdm.conf):
+Sets the path to the Display Manager's PID file for use by the xdm service (this setting is optional).
 
 .Em DEVEXEC (udev.conf, Linux):
 Sets the location of either udev or mdev. Set to
