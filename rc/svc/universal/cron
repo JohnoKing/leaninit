@@ -3,11 +3,19 @@ NAME="cron"
 
 main()
 {
-#DEF FreeBSD
-	fork cron -ns
-#ENDEF
+	# cron can either be crond or cron
+	if [ -n "$(command -v crond)" ]; then
+		__CRON='crond'
+	else
+		__CRON='cron'
+	fi
+
+	# Due to cron options having a lack of standards, a second attempt is made under Linux if cron failed to start
+	fork "$__CRON" -ns
 #DEF Linux
-	fork cron -f
+	if [ "$(cat "$__svcpidfile")" = " " ]; then
+		fork "$__CRON" -f
+	fi
 #ENDEF
 }
 
