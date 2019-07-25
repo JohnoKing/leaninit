@@ -447,8 +447,8 @@ __run()
 
 		status)
 			__status ;;
-
 #DEF FreeBSD
+
 		info)
 			__rootcheck
 			__proccheck
