@@ -336,7 +336,7 @@ int main(int argc, char *argv[])
 
             // Give processes about seven seconds to stop before sending SIGKILL and calling sync(2) again
             struct timespec rest  = {0};
-            rest.tv_nsec          = 100000000;
+            rest.tv_nsec = 100000000;
             vint_t timer = 0;
             while(waitpid(-1, NULL, WNOHANG) != -1 && timer < 70) {
                 nanosleep(&rest, NULL);
