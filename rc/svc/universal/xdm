@@ -15,7 +15,7 @@ main()
 
 	# Dependencies of the X Server
 #DEF Linux
-	waitfor udev
+	waitfor service udev
 #ENDEF
 	waitfor service dbus
 	waitfor login-daemon optional
