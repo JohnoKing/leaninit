@@ -36,7 +36,7 @@ fsck -A >> /dev/null
 
 # Mount all drives specified in /etc/fstab
 print "Mounting all drives..." nolog "$PURPLE" "$WHITE"
-mount -a &
+mount -a 2> /dev/null &
 
 # Remount root (/) as read-write
 mount -o remount,rw,noatime / 2> /dev/null &
