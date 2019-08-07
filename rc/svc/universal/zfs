@@ -5,15 +5,16 @@ MSG="Mounting ZFS file systems"
 # Mount ZFS file systems
 main()
 {
-#DEF Linux
-	# Wait for kernel modules to be loaded (to ensure ZFS is active)
-	waitfor service kmod
-
-#ENDEF
+#DEF FreeBSD
 	# This is done in a for loop for compatibility with beadm(1)
 	for z in $(df -t zfs | tail -n +2 | awk '{print $1}'); do
 		zfs mount "$z"
 	done
+#ENDEF
+#DEF Linux
+	# Wait for kernel modules to be loaded (to ensure ZFS is active)
+	waitfor service kmod
+#ENDEF
 
 	# mount -a equivalent (includes NFS)
 	zfs mount -a
