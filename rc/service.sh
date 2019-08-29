@@ -56,14 +56,10 @@ if [ "$1" = "--status-all" ]; then
 	done
 	wait
 #DEF FreeBSD
-	echo ""
-	column -ts '|' "$__TMP" |  sort
-	echo ""
+	printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
 #ENDEF
 #DEF Linux
-	echo "$WHITE"
-	column -ts '|' -o '|' "$__TMP" |  sort
-	echo "$RESET"
+	printf "${WHITE}%s${RESET}\n" "$(column -ts '|' -o '|' "$__TMP" |  sort)"
 #ENDEF
 	rm -f "$__TMP"
 	exit 0

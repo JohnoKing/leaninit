@@ -346,13 +346,8 @@ __status()
 		__STATUS="$(cat "/var/run/leaninit/$__svcname.status")"
 	fi
 
-	# Print the output without a star (for --status-all)
-#DEF FreeBSD
-	echo "$NAME  |  $__STAT  |  $__STATUS"
-#ENDEF
-#DEF Linux
-	echo "${WHITE}$NAME  |  $__STAT  |  $__STATUS${RESET}"
-#ENDEF
+	# Print the result
+	printf "${WHITE}%s${RESET}\n" "$NAME  |  $__STAT  |  $__STATUS"
 }
 
 # This function will be run if $NAME is set
