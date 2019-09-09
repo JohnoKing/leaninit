@@ -42,7 +42,7 @@
 #endif
 
 // LeanInit's version number
-#define VERSION_NUMBER "v4.0.4"
+#define VERSION_NUMBER "v4.0.3"
 
 // OS specific macros
 #ifdef FreeBSD
@@ -65,6 +65,10 @@
 #define CYAN   "\x1b[1;36m"
 #define WHITE  "\x1b[1;37m"
 
+// External char variables
+extern char *__progname; // argv[0] is not sufficient
+extern char **environ;   // This is used with execve(2)
+
 /*
  * Typedef for vint_t (can either be char or int depending on -DUINT32)
  * This variable should be assumed to be 8-bit when used, with the 32-bit
@@ -77,6 +81,3 @@ typedef unsigned int vint_t;
 #else
 typedef unsigned char vint_t;
 #endif
-
-// argv[0] is not sufficient
-extern char *__progname;

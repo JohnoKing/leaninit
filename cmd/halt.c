@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     if(osin == 0) {
         pid_t child = fork();
         if(child == 0)
-            return execv("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL });
+            return execve("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL }, environ);
         else if(child == -1) {
             perror(RED "* fork() failed with" RESET);
             printf(RED "* OsIndications will not be set" RESET "\n");
