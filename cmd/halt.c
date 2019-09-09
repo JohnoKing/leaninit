@@ -129,10 +129,9 @@ int main(int argc, char *argv[])
     // Run os-indications if --firmware-setup was passed
     if(osin == 0) {
         pid_t child = fork();
-        if(child == 0) {
-            char *cargv[] = { "os-indications", "-q", NULL };
-            return execve("/sbin/os-indications", cargv, environ);
-        } else if(child == -1) {
+        if(child == 0)
+            return execv("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL });
+        else if(child == -1) {
             perror(RED "* fork() failed with" RESET);
             printf(RED "* OsIndications will not be set" RESET "\n");
         }

@@ -77,11 +77,10 @@ static int sh(char *script)
     pid_t child = fork();
     if(child == 0) {
         setsid();
-        char *sargv[] = { script, "verbose", NULL };
-        if(verbose != 0) sargv[1] = "silent";
-        execve(script, sargv, environ);
+        if(verbose == 0) execv(script, (char*[]){ script, "verbose", NULL });
+        else             execv(script, (char*[]){ script, "silent",  NULL });
         printf(RED "* Failed to run %s\n", script);
-        perror("* execve()" RESET);
+        perror("* execv()" RESET);
         return 1;
     } else if(child == -1) {
         printf(RED "* Failed to run %s\n", script);
@@ -133,10 +132,9 @@ static void single(void)
     su_shell = fork();
     if(su_shell == 0) {
         open_tty(DEFAULT_TTY);
-        char *sargv[] = { shell, NULL };
-        execve(shell, sargv, environ);
+        execv(shell, (char*[]){ shell, NULL });
         printf(RED "* Failed to run %s\n", shell);
-        perror("* execve()" RESET);
+        perror("* execv()" RESET);
         kill(1, SIGFPE);
     } else if(su_shell == -1) {
         printf(RED "* Failed to run %s\n", shell);
