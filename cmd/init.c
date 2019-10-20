@@ -233,10 +233,9 @@ static void multi(void)
     }
 }
 
-// Run either single() or multi() depending on the runlevel
+// Run either single() or multi() depending on the value of single_user
 static void *chlvl(void *nullptr)
 {
-    // Run single user if single_user is equal to 0, otherwise run multi-user
     if(single_user == 0) single();
     else multi();
 
