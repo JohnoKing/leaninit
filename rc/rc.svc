@@ -151,7 +151,6 @@ __waitfor_loop_file()
 			return 1
 		fi
 	fi
-	__TIMER=0
 	while true; do
 		if [ -r "$1" ]; then break; fi
 		sleep 0.1
@@ -170,7 +169,6 @@ __waitfor_loop_file()
 # Wait for a process using a loop that checks for it every tenth of a second
 __waitfor_loop_proc()
 {
-	__TIMER=0
 	while true; do
 		if [ -n "$(pgrep -x "$1")" ]; then break; fi
 		sleep 0.1
@@ -281,7 +279,6 @@ __stop()
 		kill -CONT $__svcpid 2> /dev/null
 		kill -TERM $__svcpid 2> /dev/null
 		for pid in $__svcpid; do
-			__TIMER=0
 			while true; do
 				if ! kill -0 $pid 2> /dev/null; then break; fi
 				sleep 0.1
