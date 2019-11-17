@@ -23,7 +23,7 @@
 
 # Source rc.svc and set SILENT_ARG
 . /etc/leaninit/rc.svc
-SILENT_ARG="$1"
+export SILENT_ARG="$1"
 
 # Check all the file systems in /etc/fstab for damage, and repair them if needed
 print "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE"
