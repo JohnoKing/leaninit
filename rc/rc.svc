@@ -31,6 +31,13 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 SILENT_ARG="$2"
 
+# Set $MAXTIME for use with waitfor()
+if [ -n "$MAXTIME" ]; then
+	MAXTIME=69  # Default
+else
+	MAXTIME=$((MAXTIME * 10 - 1))
+fi
+
 # Color variables (for use with print())
 RESET='\033[0m'
 RED='\033[1;31m'
@@ -155,7 +162,7 @@ __waitfor_loop_file()
 		if [ -r "$1" ]; then break; fi
 		sleep 0.1
 		__TIMER=$((__TIMER + 1))
-		if [ $((__TIMER > 69)) -ne 0 ]; then
+		if [ $((__TIMER > MAXTIME)) -ne 0 ]; then
 			if [ "$3" != "optional" ]; then
 				print "$2" log "$RED"
 				__fail 1
@@ -173,7 +180,7 @@ __waitfor_loop_proc()
 		if [ -n "$(pgrep -x "$1")" ]; then break; fi
 		sleep 0.1
 		__TIMER=$((__TIMER + 1))
-		if [ $((__TIMER > 69)) -ne 0 ]; then
+		if [ $((__TIMER > MAXTIME)) -ne 0 ]; then
 			if [ "$3" != "return" ]; then
 				print "$2" log "$RED"
 				__fail 1

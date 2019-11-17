@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd July 24, 2019
+.Dd November 16, 2019
 .Dt LEANINIT-RC.CONF 5
 .Os
 .Sh NAME
@@ -69,6 +69,11 @@ Set to wlan0 by default.
 
 .Em NDIS (FreeBSD):
 Sets the networking interface(s) to use with the wpa_supplicant ndis driver.
+
+.Em MAXTIME:
+Sets the number of seconds
+.Nm LeanInit
+will wait for a service before failing with a timeout.
 
 .Em DELAY:
 Have
