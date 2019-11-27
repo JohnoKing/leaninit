@@ -177,7 +177,12 @@ static void multi(void)
     }
 
     // Start a child process (for managing getty with plain wait(2))
-    if(fork() != 0) return;
+    pid_t child = fork();
+    if(child == -1) {
+        printf(RED "* The child process for managing getty could not be created" RESET "\n");
+        perror(RED "* fork()");
+        return;
+    } else if(child != 0) return;
 
     // Open ttys (max file size 40000 bytes with 90 entries)
     char buffer[40001];
