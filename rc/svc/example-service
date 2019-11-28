@@ -2,17 +2,6 @@
 # This is an example LeanInit service script.
 # All scripts must be executable (0755) to work correctly.
 
-
-# If the script depends on variables from rc.conf, it should be sourced at the beginning of the script.
-. /etc/leaninit/rc.conf
-
-# Using `source` instead of `.` will source rc.conf without executing it (making the script more secure),
-# with the trade-off that source is not POSIX compliant. If you use source (or any bash-specific feature),
-# replace #!/bin/sh with #!/bin/bash to signify your script is not compatible with POSIX. Keep in mind
-# bash is significantly slower than POSIX compliant shells such as dash and ksh93.
-#source /etc/leaninit/rc.conf
-
-
 # The $NAME variable defines the full name of the service as displayed by leaninit-service(8).
 # If the $NAME variable is not set, the script that calls leaninit-rc.svc(8) will not be run
 # as a service, rather only the environment variables and functions from rc.svc will be loaded.

@@ -27,6 +27,22 @@
 . /etc/profile
 . /etc/leaninit/rc.conf
 
+# Export the variables in rc.conf to prevent bugs
+export LOGFILE
+export HOSTNAME
+export TIMEZONE
+export MAXTIME
+export DELAY
+#DEF FreeBSD
+export WIRED
+export WIRELESS
+export NDIS
+#ENDEF
+#DEF Linux
+export KEYMAP
+export NETFACE
+#ENDEF
+
 # Set a consistent PATH variable and set SILENT_ARG to $2
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export SILENT_ARG="$2"
