@@ -1,4 +1,4 @@
-.\" Copyright (c) 2018-2019 Johnothan King. All rights reserved.
+.\" Copyright (c) 2019 Johnothan King. All rights reserved.
 .\"
 .\" Permission is hereby granted, free of charge, to any person obtaining a copy
 .\" of this software and associated documentation files (the "Software"), to deal
@@ -19,18 +19,17 @@
 .\" SOFTWARE.
 .\"
 .Dd November 30, 2019
-.Dt LEANINIT-RC.SHUTDOWN 8
+.Dt LEANINIT-RC.UMOUNT 8
 .Os
 .Sh NAME
-.Nm rc.shutdown
-.Nd executed by init during shutdown
+.Nm rc.umount
+.Nd executed by init after all processes have stopped
 .Sh DESCRIPTION
 The
 .Nm rc.shutdown
-script is responsible for killing all currently running services when switching to a different runlevel,
-reloading the current runlevel, or during system shutdown.
+script is responsible for umounting all file systems and remounting root as read-only before system shutdown.
 
 .Sh SEE ALSO
-leaninit(8), leaninit-halt(8), leaninit-rc.umount(8)
+leaninit(8), leaninit-rc.shutdown(8)
 .Sh AUTHOR
 Johnothan King

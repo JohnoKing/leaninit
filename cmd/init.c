@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
             kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
             kill(-1, SIGTERM);
 
-            // Give processes about seven seconds to stop before sending SIGKILL and calling sync(2) again
+            // Give processes about seven seconds to stop before sending SIGKILL and calling sync again
             struct timespec rest  = {0};
             rest.tv_nsec = 100000000;
             vint_t timer = 0;
@@ -346,6 +346,10 @@ int main(int argc, char *argv[])
                 timer++;
             }
             kill(-1, SIGKILL);
+
+            // Run rc.umount(8) and sync after there are no remaining processes
+            char *rc_umount = write_file_path("/etc/leaninit/rc.umount", "/etc/rc.umount", X_OK);
+            if(rc_umount != NULL) sh(rc_umount);
             sync();
 
             // Handle the given signal properly
@@ -357,6 +361,8 @@ int main(int argc, char *argv[])
 
                 // Poweroff
                 case SIGFPE:  // Delay
+                    close(tty);
+                    open_tty(DEFAULT_TTY);
                     printf(CYAN "* " WHITE "Delaying shutdown for three seconds..." RESET "\n");
                     sleep(3);
                 /*FALLTHRU*/
