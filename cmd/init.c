@@ -327,6 +327,7 @@ int main(int argc, char *argv[])
             // Run rc.shutdown and kill all remaining processes
             char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
+            printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
             if(su_shell != -1) {
@@ -356,6 +357,7 @@ int main(int argc, char *argv[])
 
                 // Poweroff
                 case SIGFPE:  // Delay
+                    printf(CYAN "* " WHITE "Delaying shutdown for three seconds..." RESET "\n");
                     sleep(3);
                 /*FALLTHRU*/
                 case SIGUSR2:
