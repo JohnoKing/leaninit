@@ -165,7 +165,7 @@ static void multi(void)
     // Locate login(1)
     const char *login_path = write_file_path("/usr/bin/login", "/bin/login", X_OK);
     if(login_path == NULL) {
-        printf(RED "* Could not find login(1) (please symlink it to either /usr/bin/login or /bin/login and give it executable permissions)" RESET "\n");
+        printf(RED "* Could not find login (please symlink it to either /usr/bin/login or /bin/login and give it executable permissions)" RESET "\n");
         return;
     }
 
