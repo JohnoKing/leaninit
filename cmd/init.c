@@ -42,9 +42,6 @@ static int usage(int ret)
     printf("  2, 3, 4, 5  Switch to multi-user mode\n");
     printf("  6           Reboot\n");
     printf("  7           Halt\n");
-#   ifdef Linux
-    printf("  8           Hibernate\n");
-#   endif
     printf("  Q, q        Reload the current runlevel\n");
     printf("  --version   Show LeanInit's version number\n");
     printf("  --help      Show this usage information\n");
@@ -440,12 +437,6 @@ int main(int argc, char *argv[])
         // Halt
         case '7':
             return kill(1, SIGUSR1);
-
-        // Hibernate
-#       ifdef Linux
-        case '8':
-            return reboot(RB_SW_SUSPEND);
-#       endif
 
         // Fallback
         default:

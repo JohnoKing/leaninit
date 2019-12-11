@@ -32,7 +32,7 @@ XZ        := xz
 MANPAGES  := "$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.xz" "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.xz" \
 	"$(DESTDIR)/usr/share/man/man8/leaninit.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz" \
 	"$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-service.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
-	"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-zzz.8.xz" "$(DESTDIR)/usr/share/man/man8/os-indications.8.xz"
+	"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/os-indications.8.xz"
 
 # Compile LeanInit
 all: clean
@@ -97,11 +97,9 @@ install: install-rc
 	@cd "$(DESTDIR)/usr/share/man/man8" ;\
 	[ -r leaninit-poweroff.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-poweroff.8.xz ;\
 	[ -r leaninit-reboot.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-reboot.8.xz ;\
-	if [ `uname` = Linux ]; then [ -r leaninit-zzz.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-zzz.8.xz; fi
 	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
-	@if [ `uname` = Linux ]; then cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-zzz; fi
 	@echo "Successfully installed LeanInit itself!"
 
 # Uninstall (only works with normal installations)
@@ -115,8 +113,8 @@ uninstall:
 		false ;\
 	fi
 	@rm -rf "$(DESTDIR)/sbin/leaninit" "$(DESTDIR)/sbin/leaninit-halt" "$(DESTDIR)/sbin/leaninit-poweroff" "$(DESTDIR)/sbin/leaninit-reboot" "$(DESTDIR)/sbin/os-indications" "$(DESTDIR)/usr/share/licenses/leaninit" \
-		"$(DESTDIR)/sbin/leaninit-zzz" "$(DESTDIR)/sbin/leaninit-service" "$(DESTDIR)/etc/leaninit" "$(DESTDIR)/var/log/leaninit.log" "$(DESTDIR)/var/run/leaninit" $(MANPAGES) \
-		"$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-zzz.8.xz" "$(DESTDIR)/var/lib/leaninit"
+		"$(DESTDIR)/sbin/leaninit-service" "$(DESTDIR)/etc/leaninit" "$(DESTDIR)/var/log/leaninit.log" "$(DESTDIR)/var/run/leaninit" $(MANPAGES) \
+		"$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/var/lib/leaninit"
 	@echo "Successfully uninstalled LeanInit!"
 	@echo "Please make sure you remove LeanInit from your bootloader!"
 
