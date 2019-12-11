@@ -3,6 +3,7 @@ NAME="Linux Monitoring Sensors"
 
 main()
 {
+	waitfor udev
 	sensors -s
 }
 
