@@ -242,6 +242,29 @@ waitfor()
 	esac
 }
 
+# Only checks for a type or service, does not wait. This function does not support checking processes.
+checkfor()
+{
+	case "$1" in
+		file)
+			if [ ! -r "$2" ]; then
+				print "$NAME failed to start because the file $2 does not exist!" "$RED"
+				__fail 1
+			fi
+			;;
+		service)
+			if [ ! -r "/var/lib/leaninit/svc/$2" ]; then
+				return 1
+			fi
+			;;
+		*)
+			if [ ! -r "/var/lib/leaninit/types/$1.type" ]; then
+				return 1
+			fi
+			;;
+	esac
+}
+
 # Start a service
 __start()
 {

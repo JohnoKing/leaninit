@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd June 28, 2019
+.Dd December 13, 2019
 .Dt LEANINIT-RC.SVC 8
 .Os
 .Sh NAME
@@ -135,6 +135,26 @@ Appending 'optional' as a third argument will cause waitfor to simply return if 
 .Nm other
 Other types will cause waitfor to look for '/var/run/leaninit/TYPENAME.type', in a similar manner to the 'file' and 'service' types.
 Appending 'optional' as a third argument will cause waitfor to simply return if the type does not exist.
+
+
+
+.Nm checkfor type name ...
+This function is similar to waitfor, but it will only check for the given type without waiting.
+.Nm Checkfor
+does not support the process type.
+
+.Nm file
+This type will check for a file, and if it does not exist then it will cause the service to fail.
+
+.Nm service
+This type will check for if the specified service is enabled, and if it is not enabled
+.Nm Checkfor
+returns 1.
+
+.Nm other
+Other types will be checked, and if it is not fulfilled
+.Nm Checkfor
+returns 1.
 .Sh FILES
 .Em /etc/leaninit/rc.conf
 Provides config settings for
