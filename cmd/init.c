@@ -181,7 +181,7 @@ static void multi(void)
         return;
     } else if(child != 0) return;
 
-    // Open ttys (max file size 40000 bytes with 90 entries)
+    // Open the ttys file (max file size 40000 bytes with 90 entries)
     char buffer[40001];
     char *data = buffer;
     vint_t entry = 0;
@@ -205,7 +205,7 @@ static void multi(void)
         getty[entry].tty = data;
     }
 
-    // Close ttys
+    // Close the ttys file
     fclose(ttys_file);
 
     // Start the loop
@@ -299,10 +299,10 @@ int main(int argc, char *argv[])
         sigaction(SIGFPE,  &actor, NULL); // Poweroff (delayed)
         sigaction(SIGTERM, &actor, NULL); // Single-user
         sigaction(SIGILL,  &actor, NULL); // Multi-user
-        sigaction(SIGHUP,  &actor, NULL); // Reloads everything
+        sigaction(SIGHUP,  &actor, NULL); // Reload everything
         sigaction(SIGINT,  &actor, NULL); // Reboot
 
-        // Signal handling loop that switches the current runlevel when applicable
+        // Signal handling loop
         for(;;) {
 
             // Wait for a signal, then store it in recv_signal to prevent race conditions
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
             kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
             kill(-1, SIGTERM);
 
-            // Give processes about seven seconds to stop before sending SIGKILL and calling sync again
+            // Give processes about seven seconds to stop before sending SIGKILL
             struct timespec rest  = {0};
             rest.tv_nsec = 100000000;
             vint_t timer = 0;
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Parse arguments
+    // Parse CLI arguments
     if(argc < 2)
         return usage(1);
 
