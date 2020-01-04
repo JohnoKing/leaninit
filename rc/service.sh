@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2018-2019 Johnothan King. All rights reserved.
+# Copyright (c) 2018-2020 Johnothan King. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ fi
 if [ -z "$2" ]; then
 	usage
 elif [ ! -x "/etc/leaninit/svc/$1" ]; then
-	print "The service '$1' does not exist" nolog "$RED!"
+	print "The service '$1' does not exist!" nolog "$RED"
 	usage
 fi
 

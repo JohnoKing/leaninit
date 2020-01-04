@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 Johnothan King. All rights reserved.
+ * Copyright (c) 2018-2020 Johnothan King. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@
 #endif
 
 // LeanInit's version number
-#define VERSION_NUMBER "v4.2.0"
+#define VERSION_NUMBER "v4.2.1"
 
 // OS specific macros
 #ifdef FreeBSD
