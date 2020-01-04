@@ -1,0 +1,14 @@
+#!/bin/sh
+NAME="SMART Disk Monitoring Daemon"
+
+main()
+{
+	smartd "--pidfile=$__svcpidfile"
+}
+
+reload()
+{
+	kill -HUP $__svcpid
+}
+
+. /etc/leaninit/rc.svc
