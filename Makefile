@@ -100,7 +100,24 @@ install: install-rc
 	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
-	@echo "Successfully installed LeanInit itself!"
+	@echo "Successfully installed the base of LeanInit!"
+
+# Set LeanInit as the default init system
+override: install
+	@ln -sf "$(DESTDIR)/sbin/leaninit"            "$(DESTDIR)/sbin/init"
+	@ln -sf "$(DESTDIR)/sbin/leaninit-halt"       "$(DESTDIR)/sbin/halt"
+	@ln -sf "$(DESTDIR)/sbin/leaninit-halt"       "$(DESTDIR)/sbin/poweroff"
+	@ln -sf "$(DESTDIR)/sbin/leaninit-halt"       "$(DESTDIR)/sbin/reboot"
+	@ln -sf "$(DESTDIR)/sbin/leaninit-service"    "$(DESTDIR)/sbin/service"
+	@ln -sf "$(DESTDIR)/etc/leaninit/rc"          "$(DESTDIR)/etc/rc"
+	@ln -sf "$(DESTDIR)/etc/leaninit/rc.conf"     "$(DESTDIR)/etc/rc.conf"
+	@ln -sf "$(DESTDIR)/etc/leaninit/rc.conf.d"   "$(DESTDIR)/etc/rc.conf.d"
+	@ln -sf "$(DESTDIR)/etc/leaninit/rc.shutdown" "$(DESTDIR)/etc/rc.shutdown"
+	@ln -sf "$(DESTDIR)/etc/leaninit/rc.umount"   "$(DESTDIR)/etc/rc.umount"
+	@ln -sf "$(DESTDIR)/etc/leaninit/rc.svc"      "$(DESTDIR)/etc/rc.svc"
+	@ln -sf "$(DESTDIR)/etc/leaninit/svc"         "$(DESTDIR)/etc/svc"
+	@ln -sf "$(DESTDIR)/etc/leaninit/ttys"        "$(DESTDIR)/etc/ttys"
+	@echo "LeanInit is now the default init system!"
 
 # Uninstall (only works with normal installations)
 uninstall:
