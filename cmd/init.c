@@ -132,12 +132,12 @@ static void single(void)
         execve(shell, (char*[]){ shell, NULL }, environ);
         printf(RED "* Failed to run %s\n", shell);
         perror("* execve()" RESET);
-        kill(1, SIGFPE);
     } else if(su_shell == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
-        kill(1, SIGFPE);
     }
+
+    kill(1, SIGFPE);
 }
 
 // Execute rc(8) and getty(8) (multi-user)
@@ -157,13 +157,6 @@ static void multi(void)
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
         single_user = 0;
         return single();
-    }
-
-    // Locate login(1)
-    const char *login_path = write_file_path("/usr/bin/login", "/bin/login", X_OK);
-    if(login_path == NULL) {
-        printf(RED "* Could not find login (please symlink it to either /usr/bin/login or /bin/login and give it executable permissions)" RESET "\n");
-        return;
     }
 
     // Locate ttys(5)
