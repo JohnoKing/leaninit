@@ -1,0 +1,19 @@
+#!/bin/sh
+NAME="Swapfile"
+
+main()
+{
+	if [ ! -r /swapfile ]; then
+		print 'Please create a swapfile!' "$RED"
+		__fail 1
+	fi
+
+	swapon /swapfile
+}
+
+stop()
+{
+	swapoff /swapfile
+}
+
+. /etc/leaninit/rc.svc
