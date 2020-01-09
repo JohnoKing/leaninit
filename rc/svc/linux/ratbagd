@@ -5,9 +5,7 @@ main()
 {
 	waitfor service dbus
 	waitfor service elogind
-
-	# TODO: Don't use pgrep
-	pgrep -x ratbagd > "$__svcpidfile"
+	fork ratbagd
 }
 
 . /etc/leaninit/rc.svc
