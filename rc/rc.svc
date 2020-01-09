@@ -252,7 +252,7 @@ checkfor()
 	case "$1" in
 		file)
 			if [ ! -r "$2" ]; then
-				print "$NAME failed to start because the file $2 does not exist!" "$RED"
+				print "$NAME failed to start because the file $2 does not exist!" "log" "$RED"
 				__fail 1
 			fi
 			;;

@@ -69,6 +69,10 @@ fi
 if [ -z "$2" ]; then
 	usage
 elif [ ! -x "/etc/leaninit/svc/$1" ]; then
+	if [ -r "/var/lib/leaninit/svc/$1" ]; then
+		print "Removing /var/lib/leaninit/svc/$1 as it is unused..." log "$PURPLE" "$YELLOW"
+		exec rm "/var/lib/leaninit/svc/$1"
+	fi
 	print "The service '$1' does not exist!" nolog "$RED"
 	usage
 fi
