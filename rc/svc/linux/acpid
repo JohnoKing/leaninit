@@ -3,7 +3,7 @@ NAME="ACPI Daemon"
 
 main()
 {
-	acpid -p "$__svcpidfile"
+	fork acpid -f >> /dev/null
 }
 
 . /etc/leaninit/rc.svc
