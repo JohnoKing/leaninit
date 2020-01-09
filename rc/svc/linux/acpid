@@ -3,7 +3,6 @@ NAME="ACPI Daemon"
 
 main()
 {
-	waitfor service dbus optional
 	acpid -p "$__svcpidfile"
 }
 
