@@ -94,7 +94,6 @@ print()
 fork()
 {
 	"$@" &
-	waitfor process "$(jobs -p %+)"
 	echo " $(jobs -p %+)" >> "$__svcpidfile"
 }
 
