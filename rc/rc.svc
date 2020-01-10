@@ -94,12 +94,8 @@ print()
 fork()
 {
 	"$@" &
+	waitfor process "$(jobs -p %+)"
 	echo " $(jobs -p %+)" >> "$__svcpidfile"
-	sleep 1
-	if [ ! kill -0 $__svcpid ]; then
-		print "$NAME failed to start!" log "$RED"
-		__fail 1
-	fi
 }
 
 # Check for uid 0
