@@ -3,7 +3,6 @@ NAME="ratbagd"
 
 main()
 {
-	waitfor service dbus
 	waitfor service elogind
 	fork ratbagd
 }
