@@ -97,7 +97,8 @@ fork()
 	echo " $(jobs -p %+)" >> "$__svcpidfile"
 	sleep 1
 	if [ ! kill -0 $__svcpid ]; then
-		return 1
+		print "$NAME failed to start!" log "$RED"
+		__fail 1
 	fi
 }
 
