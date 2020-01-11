@@ -97,15 +97,6 @@ fork()
 	echo " $(jobs -p %+)" >> "$__svcpidfile"
 }
 
-# Check for uid 0
-__rootcheck()
-{
-	if [ $(id -u) -ne 0 ]; then
-		print 'This must be run as root!' nolog "$RED"
-		exit 4
-	fi
-}
-
 # Checks for $__svcname.status
 __svccheck()
 {
@@ -115,6 +106,11 @@ __svccheck()
 		fi
 		print "$NAME is not running!" nolog "$RED"
 		exit 7
+	fi
+
+	if [ -n "$__svcpid" ] && ! kill -0 $__svcpid 2> /dev/null; then
+		print "$NAME has stopped running!" log "$RED"
+		__fail 7
 	fi
 }
 
@@ -134,16 +130,13 @@ __proccheck()
 __fail()
 {
 	echo 'Failure' > "/var/run/leaninit/$__svcname.status"
+	rm -f "$__svcpidfile"
 	exit $1
 }
 
 # Show init script usage info dynamically
 __usage()
 {
-	if [ $(id -u) -ne 0 ]; then
-		echo "Usage: $0 status|help"
-		exit $1
-	fi
 	printf "%s" "Usage: $0 enable|disable|start|stop|restart"
 	if __svccheck return; then
 		printf "|try-restart|force-reload"
@@ -352,7 +345,6 @@ __stop()
 # Restart a service by running __stop() and __start(), then set the status of the service to 'Restarted'
 __restart()
 {
-	__rootcheck
 	__stop
 	__start Restart
 }
@@ -402,6 +394,12 @@ __run()
 		exit 128
 	fi
 
+	# Check for root permissions
+	if [ $(id -u) -ne 0 ]; then
+		print 'This must be run as root!' nolog "$RED"
+		exit 4
+	fi
+
 	# Set $__svc variables
 	__svcname="$(basename "$0")"
 	__svcpidfile="/var/run/leaninit/$__svcname.pid"
@@ -409,10 +407,12 @@ __run()
 		__svcpid="$(cat "$__svcpidfile")"
 	fi
 
+	# Check the service
+	__svccheck return
+
 	# Handle arguments
 	case "$1" in
 		enable)
-			__rootcheck
 			if [ -r "/var/lib/leaninit/svc/$__svcname" ]; then
 				print "$NAME is already enabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
@@ -431,7 +431,6 @@ __run()
 			fi ;;
 
 		disable)
-			__rootcheck
 			if [ ! -r "/var/lib/leaninit/svc/$__svcname" ]; then
 				print "$NAME is already disabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
@@ -449,11 +448,9 @@ __run()
 			fi ;;
 
 		start)
-			__rootcheck
 			__start Start ;;
 
 		stop)
-			__rootcheck
 			__stop ;;
 
 		restart)
@@ -464,7 +461,6 @@ __run()
 			__restart ;;
 
 		reload)
-			__rootcheck
 			__svccheck
 			if isfunc reload; then
 				__reload
@@ -474,7 +470,6 @@ __run()
 			fi ;;
 
 		force-reload)
-			__rootcheck
 			__svccheck
 			if isfunc reload; then
 				__reload
@@ -488,7 +483,6 @@ __run()
 #DEF FreeBSD
 
 		info)
-			__rootcheck
 			__proccheck
 			print "Sending SIGINFO to $NAME..." nolog "$PURPLE" "$WHITE"
 			for pid in $__svcpid; do
@@ -498,7 +492,6 @@ __run()
 #ENDEF
 
 		pause)
-			__rootcheck
 			__proccheck
 			if [ "$(cat "/var/run/leaninit/$__svcname.status")" = "Paused" ]; then
 				print "$NAME is already paused..." nolog "$PURPLE" "$YELLOW"
@@ -510,7 +503,6 @@ __run()
 			print "Successfully paused $NAME!" log "$GREEN" "$WHITE" ;;
 
 		cont)
-			__rootcheck
 			__proccheck
 			if [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Paused" ]; then
 				print "$NAME is not paused..." nolog "$PURPLE" "$YELLOW"
