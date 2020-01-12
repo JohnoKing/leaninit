@@ -19,6 +19,8 @@ increased RAM usage.
 
 To boot into LeanInit, add `init=/sbin/leaninit` to your kernel command
 line. Make sure eudev and iproute2 are installed, as they are required on Linux.
+Also, make sure `/bin/sh` is symlinked to a fast shell such as dash or ksh to
+increase performance.
 
 ### FreeBSD
 Follow the same steps as on Linux to build LeanInit. The Makefile
