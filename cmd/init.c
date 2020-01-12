@@ -132,12 +132,12 @@ static void single(void)
         execve(shell, (char*[]){ shell, NULL }, environ);
         printf(RED "* Failed to run %s\n", shell);
         perror("* execve()" RESET);
+        kill(1, SIGFPE);
     } else if(su_shell == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
+        kill(1, SIGFPE);
     }
-
-    kill(1, SIGFPE);
 }
 
 // Execute rc(8) and getty(8) (multi-user)
