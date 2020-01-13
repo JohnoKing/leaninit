@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
             kill(-1, SIGTERM);
 
             // Give processes about seven seconds to stop before sending SIGKILL
-            struct timespec rest  = {0};
+            struct timespec rest = {0};
             rest.tv_nsec = 100000000;
             vint_t timer = 0;
             while(waitpid(-1, NULL, WNOHANG) != -1 && timer < 70) {
