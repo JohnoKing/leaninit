@@ -4,12 +4,22 @@ MSG="Turning on all swap partitions"
 
 main()
 {
+#DEF FreeBSD
+	swapon -aL
+#ENDEF
+#DEF Linux
 	swapon -a
+#ENDEF
 }
 
 stop()
 {
-	swapoff -a
+#DEF FreeBSD
+	swapon -aL
+#ENDEF
+#DEF Linux
+	swapon -a
+#ENDEF
 }
 
 . /etc/leaninit/rc.svc

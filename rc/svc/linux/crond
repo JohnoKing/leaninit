@@ -4,8 +4,7 @@ TYPE="cron"
 
 main()
 {
-	crond -s
-	pgrep -x crond > "$__svcpidfile"
+	fork crond -ns
 }
 
 . /etc/leaninit/rc.svc
