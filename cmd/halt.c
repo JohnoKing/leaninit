@@ -47,9 +47,9 @@ int main(int argc, char *argv[])
     };
 
     // Int variables
-    vint_t force = 1; // If this is 0, skip sending a signal to init
-    vint_t osin  = 1; // If this is 0, call os-indications(8) before rebooting
-    vint_t wall  = 0; // Used for syslog(3) messages
+    unsigned int force = 1; // If this is 0, skip sending a signal to init
+    unsigned int osin  = 1; // If this is 0, call os-indications(8) before rebooting
+    unsigned int wall  = 0; // Used for syslog(3) messages
     int signal;       // For signals that will be sent to init
 
     // Set the signal to send to init(8) using __progname

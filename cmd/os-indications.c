@@ -49,9 +49,8 @@ int main(int argc, char *argv[]) {
     }
 
     // Long options and other variables
-    vint_t efi_boot = 0x0000000000000001;
-    vint_t verbose  = 0;
-    vint_t unset    = 1;
+    unsigned int verbose = 0;
+    unsigned int unset   = 1;
     struct option long_options[] = {
         { "quiet", no_argument, 0, 'q' },
         { "unset", no_argument, 0, 'u' },
@@ -87,8 +86,9 @@ int main(int argc, char *argv[]) {
 #   ifdef FreeBSD
 
     // Set OsIndications for booting into firmware setup
+    unsigned int efi_boot = 0x01;
     if(unset != 0)
-        efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x0000000000000007);
+        efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
 
     // Delete OsIndications to unset it
     else
@@ -97,11 +97,11 @@ int main(int argc, char *argv[]) {
     // Linux efivarfs section
 #   else
 
-    // Write efi_attr and efi_boot
+    // Write efi_data
     if(unset != 0) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
-        unsigned int efi_attr = 0x0000000000000007;
-        if(fwrite(&efi_attr, 1, 4, fd) == 0 || fwrite(&efi_boot, 1, 1, fd) == 0) {
+        unsigned int efi_data[2] = { 0x07, 0x01 };
+        if(fwrite(efi_data, 2, 3, fd) == 0) {
             fclose(fd);
             printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
             return 1;
