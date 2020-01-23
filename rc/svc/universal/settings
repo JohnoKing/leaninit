@@ -14,10 +14,14 @@ main()
 	fi
 
 	# Keyboard layout
-	print "Setting the keyboard layout to $KEYMAP..." nolog "$PURPLE" "$WHITE"
-	loadkeys "$KEYMAP" &
-	wait
+	print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
+	loadkeys "$KEYMAP"
 
+	# Console font
+	if [ -n "$CONSOLEFONT" ]; then
+		print "Setting the console font to $CONSOLEFONT" log "$BLUE" "WHITE"
+		setfont "$CONSOLEFONT"
+	fi
 #ENDEF
 	# Universal settings
 	hostname "$HOSTNAME" &
