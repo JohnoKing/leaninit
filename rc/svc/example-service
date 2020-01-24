@@ -38,7 +38,7 @@ main()
 	waitfor file /var/run/example-file  # Wait for a file
 	waitfor service dbus                # Wait for the dbus service to start
 	waitfor process Xorg                # Wait for the X server by using the process name Xorg
-	waitfor anotherType	                # Wait for any service that defines the type 'anotherType'
+	waitfor anotherType                 # Wait for any service that defines the type 'anotherType'
 
 	# The fork command will fork the given command into a child process, then write the PID of
 	# the child process to $__svcpidfile
