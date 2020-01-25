@@ -21,7 +21,8 @@
 
 # Variables (each one may be overridden)
 CC        := cc
-CFLAGS    := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe -I./include
+CFLAGS    := -O2 -ffast-math -fomit-frame-pointer -fPIC -pipe
+INCLUDE   := -I./include
 #CPPFLAGS := -DUINT32
 WFLAGS    := -Wall -Wextra -Wno-unused-result
 LDFLAGS   := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
@@ -44,19 +45,19 @@ all: clean
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i '' "/#DEF FreeBSD/d"        out/*/* ;\
 		$(SED) -i '' "/#ENDEF/d"              out/*/* ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i "/#DEF Linux/d"            out/*/* ;\
 		$(SED) -i "/#ENDEF/d"                out/*/* ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
 		false ;\
 	fi
-	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS) -lutil
-	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
+	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS) -lutil
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
 	@cp -r man out
 	@$(XZ) -T 0 out/man/*/*
