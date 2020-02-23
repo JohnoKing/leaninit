@@ -28,6 +28,7 @@ main()
 	mountpoint -q /dev/mqueue          || mount -o noatime -t mqueue none /dev/mqueue &
 	mountpoint -q /sys/kernel/security || mount -o noatime -t securityfs securityfs /sys/kernel/security &
 	mountpoint -q /sys/fs/pstore       || mount -o noatime -t pstore pstore /sys/fs/pstore &
+	mountpoint -q /sys/kernel/debug    || mount -o noatime -t debugfs none /sys/kernel/debug &
 	mountpoint -q /run/shm             || mount -n -o nosuid,nodev,mode=1777,noatime -t tmpfs tmpfs /run/shm
 	mount --bind /run/shm /dev/shm &
 	wait
