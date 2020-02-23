@@ -24,8 +24,13 @@ main()
 	fi
 #ENDEF
 	# Universal settings
-	hostname "$HOSTNAME" &
-	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime &
+	if [ -n "$HOSTNAME" ]; then
+		hostname "$HOSTNAME"
+	fi
+	if [ -n "$TIMEZONE" ]; then
+		rm -f /etc/localtime
+		ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+	fi
 	wait
 }
 
