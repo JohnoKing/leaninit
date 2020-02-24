@@ -37,7 +37,7 @@ all: clean
 	@cp -r rc out/rc
 	@mv out/rc/svc/universal out/svc
 	@mv out/rc/rc.conf.d out/rc.conf.d
-	@cp rc/service.sh out/rc/leaninit-service
+	@cp rc/service out/rc/leaninit-service
 	@rm -r out/rc/svc
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
