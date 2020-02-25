@@ -9,6 +9,7 @@ main()
 	if [ ! -r /etc/machine-id ]; then
 		dbus-uuidgen > /etc/machine-id
 	fi
+	sleep 0.3
 }
 
 # This causes D-Bus to partially reload
