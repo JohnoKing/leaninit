@@ -45,7 +45,7 @@ all: clean
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i '' "/#DEF FreeBSD/d"        out/*/* ;\
 		$(SED) -i '' "/#ENDEF/d"              out/*/* ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		$(SED) -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
