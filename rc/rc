@@ -25,15 +25,6 @@
 . /etc/leaninit/rc.svc
 export SILENT_ARG="$1"
 
-# Check all the file systems in /etc/fstab for damage, and repair them if needed
-print "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE"
-#DEF FreeBSD
-fsck -F >> /dev/null
-#ENDEF
-#DEF Linux
-fsck -A >> /dev/null
-#ENDEF
-
 # Mount all drives specified in /etc/fstab
 print "Mounting all drives..." nolog "$PURPLE" "$WHITE"
 mount -a 2> /dev/null &
