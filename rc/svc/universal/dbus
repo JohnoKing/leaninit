@@ -6,7 +6,7 @@ main()
 	mkdir -p /run/dbus /var/run/dbus
 	rm -f /run/dbus/pid /var/run/dbus/pid
 	dbus-daemon --fork --system --print-pid > "$__svcpidfile"
-	if [ ! -r /etc/machine-id ]; then
+	if [ ! -e /etc/machine-id ]; then
 		dbus-uuidgen > /etc/machine-id
 	fi
 	sleep 0.3

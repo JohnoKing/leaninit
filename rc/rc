@@ -34,7 +34,7 @@ mount -o remount,rw,noatime / 2> /dev/null &
 
 #DEF FreeBSD
 # If ZFS is enabled, it MUST be run first
-if [ -r /var/lib/leaninit/svc/zfs ]; then
+if [ -x /var/lib/leaninit/svc/zfs ]; then
 	/etc/leaninit/svc/zfs start
 fi
 

@@ -75,11 +75,11 @@ install-rc:
 	@$(INSTALL) -Dm0644 LICENSE "$(DESTDIR)/usr/share/licenses/leaninit/MIT"
 	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
 	@$(INSTALL) -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
-	@if [ `uname` = FreeBSD ] && [ ! -r "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
+	@if [ `uname` = FreeBSD ] && [ ! -e "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/devd" "$(DESTDIR)/var/lib/leaninit/svc/zfs" "$(DESTDIR)/var/lib/leaninit/svc/syslogd" \
 			"$(DESTDIR)/var/lib/leaninit/svc/powerd" "$(DESTDIR)/var/lib/leaninit/svc/wpa_supplicant" ;\
-	elif [ `uname` = Linux ] && [ ! -r "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
+	elif [ `uname` = Linux ] && [ ! -e "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/kmod" "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" \
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" ;\
 		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
@@ -91,8 +91,8 @@ install-rc:
 # cd is used with ln(1) for POSIX-compliant relative symlinks
 install: install-rc
 	@cd "$(DESTDIR)/usr/share/man/man8" ;\
-	[ -r leaninit-poweroff.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-poweroff.8.xz ;\
-	[ -r leaninit-reboot.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-reboot.8.xz
+	[ -e leaninit-poweroff.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-poweroff.8.xz ;\
+	[ -e leaninit-reboot.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-reboot.8.xz
 	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot

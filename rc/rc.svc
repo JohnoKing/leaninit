@@ -101,7 +101,7 @@ fork()
 # Checks for $__svcname.status
 __svccheck()
 {
-	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+	if [ ! -e "/var/run/leaninit/$__svcname.status" ]; then
 		if [ "$1" = "return" ]; then
 			return 7
 		fi
@@ -169,7 +169,7 @@ __waitfor_loop_file()
 		fi
 	fi
 	while true; do
-		if [ -r "$1" ]; then break; fi
+		if [ -e "$1" ]; then break; fi
 		sleep 0.1
 		__TIMER=$((__TIMER + 1))
 		if [ $((__TIMER > MAXTIME)) -ne 0 ]; then
@@ -212,7 +212,7 @@ waitfor()
 			__waitfor_loop_proc "$2" "$NAME failed to start because the process $2 failed to start!" "$3"
 			;;
 		service)
-			if [ ! -r "/var/lib/leaninit/svc/$2" ]; then
+			if [ ! -e "/var/lib/leaninit/svc/$2" ]; then
 				if [ "$3" = "optional" ]; then
 					return 0
 				else
@@ -223,7 +223,7 @@ waitfor()
 			__waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 failed to start!" "$3"
 			;;
 		*)
-			if [ ! -r "/var/lib/leaninit/types/$1.type" ]; then
+			if [ ! -e "/var/lib/leaninit/types/$1.type" ]; then
 				if  [ "$2" != "optional" ]; then
 					print "$NAME failed to start because no currently enabled services satisfy the type $1!" log "$RED"
 					__fail 1
@@ -241,18 +241,18 @@ checkfor()
 {
 	case "$1" in
 		file)
-			if [ ! -r "$2" ]; then
+			if [ ! -e "$2" ]; then
 				print "$NAME failed to start because the file $2 does not exist!" "log" "$RED"
 				__fail 1
 			fi
 			;;
 		service)
-			if [ ! -r "/var/lib/leaninit/svc/$2" ]; then
+			if [ ! -e "/var/lib/leaninit/svc/$2" ]; then
 				return 1
 			fi
 			;;
 		*)
-			if [ ! -r "/var/lib/leaninit/types/$1.type" ]; then
+			if [ ! -e "/var/lib/leaninit/types/$1.type" ]; then
 				return 1
 			fi
 			;;
@@ -263,10 +263,10 @@ checkfor()
 __start()
 {
 	# Return if the service is active
-	if [ -r "/var/run/leaninit/$__svcname.status" ] && [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Failure" ]; then
+	if [ -e "/var/run/leaninit/$__svcname.status" ] && [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Failure" ]; then
 		print "$NAME is already running..." nolog "$PURPLE" "$YELLOW"
 		return 0
-	elif [ -n "$TYPE" ] && [ -r "/var/run/leaninit/$TYPE.type" ]; then
+	elif [ -n "$TYPE" ] && [ -e "/var/run/leaninit/$TYPE.type" ]; then
 		print "$(cat "/var/run/leaninit/$TYPE.type") is currently running and conflicts with $NAME!" nolog "$RED"
 		return 1
 	fi
@@ -303,7 +303,7 @@ __start()
 __stop()
 {
 	# Return if the service is not active
-	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+	if [ ! -e "/var/run/leaninit/$__svcname.status" ]; then
 		print "$NAME is not running..." nolog "$PURPLE" "$YELLOW"
 		return 0
 	fi
@@ -369,14 +369,14 @@ __reload()
 __status()
 {
 	# Look for the service in /var/lib/leaninit
-	if [ -r "/var/lib/leaninit/svc/$__svcname" ]; then
+	if [ -e "/var/lib/leaninit/svc/$__svcname" ]; then
 		__STAT="Enabled"
 	else
 		__STAT="Disabled"
 	fi
 
 	# Get the service's status
-	if [ ! -r "/var/run/leaninit/$__svcname.status" ]; then
+	if [ ! -e "/var/run/leaninit/$__svcname.status" ]; then
 		__STATUS="Not Running"
 	else
 		__STATUS="$(cat "/var/run/leaninit/$__svcname.status")"
@@ -404,7 +404,7 @@ __run()
 	# Set $__svc variables
 	__svcname="$(basename "$0")"
 	__svcpidfile="/var/run/leaninit/$__svcname.pid"
-	if [ -r "$__svcpidfile" ]; then
+	if [ -e "$__svcpidfile" ]; then
 		__svcpid="$(cat "$__svcpidfile")"
 	fi
 
@@ -414,11 +414,11 @@ __run()
 	# Handle arguments
 	case "$1" in
 		enable)
-			if [ -r "/var/lib/leaninit/svc/$__svcname" ]; then
+			if [ -e "/var/lib/leaninit/svc/$__svcname" ]; then
 				print "$NAME is already enabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
-			if [ -n "$TYPE" ] && [ -r "/var/lib/leaninit/types/$TYPE.type" ]; then
+			if [ -n "$TYPE" ] && [ -e "/var/lib/leaninit/types/$TYPE.type" ]; then
 				print "$NAME could not be enabled because $(cat "/var/lib/leaninit/types/$TYPE.type") conflicts with $NAME!" log "$RED"
 				exit 1
 			fi
@@ -432,7 +432,7 @@ __run()
 			fi ;;
 
 		disable)
-			if [ ! -r "/var/lib/leaninit/svc/$__svcname" ]; then
+			if [ ! -e "/var/lib/leaninit/svc/$__svcname" ]; then
 				print "$NAME is already disabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
