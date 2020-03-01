@@ -174,17 +174,17 @@ static void multi(void)
         return;
     } else if(child != 0) return;
 
-    // Open the ttys file (max file size 40000 bytes with 90 entries)
-    char buffer[40001];
+    // Open the ttys file (max file size 8000 bytes with 60 entries)
+    char buffer[8001];
     char *data = buffer;
     vint_t entry = 0;
     struct getty_t {
         const char *cmd;
         const char *tty;
         pid_t pid;
-    } getty[90];
+    } getty[60];
     FILE *ttys_file = fopen(ttys_file_path, "r");
-    while(fgets(data, 40001, ttys_file) && entry != 90) {
+    while(fgets(data, 8001, ttys_file) && entry != 60) {
 
         // Error checking
         if(strlen(data) < 2 || strchr(data, '#') != NULL) continue;
