@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
             // Run rc.umount(8) and sync after there are no remaining processes
             char *rc_umount = write_file_path("/etc/leaninit/rc.umount", "/etc/rc.umount", X_OK);
             if(rc_umount != NULL) sh(rc_umount);
-#           ifdef Linux
+#           ifndef FreeBSD
             sync();
 #           endif
 
