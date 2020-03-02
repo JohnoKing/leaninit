@@ -16,7 +16,6 @@ mount_cgroups()
 
 	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
 	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers
-	wait
 }
 
 # Mount pseudo file systems in parallel
