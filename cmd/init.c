@@ -311,8 +311,9 @@ int main(int argc, char *argv[])
                 continue;
             }
 
-            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the getty thread
+            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
             sync();
+	    pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
 
             // Run rc.shutdown, then kill all remaining processes with SIGKILL
