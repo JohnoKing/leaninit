@@ -1,9 +1,0 @@
-#!/bin/sh
-NAME="ACPI Daemon"
-
-main()
-{
-	fork acpid -f >> /dev/null
-}
-
-. /etc/leaninit/rc.svc
