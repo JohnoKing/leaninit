@@ -24,7 +24,7 @@
 #
 
 # Seperate system shutdown in the log file (requires that rc.conf(8) is sourced)
-. /etc/leaninit/rc.conf
+. /etc/leaninit/rc.svc
 printf '\n========\nSHUTDOWN\n========\n\n' >> "$LOGFILE"
 
 # Stop all currently running services
@@ -35,7 +35,25 @@ for svc in *; do
 	fi
 done
 
-# Finish with file system sync and unmount, then remount root as read-only
+# After all services have stopped, run kill(1) to kill all processes
 wait
+kill -CONT -1
+kill -TERM -1
+
+# Use a loop to wait for all processes to stop
+while true; do
+	if ! kill -0 -1 2> /dev/null; then break; fi
+	sleep 0.1
+	__TIMER=$((__TIMER + 1))
+	if [ $((__TIMER > MAXTIME)) -ne 0 ]; then break; fi
+done
+
+# Unmount all file systems, then run sync and exit
+#DEF FreeBSD
+umount -A
+#ENDEF
+#DEF Linux
+umount -rat nodevtmpfs,notmpfs,noproc,nosysfs
+#ENDEF
 sync
 exit 0

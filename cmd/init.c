@@ -314,32 +314,14 @@ int main(int argc, char *argv[])
             // Finish any I/O operations before executing rc.shutdown by calling sync(2)
             sync();
 
-            // Run rc.shutdown and kill all remaining processes
+            // Run rc.shutdown, then kill all remaining processes with SIGKILL
             char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
             printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
-            pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
-            if(su_shell != -1) {
-                kill(su_shell, SIGKILL);
-                su_shell = -1;
-            }
-            kill(-1, SIGCONT);  // For processes that have been sent SIGSTOP
-            kill(-1, SIGTERM);
+            kill(-1, SIGKILL);  // For any remaining processes
 
-            // Give processes about seven seconds to stop before sending SIGKILL
-            struct timespec rest = {0};
-            rest.tv_nsec = 100000000;
-            vint_t timer = 0;
-            while(waitpid(-1, NULL, WNOHANG) != -1 && timer < 70) {
-                nanosleep(&rest, NULL);
-                timer++;
-            }
-            kill(-1, SIGKILL);
-
-            // Run rc.umount(8) and sync after there are no remaining processes
-            char *rc_umount = write_file_path("/etc/leaninit/rc.umount", "/etc/rc.umount", X_OK);
-            if(rc_umount != NULL) sh(rc_umount);
+            // Run sync when not running on FreeBSD
 #           ifndef FreeBSD
             sync();
 #           endif
@@ -353,8 +335,10 @@ int main(int argc, char *argv[])
 
                 // Poweroff
                 case SIGFPE:  // Delay
+#                   ifdef FreeBSD
                     close(tty);
                     open_tty(DEFAULT_TTY);
+#                   endif
                     printf(CYAN "* " WHITE "Delaying shutdown for three seconds..." RESET "\n");
                     sleep(3);
                 /*FALLTHRU*/

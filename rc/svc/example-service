@@ -32,12 +32,11 @@ example_function()
 # function is the only function required for an init script to work. All other functions are optional.
 main()
 {
-	# The waitfor command will wait for a file, process, service or a type of service for a total of
+	# The waitfor command will wait for a file, service or a type of service for a total of
 	# seven seconds before giving an error. This command is the primary form of dependency management
 	# used in LeanInit scripts.
 	waitfor file /var/run/example-file  # Wait for a file
 	waitfor service dbus                # Wait for the dbus service to start
-	waitfor process Xorg                # Wait for the X server by using the process name Xorg
 	waitfor anotherType                 # Wait for any service that defines the type 'anotherType'
 
 	# The fork command will fork the given command into a child process, then write the PID of

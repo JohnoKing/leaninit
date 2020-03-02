@@ -26,7 +26,7 @@ restart()
 main()
 {
 	waitfor service devd
-	waitfor process wpa_supplicant
+	waitfor process wpa_supplicant  # TODO: Replace with `waitfor file`
 	pkill -KILL -x wpa_supplicant
 	sleep 0.5
 	restart  # Run wpa_supplicant

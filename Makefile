@@ -109,7 +109,6 @@ override: install
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.conf"     "$(DESTDIR)/etc/rc.conf"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.conf.d"   "$(DESTDIR)/etc/rc.conf.d"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.shutdown" "$(DESTDIR)/etc/rc.shutdown"
-	@ln -sf "$(DESTDIR)/etc/leaninit/rc.umount"   "$(DESTDIR)/etc/rc.umount"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.svc"      "$(DESTDIR)/etc/rc.svc"
 	@ln -sf "$(DESTDIR)/etc/leaninit/svc"         "$(DESTDIR)/etc/svc"
 	@ln -sf "$(DESTDIR)/etc/leaninit/ttys"        "$(DESTDIR)/etc/ttys"
@@ -130,8 +129,8 @@ uninstall:
 		"$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.xz" "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.xz" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-service.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/os-indications.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.umount.8.xz" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/var/lib/leaninit"
+		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/os-indications.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
+		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/var/lib/leaninit"
 	@echo "Successfully uninstalled LeanInit!"
 	@echo "Please make sure you remove LeanInit from your bootloader!"
 

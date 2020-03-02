@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd January 5, 2020
+.Dd March 1, 2020
 .Dt LEANINIT-RC.SHUTDOWN 8
 .Os
 .Sh NAME
@@ -27,10 +27,11 @@
 .Sh DESCRIPTION
 The
 .Nm rc.shutdown
-script is responsible for killing all currently running services when switching to a different runlevel,
+script is responsible for killing all currently running processes
+and unmounting all file systems when switching to a different runlevel,
 reloading the current runlevel, or during system shutdown.
 
 .Sh SEE ALSO
-leaninit(8), leaninit-halt(8), leaninit-rc.umount(8)
+leaninit(8), leaninit-halt(8)
 .Sh AUTHOR
 Johnothan King

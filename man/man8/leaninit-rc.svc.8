@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd January 5, 2020
+.Dd March 1, 2020
 .Dt LEANINIT-RC.SVC 8
 .Os
 .Sh NAME
@@ -125,9 +125,6 @@ will cause the running script to exit with a return status of one.
 .Nm file
 This type will wait for the specified file to be created.
 
-.Nm process
-This type will wait for the specified process to start. Appending 'return' as a third argument will cause waitfor to return an exit status rather than killing the script.
-
 .Nm service
 This type will wait for the specified service to start.
 Appending 'optional' as a third argument will cause waitfor to simply return if the service does not exist.
@@ -140,8 +137,6 @@ Appending 'optional' as a third argument will cause waitfor to simply return if 
 
 .Nm checkfor type name ...
 This function is similar to waitfor, but it will only check for the given type without waiting.
-.Nm Checkfor
-does not support the process type.
 
 .Nm file
 This type will check for a file, and if it does not exist then it will cause the service to fail.
