@@ -320,7 +320,7 @@ int main(int argc, char *argv[])
             char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
             printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
-            kill(-1, SIGKILL);  // For any remaining processes
+            kill(-1, SIGKILL);
 
             // Run sync when not running on FreeBSD
 #           ifndef FreeBSD

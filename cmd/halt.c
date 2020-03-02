@@ -38,19 +38,19 @@ int main(int argc, char *argv[])
     // Long options for halt
     struct option halt_long_options[] = {
         { "firmware-setup", no_argument, 0, 'F' },
-        { "force",    no_argument, 0, 'f' },
-        { "halt",     no_argument, 0, 'h' },
-        { "no-wall",  no_argument, 0, 'l' },
-        { "poweroff", no_argument, 0, 'p' },
-        { "reboot",   no_argument, 0, 'r' },
-        { "help",     no_argument, 0, '?' },
+        { "force",          no_argument, 0, 'f' },
+        { "halt",           no_argument, 0, 'h' },
+        { "no-wall",        no_argument, 0, 'l' },
+        { "poweroff",       no_argument, 0, 'p' },
+        { "reboot",         no_argument, 0, 'r' },
+        { "help",           no_argument, 0, '?' },
     };
 
     // Int variables
     unsigned int force = 1; // If this is 0, skip sending a signal to init
     unsigned int osin  = 1; // If this is 0, call os-indications(8) before rebooting
     unsigned int wall  = 0; // Used for syslog(3) messages
-    int signal;       // For signals that will be sent to init
+    int signal;             // For signals that will be sent to init
 
     // Set the signal to send to init(8) using __progname
     if(strstr(__progname,      "halt")     != 0) // Halt
