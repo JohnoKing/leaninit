@@ -28,8 +28,8 @@
 
 #include <leaninit.h>
 
-int main(int argc, char *argv[]) {
-
+int main(int argc, char *argv[])
+{
     // GUID for OsIndications
 #   ifndef Linux
     efi_guid_t global_guid = EFI_GLOBAL_GUID;
