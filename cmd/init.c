@@ -263,13 +263,11 @@ int main(int argc, char *argv[])
         setenv("USER",    "root", 1);
 
         // Single user (argv = single/-s) and silent mode (argv = silent) support
-        if(single_user != 0) {
+        --argc;
+        while(0 < argc) {
+            if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) single_user = 0;
+            else if(strcmp(argv[argc], "silent") == 0) verbose = 1;
             --argc;
-            while(0 < argc) {
-                if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) single_user = 0;
-                else if(strcmp(argv[argc], "silent") == 0) verbose = 1;
-                --argc;
-            }
         }
 
         // Print the current platform LeanInit is running on
