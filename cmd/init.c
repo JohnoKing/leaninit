@@ -311,14 +311,14 @@ int main(int argc, char *argv[])
                 continue;
             }
 
-            // Finish any I/O operations before executing rc.shutdown by calling sync(2)
+            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the getty thread
             sync();
+            pthread_join(runlvl, NULL);
 
             // Run rc.shutdown, then kill all remaining processes with SIGKILL
             char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
             printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
-            pthread_join(runlvl, NULL);
             kill(-1, SIGKILL);  // For any remaining processes
 
             // Run sync when not running on FreeBSD
