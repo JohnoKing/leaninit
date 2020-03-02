@@ -12,10 +12,10 @@ mount_cgroups()
 
 	# elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
 	mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
-	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
+	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc
 
 	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
-	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers &
+	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers
 	wait
 }
 
