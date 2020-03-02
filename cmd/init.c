@@ -61,7 +61,7 @@ static int open_tty(const char *tty_path)
     login_tty(tty);
     dup2(tty, STDOUT_FILENO);
     dup2(tty, STDERR_FILENO);
-    dup2(tty, STDIN_FILENO);
+    dup2(tty, STDIN_FILENO);  // This must be done last
     ioctl(tty, TIOCSCTTY, 1);
 
     // Return the file descriptor of the tty
@@ -85,6 +85,7 @@ static int sh(char *script)
         return 1;
     }
 
+    // Wait for the script to finish
     int status;
     waitpid(child, &status, 0);
     return WEXITSTATUS(status);
