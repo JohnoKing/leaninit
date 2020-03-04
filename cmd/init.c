@@ -302,13 +302,8 @@ int main(int argc, char *argv[])
             int recv_signal = current_signal;
 
             // Cancel when the runlevel is already the currently running one
-            if(recv_signal == SIGILL && single_user != 0) {
-                printf("\n" PURPLE "* " YELLOW "LeanInit is already in multi-user mode..."  RESET "\n");
+            if((recv_signal == SIGILL && single_user != 0) || (recv_signal == SIGTERM && single_user == 0))
                 continue;
-            } else if(recv_signal == SIGTERM && single_user == 0) {
-                printf("\n" PURPLE "* " YELLOW "LeanInit is already in single user mode..." RESET "\n");
-                continue;
-            }
 
             // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
             sync();
