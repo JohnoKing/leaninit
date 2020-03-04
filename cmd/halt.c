@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
         { "poweroff",       no_argument, 0, 'p' },
         { "reboot",         no_argument, 0, 'r' },
         { "help",           no_argument, 0, '?' },
+        {  0,                         0, 0,  0  }
     };
 
     // Int variables

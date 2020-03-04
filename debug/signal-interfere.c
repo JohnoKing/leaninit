@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
         { "usr1",  no_argument, 0, '1' },
         { "usr2",  no_argument, 0, '2' },
         { "help",  no_argument, 0, '?' },
+        {  0,                0, 0,  0  }
     };
 
     // Get options

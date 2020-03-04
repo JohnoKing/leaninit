@@ -35,8 +35,8 @@ static pid_t su_shell = -1;
 // Shows usage for init
 static int usage(int ret)
 {
-    printf("Usage: %s [runlevel] ...\n", __progname);
-    printf("    or %s --[opt]    ...\n", __progname);
+    printf("Usage: %s [runlevel]...\n", __progname);
+    printf("    or %s --[opt]   ...\n", __progname);
     printf("  0           Poweroff\n");
     printf("  1, S, s     Switch to single user mode\n");
     printf("  2, 3, 4, 5  Switch to multi-user mode\n");

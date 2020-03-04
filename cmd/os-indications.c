@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
         { "quiet", no_argument, 0, 'q' },
         { "unset", no_argument, 0, 'u' },
         { "help",  no_argument, 0, '?' },
+        {  0,                0, 0,  0  }
     };
 
     // Parse options
