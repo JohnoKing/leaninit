@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+# rc - Starts all services
+#
 
 # Source rc.svc and set SILENT_ARG
 . /etc/leaninit/rc.svc
