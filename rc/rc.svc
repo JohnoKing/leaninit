@@ -43,9 +43,9 @@ export KEYMAP
 export NETFACE
 #ENDEF
 
-# Set a consistent PATH variable and set SILENT_ARG to $2
+# Set a consistent PATH variable and set OUTPUT_MODE to $2
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-export SILENT_ARG="$2"
+export OUTPUT_MODE="$2"
 
 # Set $MAXTIME for use with waitfor()
 if [ -n "$MAXTIME" ]; then
@@ -82,7 +82,7 @@ isfunc()
 # Print formatted output to stdout and unformatted output to $LOGFILE (use this instead of echo)
 print()
 {
-	if [ "$SILENT_ARG" != "silent" ]; then
+	if [ "$OUTPUT_MODE" != "silent" ]; then
 		printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
 	fi
 	if [ "$2" = "log" ]; then

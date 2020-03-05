@@ -25,7 +25,7 @@
 
 # Source rc.svc and set SILENT_ARG
 . /etc/leaninit/rc.svc
-export SILENT_ARG="$1"
+export OUTPUT_MODE="$1"
 
 # Mount all drives specified in /etc/fstab
 print "Mounting all drives..." nolog "$PURPLE" "$WHITE"
