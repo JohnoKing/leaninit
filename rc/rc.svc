@@ -94,8 +94,7 @@ print()
 fork()
 {
 	"$@" &
-	printf '\n' >> "$__svcpidfile"
-	jobs -p %+ >> "$__svcpidfile"
+	printf "\n$!" >> "$__svcpidfile"
 }
 
 # Checks for $__svcname.status
