@@ -6,6 +6,7 @@ main()
 {
 	waitfor service settings
 	waitfor service dbus
+	waitfor service iwd optional
 	NetworkManager --pid-file="$__svcpidfile"
 }
 

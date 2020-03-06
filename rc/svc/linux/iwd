@@ -1,0 +1,13 @@
+#!/bin/sh
+NAME="iNet Wireless Daemon"
+TYPE="iwd"
+
+main()
+{
+	waitfor service settings
+	waitfor service dbus
+	waitfor service kmod
+	fork /usr/lib/iwd/iwd
+}
+
+. /etc/leaninit/rc.svc
