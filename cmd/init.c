@@ -27,9 +27,9 @@
 #include <leaninit.h>
 
 // Universal variables
+static unsigned int single_user = 1;
+static unsigned int verbose = 0;
 static int current_signal = 0;
-static vint_t single_user = 1;
-static vint_t verbose =  0;
 static pid_t su_shell = -1;
 
 // Shows usage for init
@@ -178,7 +178,7 @@ static void multi(void)
     // Open the ttys file (max file size 8000 bytes with 60 entries)
     char buffer[8001];
     char *data = buffer;
-    vint_t entry = 0;
+    unsigned int entry = 0;
     struct getty_t {
         const char *cmd;
         const char *tty;
@@ -209,7 +209,7 @@ static void multi(void)
         if(closed_pid == -1) return;
 
         // Match the closed PID to the getty in the index
-        for(vint_t e = 1; e <= entry; e++) {
+        for(unsigned int e = 1; e <= entry; e++) {
             if(getty[e].pid != closed_pid) continue;
 
             // Do not spam the tty if the getty failed

@@ -20,18 +20,19 @@
 #
 
 # Variables (each one may be overridden)
-CC      := cc
-STRIP   := strip
-CFLAGS  := -O2 -ffast-math -fomit-frame-pointer -fpic -fno-plt -D_FORTIFY_SOURCE=2 -pipe
-INCLUDE := -I../include
-WFLAGS  := -Wall -Wextra -Wpedantic
-LDFLAGS := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+CC       := cc
+STRIP    := strip
+CFLAGS   := -O2 -ffast-math -fomit-frame-pointer -fpic -fno-plt -pipe
+CPPFLAGS := -D_FORTIFY_SOURCE=2
+INCLUDE  := -I../include
+WFLAGS   := -Wall -Wextra -Wpedantic
+LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 
 # Compile stall
 all: clean
 	@mkdir -p out
-	@$(CC) $(CFLAGS) $(WFLAGS) $(INCLUDE) -o out/signal-interfere signal-interfere.c $(LDFLAGS)
-	@$(CC) $(CFLAGS) $(WFLAGS) $(INCLUDE) -o out/stall stall.c $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -o out/signal-interfere signal-interfere.c $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -o out/stall stall.c $(LDFLAGS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version out/*
 	@echo "Successfully built the LeanInit debugging tools!"
 

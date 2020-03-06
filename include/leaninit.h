@@ -68,16 +68,3 @@
 // External char variables
 extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)
-
-/*
- * Typedef for vint_t (can either be char or int depending on -DUINT32)
- * This variable should be assumed to be 8-bit when used, with the 32-bit
- * int form used exclusively for better performance at the cost of memory.
- * vint_t is always an unsigned variable for better performance and memory
- * usage. It cannot be used with negative numbers.
- */
-#ifdef UINT32
-typedef unsigned int vint_t;
-#else
-typedef unsigned char vint_t;
-#endif
