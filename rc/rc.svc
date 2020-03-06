@@ -40,7 +40,6 @@ export NDIS
 #ENDEF
 #DEF Linux
 export KEYMAP
-export NETFACE
 #ENDEF
 
 # Set a consistent PATH variable and set OUTPUT_MODE to $2
