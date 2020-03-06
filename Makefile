@@ -21,7 +21,7 @@
 
 # Variables (each one may be overridden)
 CC        := cc
-CFLAGS    := -Os -fomit-frame-pointer -fPIC -pipe
+CFLAGS    := -Os -fomit-frame-pointer -fPIC -fstack-protector-strong -pipe
 INCLUDE   := -I./include
 #CPPFLAGS := -DUINT32
 WFLAGS    := -Wall -Wextra -Wno-unused-result
