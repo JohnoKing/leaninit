@@ -29,6 +29,11 @@ is compatible with both GNU and BSD Make, so you don't need to install
 To boot from LeanInit, append the following line to `/boot/loader.conf`:
 `init_path="/sbin/leaninit"`
 
+### init(8)-only installation
+To install only the implementations of init(8), halt(8), the man pages and the os-indications(8) program,
+build LeanInit then run `make install-base`.
+Keep in mind that this will not install LeanInit RC, so you must use a different implementation of `/etc/rc`.
+
 ### RC-only installation
 To install only the init scripts LeanInit uses for use with other BSD-style init systems,
 build LeanInit then run `make install-rc`.

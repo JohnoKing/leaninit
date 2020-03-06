@@ -63,16 +63,20 @@ all: clean
 	@$(XZ) -T 0 out/man/*/*
 	@echo "Successfully built LeanInit!"
 
-# Install LeanInit's rc system for use with other init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
-install-rc:
+# Install LeanInit's man pages and license
+install-universal:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
-	@mkdir -p "$(DESTDIR)/sbin" "$(DESTDIR)/etc/leaninit/rc.conf.d" "$(DESTDIR)/usr/share/licenses/leaninit" "$(DESTDIR)/var/log" \
-		"$(DESTDIR)/var/run/leaninit" "$(DESTDIR)/var/lib/leaninit/types" "$(DESTDIR)/var/lib/leaninit/svc"
-	@cp -r out/svc "$(DESTDIR)/etc/leaninit"
+	@mkdir -p "$(DESTDIR)/usr/share/licenses/leaninit"
 	@cp -r out/man "$(DESTDIR)/usr/share"
+	@$(INSTALL) -Dm0644 LICENSE "$(DESTDIR)/usr/share/licenses/leaninit/MIT"
+
+# Install LeanInit RC for use with other init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
+install-rc: install-universal
+	@mkdir -p "$(DESTDIR)/sbin" "$(DESTDIR)/etc/leaninit/rc.conf.d" "$(DESTDIR)/var/log" "$(DESTDIR)/var/run/leaninit" \
+		"$(DESTDIR)/var/lib/leaninit/types" "$(DESTDIR)/var/lib/leaninit/svc"
+	@cp -r out/svc "$(DESTDIR)/etc/leaninit"
 	@cp -i out/rc.conf.d/* "$(DESTDIR)/etc/leaninit/rc.conf.d" || true
 	@cp -i out/rc/rc.conf out/rc/ttys "$(DESTDIR)/etc/leaninit" || true
-	@$(INSTALL) -Dm0644 LICENSE "$(DESTDIR)/usr/share/licenses/leaninit/MIT"
 	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
 	@$(INSTALL) -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
 	@if [ `uname` = FreeBSD ] && [ ! -e "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
@@ -87,9 +91,10 @@ install-rc:
 	@touch "$(DESTDIR)/var/lib/leaninit/install-flag"
 	@echo "Successfully installed LeanInit's RC system!"
 
-# Install LeanInit (does not overwrite other init systems)
+# Install only the base of LeanInit (init, halt and os-indications)
 # cd is used with ln(1) for POSIX-compliant relative symlinks
-install: install-rc
+install-base: install-universal
+	@mkdir -p "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/usr/share/man/man8" ;\
 	[ -e leaninit-poweroff.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-poweroff.8.xz ;\
 	[ -e leaninit-reboot.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-reboot.8.xz
@@ -97,6 +102,10 @@ install: install-rc
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
 	@echo "Successfully installed the base of LeanInit!"
+
+
+# Install LeanInit (does not overwrite other init systems)
+install: install-rc install-base
 
 # Set LeanInit as the default init system
 override: install
