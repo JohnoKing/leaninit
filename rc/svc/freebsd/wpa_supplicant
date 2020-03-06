@@ -26,7 +26,10 @@ restart()
 main()
 {
 	waitfor service devd
-	waitfor process wpa_supplicant  # TODO: Replace with `waitfor file`
+	for n in $WIRELESS $NDIS; do
+		waitfor file "/var/run/wpa_supplicant/$n"
+		break
+	done
 	pkill -KILL -x wpa_supplicant
 	sleep 0.5
 	restart  # Run wpa_supplicant
