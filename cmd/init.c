@@ -262,25 +262,36 @@ int main(int argc, char *argv[])
         setenv("LOGNAME", "root", 1);
         setenv("USER",    "root", 1);
 
-        // Single user (argv = single/-s) and silent mode (argv = silent) support
+        // Single user (argv = single/-s), silent mode (argv = silent) and rc.banner(8) support
+        unsigned int banner = 0;
         --argc;
         while(0 < argc) {
             if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) single_user = 0;
             else if(strcmp(argv[argc], "silent") == 0) verbose = 1;
+            else if(strcmp(argv[argc], "banner") == 0) banner  = 1;
             --argc;
-        }
-
-        // Print the current platform LeanInit is running on
-        if(verbose == 0) {
-            struct utsname uts;
-            uname(&uts);
-            printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
         }
 
         // Run zloop() and chlvl() in separate threads
         pthread_t loop, runlvl;
         pthread_create(&loop,   NULL, zloop, NULL);
         pthread_create(&runlvl, NULL, chlvl, NULL);
+
+        // Run rc.banner if the banner argument was passed to LeanInit
+        if(banner != 0) {
+            char *rc_banner = write_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
+            if(rc_banner != NULL)
+                sh(rc_banner);
+            else
+                printf(RED "* Could not find rc.banner(8)!" RESET "\n");
+        }
+
+        // Print the current platform LeanInit is running on (must be done after rc.banner)
+        if(verbose == 0) {
+            struct utsname uts;
+            uname(&uts);
+            printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
+        }
 
         // Handle relevant signals while ignoring others
         struct sigaction actor;
@@ -307,7 +318,7 @@ int main(int argc, char *argv[])
 
             // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
             sync();
-	    pthread_kill(runlvl, SIGKILL);
+            pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
 
             // Run rc.shutdown, then kill all remaining processes with SIGKILL

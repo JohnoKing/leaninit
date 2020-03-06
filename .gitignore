@@ -1,9 +1,3 @@
-# For Visual Studio Code
-.vscode
-
-# Dolphin File Manager
-*.directory
-
 # Ignore built files
 debug/out
 out

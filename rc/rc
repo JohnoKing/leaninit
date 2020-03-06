@@ -23,7 +23,7 @@
 # rc - Starts all services
 #
 
-# Source rc.svc and set SILENT_ARG
+# Source rc.svc and set $OUTPUT_MODE
 . /etc/leaninit/rc.svc
 export OUTPUT_MODE="$1"
 

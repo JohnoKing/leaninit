@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
     // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
 #   ifndef Linux
-    unsigned int efi_boot = 0x01;
+    unsigned char efi_boot = 0x01;
     if(unset != 0)
         efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
 
