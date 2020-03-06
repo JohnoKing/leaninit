@@ -77,7 +77,7 @@ install-rc: install-universal
 	@cp -r out/svc "$(DESTDIR)/etc/leaninit"
 	@cp -i out/rc.conf.d/* "$(DESTDIR)/etc/leaninit/rc.conf.d" || true
 	@cp -i out/rc/rc.conf out/rc/ttys "$(DESTDIR)/etc/leaninit" || true
-	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
+	@$(INSTALL) -Dm0755 out/rc/rc out/rc/rc.banner out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
 	@$(INSTALL) -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
 	@if [ `uname` = FreeBSD ] && [ ! -e "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
@@ -115,6 +115,7 @@ override: install
 	@ln -sf "$(DESTDIR)/sbin/leaninit-halt"       "$(DESTDIR)/sbin/reboot"
 	@ln -sf "$(DESTDIR)/sbin/leaninit-service"    "$(DESTDIR)/sbin/service"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc"          "$(DESTDIR)/etc/rc"
+	@ln -sf "$(DESTDIR)/etc/leaninit/rc.banner"   "$(DESTDIR)/etc/rc.banner"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.conf"     "$(DESTDIR)/etc/rc.conf"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.conf.d"   "$(DESTDIR)/etc/rc.conf.d"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.shutdown" "$(DESTDIR)/etc/rc.shutdown"
@@ -136,7 +137,7 @@ uninstall:
 	@rm -rf "$(DESTDIR)/sbin/leaninit" "$(DESTDIR)/sbin/leaninit-halt" "$(DESTDIR)/sbin/leaninit-poweroff" "$(DESTDIR)/sbin/leaninit-reboot" "$(DESTDIR)/sbin/os-indications" \
 		"$(DESTDIR)/sbin/leaninit-service" "$(DESTDIR)/etc/leaninit" "$(DESTDIR)/var/log/leaninit.log" "$(DESTDIR)/var/run/leaninit"  "$(DESTDIR)/usr/share/licenses/leaninit" \
 		"$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.xz" "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.xz" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz" \
+		"$(DESTDIR)/usr/share/man/man8/leaninit.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.banner.8.xz" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-service.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/os-indications.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/var/lib/leaninit"
