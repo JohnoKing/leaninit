@@ -272,10 +272,9 @@ int main(int argc, char *argv[])
             --argc;
         }
 
-        // Run zloop() and chlvl() in separate threads
+        // Start the zombie killer thread
         pthread_t loop, runlvl;
         pthread_create(&loop,   NULL, zloop, NULL);
-        pthread_create(&runlvl, NULL, chlvl, NULL);
 
         // Run rc.banner if the banner argument was passed to LeanInit
         if(banner != 0) {
@@ -286,7 +285,8 @@ int main(int argc, char *argv[])
                 printf(RED "* Could not find rc.banner(8)!" RESET "\n");
         }
 
-        // Print the current platform LeanInit is running on (must be done after rc.banner)
+        // Print the current platform LeanInit is running on and start rc(8) (must be done after rc.banner)
+        pthread_create(&runlvl, NULL, chlvl, NULL);
         if(verbose == 0) {
             struct utsname uts;
             uname(&uts);
