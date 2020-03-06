@@ -4,7 +4,7 @@ TYPE="networking"
 
 main()
 {
-	waitfor service settings
+	waitfor service netface
 	waitfor service dbus
 	waitfor service iwd optional
 	NetworkManager --pid-file="$__svcpidfile"

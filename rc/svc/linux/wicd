@@ -4,7 +4,7 @@ TYPE="networking"
 
 main()
 {
-	waitfor service settings
+	waitfor service netface
 	waitfor service dbus
 	wicd
 	ln -s /var/run/wicd/wicd.pid "$__svcpidfile"

@@ -1,0 +1,18 @@
+#!/bin/sh
+NAME="Network Interfaces"
+MSG="Detecting network interfaces"
+
+main()
+{
+	# udev is required for setting up network interfaces
+	waitfor udev
+
+	# Set up network interfaces
+	for n in $(ip -o link show | awk '{print $2}' | sed 's/://d'); do
+		print "Setting up $n for networking..." log "$BLUE" "$WHITE"
+		ip link set up dev "$n" &
+	done
+	wait
+}
+
+. /etc/leaninit/rc.svc

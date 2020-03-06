@@ -4,9 +4,8 @@ TYPE="iwd"
 
 main()
 {
-	waitfor service settings
+	waitfor service netface
 	waitfor service dbus
-	waitfor service kmod
 	fork /usr/lib/iwd/iwd
 }
 

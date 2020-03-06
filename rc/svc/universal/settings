@@ -3,35 +3,28 @@ NAME="LeanInit Settings"
 
 main()
 {
+	# Set the machine's hostname
+	if [ -n "$HOSTNAME" ]; then
+		hostname "$HOSTNAME"
+	fi
+
+	# Set the timezone
+	if [ -n "$TIMEZONE" ]; then
+		rm -f /etc/localtime
+		ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+	fi
 #DEF Linux
-	# udev is required for setting up network interfaces
-	waitfor udev
 
-	# Set up network interfaces
-	for n in $(ip -o link show | awk '{print $2}' | sed 's/://d'); do
-		print "Setting up $n for networking..." log "$BLUE" "$WHITE"
-		ip link set up dev "$n" &
-	done
-
-	# Keyboard layout
+	# Set the keyboard layout
 	print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
 	loadkeys "$KEYMAP"
 
-	# Console font
+	# Set the console font
 	if [ -n "$CONSOLEFONT" ]; then
 		print "Setting the console font to $CONSOLEFONT" log "$BLUE" "WHITE"
 		setfont "$CONSOLEFONT"
 	fi
 #ENDEF
-	# Universal settings
-	if [ -n "$HOSTNAME" ]; then
-		hostname "$HOSTNAME"
-	fi
-	if [ -n "$TIMEZONE" ]; then
-		rm -f /etc/localtime
-		ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
-	fi
-	wait
 }
 
 . /etc/leaninit/rc.svc
