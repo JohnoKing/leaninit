@@ -4,14 +4,14 @@ NAME="LeanInit Settings"
 main()
 {
 #DEF Linux
+	# udev is required for setting up network interfaces
+	waitfor udev
+
 	# Set up network interfaces
-	ip link set up dev lo &
-	if [ -n "$NETFACE" ]; then
-		for n in $NETFACE; do
-			print "Setting up $n for networking..." log "$BLUE" "$WHITE"
-			ip link set up dev "$n" &
-		done
-	fi
+	for n in $(ip -o link show | awk '{print $2}' | sed 's/://d'); do
+		print "Setting up $n for networking..." log "$BLUE" "$WHITE"
+		ip link set up dev "$n" &
+	done
 
 	# Keyboard layout
 	print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"

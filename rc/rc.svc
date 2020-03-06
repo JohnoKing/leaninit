@@ -192,7 +192,7 @@ waitfor()
 		service)
 			if [ ! -e "/var/lib/leaninit/svc/$2" ]; then
 				if [ "$3" = "optional" ]; then
-					return 0
+					return 1
 				else
 					print "$NAME failed to start because the service $2 is not enabled!" log "$RED"
 					__fail 1
@@ -206,7 +206,7 @@ waitfor()
 					print "$NAME failed to start because no currently enabled services satisfy the type $1!" log "$RED"
 					__fail 1
 				else
-					return 0
+					return 1
 				fi
 			fi
 			__waitfor_loop_file "/var/run/leaninit/$1.type" "$NAME failed to start because $(cat "/var/lib/leaninit/types/$1.type") failed to start!"
