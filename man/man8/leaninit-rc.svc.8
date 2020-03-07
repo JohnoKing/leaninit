@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 1, 2020
+.Dd March 7, 2020
 .Dt LEANINIT-RC.SVC 8
 .Os
 .Sh NAME
@@ -121,17 +121,16 @@ and will stop when the required condition is true.
 If a full seven seconds have elapsed,
 .Nm waitfor
 will cause the running script to exit with a return status of one.
+Appending 'optional' as a third argument will cause waitfor to simply return if the type does not exist.
 
 .Nm file
 This type will wait for the specified file to be created.
 
 .Nm service
 This type will wait for the specified service to start.
-Appending 'optional' as a third argument will cause waitfor to simply return if the service does not exist.
 
 .Nm other
 Other types will cause waitfor to look for '/var/run/leaninit/TYPENAME.type', in a similar manner to the 'file' and 'service' types.
-Appending 'optional' as a third argument will cause waitfor to simply return if the type does not exist.
 
 
 

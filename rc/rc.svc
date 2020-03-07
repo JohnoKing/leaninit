@@ -31,7 +31,6 @@
 export LOGFILE
 export HOSTNAME
 export TIMEZONE
-export MAXTIME
 export DELAY
 #DEF FreeBSD
 export WIRED
@@ -42,18 +41,15 @@ export NDIS
 export KEYMAP
 #ENDEF
 
-# Set a consistent PATH variable and set OUTPUT_MODE to $2
+# Set the nessesary variables
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export OUTPUT_MODE="$2"
-
-# Set $MAXTIME for use with waitfor()
 if [ -n "$MAXTIME" ]; then
-	export MAXTIME=69  # Default
-else
-	export MAXTIME=$((MAXTIME * 10 - 1))
+	MAXTIME=7
 fi
+export MAXTIME
 
-# Color variables (for use with print())
+# Color variables for use with print()
 export RESET='\033[0m'
 export RED='\033[1;31m'
 export GREEN='\033[1;32m'
@@ -158,7 +154,11 @@ __usage()
 # Wait for a file using a loop that checks for it every tenth of a second (until loops are too slow)
 __waitfor_loop_file()
 {
-	if [ "$(cat "$1" 2> /dev/null)" = "Failure" ]; then
+	ENDTIME=$(( `date +%s` + 7 ))
+	until [ $(( `date +%s` > ENDTIME )) != 0 ] || [ -e "$1" ]; do
+		sleep 0.1
+	done
+	if [ ! -e "$1" ]; then
 		if [ "$3" != "optional" ]; then
 			print "$2" log "$RED"
 			__fail 1
@@ -166,19 +166,6 @@ __waitfor_loop_file()
 			return 1
 		fi
 	fi
-	while true; do
-		if [ -e "$1" ]; then break; fi
-		sleep 0.1
-		__TIMER=$((__TIMER + 1))
-		if [ $((__TIMER > MAXTIME)) -ne 0 ]; then
-			if [ "$3" != "optional" ]; then
-				print "$2" log "$RED"
-				__fail 1
-			else
-				return 1
-			fi
-		fi
-	done
 }
 
 # Wait for either a file, pid or service for up to seven seconds
@@ -186,14 +173,14 @@ waitfor()
 {
 	case "$1" in
 		file)
-			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!"
+			__waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!" "$3"
 			;;
 		service)
-			if [ ! -e "/var/lib/leaninit/svc/$2" ]; then
+			if [ ! -e "/var/lib/leaninit/svc/$2" ] || [ "$(cat "$1" 2> /dev/null)" = "Failure" ]; then
 				if [ "$3" = "optional" ]; then
 					return 1
 				else
-					print "$NAME failed to start because the service $2 is not enabled!" log "$RED"
+					print "$NAME failed to start because the service $2 either is not enabled or failed to start!" log "$RED"
 					__fail 1
 				fi
 			fi

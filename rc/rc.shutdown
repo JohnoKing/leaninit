@@ -40,11 +40,10 @@ wait
 kill -CONT -1
 kill -TERM -1
 
-# Use a loop to wait for all processes to stop
-while [ $((__TIMER > MAXTIME)) = 0 ]; do
-	if ! kill -0 -1 2> /dev/null; then break; fi
+# Use a short loop to wait for all processes to stop
+ENDTIME=$(( `date +%s` + 1 ))
+until [ $(( `date +%s` > ENDTIME )) != 0 ] || ! kill -0 -1 2> /dev/null; do
 	sleep 0.1
-	__TIMER=$((__TIMER + 1))
 done
 
 # Unmount all file systems, then run sync and exit
