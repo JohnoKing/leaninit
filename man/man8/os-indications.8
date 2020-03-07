@@ -18,13 +18,12 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd January 5, 2020
+.Dd March 6, 2020
 .Dt OS-INDICATIONS 8
 .Os
 .Sh NAME
 .Nm os-indications
-.Nd Set OsIndications in
-.Em /sys/firmware/efi/efivars
+.Nd Set the OsIndications UEFI variable
 for booting into firmware setup
 .Sh SYNOPSIS
 .Nm os-indications
@@ -77,13 +76,6 @@ This can be fixed by using
 This is the UEFI variable that tells
 .Nm os-indications
 if the system supports rebooting into the firmware's interface from the current OS.
-.Sh NOTES
-This program has not yet been ported to
-.Nm FreeBSD.
-As of the time of writing,
-.Nm os-indications
-only runs on
-.Nm Linux.
 .Sh SEE ALSO
 efivar(1)
 .Sh AUTHOR
