@@ -7,7 +7,7 @@ main()
 {
 #DEF FreeBSD
 	# This is done in a for loop for compatibility with beadm(1)
-	for z in $(df -t zfs | tail -n +2 | awk '{print $1}'); do
+	for z in $(df -t zfs | awk 'NR>1{ print $1 }'); do
 		zfs mount "$z"
 	done
 #ENDEF
