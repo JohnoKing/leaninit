@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd January 5, 2020
+.Dd March 6, 2020
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -45,7 +45,7 @@ If it is
 will open the console using
 .Nm login_tty(3)
 then launch two threads, one to kill all zombie processes, the other to run
-.Nm leaninit-rc(8)
+.Nm rc(8)
 and
 .Nm getty(8)
 in multi-user mode or a shell of the user's choice in single user mode.
@@ -161,6 +161,9 @@ Secondary init script that is run if
 .Em /etc/leaninit/rc
 does not exist
 
+.Em /etc/leaninit/rc.banner
+Optional script that LeanInit will run before rc if passed the `banner` argument by the bootloader
+
 .Em /etc/leaninit/rc.conf
 Provides config settings for
 .Nm leaninit-rc
@@ -223,6 +226,6 @@ Default location for
 .Nm LeanInit's
 .status and .pid files
 .Sh SEE ALSO
-leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8), leaninit-rc.svc(8), leaninit-rc.conf(5), leaninit-ttys(5), kill(1), signal(7)
+leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8), leaninit-rc.banner(8), leaninit-rc.svc(8), leaninit-rc.conf(5), leaninit-ttys(5), kill(1), signal(7)
 .Sh AUTHOR
 Johnothan King
