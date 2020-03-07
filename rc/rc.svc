@@ -154,7 +154,7 @@ __usage()
 # Wait for a file using a loop that checks for it every tenth of a second (until loops are too slow)
 __waitfor_loop_file()
 {
-	ENDTIME=$(( `date +%s` + 7 ))
+	ENDTIME=$(( `date +%s` + MAXTIME ))
 	until [ $(( `date +%s` > ENDTIME )) != 0 ] || [ -e "$1" ]; do
 		sleep 0.1
 	done
@@ -263,6 +263,21 @@ __start()
 	return $RET
 }
 
+# Stop a pid
+__stop_pid()
+{
+	ENDTIME=$(( `date +%s` + MAXTIME ))
+	until [ $(( `date +%s` > ENDTIME )) != 0 ] || ! kill -0 "$1" 2> /dev/null; do
+		sleep 0.1
+	done
+
+	# SIGKILL is sent like this to be verbose
+	if kill -0 "$1" 2> /dev/null; then
+		print "Sending SIGKILL to $NAME PID $1..." log "$PURPLE" "$YELLOW"
+		kill -KILL "$1"
+	fi
+}
+
 # Stop a service
 __stop()
 {
@@ -283,16 +298,7 @@ __stop()
 		kill -CONT $__svcpid 2> /dev/null
 		kill -TERM $__svcpid 2> /dev/null
 		for pid in $__svcpid; do
-			while true; do
-				if ! kill -0 $pid 2> /dev/null; then break; fi
-				sleep 0.1
-				__TIMER=$((__TIMER + 1))
-				if [ $((__TIMER > MAXTIME)) -ne 0 ]; then
-					print "Sending SIGKILL to $NAME PID $pid..." log "$PURPLE" "$YELLOW"
-					kill -KILL $pid 2> /dev/null
-					break
-				fi
-			done &
+			__stop_pid "$pid" &
 		done
 		wait
 	fi
