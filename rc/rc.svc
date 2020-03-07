@@ -44,10 +44,6 @@ export KEYMAP
 # Set the nessesary variables
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export OUTPUT_MODE="$2"
-if [ -n "$MAXTIME" ]; then
-	MAXTIME=7
-fi
-export MAXTIME
 
 # Color variables for use with print()
 export RESET='\033[0m'
@@ -154,7 +150,7 @@ __usage()
 # Wait for a file using a loop that checks for it every tenth of a second (until loops are too slow)
 __waitfor_loop_file()
 {
-	ENDTIME=$(( `date +%s` + MAXTIME ))
+	ENDTIME=$(( `date +%s` + 7 ))
 	until [ $(( `date +%s` > ENDTIME )) != 0 ] || [ -e "$1" ]; do
 		sleep 0.1
 	done
@@ -266,7 +262,7 @@ __start()
 # Stop a pid
 __stop_pid()
 {
-	ENDTIME=$(( `date +%s` + MAXTIME ))
+	ENDTIME=$(( `date +%s` + 7 ))
 	until [ $(( `date +%s` > ENDTIME )) != 0 ] || ! kill -0 "$1" 2> /dev/null; do
 		sleep 0.1
 	done
