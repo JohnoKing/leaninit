@@ -120,7 +120,8 @@ override: install
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.conf.d"   "$(DESTDIR)/etc/rc.conf.d"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.shutdown" "$(DESTDIR)/etc/rc.shutdown"
 	@ln -sf "$(DESTDIR)/etc/leaninit/rc.svc"      "$(DESTDIR)/etc/rc.svc"
-	@ln -sf "$(DESTDIR)/etc/leaninit/svc"         "$(DESTDIR)/etc/svc"
+	@ln -sf "$(DESTDIR)/etc/leaninit/svc"         "$(DESTDIR)/etc/init.d"
+	@ln -sf "$(DESTDIR)/etc/leaninit/svc"         "$(DESTDIR)/etc/rc.d"
 	@ln -sf "$(DESTDIR)/etc/leaninit/ttys"        "$(DESTDIR)/etc/ttys"
 	@echo "LeanInit is now the default init system!"
 
