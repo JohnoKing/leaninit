@@ -30,7 +30,6 @@
 static unsigned int single_user = 1;
 static unsigned int verbose = 0;
 static int current_signal = 0;
-static pid_t su_shell = -1;
 
 // Shows usage for init
 static int usage(int ret)
@@ -127,18 +126,21 @@ static void single(void)
     }
 
     // Fork the shell into a separate process
-    su_shell = fork();
-    if(su_shell == 0) {
+    pid_t sh = fork();
+    if(sh == 0) {
         open_tty(DEFAULT_TTY);
         execve(shell, (char*[]){ shell, NULL }, environ);
         printf(RED "* Failed to run %s\n", shell);
         perror("* execve()" RESET);
         kill(1, SIGFPE);
-    } else if(su_shell == -1) {
+    } else if(sh == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
         kill(1, SIGFPE);
     }
+
+    waitpid(sh, NULL, 0);
+    kill(1, SIGINT);
 }
 
 // Execute rc(8) and getty(8) (multi-user)
@@ -285,13 +287,13 @@ int main(int argc, char *argv[])
                 printf(RED "* Could not find rc.banner(8)!" RESET "\n");
         }
 
-        // Print the current platform LeanInit is running on and start rc(8) (must be done after rc.banner)
-        pthread_create(&runlvl, NULL, chlvl, NULL);
+        // Print the current platform LeanInit is running on and start rc(8) (must be done in this order)
         if(verbose == 0) {
             struct utsname uts;
             uname(&uts);
             printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
         }
+        pthread_create(&runlvl, NULL, chlvl, NULL);
 
         // Handle relevant signals while ignoring others
         struct sigaction actor;
@@ -321,7 +323,7 @@ int main(int argc, char *argv[])
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
 
-            // Run rc.shutdown, then kill all remaining processes with SIGKILL
+            // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
             printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
