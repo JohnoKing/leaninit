@@ -46,12 +46,12 @@ until [ $(( `date +%s` > ENDTIME )) != 0 ] || ! kill -0 -1 2> /dev/null; do
 	sleep 0.1
 done
 
-# Unmount all file systems, then run sync and exit
+# Sync and unmount all file systems, then exit
+sync
 #DEF FreeBSD
 umount -A
 #ENDEF
 #DEF Linux
 umount -rat nodevtmpfs,notmpfs,noproc,nosysfs
 #ENDEF
-sync
 exit 0

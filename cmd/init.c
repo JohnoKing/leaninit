@@ -327,11 +327,6 @@ int main(int argc, char *argv[])
             printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             kill(-1, SIGKILL);
 
-            // Run sync when not running on FreeBSD
-#           ifndef FreeBSD
-            sync();
-#           endif
-
             // Handle the given signal properly
             switch(recv_signal) {
 
