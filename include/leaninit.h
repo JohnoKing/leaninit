@@ -42,7 +42,7 @@
 #endif
 
 // LeanInit's version number
-#define VERSION_NUMBER "v6.0.0"
+#define VERSION_NUMBER "v6.0.0-RC2"
 
 // OS specific macros
 #ifdef FreeBSD
