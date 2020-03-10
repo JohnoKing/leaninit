@@ -28,7 +28,6 @@
 . /etc/leaninit/rc.conf
 
 # Export the variables in rc.conf to prevent bugs
-export LOGFILE
 export HOSTNAME
 export TIMEZONE
 export DELAY
@@ -55,11 +54,6 @@ export PURPLE='\033[1;35m'
 export CYAN='\033[1;36m'
 export WHITE='\033[1;37m'
 
-# Make sure $LOGFILE is set
-if [ -z "$LOGFILE" ]; then
-	export LOGFILE=/var/log/leaninit.log
-fi
-
 # Return 0 if the given command is a shell function, otherwise return 1
 isfunc()
 {
@@ -70,14 +64,14 @@ isfunc()
 	fi
 }
 
-# Print formatted output to stdout and unformatted output to $LOGFILE (use this instead of echo)
+# Print formatted output to stdout and unformatted output to a log file (use this instead of echo)
 print()
 {
 	if [ "$OUTPUT_MODE" != "silent" ]; then
 		printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
 	fi
 	if [ "$2" = "log" ]; then
-		echo "$1" >> "$LOGFILE"
+		echo "$1" >> "$__svclog"
 	fi
 }
 
@@ -238,9 +232,9 @@ __start()
 		print "${MSG}..." log "$BLUE" "$WHITE"
 	fi
 	if [ "$1" = "Restart" ] && isfunc restart; then
-		restart 2> /dev/null
+		restart 2> "$__svclog"
 	else
-		main 2> /dev/null
+		main 2> "$__svclog"
 	fi
 
 	# Finish by creating the service's .status and .type files
@@ -356,7 +350,7 @@ __status()
 __run()
 {
 	# Return an error if the service was not written correctly
-	if [ -z "$NAME" ] || ! isfunc main; then
+	if ! isfunc main; then
 		print 'Service syntax is invalid!' nolog "$RED"
 		exit 128
 	fi
@@ -370,6 +364,8 @@ __run()
 	# Set $__svc variables
 	__svcname="$(basename "$0")"
 	__svcpidfile="/var/run/leaninit/$__svcname.pid"
+	__svclog="/var/log/leaninit/$__svcname.log"
+	printf "\n\nLogging to $NAME on $(date):\n" >> "$__svclog"
 	if [ -e "$__svcpidfile" ]; then
 		__svcpid="$(cat "$__svcpidfile")"
 	fi

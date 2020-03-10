@@ -25,7 +25,6 @@
 
 # Seperate system shutdown in the log file (requires that rc.conf(8) is sourced)
 . /etc/leaninit/rc.svc
-printf '\n========\nSHUTDOWN\n========\n\n' >> "$LOGFILE"
 
 # Stop all currently running services
 cd /etc/leaninit/svc || exit 1

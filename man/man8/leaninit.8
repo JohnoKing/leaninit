@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 6, 2020
+.Dd March 10, 2020
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -215,11 +215,8 @@ Alternate file LeanInit will read from if
 .Em /etc/leaninit/ttys
 does not exist.
 
-.Em /var/log/leaninit.log
-Default log file for
-.Nm LeanInit,
-used by
-.Nm leaninit-rc.svc(8)
+.Em /var/log/leaninit
+The main directory for the log files of all services on the system.
 
 .Em /var/run/leaninit
 Default location for
