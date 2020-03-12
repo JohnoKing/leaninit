@@ -29,6 +29,7 @@
 // Universal variables
 static unsigned int single_user = 1;
 static unsigned int verbose = 0;
+static pid_t su_shell     = -1;
 static int current_signal = 0;
 
 // Shows usage for init
@@ -126,20 +127,20 @@ static void single(void)
     }
 
     // Fork the shell into a separate process
-    pid_t sh = fork();
-    if(sh == 0) {
+    su_shell = fork();
+    if(su_shell == 0) {
         open_tty(DEFAULT_TTY);
         execve(shell, (char*[]){ shell, NULL }, environ);
         printf(RED "* Failed to run %s\n", shell);
         perror("* execve()" RESET);
         kill(1, SIGFPE);
-    } else if(sh == -1) {
+    } else if(su_shell == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
         kill(1, SIGFPE);
     }
 
-    waitpid(sh, NULL, 0);
+    waitpid(su_shell, NULL, 0);
     kill(1, SIGINT);
 }
 
@@ -310,18 +311,22 @@ int main(int argc, char *argv[])
         // Signal handling loop
         for(;;) {
 
-            // Wait for a signal, then store it in recv_signal to prevent race conditions
+            // Wait for a signal, then store it in stored_signal to prevent race conditions
             pause();
-            int recv_signal = current_signal;
+            int stored_signal = current_signal;
 
             // Cancel when the runlevel is already the currently running one
-            if((recv_signal == SIGILL && single_user != 0) || (recv_signal == SIGTERM && single_user == 0))
+            if((stored_signal == SIGILL && single_user != 0) || (stored_signal == SIGTERM && single_user == 0))
                 continue;
 
-            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
+            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread and kill the user shell if needed
             sync();
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
+            if(su_shell != -1) {
+                kill(su_shell, SIGKILL);
+                su_shell = -1;
+            }
 
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
@@ -330,7 +335,7 @@ int main(int argc, char *argv[])
             kill(-1, SIGKILL);
 
             // Handle the given signal properly
-            switch(recv_signal) {
+            switch(stored_signal) {
 
                 // Halt
                 case SIGUSR1:
