@@ -344,7 +344,7 @@ int main(int argc, char *argv[])
                     return reboot(SYS_HALT);
 
                 // Poweroff
-                case SIGFPE:  // Delay
+                case SIGFPE: // Delay
 #                   ifdef FreeBSD
                     close(tty);
                     open_tty(DEFAULT_TTY);
