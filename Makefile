@@ -41,7 +41,7 @@ all: clean
 	@rm -r out/rc/svc
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
-		rm -f out/rc.conf.d/udev.conf  ;\
+		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
 		$(SED) -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
 		$(SED) -i '' "/#DEF FreeBSD/d"        out/*/* ;\
 		$(SED) -i '' "/#ENDEF/d"              out/*/* ;\

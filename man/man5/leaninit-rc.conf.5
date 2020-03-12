@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 10, 2020
+.Dd March 12, 2020
 .Dt LEANINIT-RC.CONF 5
 .Os
 .Sh NAME
@@ -88,9 +88,26 @@ Sets the name of the Display Manager used by the xdm service.
 Sets the path to the Display Manager's PID file for use by the xdm service (this setting is optional).
 
 .Em DEVEXEC (udev.conf, Linux):
-Sets the location of either udev or mdev. Set to
+Sets the location of either
+.Nm udev(7)
+or
+.Nm mdev.
+Set to
 .Em /sbin/udevd
 for udev by default.
+
+.Em CRON (cron.conf, Linux)
+Sets the executable name in
+.Em $PATH
+or the absolute path to the executable for
+.Nm cron(8).
+
+.Em CRONFLAGS (cron.conf, Linux)
+Sets the flags
+.Nm cron
+will be run with.
+.Nm Cron
+must be set to run in the foreground or else the cron service will fail.
 .Sh SEE ALSO
 leaninit-rc(8), leaninit-rc.svc(8), leaninit-ttys(5)
 .Sh AUTHOR
