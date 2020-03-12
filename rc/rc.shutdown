@@ -47,10 +47,11 @@ done
 
 # Sync and unmount all file systems, then exit
 sync
+mount -o remount,ro / 2> /dev/null
 #DEF FreeBSD
-umount -A
+umount -A 2> /dev/null
 #ENDEF
 #DEF Linux
-umount -rat nodevtmpfs,notmpfs,noproc,nosysfs
+umount -rat nodevtmpfs,notmpfs,noproc,nosysfs 2> /dev/null
 #ENDEF
 exit 0

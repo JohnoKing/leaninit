@@ -6,12 +6,12 @@ main()
 #DEF FreeBSD
 	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 		if [ -e $s ]; then
-			sysctl -f /etc/sysctl.conf >> /dev/null &
+			sysctl -f /etc/sysctl.conf &
 		fi
 	done
 #ENDEF
 #DEF Linux
-	sysctl --system >> /dev/null
+	sysctl --system
 #ENDEF
 }
 
