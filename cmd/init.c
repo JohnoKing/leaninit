@@ -126,21 +126,28 @@ static void single(void)
     }
 
     // Fork the shell into a separate process
-    pid_t sh = fork();
-    if(sh == 0) {
-        open_tty(DEFAULT_TTY);
-        execve(shell, (char*[]){ shell, NULL }, environ);
-        printf(RED "* Failed to run %s\n", shell);
-        perror("* execve()" RESET);
-        kill(1, SIGFPE);
-    } else if(sh == -1) {
+    pid_t child = fork();
+    if(child == 0) {
+        pid_t sh = fork();
+        if(sh == 0) {
+            open_tty(DEFAULT_TTY);
+            execve(shell, (char*[]){ shell, NULL }, environ);
+            printf(RED "* Failed to run %s\n", shell);
+            perror("* execve()" RESET);
+            kill(1, SIGFPE);
+        } else if(sh == -1) {
+            printf(RED "* Failed to run %s\n", shell);
+            perror("* fork()" RESET);
+            kill(1, SIGFPE);
+        }
+
+        waitpid(sh, NULL, 0);
+        kill(1, SIGINT);
+    } else if(child == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
         kill(1, SIGFPE);
     }
-
-    waitpid(sh, NULL, 0);
-    kill(1, SIGINT);
 }
 
 // Execute rc(8) and getty(8) (multi-user)
@@ -310,12 +317,12 @@ int main(int argc, char *argv[])
         // Signal handling loop
         for(;;) {
 
-            // Wait for a signal, then store it in recv_signal to prevent race conditions
+            // Wait for a signal, then store it in stored_signal to prevent race conditions
             pause();
-            int recv_signal = current_signal;
+            int stored_signal = current_signal;
 
             // Cancel when the runlevel is already the currently running one
-            if((recv_signal == SIGILL && single_user != 0) || (recv_signal == SIGTERM && single_user == 0))
+            if((stored_signal == SIGILL && single_user != 0) || (stored_signal == SIGTERM && single_user == 0))
                 continue;
 
             // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
@@ -330,7 +337,7 @@ int main(int argc, char *argv[])
             kill(-1, SIGKILL);
 
             // Handle the given signal properly
-            switch(recv_signal) {
+            switch(stored_signal) {
 
                 // Halt
                 case SIGUSR1:
