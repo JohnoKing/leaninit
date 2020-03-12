@@ -1,10 +1,10 @@
 #!/bin/sh
+. /etc/leaninit/rc.conf.d/cron.conf
 NAME="cron"
-TYPE="cron"
 
 main()
 {
-	fork cron -f
+	fork "$CRON" "$CRONFLAGS"
 }
 
 . /etc/leaninit/rc.svc

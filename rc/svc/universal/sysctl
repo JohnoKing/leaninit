@@ -3,16 +3,11 @@ NAME="sysctl"
 
 main()
 {
-#DEF FreeBSD
 	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 		if [ -e $s ]; then
 			sysctl -f /etc/sysctl.conf >> "$__syslog" &
 		fi
 	done
-#ENDEF
-#DEF Linux
-	sysctl --system "$__syslog"
-#ENDEF
 }
 
 . /etc/leaninit/rc.svc
