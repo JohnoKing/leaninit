@@ -50,7 +50,7 @@ usage()
 
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
-	if [ $(id -u) -ne 0 ]; then
+	if [ "$(id -u)" != 0 ]; then
 		print 'This must be run as root!' nolog "$RED"
 		exit 4
 	fi

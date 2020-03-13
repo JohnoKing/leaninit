@@ -79,7 +79,7 @@ print()
 fork()
 {
 	"$@" &
-	printf "\n$!" >> "$__svcpidfile"
+	printf '%s\n' "$!" >> "$__svcpidfile"
 }
 
 # Checks for $__svcname.status
@@ -356,7 +356,7 @@ __run()
 	fi
 
 	# Check for root permissions
-	if [ $(id -u) -ne 0 ]; then
+	if [ "$(id -u)" != 0 ]; then
 		print 'This must be run as root!' nolog "$RED"
 		exit 4
 	fi
@@ -365,7 +365,7 @@ __run()
 	__svcname="$(basename "$0")"
 	__svcpidfile="/var/run/leaninit/$__svcname.pid"
 	__svclog="/var/log/leaninit/$__svcname.log"
-	printf "\n\nLogging to $NAME on $(date):\n" >> "$__svclog"
+	printf '\n\n%s\n' "Logging to $NAME on $(date):" >> "$__svclog"
 	if [ -e "$__svcpidfile" ]; then
 		__svcpid="$(cat "$__svcpidfile")"
 	fi
