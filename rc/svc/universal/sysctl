@@ -5,7 +5,7 @@ main()
 {
 	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 		if [ -e $s ]; then
-			sysctl -f /etc/sysctl.conf >> "$__syslog" &
+			sysctl -f /etc/sysctl.conf >> "$__svclog" &
 		fi
 	done
 }
