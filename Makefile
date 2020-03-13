@@ -29,7 +29,6 @@ LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 INSTALL  := install
 SED      := sed
 STRIP    := strip
-XZ       := xz
 
 # Compile LeanInit
 all: clean
@@ -60,7 +59,7 @@ all: clean
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@$(STRIP) --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
 	@cp -r man out
-	@$(XZ) -T 0 out/man/*/*
+	@zstd out/man/*/*
 	@echo "Successfully built LeanInit!"
 
 # Install LeanInit's man pages and license
@@ -96,8 +95,8 @@ install-rc: install-universal
 install-base: install-universal
 	@mkdir -p "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/usr/share/man/man8" ;\
-	[ -e leaninit-poweroff.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-poweroff.8.xz ;\
-	[ -e leaninit-reboot.8.xz ] || ln -sf leaninit-halt.8.xz leaninit-reboot.8.xz
+	[ -e leaninit-poweroff.8.zst ] || ln -sf leaninit-halt.8.zst leaninit-poweroff.8.zst ;\
+	[ -e leaninit-reboot.8.zst ] || ln -sf leaninit-halt.8.zst leaninit-reboot.8.zst
 	@$(INSTALL) -Dm0755 out/leaninit out/leaninit-halt out/os-indications "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
@@ -137,11 +136,11 @@ uninstall:
 	fi
 	@rm -rf "$(DESTDIR)/sbin/leaninit" "$(DESTDIR)/sbin/leaninit-halt" "$(DESTDIR)/sbin/leaninit-poweroff" "$(DESTDIR)/sbin/leaninit-reboot" "$(DESTDIR)/sbin/os-indications" \
 		"$(DESTDIR)/sbin/leaninit-service" "$(DESTDIR)/etc/leaninit" "$(DESTDIR)/var/log/leaninit*" "$(DESTDIR)/var/run/leaninit"  "$(DESTDIR)/usr/share/licenses/leaninit" \
-		"$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.xz" "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.xz" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.banner.8.xz" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-service.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/usr/share/man/man8/os-indications.8.xz" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.xz" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.xz" "$(DESTDIR)/var/lib/leaninit"
+		"$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.zst" "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.zst" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.zst" \
+		"$(DESTDIR)/usr/share/man/man8/leaninit.8.zst" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.zst" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.zst" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.banner.8.zst" \
+		"$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.zst" "$(DESTDIR)/usr/share/man/man8/leaninit-service.8.zst" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.zst" \
+		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.zst" "$(DESTDIR)/usr/share/man/man8/os-indications.8.zst" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8.zst" \
+		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8.zst" "$(DESTDIR)/var/lib/leaninit"
 	@echo "Successfully uninstalled LeanInit!"
 	@echo "Please make sure you remove LeanInit from your bootloader!"
 
