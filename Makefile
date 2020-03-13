@@ -122,6 +122,17 @@ override: install
 	@ln -sf "$(DESTDIR)/etc/leaninit/svc"         "$(DESTDIR)/etc/init.d"
 	@ln -sf "$(DESTDIR)/etc/leaninit/svc"         "$(DESTDIR)/etc/rc.d"
 	@ln -sf "$(DESTDIR)/etc/leaninit/ttys"        "$(DESTDIR)/etc/ttys"
+	@ln -sf "$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5.zst"     "$(DESTDIR)/usr/share/man/man5/rc.conf.5.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5.zst"        "$(DESTDIR)/usr/share/man/man5/ttys.5.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.zst"        "$(DESTDIR)/usr/share/man/man8/halt.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.zst"        "$(DESTDIR)/usr/share/man/man8/poweroff.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8.zst"        "$(DESTDIR)/usr/share/man/man8/reboot.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8.zst"          "$(DESTDIR)/usr/share/man/man8/rc.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-rc.banner.8.zst"   "$(DESTDIR)/usr/share/man/man8/rc.banner.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8.zst" "$(DESTDIR)/usr/share/man/man8/rc.shutdown.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8.zst"      "$(DESTDIR)/usr/share/man/man8/rc.svc.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit-service.8.zst"     "$(DESTDIR)/usr/share/man/man8/service.8.zst"
+	@ln -sf "$(DESTDIR)/usr/share/man/man8/leaninit.8.zst"             "$(DESTDIR)/usr/share/man/man8/init.8.zst"
 	@echo "LeanInit is now the default init system!"
 
 # Uninstall (only works with normal installations)
