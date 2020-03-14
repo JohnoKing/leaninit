@@ -83,18 +83,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
-#   ifndef Linux
-    unsigned char efi_boot = 0x01;
-    if(unset != 0)
-        efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
-
-    // Delete OsIndications to unset it
-    else
-        efi_del_variable(global_guid, "OsIndications");
-
     // Write efi_data (Linux efivarfs API)
-#   else
+#   ifdef Linux
     if(unset != 0) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
         unsigned int efi_data[2] = { 0x07, 0x01 };
@@ -108,6 +98,16 @@ int main(int argc, char *argv[])
     // Delete OsIndications to unset it
     } else
         unlink("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c");
+
+    // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
+#   else
+    unsigned char efi_boot = 0x01;
+    if(unset != 0)
+        efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
+
+    // Delete OsIndications to unset it
+    else
+        efi_del_variable(global_guid, "OsIndications");
 #   endif
 
     // Notify the user of the change if --quiet was not passed
