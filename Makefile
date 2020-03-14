@@ -156,8 +156,8 @@ uninstall:
 # Clean the directory
 clean:
 	@rm -rf out
-	@git gc
-	@git repack
+	@git gc >> /dev/null 2> /dev/null
+	@git repack >> /dev/null 2> /dev/null
 
 # Calls clean, then resets the git repo
 clobber: clean
