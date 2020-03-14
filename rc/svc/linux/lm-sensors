@@ -3,7 +3,7 @@ NAME="Linux Monitoring Sensors"
 
 main()
 {
-	waitfor service kmod
+	waitfor service kmod optional
 	sensors -s
 }
 
