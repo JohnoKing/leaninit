@@ -45,14 +45,14 @@
 #define VERSION_NUMBER "v6.1.0"
 
 // OS specific macros
-#ifdef FreeBSD
-#define DEFAULT_TTY "/dev/ttyv0"
-#define SYS_POWEROFF RB_POWEROFF
-#define SYS_HALT     RB_HALT
-#else
+#ifdef Linux
 #define DEFAULT_TTY "/dev/tty1"
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_HALT     RB_HALT_SYSTEM
+#elif FreeBSD
+#define DEFAULT_TTY "/dev/ttyv0"
+#define SYS_POWEROFF RB_POWEROFF
+#define SYS_HALT     RB_HALT
 #endif
 
 // Colors
