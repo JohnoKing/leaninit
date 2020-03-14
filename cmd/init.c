@@ -116,7 +116,7 @@ static void single(void)
     // Use a shell of the user's choice
     char buffer[101], shell[101];
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-    fgets(buffer, 101, stdin);
+    (void) fgets(buffer, 101, stdin);
     sscanf(buffer, "%s", shell);
 
     // If the given shell is invalid, use /bin/sh instead
