@@ -73,7 +73,7 @@ install-rc: install-universal
 	@cp -r out/svc "$(DESTDIR)/etc/leaninit"
 	@cp -i out/rc.conf.d/* "$(DESTDIR)/etc/leaninit/rc.conf.d" || true
 	@cp -i out/rc/rc.conf out/rc/ttys "$(DESTDIR)/etc/leaninit" || true
-	@install -Dm0755 out/rc/rc out/rc/rc.banner out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
+	@install -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
 	@install -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
 	@if [ `uname` = FreeBSD ] && [ ! -e "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
@@ -83,6 +83,7 @@ install-rc: install-universal
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" "$(DESTDIR)/var/lib/leaninit/svc/netface" \
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" ;\
 		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
+		@install -Dm0755 out/rc/rc.banner "$(DESTDIR)/etc/leaninit" ;\
 	fi
 	@touch "$(DESTDIR)/var/lib/leaninit/install-flag"
 	@echo "Successfully installed LeanInit's RC system!"
