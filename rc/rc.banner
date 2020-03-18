@@ -23,4 +23,4 @@
 # rc.banner - This example script runs neofetch(1) at startup
 #
 
-exec neofetch
+exec neofetch --color_blocks off
