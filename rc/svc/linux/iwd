@@ -1,6 +1,5 @@
 #!/bin/sh
 NAME="iNet Wireless Daemon"
-TYPE="iwd"
 
 main()
 {
