@@ -1,6 +1,5 @@
 #!/bin/sh
 NAME="ClamAV"
-TYPE="clamd"
 
 main()
 {
