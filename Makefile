@@ -56,7 +56,6 @@ all: clean
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
 	@cp -r man out
-	@zstd out/man/*/*
 	@echo "Successfully built LeanInit!"
 
 # Install LeanInit's man pages and license
