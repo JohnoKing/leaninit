@@ -400,10 +400,7 @@ __run()
 			fi
 			rm "/var/lib/leaninit/svc/$__svcname"
 			if [ -n "$TYPE" ]; then
-				if ! rm "/var/lib/leaninit/types/$TYPE.type"; then
-					print "Could not disable $NAME!" log "$RED"
-					exit 1
-				fi
+				rm -f "/var/lib/leaninit/types/$TYPE.type"
 			fi
 			print "$NAME has been disabled!" log "$GREEN" "$WHITE"
 			if isfunc disable; then
