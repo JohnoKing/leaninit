@@ -30,8 +30,9 @@ main()
 		waitfor file "/var/run/wpa_supplicant/$n"
 		break
 	done
+     sleep 0.2
 	pkill -KILL -x wpa_supplicant
-	sleep 0.5
+	sleep 0.2
 	restart  # Run wpa_supplicant
 }
 
