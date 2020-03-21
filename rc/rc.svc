@@ -196,8 +196,7 @@ checkfor()
 	case "$1" in
 		file)
 			if [ ! -e "$2" ]; then
-				print "$NAME failed to start because the file $2 does not exist!" "log" "$RED"
-				__fail 1
+				return 1
 			fi
 			;;
 		service)

@@ -8,6 +8,12 @@ main()
 			sysctl -f /etc/sysctl.conf >> "$__svclog" &
 		fi
 	done
+#DEF FreeBSD
+
+	# If devd is disabled, disable devctl in the kernel
+     if ! checkfor service devd; then
+		sysctl hw.bus.devctl_queue=0
+	fi
 }
 
 . /etc/leaninit/rc.svc
