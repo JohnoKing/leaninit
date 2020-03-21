@@ -6,4 +6,9 @@ main()
 	libvirtd -dp "$__svcpidfile"
 }
 
+reload()
+{
+    kill -HUP $__svcpid
+}
+
 . /etc/leaninit/rc.svc
