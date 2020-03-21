@@ -11,9 +11,10 @@ main()
 #DEF FreeBSD
 
 	# If devd is disabled, disable devctl in the kernel
-     if ! checkfor service devd; then
+	if ! checkfor service devd; then
 		sysctl hw.bus.devctl_queue=0
 	fi
+#ENDEF
 }
 
 . /etc/leaninit/rc.svc
