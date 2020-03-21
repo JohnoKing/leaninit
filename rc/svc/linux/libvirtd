@@ -1,0 +1,9 @@
+#!/bin/sh
+NAME="libvirtd"
+
+main()
+{
+	libvirtd -dp "$__svcpidfile"
+}
+
+. /etc/leaninit/rc.svc
