@@ -27,12 +27,23 @@
 . /etc/leaninit/rc.svc
 export OUTPUT_MODE="$1"
 
+# Check all file systems for data corruption
+print "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE"
+#DEF Linux
+fsck -AP
+#ENDEF
+#DEF FreeBSD
+fsck -CF
+#ENDEF
+
 # Mount all drives specified in /etc/fstab
 print "Mounting all drives..." nolog "$PURPLE" "$WHITE"
 mount -a 2> /dev/null &
 
+#DEF Linux
 # Remount root (/) as read-write
 mount -o remount,rw,noatime / 2> /dev/null &
+#ENDEF
 
 #DEF FreeBSD
 # If ZFS is enabled, it MUST be run first
