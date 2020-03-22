@@ -3,13 +3,18 @@ NAME="sysctl"
 
 main()
 {
-	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
-		if [ -e $s ]; then
-#DEF FreeBSD
-			sysctl -f /etc/sysctl.conf >> "$__svclog"
-#ENDEF
 #DEF Linux
+	if [ -d /usr/lib/sysctl.d ] && [ -n "$(ls /usr/lib/sysctl.d)" ]; then
+         SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
+	fi
+	for s in /etc/sysctl.conf /etc/sysctl.conf.local $SYSCTLD; do
+		if [ -e "$s" ]; then
 			sysctl -p /etc/sysctl.conf >> "$__svclog"
+#ENDEF
+#DEF FreeBSD
+	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
+		if [ -e "$s" ]; then
+			sysctl -f /etc/sysctl.conf >> "$__svclog"
 #ENDEF
 		fi
 	done
