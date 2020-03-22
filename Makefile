@@ -58,6 +58,18 @@ all: clean
 	@cp -r man out
 	@echo "Successfully built LeanInit!"
 
+# Change the shell used by LeanInit's scripts
+change-shell:
+	@if [ -z "$(RCSHELL)" ]; then \
+		echo 'Please define the $RCSHELL variable!' ;\
+		false ;\
+	fi
+	@if [ `uname` = FreeBSD ]; then \
+		sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/*/* ;\
+	elif [ `uname` = Linux ]; then \
+		sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/*/* ;\
+	fi
+
 # Install LeanInit's man pages and license
 install-universal:
 	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi

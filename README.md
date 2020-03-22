@@ -36,6 +36,10 @@ For LeanInit RC to be used by init on the next boot, backup the system's current
 and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanInit's RC scripts to `/etc`:
 `ln -s /etc/leaninit/rc /etc/rc && ln -s /etc/leaninit/rc.shutdown /etc/rc.shutdown`.
 
+### Using a different shell
+The shell LeanInit RC's script run under (defined at the start of each script) can be changed by running the following command after `make` and before `make install`:
+`make RCSHELL="/path/to/your/shell" change-shell`
+
 ## Usage
 Most information on LeanInit is located in its man pages.
 To read the main man page, run `man leaninit`.
