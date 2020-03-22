@@ -30,7 +30,7 @@ main()
 		EUACCESS=/usr/lib/elogind/elogind-uaccess-command
 	fi
 	if [ -n "$EUACCESS" ]; then
-		for fs in /dev $(df -t tmpfs | awk 'NR>1{ print $6 }'); do
+		for fs in /dev $(df -T 2> /dev/null | awk '/ tmpfs /{ print $6 }'); do
 			"$EUACCESS" "$fs"
 		done
 	fi
