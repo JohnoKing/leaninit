@@ -5,7 +5,12 @@ main()
 {
 	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
 		if [ -e $s ]; then
-			sysctl -f /etc/sysctl.conf >> "$__svclog" &
+#DEF FreeBSD
+			sysctl -f /etc/sysctl.conf >> "$__svclog"
+#ENDEF
+#DEF Linux
+			sysctl -p /etc/sysctl.conf >> "$__svclog"
+#ENDEF
 		fi
 	done
 #DEF FreeBSD
