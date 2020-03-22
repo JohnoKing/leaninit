@@ -22,18 +22,6 @@ main()
 
 	# Symlink the elogind PID file to the correct location
 	ln -s /var/run/elogind.pid "$__svcpidfile"
-
-	# If elogind-uaccess-command exists, run it
-	if [ -x /usr/libexec/elogind/elogind-uaccess-command ]; then
-		EUACCESS=/usr/libexec/elogind/elogind-uaccess-command
-	elif [ -x /usr/lib/elogind/elogind-uaccess-command ]; then
-		EUACCESS=/usr/lib/elogind/elogind-uaccess-command
-	fi
-	if [ -n "$EUACCESS" ]; then
-		for fs in /dev $(df -T 2> /dev/null | awk '/ tmpfs /{ print $6 }'); do
-			"$EUACCESS" "$fs"
-		done
-	fi
 }
 
 . /etc/leaninit/rc.svc

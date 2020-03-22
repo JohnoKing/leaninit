@@ -246,6 +246,7 @@ __start()
 		fi
 	else
 		print "$NAME failed to start!" log "$RED"
+		rm -f "$__svcpidfile"
 		echo "Failure" > "/var/run/leaninit/$__svcname.status"
 	fi
 
@@ -293,10 +294,7 @@ __stop()
 	fi
 
 	# Remove the .status, .pid and .type files for the service
-	rm -f "/var/run/leaninit/$__svcname.status" "$__svcpidfile"
-	if [ -n "$TYPE" ]; then
-		rm -f "/var/run/leaninit/$TYPE.type"
-	fi
+	rm -f "/var/run/leaninit/$__svcname.status" "/var/run/leaninit/$TYPE.type" "$__svcpidfile"
 
 	# Finish
 	print "Stopped $NAME successfully!" log "$GREEN" "$WHITE"
