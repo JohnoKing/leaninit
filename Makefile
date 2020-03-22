@@ -65,9 +65,9 @@ change-shell:
 		false ;\
 	fi
 	@if [ `uname` = FreeBSD ]; then \
-		sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/*/* ;\
+		sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 	elif [ `uname` = Linux ]; then \
-		sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/*/* ;\
+		sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 	fi
 
 # Install LeanInit's man pages and license
