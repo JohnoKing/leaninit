@@ -103,7 +103,7 @@ static pid_t spawn_getty(const char *cmd, const char *tty)
 }
 
 // Return the accessible file path or NULL if neither are
-static char *write_file_path(char *primary, char *fallback, int amode)
+static char *get_file_path(char *primary, char *fallback, int amode)
 {
     if(access(primary, amode) == 0) return primary;
     else if(access(fallback, amode) == 0) return fallback;
@@ -125,9 +125,11 @@ static void single(void)
         memcpy(shell, "/bin/sh", 8);
     }
 
-    // Fork the shell into a separate process
+    // Fork the shell as the child of a managing child process (trying to use only one child process causes serious bugs)
     pid_t child = fork();
     if(child == 0) {
+
+        // Actual shell
         pid_t sh = fork();
         if(sh == 0) {
             open_tty(DEFAULT_TTY);
@@ -141,8 +143,11 @@ static void single(void)
             kill(1, SIGFPE);
         }
 
+        // When the shell is done, automatically reboot
         waitpid(sh, NULL, 0);
         kill(1, SIGINT);
+
+    // Extra error handling
     } else if(child == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
@@ -154,7 +159,7 @@ static void single(void)
 static void multi(void)
 {
     // Locate rc
-    char *rc = write_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
+    char *rc = get_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
     if(rc == NULL) {
         printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
         single_user = 0;
@@ -170,7 +175,7 @@ static void multi(void)
     }
 
     // Locate ttys(5)
-    const char *ttys_file_path = write_file_path("/etc/leaninit/ttys", "/etc/ttys", R_OK);
+    const char *ttys_file_path = get_file_path("/etc/leaninit/ttys", "/etc/ttys", R_OK);
     if(ttys_file_path == NULL) {
         printf(RED "* Could not find either /etc/leaninit/ttys or /etc/ttys" RESET "\n");
         return;
@@ -287,7 +292,7 @@ int main(int argc, char *argv[])
 
         // Run rc.banner if the banner argument was passed to LeanInit
         if(banner != 0) {
-            char *rc_banner = write_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
+            char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
             if(rc_banner != NULL)
                 sh(rc_banner);
             else
@@ -331,7 +336,7 @@ int main(int argc, char *argv[])
             pthread_join(runlvl, NULL);
 
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
-            char *rc_shutdown = write_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
+            char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
             printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             kill(-1, SIGKILL);
