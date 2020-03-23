@@ -60,7 +60,8 @@ all: clean
 
 # Change the shell used by LeanInit's scripts
 change-shell:
-	@if [ -z "$(RCSHELL)" ]; then \
+	@if [ ! -d out ]; then echo 'Please build LeanInit before changing the default shell!'; false; fi
+	@if [ ! "$(RCSHELL)" ]; then \
 		echo 'Please define the $RCSHELL variable!' ;\
 		false ;\
 	fi
@@ -72,7 +73,7 @@ change-shell:
 
 # Install LeanInit's man pages and license
 install-universal:
-	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself'; false; fi
+	@if [ ! -d out ]; then echo 'Please build LeanInit before installing either the RC system or LeanInit itself!'; false; fi
 	@mkdir -p "$(DESTDIR)/usr/share/licenses/leaninit"
 	@cp -r out/man "$(DESTDIR)/usr/share"
 	@install -Dm0644 LICENSE "$(DESTDIR)/usr/share/licenses/leaninit/MIT"
