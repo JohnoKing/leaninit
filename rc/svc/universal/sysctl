@@ -4,8 +4,8 @@ NAME="sysctl"
 main()
 {
 #DEF Linux
-	if [ -d /usr/lib/sysctl.d ] && [ -n "$(ls /usr/lib/sysctl.d)" ]; then
-         SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
+	if [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ]; then
+		SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
 	fi
 	for s in /etc/sysctl.conf /etc/sysctl.conf.local $SYSCTLD; do
 		if [ -e "$s" ]; then

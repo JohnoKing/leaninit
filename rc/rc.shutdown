@@ -41,7 +41,7 @@ kill -TERM -1
 
 # Use a short loop to wait for all processes to stop
 ENDTIME=$(( `date +%s` + 1 ))
-until [ $(( `date +%s` > ENDTIME )) != 0 ] || ! kill -0 -1 2> /dev/null; do
+until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 -1 2> /dev/null; do
 	sleep 0.1
 done
 

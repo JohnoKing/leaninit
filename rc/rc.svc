@@ -93,7 +93,7 @@ __svccheck()
 		exit 7
 	fi
 
-	if [ -n "$__svcpid" ] && ! kill -0 $__svcpid 2> /dev/null; then
+	if [ "$__svcpid" ] && ! kill -0 $__svcpid 2> /dev/null; then
 		print "$NAME has stopped running!" log "$RED"
 		__fail 7
 	fi
@@ -102,7 +102,7 @@ __svccheck()
 # Makes sure the service has $__svcpid set
 __proccheck()
 {
-	if [ -z "$__svcpid" ]; then
+	if [ ! "$__svcpid" ]; then
 		if [ "$1" = "return" ]; then
 			return 3
 		fi
@@ -145,7 +145,7 @@ __usage()
 __waitfor_loop_file()
 {
 	ENDTIME=$(( `date +%s` + 7 ))
-	until [ $(( `date +%s` > ENDTIME )) != 0 ] || [ -e "$1" ]; do
+	until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || [ -e "$1" ]; do
 		sleep 0.1
 	done
 	if [ ! -e "$1" ]; then
@@ -219,13 +219,13 @@ __start()
 	if [ -e "/var/run/leaninit/$__svcname.status" ] && [ "$(cat "/var/run/leaninit/$__svcname.status")" != "Failure" ]; then
 		print "$NAME is already running..." nolog "$PURPLE" "$YELLOW"
 		return 0
-	elif [ -n "$TYPE" ] && [ -e "/var/run/leaninit/$TYPE.type" ]; then
+	elif [ "$TYPE" ] && [ -e "/var/run/leaninit/$TYPE.type" ]; then
 		print "$(cat "/var/run/leaninit/$TYPE.type") is currently running and conflicts with $NAME!" nolog "$RED"
 		return 1
 	fi
 
 	# Run main() when starting and restart() when restarting
-	if [ -z "$MSG" ]; then
+	if [ ! "$MSG" ]; then
 		print "${1}ing $NAME..." log "$BLUE" "$WHITE"
 	else
 		print "${MSG}..." log "$BLUE" "$WHITE"
@@ -238,10 +238,10 @@ __start()
 
 	# Finish by creating the service's .status and .type files
 	RET=$?
-	if [ $RET = 0 ]; then
+	if [ $RET -eq 0 ]; then
 		print "${1}ed ${NAME} successfully!" log "$GREEN" "$WHITE"
 		echo "$1ed" > "/var/run/leaninit/$__svcname.status"
-		if [ -n "$TYPE" ]; then
+		if [ "$TYPE" ]; then
 			echo "$__svcname" > "/var/run/leaninit/$TYPE.type"
 		fi
 	else
@@ -257,7 +257,7 @@ __start()
 __stop_pid()
 {
 	ENDTIME=$(( `date +%s` + 7 ))
-	until [ $(( `date +%s` > ENDTIME )) != 0 ] || ! kill -0 "$1" 2> /dev/null; do
+	until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 "$1" 2> /dev/null; do
 		sleep 0.1
 	done
 
@@ -283,7 +283,7 @@ __stop()
 	fi
 
 	# Stop the specified PIDs in the .pid file (if there are any)
-	if [ -n "$__svcpid" ]; then
+	if [ "$__svcpid" ]; then
 		print "Sending $NAME SIGCONT and SIGTERM..." log "$BLUE" "$WHITE"
 		kill -CONT $__svcpid 2> /dev/null
 		kill -TERM $__svcpid 2> /dev/null
@@ -313,7 +313,7 @@ __reload()
 	print "Reloading $NAME..." log "$BLUE" "$WHITE"
 	reload
 	RET=$?
-	if [ $RET = 0 ]; then
+	if [ $RET -eq 0 ]; then
 		print "Successfully reloaded $NAME!" log "$GREEN" "$WHITE"
 		echo "Reloaded" > "/var/run/leaninit/$__svcname.status"
 	else
@@ -353,7 +353,7 @@ __run()
 	fi
 
 	# Check for root permissions
-	if [ "$(id -u)" != 0 ]; then
+	if [ $(id -u) -ne 0 ]; then
 		print 'This must be run as root!' nolog "$RED"
 		exit 4
 	fi
@@ -377,12 +377,12 @@ __run()
 				print "$NAME is already enabled..." nolog "$PURPLE" "$YELLOW"
 				exit 0
 			fi
-			if [ -n "$TYPE" ] && [ -e "/var/lib/leaninit/types/$TYPE.type" ]; then
+			if [ "$TYPE" ] && [ -e "/var/lib/leaninit/types/$TYPE.type" ]; then
 				print "$NAME could not be enabled because $(cat "/var/lib/leaninit/types/$TYPE.type") conflicts with $NAME!" log "$RED"
 				exit 1
 			fi
 			touch "/var/lib/leaninit/svc/$__svcname"
-			if [ -n "$TYPE" ]; then
+			if [ "$TYPE" ]; then
 				echo "$__svcname" > "/var/lib/leaninit/types/$TYPE.type"
 			fi
 			print "$NAME has been enabled!" log "$GREEN" "$WHITE"
@@ -396,7 +396,7 @@ __run()
 				exit 0
 			fi
 			rm "/var/lib/leaninit/svc/$__svcname"
-			if [ -n "$TYPE" ]; then
+			if [ "$TYPE" ]; then
 				rm -f "/var/lib/leaninit/types/$TYPE.type"
 			fi
 			print "$NAME has been disabled!" log "$GREEN" "$WHITE"
@@ -484,6 +484,6 @@ __run()
 	esac
 }
 
-if [ -n "$NAME" ]; then
+if [ "$NAME" ]; then
 	__run "$@"
 fi

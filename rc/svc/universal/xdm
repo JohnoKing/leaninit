@@ -8,7 +8,7 @@ TYPE="display-manager"
 # The main function
 main()
 {
-	if [ -z "$XDM" ] || [ ! -x "$(command -v $XDM)" ]; then
+	if [ ! "$XDM" ] || [ ! -x "$(command -v $XDM)" ]; then
 		print 'The xdm service failed to start due to $XDM being invalid!' log "$RED"
 		return 1
 	fi
@@ -23,7 +23,7 @@ main()
 
 	# Launch the display manager and symlink the PID file if it is valid
 	fork "$XDM"
-	if [ -n "$XDMPID" ]; then
+	if [ "$XDMPID" ]; then
 		waitfor file "$XDMPID" optional
 		ln -sf "$XDMPID" "$__svcpidfile"
 	fi

@@ -4,7 +4,7 @@ MSG="Loading kernel modules"
 
 main()
 {
-	if [ -n "$(ls /etc/modules-load.d 2> /dev/null)" ]; then
+	if [ "$(ls /etc/modules-load.d 2> /dev/null)" ]; then
 		modprobe -a $(cat /etc/modules-load.d/* | grep -v '#')
 	else
 		return 0

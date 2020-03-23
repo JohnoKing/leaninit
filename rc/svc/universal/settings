@@ -4,12 +4,12 @@ NAME="LeanInit Settings"
 main()
 {
 	# Set the machine's hostname
-	if [ -n "$HOSTNAME" ]; then
+	if [ "$HOSTNAME" ]; then
 		hostname "$HOSTNAME"
 	fi
 
 	# Set the timezone
-	if [ -n "$TIMEZONE" ]; then
+	if [ "$TIMEZONE" ]; then
 		rm -f /etc/localtime
 		ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
 	fi
@@ -23,7 +23,7 @@ main()
 	loadkeys "$KEYMAP"
 
 	# Set the console font
-	if [ -n "$CONSOLEFONT" ]; then
+	if [ "$CONSOLEFONT" ]; then
 		print "Setting the console font to $CONSOLEFONT" log "$BLUE" "WHITE"
 		setfont "$CONSOLEFONT"
 	fi

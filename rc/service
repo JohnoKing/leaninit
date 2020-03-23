@@ -50,7 +50,7 @@ usage()
 
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
-	if [ "$(id -u)" != 0 ]; then
+	if [ $(id -u) -ne 0 ]; then
 		print 'This must be run as root!' nolog "$RED"
 		exit 4
 	fi
@@ -70,7 +70,7 @@ if [ "$1" = "--status-all" ]; then
 fi
 
 # Exit when not given proper arguments
-if [ -z "$2" ]; then
+if [ ! "$2" ]; then
 	usage
 elif [ ! -x "/etc/leaninit/svc/$1" ]; then
 	print "The service '$1' does not exist or could not be executed!" nolog "$RED"

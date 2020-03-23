@@ -9,7 +9,7 @@ main()
 	waitfor service dbus
 
 	# Run elogind
-	if [ -n "$(command -v elogind)" ]; then
+	if [ "$(command -v elogind)" ]; then
 		elogind -D
 	elif [ -x /usr/libexec/elogind/elogind ]; then
 		/usr/libexec/elogind/elogind -D
