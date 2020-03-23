@@ -49,11 +49,11 @@ int main(int argc, char *argv[])
 
     // Int variables
     unsigned int force = 1; // If this is 0, skip sending a signal to init
-    unsigned int osin  = 1; // If this is 0, call os-indications(8) before rebooting
+    unsigned int osin  = 1; // If this is 0, run os-indications(8) before rebooting
     unsigned int wall  = 0; // Used for syslog(3) messages
     int signal;             // For signals that will be sent to init
 
-    // Set the signal to send to init(8) using __progname
+    // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
     if(strstr(__progname,      "halt")     != 0) // Halt
         signal = SIGUSR1;
     else if(strstr(__progname, "poweroff") != 0) // Poweroff
@@ -61,13 +61,13 @@ int main(int argc, char *argv[])
     else if(strstr(__progname, "reboot")   != 0) // Reboot
         signal = SIGINT;
 
-    // Not valid
+    // __progname is not valid
     else {
         printf(RED "* You cannot run halt as %s" RESET "\n", __progname);
         return 1;
     }
 
-    // Parse any given options
+    // Parse the given options
     int args;
     while((args = getopt_long(argc, argv, "fFhlpr?", halt_long_options, NULL)) != -1) {
         switch(args) {
