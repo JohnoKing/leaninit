@@ -148,7 +148,7 @@ override: install
 
 # Uninstall (only works with normal installations)
 uninstall:
-	@if [ `id -u` != 0 ]; then \
+	@if [ `id -u` -ne 0 ]; then \
 		echo "You must be root to uninstall LeanInit!" ;\
 		false ;\
 	fi
