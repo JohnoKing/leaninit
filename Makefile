@@ -26,6 +26,7 @@ INCLUDE  := -I./include
 CPPFLAGS := -D_FORTIFY_SOURCE=2
 WFLAGS   := -Wall -Wextra -Wno-unused-result
 LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+#RCSHELL := /bin/sh
 
 # Compile LeanInit
 all: clean
@@ -41,12 +42,18 @@ all: clean
 		sed -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
 		sed -i '' "/#DEF FreeBSD/d"        out/*/* ;\
 		sed -i '' "/#ENDEF/d"              out/*/* ;\
+		if [ "$(RCSHELL)" ]; then \
+			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
+		fi ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
 		sed -i "/#DEF Linux/d"            out/*/* ;\
 		sed -i "/#ENDEF/d"                out/*/* ;\
+		if [ "$(RCSHELL)" ]; then \
+			sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
+		fi ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
@@ -57,19 +64,6 @@ all: clean
 	@strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt out/os-indications
 	@cp -r man out
 	@echo "Successfully built LeanInit!"
-
-# Change the shell used by LeanInit's scripts
-change-shell:
-	@if [ ! -d out ]; then echo 'Please build LeanInit before changing the default shell!'; false; fi
-	@if [ ! "$(RCSHELL)" ]; then \
-		echo 'Please define the $RCSHELL variable!' ;\
-		false ;\
-	fi
-	@if [ `uname` = FreeBSD ]; then \
-		sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
-	elif [ `uname` = Linux ]; then \
-		sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
-	fi
 
 # Install LeanInit's man pages and license
 install-universal:
