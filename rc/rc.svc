@@ -95,6 +95,7 @@ __svccheck()
 
 	if [ "$__svcpid" ] && ! kill -0 $__svcpid 2> /dev/null; then
 		print "$NAME has stopped running!" log "$RED"
+		rm -f "/var/run/leaninit/$TYPE.type"
 		__fail 7
 	fi
 }
