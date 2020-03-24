@@ -69,13 +69,13 @@ int main(int argc, char *argv[])
 
     // Parse the given options
     int args;
-    while((args = getopt_long(argc, argv, "fFhlpr?", halt_long_options, NULL)) != -1) {
+    while((args = getopt_long(argc, argv, "fFhlpqr?", halt_long_options, NULL)) != -1) {
         switch(args) {
 
             // Display usage info
             case '?':
-                printf("Usage: %s [-fFhlpr?]\n", __progname);
-                printf("  -f, --force            Do not send a signal to init, call reboot(2) directly\n");
+                printf("Usage: %s [-fFhlpqr?]\n", __progname);
+                printf("  -f, -q, --force        Do not send a signal to init, call sync(2) reboot(2) directly\n");
                 printf("  -F, --firmware-setup   Reboot into the firmware setup\n");
                 printf("  -h, --halt             Force halt, even when called as poweroff or reboot\n");
                 printf("  -l, --no-wall          Turn off wall messages\n");
@@ -84,8 +84,9 @@ int main(int argc, char *argv[])
                 printf("  -?, --help             Show this usage information\n");
                 return 1;
 
-            // --force
+            // Skip sending a signal to init(8)
             case 'f':
+            case 'q':
                 force = 0;
                 break;
 
