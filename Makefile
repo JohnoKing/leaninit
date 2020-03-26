@@ -81,11 +81,11 @@ install-rc: install-universal
 	@cp -i out/rc/rc.conf out/rc/ttys "$(DESTDIR)/etc/leaninit" || true
 	@install -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
 	@install -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
-	@if [ `uname` = FreeBSD ] && [ ! -e "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
+	@if [ `uname` = FreeBSD ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/devd" "$(DESTDIR)/var/lib/leaninit/svc/zfs" "$(DESTDIR)/var/lib/leaninit/svc/syslogd" \
 			"$(DESTDIR)/var/lib/leaninit/svc/powerd" "$(DESTDIR)/var/lib/leaninit/svc/wpa_supplicant" ;\
-	elif [ `uname` = Linux ] && [ ! -e "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
+	elif [ `uname` = Linux ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" "$(DESTDIR)/var/lib/leaninit/svc/netface" \
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" ;\
 		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
@@ -99,8 +99,8 @@ install-rc: install-universal
 install-base: install-universal
 	@mkdir -p "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/usr/share/man/man8" ;\
-	[ -e leaninit-poweroff.8 ] || ln -sf leaninit-halt.8 leaninit-poweroff.8 ;\
-	[ -e leaninit-reboot.8 ] || ln -sf leaninit-halt.8 leaninit-reboot.8
+	[ -f leaninit-poweroff.8 ] || ln -sf leaninit-halt.8 leaninit-poweroff.8 ;\
+	[ -f leaninit-reboot.8 ] || ln -sf leaninit-halt.8 leaninit-reboot.8
 	@install -Dm0755 out/leaninit out/leaninit-halt out/os-indications "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
