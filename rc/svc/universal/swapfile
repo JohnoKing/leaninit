@@ -3,7 +3,7 @@ NAME="Swapfile"
 
 main()
 {
-	if [ ! -e /swapfile ]; then
+	if [ ! -f /swapfile ]; then
 		print 'Please create a swapfile at /swapfile!' "$RED"
 		__fail 1
 	fi
