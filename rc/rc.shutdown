@@ -23,7 +23,7 @@
 # /etc/leaninit/rc.shutdown - Stops all services
 #
 
-# Seperate system shutdown in the log file (requires that rc.conf(8) is sourced)
+# Separate system shutdown in the log file (requires that rc.conf(8) is sourced)
 . /etc/leaninit/rc.svc
 
 # Stop all currently running services

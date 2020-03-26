@@ -40,7 +40,7 @@ export NDIS
 export KEYMAP
 #ENDEF
 
-# Set the nessesary variables
+# Set the necessary variables
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export OUTPUT_MODE="$2"
 
