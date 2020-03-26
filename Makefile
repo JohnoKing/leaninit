@@ -112,32 +112,34 @@ install: install-rc install-base
 
 # Set LeanInit as the default init system
 override: install
-	@cd "$(DESTDIR)" ;\
-	ln -sf "/sbin/leaninit"            "/sbin/init" ;\
-	ln -sf "/sbin/leaninit-halt"       "/sbin/halt" ;\
-	ln -sf "/sbin/leaninit-halt"       "/sbin/poweroff" ;\
-	ln -sf "/sbin/leaninit-halt"       "/sbin/reboot" ;\
-	ln -sf "/sbin/leaninit-service"    "/sbin/service" ;\
-	ln -sf "/etc/leaninit/rc"          "/etc/rc" ;\
-	ln -sf "/etc/leaninit/rc.banner"   "/etc/rc.banner" ;\
-	ln -sf "/etc/leaninit/rc.conf"     "/etc/rc.conf" ;\
-	ln -sf "/etc/leaninit/rc.conf.d"   "/etc/rc.conf.d" ;\
-	ln -sf "/etc/leaninit/rc.shutdown" "/etc/rc.shutdown" ;\
-	ln -sf "/etc/leaninit/rc.svc"      "/etc/rc.svc" ;\
-	ln -sf "/etc/leaninit/svc"         "/etc/init.d" ;\
-	ln -sf "/etc/leaninit/svc"         "/etc/rc.d" ;\
-	ln -sf "/etc/leaninit/ttys"        "/etc/ttys" ;\
-	ln -sf "/usr/share/man/man5/leaninit-rc.conf.5"     "/usr/share/man/man5/rc.conf.5" ;\
-	ln -sf "/usr/share/man/man5/leaninit-ttys.5"        "/usr/share/man/man5/ttys.5" ;\
-	ln -sf "/usr/share/man/man8/leaninit-halt.8"        "/usr/share/man/man8/halt.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit-halt.8"        "/usr/share/man/man8/poweroff.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit-halt.8"        "/usr/share/man/man8/reboot.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit-rc.8"          "/usr/share/man/man8/rc.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit-rc.banner.8"   "/usr/share/man/man8/rc.banner.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit-rc.shutdown.8" "/usr/share/man/man8/rc.shutdown.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit-rc.svc.8"      "/usr/share/man/man8/rc.svc.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit-service.8"     "/usr/share/man/man8/service.8" ;\
-	ln -sf "/usr/share/man/man8/leaninit.8"             "/usr/share/man/man8/init.8" ;\
+	@cd "$(DESTDIR)/sbin" ;\
+	ln -sf "leaninit"            "init" ;\
+	ln -sf "leaninit-halt"       "halt" ;\
+	ln -sf "leaninit-halt"       "poweroff" ;\
+	ln -sf "leaninit-halt"       "reboot" ;\
+	ln -sf "leaninit-service"    "service" ;\
+	@cd "$(DESTDIR)/etc" ;\
+	ln -sf "leaninit/rc"          "rc" ;\
+	ln -sf "leaninit/rc.banner"   "rc.banner" ;\
+	ln -sf "leaninit/rc.conf"     "rc.conf" ;\
+	ln -sf "leaninit/rc.conf.d"   "rc.conf.d" ;\
+	ln -sf "leaninit/rc.shutdown" "rc.shutdown" ;\
+	ln -sf "leaninit/rc.svc"      "rc.svc" ;\
+	ln -sf "leaninit/svc"         "init.d" ;\
+	ln -sf "leaninit/svc"         "rc.d" ;\
+	ln -sf "leaninit/ttys"        "ttys" ;\
+	@cd "$(DESTDIR)/usr/share/man" ;\
+	ln -sf "man5/leaninit-rc.conf.5"     "man5/rc.conf.5" ;\
+	ln -sf "man5/leaninit-ttys.5"        "man5/ttys.5" ;\
+	ln -sf "man8/leaninit-halt.8"        "man8/halt.8" ;\
+	ln -sf "man8/leaninit-halt.8"        "man8/poweroff.8" ;\
+	ln -sf "man8/leaninit-halt.8"        "man8/reboot.8" ;\
+	ln -sf "man8/leaninit-rc.8"          "man8/rc.8" ;\
+	ln -sf "man8/leaninit-rc.banner.8"   "man8/rc.banner.8" ;\
+	ln -sf "man8/leaninit-rc.shutdown.8" "man8/rc.shutdown.8" ;\
+	ln -sf "man8/leaninit-rc.svc.8"      "man8/rc.svc.8" ;\
+	ln -sf "man8/leaninit-service.8"     "man8/service.8" ;\
+	ln -sf "man8/leaninit.8"             "man8/init.8" ;\
 	echo "LeanInit is now the default init system!"
 
 # Uninstall (only works with normal installations)
