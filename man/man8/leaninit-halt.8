@@ -18,14 +18,14 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 23, 2020
+.Dd March 26, 2020
 .Dt HALT 8
 .Os
 .Sh NAME
 .Nm halt
 .Nd halt, poweroff or reboot
 .Sh SYNOPSIS
-.Nm halt
+.Nm
 .Op Fl fFhlpqr?
 .Sh DESCRIPTION
 .Nm Halt
@@ -53,7 +53,7 @@ Reboot into the system firmware's UI (only supported on UEFI systems).
 .Pp
 .Nm -h, --halt
 Forces halt, even when
-.Nm halt
+.Nm
 is called as
 .Nm poweroff
 or
@@ -66,17 +66,17 @@ before rebooting.
 .Pp
 .Nm -p, --poweroff
 Forces poweroff, even when
-.Nm halt
+.Nm
 is called as
-.Nm halt
+.Nm
 or
 .Nm reboot.
 .Pp
 .Nm -r, --reboot
 Forces reboot, even when
-.Nm halt
+.Nm 
 is called as
-.Nm halt
+.Nm
 or
 .Nm poweroff.
 .Pp

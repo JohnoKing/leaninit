@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 13, 2020
+.Dd March 26, 2020
 .Dt RC 8
 .Os
 .Sh NAME
@@ -26,7 +26,7 @@
 .Nd init script
 .Sh DESCRIPTION
 The
-.Nm rc
+.Nm
 script is responsible for mounting all primary file systems and starting all services listed in
 .Em /var/lib/leaninit/svc
 concurrently.
@@ -35,7 +35,7 @@ If either
 or
 .Em /etc/leaninit/rc.local
 exist and are executable,
-.Nm rc
+.Nm
 will run them after it launches all services.
 .Pp
 .Nm RC
@@ -45,16 +45,16 @@ by default.
 .Sh FILES
 .Em /etc/rc.local
 Optional script run by
-.Nm rc
+.Nm
 if it exists.
 
 .Em /etc/leaninit/rc.svc
 Provides variables and functions to
-.Nm rc
+.Nm
 
 .Em /etc/leaninit/rc.conf
 Config file for
-.Nm rc
+.Nm
 and
 .Nm LeanInit
 services

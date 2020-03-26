@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 6, 2020
+.Dd March 26, 2020
 .Dt OS-INDICATIONS 8
 .Os
 .Sh NAME
@@ -26,7 +26,7 @@
 .Nd Set the OsIndications UEFI variable
 for booting into firmware setup
 .Sh SYNOPSIS
-.Nm os-indications
+.Nm
 .Op Fl qu?
 .Sh DESCRIPTION
 This program controls whether or not the UEFI variable
@@ -34,7 +34,7 @@ This program controls whether or not the UEFI variable
 is set to boot into
 the system firmware's UI on the system's next boot.
 When run without any flags or options,
-.Nm os-indications
+.Nm
 will set
 .Nm OsIndications
 to boot into the system firmware on the next boot.
@@ -43,7 +43,7 @@ This program accepts the following flags:
 
 .Nm -q, --quiet
 Disable
-.Nm os-indications
+.Nm
 output (unless an error occurs).
 
 .Nm -u, --unset
@@ -53,7 +53,7 @@ to reverse any previous actions that were taken.
 
 .Nm -?, --help
 Show
-.Nm os-indications
+.Nm
 usage information.
 .Sh FILES (LINUX)
 .Em /sys/firmware/efi/efivars
@@ -64,17 +64,17 @@ Non-standard variables are made immutable by default.
 The
 .Nm OsIndications
 UEFI variable that
-.Nm os-indications
+.Nm
 writes to.
 If this file is immutable,
-.Nm os-indications
+.Nm
 will fail to set the OsIndications UEFI variable.
 This can be fixed by using
 .Nm chattr(1).
 
 .Em /sys/firmware/efi/efivars/OsIndicationsSupport-8be4df61-93ca-11d2-aa0d-00e098032b8c
 This is the UEFI variable that tells
-.Nm os-indications
+.Nm
 if the system supports rebooting into the firmware's interface from the current OS.
 .Sh SEE ALSO
 efivar(1)

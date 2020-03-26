@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 13, 2020
+.Dd March 26, 2020
 .Dt RC.SVC 8
 .Os
 .Sh NAME
@@ -28,7 +28,7 @@
 scripts
 .Sh DESCRIPTION
 The
-.Nm rc.svc
+.Nm
 script is responsible for reading
 .Em /etc/leaninit/rc.conf,
 then providing all required
@@ -44,7 +44,7 @@ The following functions and variables are provided by
 .Nm rc.svc:
 
 .Em $PATH
-.Nm rc.svc
+.Nm
 will set the default path to
 .Em /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin,
 then load
@@ -58,7 +58,7 @@ This variable provides services with their basename by running `$(basename "$0")
 
 
 .Em $__svcpidfile
-.Nm rc.svc
+.Nm
 provides services with a preconfigured path for a PID file that may contain either one single PID or multiple PIDs.
 
 
@@ -70,7 +70,7 @@ This variable provides services with their PID(s) by running `$(cat $__svcpidfil
 
 .Em $__svclog
 This variable provides services with a path to the log file
-.Nm rc.svc
+.Nm
 will write to.
 
 
