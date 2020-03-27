@@ -5,6 +5,7 @@ main()
 {
 	waitfor service netface
 	waitfor service dbus
+	waitfor networking optional
 	fork /usr/lib/iwd/iwd
 }
 
