@@ -5,8 +5,8 @@ TYPE="udev"
 
 main()
 {
-	"$DEVEXEC" -s
-	echo "$DEVEXEC" > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
+	echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
+	$DEVEXEC -s
 }
 
 . /etc/leaninit/rc.svc
