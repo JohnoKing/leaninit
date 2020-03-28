@@ -47,8 +47,8 @@ done
 
 # Sync and unmount all file systems, then exit
 sync
-mount -o remount,ro / 2> /dev/null
 #DEF FreeBSD
+mount -o remount,ro / 2> /dev/null
 umount -A 2> /dev/null
 #ENDEF
 #DEF Linux
