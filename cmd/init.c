@@ -252,7 +252,7 @@ static void *chlvl(void *nullptr)
     return nullptr;
 }
 
-// This perpetual loop kills all zombie processes
+// This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
 static noreturn *zloop(void *nullptr)
 {
     for(;;) if(wait(nullptr) == -1) sleep(1);
@@ -288,7 +288,7 @@ int main(int argc, char *argv[])
 
         // Start the zombie killer thread
         pthread_t loop, runlvl;
-        pthread_create(&loop,   NULL, zloop, NULL);
+        pthread_create(&loop, NULL, zloop, NULL);
 
         // Run rc.banner if the banner argument was passed to LeanInit
         if(banner != 0) {
