@@ -253,7 +253,7 @@ static void *chlvl(void *nullptr)
 }
 
 // This perpetual loop kills all zombie processes
-__attribute((noreturn)) static void *zloop(void *nullptr)
+static noreturn *zloop(void *nullptr)
 {
     for(;;) if(wait(nullptr) == -1) sleep(1);
 }
