@@ -1,0 +1,15 @@
+#!/bin/sh
+NAME="Process Accounting"
+
+main()
+{
+	touch /var/log/account/pacct
+	accton /var/log/account/pacct
+}
+
+stop()
+{
+	accton off
+}
+
+. /etc/leaninit/rc.svc
