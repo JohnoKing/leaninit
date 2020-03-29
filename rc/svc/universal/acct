@@ -1,4 +1,5 @@
 #!/bin/sh
+# NOTE: Process accounting will use up a considerable amount of disk space
 NAME="Process Accounting"
 
 main()
