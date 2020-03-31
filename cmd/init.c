@@ -145,6 +145,9 @@ static void single(void)
 
         // When the shell is done, automatically reboot
         waitpid(sh, NULL, 0);
+        open_tty(DEFAULT_TTY);
+        printf(CYAN "* " WHITE "The shell has stopped, rebooting the system..." RESET "\n");
+        sleep(1);
         kill(1, SIGINT);
 
     // Extra error handling
