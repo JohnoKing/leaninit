@@ -14,8 +14,6 @@ You can change the destination LeanInit is installed to by using `$DESTDIR`.
 
 To boot into LeanInit, add `init=/sbin/leaninit` to your kernel command
 line. Make sure eudev and iproute2 are installed, as they are required on Linux.
-Also, make sure `/bin/sh` is symlinked to a fast shell such as dash or ksh to
-increase performance.
 
 ### FreeBSD
 Follow the same steps as on Linux to build LeanInit. The Makefile
@@ -36,9 +34,11 @@ For LeanInit RC to be used by init on the next boot, backup the system's current
 and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanInit's RC scripts to `/etc`:
 `ln -s /etc/leaninit/rc /etc/rc && ln -s /etc/leaninit/rc.shutdown /etc/rc.shutdown`.
 
-### Changing the default shell
+### Optimization
 The shell LeanInit RC's scripts run under (defined at the start of each script) can be changed with the `$RCSHELL` environment variable.
-`make RCSHELL="/path/to/your/shell" change-shell`
+To compile with BusyBox ash as the default shell (to increase performance), build with the following command:
+`make RCSHELL='/bin/busybox ash'`
+LeanInit will also net slightly better performance on Linux if statically compiled with musl libc.
 
 ## Usage
 Most information on LeanInit is located in its man pages.
