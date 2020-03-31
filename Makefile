@@ -26,7 +26,7 @@ INCLUDE  := -I./include
 CPPFLAGS := -D_FORTIFY_SOURCE=2
 WFLAGS   := -Wall -Wextra -Wno-unused-result
 LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
-#RCSHELL := /bin/sh
+#RCSHELL := /bin/dash
 
 # Compile LeanInit
 all: clean
@@ -113,11 +113,11 @@ install: install-rc install-base
 # Set LeanInit as the default init system
 override: install
 	@cd "$(DESTDIR)/sbin" ;\
-	ln -sf "leaninit"            "init" ;\
-	ln -sf "leaninit-halt"       "halt" ;\
-	ln -sf "leaninit-halt"       "poweroff" ;\
-	ln -sf "leaninit-halt"       "reboot" ;\
-	ln -sf "leaninit-service"    "service" ;\
+	ln -sf "leaninit"         "init" ;\
+	ln -sf "leaninit-halt"    "halt" ;\
+	ln -sf "leaninit-halt"    "poweroff" ;\
+	ln -sf "leaninit-halt"    "reboot" ;\
+	ln -sf "leaninit-service" "service" ;\
 	@cd "$(DESTDIR)/etc" ;\
 	ln -sf "leaninit/rc"          "rc" ;\
 	ln -sf "leaninit/rc.banner"   "rc.banner" ;\
