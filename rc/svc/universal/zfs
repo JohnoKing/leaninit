@@ -6,32 +6,32 @@ MSG="Mounting ZFS file systems"
 main()
 {
 #DEF FreeBSD
-	# This is done in a for loop for compatibility with beadm(1)
-	for z in $(df -PT 2> /dev/null | awk '/ zfs /{ print $1 }'); do
-		zfs mount "$z"
-	done
+    # This is done in a for loop for compatibility with beadm(1)
+    for z in $(df -PT 2> /dev/null | awk '/ zfs /{ print $1 }'); do
+        zfs mount "$z"
+    done
 #ENDEF
 #DEF Linux
-	# Wait for kernel modules to be loaded (to ensure ZFS is active)
-	waitfor service kmod optional
+    # Wait for kernel modules to be loaded (to ensure ZFS is active)
+    waitfor service kmod optional
 #ENDEF
 
-	# mount -a equivalent (includes NFS)
-	zfs mount -a
-	zfs share -a
+    # mount -a equivalent (includes NFS)
+    zfs mount -a
+    zfs share -a
 
-	# Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
-	for z in $(zpool list -Ho name); do
-		print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
-		zfs readonly=off "$z"
-	done
+    # Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
+    for z in $(zpool list -Ho name); do
+        print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
+        zfs readonly=off "$z"
+    done
 }
 
 # Unmount ZFS file systems when this service stops
 stop()
 {
-	zfs unmount -a
-	zfs unshare -a
+    zfs unmount -a
+    zfs unshare -a
 }
 
 . /etc/leaninit/rc.svc

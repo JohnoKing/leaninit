@@ -3,15 +3,15 @@ NAME="Avahi"
 
 main()
 {
-	waitfor networking
-	waitfor service dbus
-	avahi-daemon -D
-	ln -s /var/run/avahi-daemon/pid "$__svcpidfile"
+    waitfor networking
+    waitfor service dbus
+    avahi-daemon -D
+    ln -s /var/run/avahi-daemon/pid "$__svcpidfile"
 }
 
 reload()
 {
-	avahi-daemon --reload
+    avahi-daemon --reload
 }
 
 . /etc/leaninit/rc.svc

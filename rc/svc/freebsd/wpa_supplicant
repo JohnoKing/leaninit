@@ -5,35 +5,35 @@ TYPE="networking"
 # Run wpa_supplicant on all interfaces
 restart()
 {
-	if [ "$WIRED" ]; then
-		for n in $WIRED; do
-			fork wpa_supplicant -s -Dwired "-i$n" -c/etc/wpa_supplicant.conf
-		done
-	fi
-	if [ "$WIRELESS" ]; then
-		for n in $WIRELESS; do
-			fork wpa_supplicant -s -Dbsd "-i$n" -c/etc/wpa_supplicant.conf
-		done
-	fi
-	if [ "$NDIS" ]; then
-		for n in $NDIS; do
-			fork wpa_supplicant -s -Dndis "-i$n" -c/etc/wpa_supplicant.conf
-		done
-	fi
+    if [ "$WIRED" ]; then
+        for n in $WIRED; do
+            fork wpa_supplicant -s -Dwired "-i$n" -c/etc/wpa_supplicant.conf
+        done
+    fi
+    if [ "$WIRELESS" ]; then
+        for n in $WIRELESS; do
+            fork wpa_supplicant -s -Dbsd "-i$n" -c/etc/wpa_supplicant.conf
+        done
+    fi
+    if [ "$NDIS" ]; then
+        for n in $NDIS; do
+            fork wpa_supplicant -s -Dndis "-i$n" -c/etc/wpa_supplicant.conf
+        done
+    fi
 }
 
 # The main function
 main()
 {
-	waitfor service devd
-	for n in $WIRELESS $NDIS; do
-		waitfor file "/var/run/wpa_supplicant/$n"
-		break
-	done
-	sleep 2
-	pkill -KILL -x wpa_supplicant
-	sleep 0.2
-	restart  # Run wpa_supplicant
+    waitfor service devd
+    for n in $WIRELESS $NDIS; do
+        waitfor file "/var/run/wpa_supplicant/$n"
+        break
+    done
+    sleep 2
+    pkill -KILL -x wpa_supplicant
+    sleep 0.2
+    restart  # Run wpa_supplicant
 }
 
 . /etc/leaninit/rc.svc

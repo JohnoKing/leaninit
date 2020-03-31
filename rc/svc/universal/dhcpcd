@@ -4,9 +4,9 @@ TYPE="networking"
 
 main()
 {
-	for n in $NETFACE; do
-		fork dhcpcd -B "$n"
-	done
+    for n in $NETFACE; do
+        fork dhcpcd -B "$n"
+    done
 }
 
 . /etc/leaninit/rc.svc

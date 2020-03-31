@@ -3,19 +3,19 @@ NAME="Apache Web Server"
 
 main()
 {
-	waitfor networking
-	mkdir -p /run/httpd /var/run/httpd
-	fork httpd -k start -DFOREGROUND
+    waitfor networking
+    mkdir -p /run/httpd /var/run/httpd
+    fork httpd -k start -DFOREGROUND
 }
 
 stop()
 {
-	httpd -k graceful-stop
+    httpd -k graceful-stop
 }
 
 reload()
 {
-	kill -HUP $__svcpid
+    kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc

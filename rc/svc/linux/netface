@@ -4,15 +4,15 @@ MSG="Detecting network interfaces"
 
 main()
 {
-	# udev is required for setting up network interfaces
-	waitfor udev
+    # udev is required for setting up network interfaces
+    waitfor udev
 
-	# Set up network interfaces
-	for n in $(ip -o link show | awk '{ gsub(":", ""); print $2 }'); do
-		print "Setting up $n for networking..." log "$BLUE" "$WHITE"
-		ip link set up dev "$n" &
-	done
-	wait
+    # Set up network interfaces
+    for n in $(ip -o link show | awk '{ gsub(":", ""); print $2 }'); do
+        print "Setting up $n for networking..." log "$BLUE" "$WHITE"
+        ip link set up dev "$n" &
+    done
+    wait
 }
 
 . /etc/leaninit/rc.svc

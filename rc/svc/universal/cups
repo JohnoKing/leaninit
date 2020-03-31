@@ -4,9 +4,9 @@ TYPE="printing-daemon"
 
 main()
 {
-	waitfor service avahi
-	cupsd
-	ln -s /var/run/cups/cupsd.pid "$__svcpidfile"
+    waitfor service avahi
+    cupsd
+    ln -s /var/run/cups/cupsd.pid "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

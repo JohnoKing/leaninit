@@ -3,19 +3,19 @@ NAME="D-Bus"
 
 main()
 {
-	mkdir -p /run/dbus /var/run/dbus
-	rm -f /run/dbus/pid /var/run/dbus/pid
-	dbus-daemon --fork --system --print-pid > "$__svcpidfile"
-	if [ ! -f /etc/machine-id ]; then
-		dbus-uuidgen > /etc/machine-id
-	fi
-	sleep 0.3
+    mkdir -p /run/dbus /var/run/dbus
+    rm -f /run/dbus/pid /var/run/dbus/pid
+    dbus-daemon --fork --system --print-pid > "$__svcpidfile"
+    if [ ! -f /etc/machine-id ]; then
+        dbus-uuidgen > /etc/machine-id
+    fi
+    sleep 0.3
 }
 
 # This causes D-Bus to partially reload
 reload()
 {
-	kill -HUP $__svcpid
+    kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc

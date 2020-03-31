@@ -27,54 +27,54 @@
 . /etc/leaninit/rc.svc
 usage()
 {
-	print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
-	print "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
-	echo "Potential actions:"
-	echo "  enable"
-	echo "  disable"
-	echo "  start"
-	echo "  stop"
-	echo "  restart"
-	echo "  try-restart"
-	echo "  force-reload"
-	echo "  reload"
+    print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
+    print "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
+    echo "Potential actions:"
+    echo "  enable"
+    echo "  disable"
+    echo "  start"
+    echo "  stop"
+    echo "  restart"
+    echo "  try-restart"
+    echo "  force-reload"
+    echo "  reload"
 #DEF FreeBSD
-	echo "  info"
+    echo "  info"
 #ENDEF
-	echo "  pause"
-	echo "  cont"
-	echo "  status"
-	echo "  help"
-	exit 1
+    echo "  pause"
+    echo "  cont"
+    echo "  status"
+    echo "  help"
+    exit 1
 }
 
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
-	if [ $(id -u) -ne 0 ]; then
-		print 'This must be run as root!' nolog "$RED"
-		exit 4
-	fi
-	__TMP=$(mktemp)
-	for svc in /etc/leaninit/svc/*; do
-		"$svc" status >> "$__TMP" &
-	done
-	wait
+    if [ $(id -u) -ne 0 ]; then
+        print 'This must be run as root!' nolog "$RED"
+        exit 4
+    fi
+    __TMP=$(mktemp)
+    for svc in /etc/leaninit/svc/*; do
+        "$svc" status >> "$__TMP" &
+    done
+    wait
 #DEF FreeBSD
-	printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
+    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
 #ENDEF
 #DEF Linux
-	printf "${WHITE}%s${RESET}\n" "$(column -ts '|' -o '|' "$__TMP" |  sort)"
+    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' -o '|' "$__TMP" |  sort)"
 #ENDEF
-	rm -f "$__TMP"
-	exit 0
+    rm -f "$__TMP"
+    exit 0
 fi
 
 # Exit when not given proper arguments
 if [ ! "$2" ]; then
-	usage
+    usage
 elif [ ! -x "/etc/leaninit/svc/$1" ]; then
-	print "The service '$1' does not exist or could not be executed!" nolog "$RED"
-	usage
+    print "The service '$1' does not exist or could not be executed!" nolog "$RED"
+    usage
 fi
 
 # Execute the service directly

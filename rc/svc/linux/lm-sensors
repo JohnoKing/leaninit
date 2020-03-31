@@ -3,13 +3,13 @@ NAME="Linux Monitoring Sensors"
 
 main()
 {
-	waitfor service kmod optional
-	sensors -s
+    waitfor service kmod optional
+    sensors -s
 }
 
 reload()
 {
-	sensors -s
+    sensors -s
 }
 
 . /etc/leaninit/rc.svc

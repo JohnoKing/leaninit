@@ -3,12 +3,12 @@ NAME="SyslogD"
 
 main()
 {
-	syslogd -ss -P "$__svcpidfile"
+    syslogd -ss -P "$__svcpidfile"
 }
 
 reload()
 {
-	kill -HUP $__svcpid
+    kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc

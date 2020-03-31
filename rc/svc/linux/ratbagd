@@ -3,8 +3,8 @@ NAME="ratbagd"
 
 main()
 {
-	waitfor service elogind
-	fork ratbagd
+    waitfor service elogind
+    fork ratbagd
 }
 
 . /etc/leaninit/rc.svc

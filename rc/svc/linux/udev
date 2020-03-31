@@ -5,21 +5,21 @@ TYPE="udev"
 
 main()
 {
-	"$DEVEXEC" --daemon
-	udevadm info --cleanup-db
-	udevadm trigger --action=add
-	udevadm settle
+    "$DEVEXEC" --daemon
+    udevadm info --cleanup-db
+    udevadm trigger --action=add
+    udevadm settle
 }
 
 reload()
 {
-	udevadm control --reload-rules
-	udevadm trigger
+    udevadm control --reload-rules
+    udevadm trigger
 }
 
 stop()
 {
-	udevadm control --exit
+    udevadm control --exit
 }
 
 . /etc/leaninit/rc.svc

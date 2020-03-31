@@ -4,24 +4,24 @@ TYPE="login-daemon"
 
 main()
 {
-	# elogind requires Cgroups and D-Bus
-	waitfor service mountpfs
-	waitfor service dbus
+    # elogind requires Cgroups and D-Bus
+    waitfor service mountpfs
+    waitfor service dbus
 
-	# Run elogind
-	if [ "$(command -v elogind)" ]; then
-		elogind -D
-	elif [ -x /usr/libexec/elogind/elogind ]; then
-		/usr/libexec/elogind/elogind -D
-	elif [ -x /usr/lib/elogind/elogind ]; then
-		/usr/lib/elogind/elogind -D
-	else
-		print 'Could not find the elogind binary!' log "$RED"
-		return 1
-	fi
+    # Run elogind
+    if [ "$(command -v elogind)" ]; then
+        elogind -D
+    elif [ -x /usr/libexec/elogind/elogind ]; then
+        /usr/libexec/elogind/elogind -D
+    elif [ -x /usr/lib/elogind/elogind ]; then
+        /usr/lib/elogind/elogind -D
+    else
+        print 'Could not find the elogind binary!' log "$RED"
+        return 1
+    fi
 
-	# Symlink the elogind PID file to the correct location
-	ln -s /var/run/elogind.pid "$__svcpidfile"
+    # Symlink the elogind PID file to the correct location
+    ln -s /var/run/elogind.pid "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

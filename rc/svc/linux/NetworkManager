@@ -4,9 +4,9 @@ TYPE="networking"
 
 main()
 {
-	waitfor service netface
-	waitfor service dbus
-	NetworkManager --pid-file="$__svcpidfile"
+    waitfor service netface
+    waitfor service dbus
+    NetworkManager --pid-file="$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

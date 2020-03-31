@@ -264,7 +264,6 @@ static void sighandle(int signal)
     current_signal = signal;
 }
 
-// The main function
 int main(int argc, char *argv[])
 {
     // PID 1

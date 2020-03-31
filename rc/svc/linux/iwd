@@ -3,10 +3,10 @@ NAME="iNet Wireless Daemon"
 
 main()
 {
-	waitfor service netface
-	waitfor service dbus
-	waitfor networking optional
-	fork /usr/lib/iwd/iwd
+    waitfor service netface
+    waitfor service dbus
+    waitfor networking optional
+    fork /usr/lib/iwd/iwd
 }
 
 . /etc/leaninit/rc.svc

@@ -26,7 +26,6 @@
 
 #include <leaninit.h>
 
-// Main function for halt
 int main(int argc, char *argv[])
 {
     // Halt can only be run by root

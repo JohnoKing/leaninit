@@ -3,17 +3,17 @@ NAME="SSH"
 
 main()
 {
-	# Wait for internet services
-	waitfor networking
+    # Wait for internet services
+    waitfor networking
 
-	# sshd must be executed with the full path to the executable
-	ssh-keygen -A >> /dev/null
-	fork "$(command -v sshd)" -D
+    # sshd must be executed with the full path to the executable
+    ssh-keygen -A >> /dev/null
+    fork "$(command -v sshd)" -D
 }
 
 reload()
 {
-	kill -HUP $__svcpid
+    kill -HUP $__svcpid
 }
 
 . /etc/leaninit/rc.svc

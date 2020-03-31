@@ -3,7 +3,7 @@ NAME="libvirtd"
 
 main()
 {
-	libvirtd -dp "$__svcpidfile"
+    libvirtd -dp "$__svcpidfile"
 }
 
 reload()

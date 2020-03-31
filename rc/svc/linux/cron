@@ -4,7 +4,7 @@ NAME="cron"
 
 main()
 {
-	fork "$CRON" $CRONFLAGS
+    fork "$CRON" $CRONFLAGS
 }
 
 . /etc/leaninit/rc.svc

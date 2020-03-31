@@ -3,7 +3,7 @@ NAME="syslog-ng"
 
 main()
 {
-	syslog-ng -p "$__svcpidfile"
+    syslog-ng -p "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

@@ -3,30 +3,30 @@ NAME="LeanInit Settings"
 
 main()
 {
-	# Set the machine's hostname
-	if [ "$HOSTNAME" ]; then
-		hostname "$HOSTNAME"
-	fi
+    # Set the machine's hostname
+    if [ "$HOSTNAME" ]; then
+        hostname "$HOSTNAME"
+    fi
 
-	# Set the timezone
-	if [ "$TIMEZONE" ]; then
-		rm -f /etc/localtime
-		ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
-	fi
+    # Set the timezone
+    if [ "$TIMEZONE" ]; then
+        rm -f /etc/localtime
+        ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+    fi
 
-	# Set the keyboard layout
-	print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
+    # Set the keyboard layout
+    print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
 #DEF FreeBSD
-	kbdcontrol -l "$KEYMAP"
+    kbdcontrol -l "$KEYMAP"
 #ENDEF
 #DEF Linux
-	loadkeys "$KEYMAP"
+    loadkeys "$KEYMAP"
 
-	# Set the console font
-	if [ "$CONSOLEFONT" ]; then
-		print "Setting the console font to $CONSOLEFONT" log "$BLUE" "WHITE"
-		setfont "$CONSOLEFONT"
-	fi
+    # Set the console font
+    if [ "$CONSOLEFONT" ]; then
+        print "Setting the console font to $CONSOLEFONT" log "$BLUE" "WHITE"
+        setfont "$CONSOLEFONT"
+    fi
 #ENDEF
 }
 

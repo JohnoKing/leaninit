@@ -3,17 +3,17 @@ NAME="Swapfile"
 
 main()
 {
-	if [ ! -f /swapfile ]; then
-		print 'Please create a swapfile at /swapfile!' "$RED"
-		__fail 1
-	fi
+    if [ ! -f /swapfile ]; then
+        print 'Please create a swapfile at /swapfile!' "$RED"
+        __fail 1
+    fi
 
-	swapon /swapfile
+    swapon /swapfile
 }
 
 stop()
 {
-	swapoff /swapfile
+    swapoff /swapfile
 }
 
 . /etc/leaninit/rc.svc

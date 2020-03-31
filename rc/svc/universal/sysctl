@@ -4,23 +4,23 @@ NAME="sysctl"
 main()
 {
 #DEF Linux
-	if [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ]; then
-		SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
-	fi
-	for s in /etc/sysctl.conf /etc/sysctl.conf.local $SYSCTLD; do
-		sysctl -p /etc/sysctl.conf >> "$__svclog"
+    if [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ]; then
+        SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
+    fi
+    for s in /etc/sysctl.conf /etc/sysctl.conf.local $SYSCTLD; do
+        sysctl -p /etc/sysctl.conf >> "$__svclog"
 #ENDEF
 #DEF FreeBSD
-	for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
-		sysctl -f /etc/sysctl.conf >> "$__svclog"
+    for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
+        sysctl -f /etc/sysctl.conf >> "$__svclog"
 #ENDEF
-	done
+    done
 #DEF FreeBSD
 
-	# If devd is disabled, disable devctl in the kernel
-	if ! checkfor service devd; then
-		sysctl hw.bus.devctl_queue=0
-	fi
+    # If devd is disabled, disable devctl in the kernel
+    if ! checkfor service devd; then
+        sysctl hw.bus.devctl_queue=0
+    fi
 #ENDEF
 }
 

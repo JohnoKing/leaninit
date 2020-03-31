@@ -5,31 +5,31 @@ MSG="Mounting secondary pseudo file systems"
 # Mount pseudo file systems in parallel
 main()
 {
-	# Make the required directories
-	mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/cgroup /sys/fs/pstore /sys/kernel/security
+    # Make the required directories
+    mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/cgroup /sys/fs/pstore /sys/kernel/security
 
-	# Mount the pseudo file systems
-	mountpoint -q /dev/pts             || mount -o nosuid,noexec,noatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
-	mountpoint -q /dev/mqueue          || mount -o noatime -t mqueue none /dev/mqueue &
-	mountpoint -q /sys/kernel/debug    || mount -o noatime -t debugfs none /sys/kernel/debug &  # The debugfs is essential for overclocking AMD GPUs
-	mountpoint -q /sys/kernel/security || mount -o noatime -t securityfs securityfs /sys/kernel/security &
-	mountpoint -q /sys/fs/pstore       || mount -o noatime -t pstore pstore /sys/fs/pstore &
-	mountpoint -q /run/shm             || mount -n -o nosuid,nodev,mode=1777,noatime -t tmpfs tmpfs /run/shm
-	mount --bind /run/shm /dev/shm &
+    # Mount the pseudo file systems
+    mountpoint -q /dev/pts             || mount -o nosuid,noexec,noatime,gid=5,mode=0620 -t devpts devpts /dev/pts &
+    mountpoint -q /dev/mqueue          || mount -o noatime -t mqueue none /dev/mqueue &
+    mountpoint -q /sys/kernel/debug    || mount -o noatime -t debugfs none /sys/kernel/debug &  # The debugfs is essential for overclocking AMD GPUs
+    mountpoint -q /sys/kernel/security || mount -o noatime -t securityfs securityfs /sys/kernel/security &
+    mountpoint -q /sys/fs/pstore       || mount -o noatime -t pstore pstore /sys/fs/pstore &
+    mountpoint -q /run/shm             || mount -n -o nosuid,nodev,mode=1777,noatime -t tmpfs tmpfs /run/shm
+    mount --bind /run/shm /dev/shm &
 
-	# Mount a tmpfs at /sys/fs/cgroup (Cgroups support)
-	print "Mounting cgroups..." log "$BLUE" "$WHITE"
-	mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,noatime -t tmpfs cgroup /sys/fs/cgroup
+    # Mount a tmpfs at /sys/fs/cgroup (Cgroups support)
+    print "Mounting cgroups..." log "$BLUE" "$WHITE"
+    mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,noatime -t tmpfs cgroup /sys/fs/cgroup
 
-	# elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
-	mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
-	mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
+    # elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
+    mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
+    mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
 
-	# The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
-	mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers &
+    # The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
+    mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers &
 
-	# Wait for all jobs to finish
-	wait
+    # Wait for all jobs to finish
+    wait
 }
 
 . /etc/leaninit/rc.svc

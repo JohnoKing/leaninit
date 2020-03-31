@@ -5,20 +5,20 @@ MSG="Turning on all swap partitions"
 main()
 {
 #DEF FreeBSD
-	swapon -aL
+    swapon -aL
 #ENDEF
 #DEF Linux
-	swapon -a
+    swapon -a
 #ENDEF
 }
 
 stop()
 {
 #DEF FreeBSD
-	swapon -aL
+    swapon -aL
 #ENDEF
 #DEF Linux
-	swapon -a
+    swapon -a
 #ENDEF
 }
 

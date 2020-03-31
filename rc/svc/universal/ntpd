@@ -3,8 +3,8 @@ NAME="ntpd"
 
 main()
 {
-	waitfor networking
-	ntpd -p "$__svcpidfile"
+    waitfor networking
+    ntpd -p "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

@@ -4,13 +4,13 @@ NAME="Process Accounting"
 
 main()
 {
-	touch /var/log/account/pacct
-	accton /var/log/account/pacct
+    touch /var/log/account/pacct
+    accton /var/log/account/pacct
 }
 
 stop()
 {
-	accton off
+    accton off
 }
 
 . /etc/leaninit/rc.svc

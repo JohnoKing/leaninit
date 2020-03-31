@@ -29,9 +29,9 @@
 # Stop all currently running services
 cd /etc/leaninit/svc || exit 1
 for svc in *; do
-	if [ -f "/var/run/leaninit/$svc.status" ]; then
-		"./$svc" stop &
-	fi
+    if [ -f "/var/run/leaninit/$svc.status" ]; then
+        "./$svc" stop &
+    fi
 done
 
 # After all services have stopped, run kill(1) to kill all processes
@@ -42,7 +42,7 @@ kill -TERM -1
 # Use a short loop to wait for all processes to stop
 ENDTIME=$(( `date +%s` + 1 ))
 until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 -1 2> /dev/null; do
-	sleep 0.1
+    sleep 0.1
 done
 
 # Sync and unmount all file systems, then exit

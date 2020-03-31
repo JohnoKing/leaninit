@@ -4,12 +4,12 @@ TYPE="bluetooth"
 
 main()
 {
-	waitfor service dbus
-	if [ -x /usr/lib/bluetooth/bluetoothd ]; then
-		fork /usr/lib/bluetooth/bluetoothd
-	else
-		fork bluetoothd
-	fi
+    waitfor service dbus
+    if [ -x /usr/lib/bluetooth/bluetoothd ]; then
+        fork /usr/lib/bluetooth/bluetoothd
+    else
+        fork bluetoothd
+    fi
 }
 
 . /etc/leaninit/rc.svc
