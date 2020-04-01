@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2020 Johnothan King. All rights reserved.
+# Copyright © 2017-2020 Johnothan King. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ all: clean
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
-		sed -i '' 's/    /\t/g' out/*/* ;\
+		sed -i '' "s/    /$(printf '\t')/g" out/*/* ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
@@ -55,7 +55,7 @@ all: clean
 		if [ "$(RCSHELL)" ]; then \
 			sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
-		sed -i 's/    /\t/g' out/*/* ;\
+		sed -i "s/    /\t/g" out/*/* ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 	else \
 		echo "`uname` is not supported by LeanInit!" ;\
