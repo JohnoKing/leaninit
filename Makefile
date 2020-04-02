@@ -47,7 +47,7 @@ all: clean
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
 		sed -i '' "s/    /	/g" out/*/* ;\
-	@if [ `uname` = NetBSD ]; then \
+	elif [ `uname` = NetBSD ]; then \
 		cp -r rc/svc/netbsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
 		sed -i '' "/#DEF Linux/,/#ENDEF/d"  out/*/* ;\
