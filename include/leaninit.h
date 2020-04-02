@@ -53,6 +53,10 @@
 #define DEFAULT_TTY "/dev/ttyv0"
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_HALT     RB_HALT
+#elif NetBSD
+#define DEFAULT_TTY "/dev/constty"
+#define SYS_POWEROFF RB_POWEROFF
+#define SYS_HALT     RB_HALT
 #endif
 
 // Colors

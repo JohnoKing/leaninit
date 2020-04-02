@@ -51,7 +51,7 @@ static int usage(int ret)
 static int open_tty(const char *tty_path)
 {
     // Revoke access to the tty if it is being used
-#   ifdef FreeBSD
+#   if defined (FreeBSD) || (NetBSD)
     revoke(tty_path);
 #   endif
 
@@ -228,7 +228,7 @@ static void multi(void)
 
             // Do not spam the tty if the getty failed
             if(WEXITSTATUS(status) != 0) {
-#               ifdef FreeBSD
+#               if defined (FreeBSD) || (NetBSD)
                 open_tty(getty[e].tty);
 #               endif
                 printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", getty[e].tty, WEXITSTATUS(status));
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
 
                 // Poweroff
                 case SIGFPE: // Delay
-#                   ifdef FreeBSD
+#                   if defined (FreeBSD) || (NetBSD)
                     close(tty);
                     open_tty(DEFAULT_TTY);
 #                   endif

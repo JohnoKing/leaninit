@@ -1,0 +1,9 @@
+#!/bin/sh
+NAME="cron"
+
+main()
+{
+    fork cron -ns
+}
+
+. /etc/leaninit/rc.svc
