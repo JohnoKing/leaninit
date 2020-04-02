@@ -89,7 +89,9 @@ Sets the path to the Display Manager's PID file for use by the xdm service (this
 
 .Em FASTLOGIN (xdm.conf):
 If this is set to true, elogind's 0.3 second delay at startup is disabled to allow the display manager to start faster,
-at the cost of breaking some minor functionality.
+at the cost of disabling the graphical shutdown option (desktop environments and
+.Nm halt(8)
+are not affected).
 This setting has no effect if elogind is not installed, as there is no delay when using ConsoleKit.
 
 .Em DEVEXEC (udev.conf, Linux):
@@ -114,6 +116,6 @@ will be run with.
 .Nm Cron
 must be set to run in the foreground or else the cron service will fail.
 .Sh SEE ALSO
-leaninit-rc(8), leaninit-rc.svc(8), leaninit-ttys(5)
+leaninit-rc(8), leaninit-rc.svc(8), leaninit-ttys(5), halt(8)
 .Sh AUTHOR
 Johnothan King
