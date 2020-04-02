@@ -206,7 +206,7 @@ static void multi(void)
         const char *cmd = strsep(&data, ":");
         if(strlen(cmd) < 2 || strlen(data) < 2) continue;
 
-        // Spawn getty
+        // Spawn a getty
         entry++;
         getty[entry].pid = spawn_getty(cmd, data);
         getty[entry].cmd = cmd;
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
             pause();
             int stored_signal = current_signal;
 
-            // Cancel when the runlevel is already the currently running one
+            // Cancel when the requested runlevel is already running
             if((stored_signal == SIGILL && single_user != 0) || (stored_signal == SIGTERM && single_user == 0))
                 continue;
 
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
-            printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
+            if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             kill(-1, SIGKILL);
 
             // Handle the given signal properly

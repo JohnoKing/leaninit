@@ -23,8 +23,9 @@
 # /etc/leaninit/rc.shutdown - Stops all services
 #
 
-# Separate system shutdown in the log file (requires that rc.conf(8) is sourced)
+# Source rc.svc and set $OUTPUT_MODE
 . /etc/leaninit/rc.svc
+export OUTPUT_MODE="$1"
 
 # Stop all currently running services
 cd /etc/leaninit/svc || exit 1
