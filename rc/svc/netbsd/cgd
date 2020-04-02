@@ -1,0 +1,9 @@
+#!/bin/sh
+NAME="cgd"
+
+main()
+{
+    cgd
+}
+
+. /etc/leaninit/rc.svc

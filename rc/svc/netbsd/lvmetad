@@ -1,0 +1,10 @@
+#!/bin/sh
+NAME="LVM metadata cache daemon"
+
+main()
+{
+    mkdir -p /var/run/lvm
+    lvmetad -p "$__svcpidfile"
+}
+
+. /etc/leaninit/rc.svc

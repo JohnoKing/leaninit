@@ -1,0 +1,9 @@
+#!/bin/sh
+NAME="RAIDFrame"
+
+main()
+{
+    raidframe
+}
+
+. /etc/leaninit/rc.svc

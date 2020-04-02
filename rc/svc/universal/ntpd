@@ -1,10 +1,16 @@
 #!/bin/sh
+. /etc/leaninit/rc.conf.d/ntp.conf
 NAME="ntpd"
 
 main()
 {
     waitfor networking
     ntpd -p "$__svcpidfile"
+#DEF NetBSD
+    if [ "$NTPDATE" = "true" ]; then
+        ntpdate
+    fi
+#ENDEF
 }
 
 . /etc/leaninit/rc.svc

@@ -38,10 +38,23 @@ all: clean
 	@rm -r out/rc/svc
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
+		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/ntp.conf out/rc.conf.d/udev.conf ;\
+		sed -i '' "/#DEF Linux/,/#ENDEF/d"   out/*/* ;\
+		sed -i '' "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
+		sed -i '' "/#DEF NetBSD/d" out/*/* ;\
+		sed -i '' "/#ENDEF/d"      out/*/* ;\
+		if [ "$(RCSHELL)" ]; then \
+			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
+		fi ;\
+		sed -i '' "s/    /	/g" out/*/* ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
+	@if [ `uname` = NetBSD ]; then \
+		cp -r rc/svc/netbsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
-		sed -i '' "/#DEF Linux/,/#ENDEF/d" out/*/* ;\
-		sed -i '' "/#DEF FreeBSD/d"        out/*/* ;\
-		sed -i '' "/#ENDEF/d"              out/*/* ;\
+		sed -i '' "/#DEF Linux/,/#ENDEF/d"  out/*/* ;\
+		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" out/*/* ;\
+		sed -i '' "/#DEF FreeBSD/d" out/*/* ;\
+		sed -i '' "/#ENDEF/d"       out/*/* ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
@@ -49,9 +62,11 @@ all: clean
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
+		rm -f out/rc.conf.d/ntp.conf ;\
 		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
-		sed -i "/#DEF Linux/d"            out/*/* ;\
-		sed -i "/#ENDEF/d"                out/*/* ;\
+		sed -i "/#DEF NetBSD/,/#ENDEF/d"  out/*/* ;\
+		sed -i "/#DEF Linux/d" out/*/* ;\
+		sed -i "/#ENDEF/d"     out/*/* ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
