@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
 
                 // Reboot
                 case SIGINT:
-                    return reboot(RB_AUTOBOOT);
+                    return reboot(SYS_REBOOT);
 
                 // Switch to single user
                 case SIGTERM:

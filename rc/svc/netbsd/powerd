@@ -3,7 +3,8 @@ NAME="PowerD"
 
 main()
 {
-    powerd -P "$__svcpidfile"
+    powerd
+    pgrep -x powerd > "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

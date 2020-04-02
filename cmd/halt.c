@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
             case SIGUSR2: // Poweroff
                 return reboot(SYS_POWEROFF);
             case SIGINT:  // Reboot
-                return reboot(RB_AUTOBOOT);
+                return reboot(SYS_REBOOT);
         }
     }
 
