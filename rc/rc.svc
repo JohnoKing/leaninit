@@ -42,7 +42,6 @@ export KEYMAP
 
 # Set the necessary variables
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-export OUTPUT_MODE="$2"
 
 # Color variables for use with print()
 export RESET='\033[0m'

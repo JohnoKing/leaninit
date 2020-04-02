@@ -42,7 +42,7 @@ mount -a 2> /dev/null &
 
 #DEF Linux
 # Remount root (/) as read-write
-mount -o remount,rw,noatime / 2> /dev/null &
+mount -o remount,rw,noatime $(lsblk -p -T TYPE | awk '{ print $1" "$7" " }' | grep '/ ') 2> /dev/null &
 #ENDEF
 
 #DEF FreeBSD
@@ -81,7 +81,7 @@ mkdir -p /var/run/leaninit
 cd /var/lib/leaninit/svc || exit 1
 print "Starting all enabled services listed in /var/lib/leaninit/svc..." log "$BLUE" "$WHITE"
 for sv in *; do
-    "/etc/leaninit/svc/$sv" start "$1" &
+    "/etc/leaninit/svc/$sv" start &
 done
 
 # Run rc.local (when present)
