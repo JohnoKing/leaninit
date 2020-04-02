@@ -3,7 +3,7 @@ LeanInit
 _A fast init system_
 
 ## What is this
-This is a speedy BSD-style init system that I created for myself, written from scratch.
+This is a speedy BSD-style init system for Linux and FreeBSD.
 
 ## Building and Installing
 ### Linux
