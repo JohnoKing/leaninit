@@ -122,7 +122,10 @@ install-base: install-universal
 	@cd "$(DESTDIR)/usr/share/man/man8" ;\
 	[ -f leaninit-poweroff.8 ] || ln -sf leaninit-halt.8 leaninit-poweroff.8 ;\
 	[ -f leaninit-reboot.8 ] || ln -sf leaninit-halt.8 leaninit-reboot.8
-	@install -Dm0755 out/leaninit out/leaninit-halt out/os-indications "$(DESTDIR)/sbin"
+	@install -Dm0755 out/leaninit out/leaninit-halt "$(DESTDIR)/sbin"
+	@if [ `uname` = Linux ] || [ `uname` = FreeBSD ]; then \
+		install -Dm0755 out/os-indications "$(DESTDIR)/sbin" ;\
+	fi
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
 	@echo "Successfully installed the base of LeanInit!"
