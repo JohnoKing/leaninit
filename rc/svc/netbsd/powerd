@@ -1,0 +1,9 @@
+#!/bin/sh
+NAME="PowerD"
+
+main()
+{
+    powerd -P "$__svcpidfile"
+}
+
+. /etc/leaninit/rc.svc

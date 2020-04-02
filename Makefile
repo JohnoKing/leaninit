@@ -47,18 +47,18 @@ all: clean
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
 		sed -i '' "s/    /	/g" out/*/* ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 	elif [ `uname` = NetBSD ]; then \
 		cp -r rc/svc/netbsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
-		sed -i '' "/#DEF Linux/,/#ENDEF/d"  out/*/* ;\
-		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" out/*/* ;\
-		sed -i '' "/#DEF FreeBSD/d" out/*/* ;\
-		sed -i '' "/#ENDEF/d"       out/*/* ;\
+		sed -i "/#DEF Linux/,/#ENDEF/d"  out/*/* ;\
+		sed -i "/#DEF NetBSD/,/#ENDEF/d" out/*/* ;\
+		sed -i "/#DEF FreeBSD/d" out/*/* ;\
+		sed -i "/#ENDEF/d"       out/*/* ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
-		sed -i '' "s/    /	/g" out/*/* ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
+		sed -i "s/    /	/g" out/*/* ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		rm -f out/rc.conf.d/ntp.conf ;\
@@ -101,6 +101,9 @@ install-rc: install-universal
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/devd" "$(DESTDIR)/var/lib/leaninit/svc/zfs" "$(DESTDIR)/var/lib/leaninit/svc/syslogd" \
 			"$(DESTDIR)/var/lib/leaninit/svc/powerd" "$(DESTDIR)/var/lib/leaninit/svc/wpa_supplicant" ;\
+	elif [ `uname` = NetBSD ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
+		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
+			"$(DESTDIR)/var/lib/leaninit/svc/syslogd" "$(DESTDIR)/var/lib/leaninit/svc/powerd" ;\
 	elif [ `uname` = Linux ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" "$(DESTDIR)/var/lib/leaninit/svc/netface" \
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" ;\
