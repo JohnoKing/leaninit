@@ -22,6 +22,9 @@ main()
 
     # Symlink the elogind PID file to the correct location
     ln -s /var/run/elogind.pid "$__svcpidfile"
+
+    # Wait for elogind to avoid issues
+    sleep 0.3
 }
 
 . /etc/leaninit/rc.svc
