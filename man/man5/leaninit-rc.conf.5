@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 21, 2020
+.Dd April 2, 2020
 .Dt RC.CONF 5
 .Os
 .Sh NAME
@@ -86,6 +86,11 @@ Sets the name of the Display Manager used by the xdm service.
 
 .Em XDMPID (xdm.conf):
 Sets the path to the Display Manager's PID file for use by the xdm service (this setting is optional).
+
+.Em FASTLOGIN (xdm.conf):
+If this is set to true, elogind's 0.3 second delay at startup is disabled to allow the display manager to start faster,
+at the cost of breaking some minor functionality.
+This setting has no effect if elogind is not installed, as there is no delay when using ConsoleKit.
 
 .Em DEVEXEC (udev.conf, Linux):
 Sets the location of either
