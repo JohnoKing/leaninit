@@ -1,5 +1,10 @@
 #!/bin/sh
+#DEF FreeBSD
 . /etc/leaninit/rc.conf.d/ntpd.conf
+#ENDEF
+#DEF NetBSD
+. /etc/leaninit/rc.conf.d/ntpd.conf
+#ENDEF
 NAME="ntpd"
 
 main()
