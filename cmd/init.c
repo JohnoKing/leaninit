@@ -306,10 +306,10 @@ int main(int argc, char *argv[])
         }
         pthread_create(&runlvl, NULL, chlvl, NULL);
 
-        // Handle relevant signals while ignoring others
+        // Handle relevant signals
         struct sigaction actor;
-        memset(&actor, 0, sizeof(actor)); // Without this sigaction is ineffective
-        actor.sa_handler = sighandle;     // Set the handler to sighandle()
+        actor.sa_handler = sighandle; // Set the handler to sighandle()
+        actor.sa_flags   = 0;
         sigaction(SIGUSR1, &actor, NULL); // Halt
         sigaction(SIGUSR2, &actor, NULL); // Poweroff
         sigaction(SIGFPE,  &actor, NULL); // Poweroff (delayed)
