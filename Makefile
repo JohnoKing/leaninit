@@ -109,6 +109,7 @@ install-rc: install-universal
 	elif [ `uname` = Linux ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" "$(DESTDIR)/var/lib/leaninit/svc/netface" \
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" ;\
+			"$(DESTDIR)/var/lib/leaninit/svc/alsa" ;\
 		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
 		install -Dm0755 out/rc/rc.banner "$(DESTDIR)/etc/leaninit" ;\
 	fi

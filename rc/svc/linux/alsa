@@ -1,0 +1,23 @@
+#!/bin/sh
+NAME="ALSA"
+
+# Load ALSA's last state
+main()
+{
+    waitfor service kmod optional
+    alsactl restore
+}
+
+stop()
+{
+    # If /var/lock is not a directory (Artix Linux), make it one to prevent an error
+    if [ ! -d /var/lock ]; then
+        rm -rf /var/lock
+        mkdir -p /var/lock
+    fi
+
+    # Store ALSA's state
+    alsactl store
+}
+
+. /etc/leaninit/rc.svc
