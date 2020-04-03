@@ -32,6 +32,9 @@ print "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE
 #DEF Linux
 fsck -AP
 #ENDEF
+#DEF NetBSD
+fsck
+#ENDEF
 #DEF FreeBSD
 fsck -CF
 #ENDEF
