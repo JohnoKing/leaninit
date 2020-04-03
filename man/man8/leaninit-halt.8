@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 26, 2020
+.Dd April 3, 2020
 .Dt HALT 8
 .Os
 .Sh NAME
@@ -26,7 +26,15 @@
 .Nd halt, poweroff or reboot
 .Sh SYNOPSIS
 .Nm
+#DEF FreeBSD
 .Op Fl fFhlpqr?
+#ENDEF
+#DEF NetBSD
+.Op Fl fhlpqr?
+#ENDEF
+#DEF Linux
+.Op Fl fFhlpqr?
+#ENDEF
 .Sh DESCRIPTION
 .Nm Halt
 will poweroff, reboot or halt the system when executed by sending the following signals to init:
@@ -47,9 +55,16 @@ call
 and
 .Nm reboot(2)
 directly instead.
+#DEF FreeBSD
 .Pp
 .Nm -F, --firmware-setup
 Reboot into the system firmware's UI (only supported on UEFI systems).
+#ENDEF
+#DEF Linux
+.Pp
+.Nm -F, --firmware-setup
+Reboot into the system firmware's UI (only supported on UEFI systems).
+#ENDEF
 .Pp
 .Nm -h, --halt
 Forces halt, even when
@@ -84,6 +99,14 @@ or
 Display usage information for
 .Nm halt.
 .Sh SEE ALSO
+#DEF FreeBSD
 leaninit(8), os-indications(8), reboot(2), sync(2)
+#ENDEF
+#DEF NetBSD
+leaninit(8), reboot(2), sync(2)
+#ENDEF
+#DEF Linux
+leaninit(8), os-indications(8), reboot(2), sync(2)
+#ENDEF
 .Sh AUTHOR
 Johnothan King
