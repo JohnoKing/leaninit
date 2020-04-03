@@ -53,7 +53,7 @@ mount -o remount,ro / 2> /dev/null
 umount -A 2> /dev/null
 #ENDEF
 #DEF NetBSD
-mount -o remount,ro /
+mount -o ro /
 umount -a
 #ENDEF
 #DEF Linux
