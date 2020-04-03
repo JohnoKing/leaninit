@@ -4,9 +4,22 @@ TYPE="networking"
 
 main()
 {
-    for n in $NETFACE; do
+    waitfor networking
+#DEF FreeBSD
+    for n in $NDIS $WIRED $WIRELESS; do
         fork dhcpcd -B "$n"
     done
+#ENDEF
+#DEF NetBSD
+    for n in $WIRED $WIRELESS; do
+        fork dhcpcd -B $n
+    done
+#ENDEF
+#DEF Linux
+    for n in $(ip -o link show | awk '{ gsub(":", ""); print $2 }'); do
+        fork dhcpcd -B $n
+    done
+#ENDEF
 }
 
 . /etc/leaninit/rc.svc
