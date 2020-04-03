@@ -3,6 +3,7 @@ NAME="mdnsd"
 
 main()
 {
+    waitfor networking
     mdnsd
     pgrep -x mdnsd > "$__svcpidfile"
 }

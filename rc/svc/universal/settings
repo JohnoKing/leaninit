@@ -19,6 +19,12 @@ main()
     print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
     kbdcontrol -l "$KEYMAP"
 #ENDEF
+#DEF NetBSD
+    # Load settings in /etc/wscons.conf
+    for w in $(grep -v '#' /etc/wscons.conf | grep -v 'screen' | sed -e 's/ /=/g' -e 's/	/=/g'); do
+        wsconsctl -w $w
+    done
+#ENDEF
 #DEF Linux
     # Set the keyboard layout
     print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
