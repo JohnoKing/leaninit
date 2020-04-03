@@ -439,33 +439,33 @@ int main(int argc, char *argv[])
 
         // Poweroff
         case '0':
-            return kill_init(SIGUSR2);
+            return kill(1, SIGUSR2);
 
         // Single-user
         case '1':
         case 'S':
         case 's':
-            return kill_init(SIGTERM);
+            return kill(1, SIGTERM);
 
         // Multi-user
         case '2':
         case '3':
         case '4':
         case '5':
-            return kill_init(SIGILL);
+            return kill(1, SIGILL);
 
         // Reload everything
         case 'Q':
         case 'q':
-            return kill_init(SIGHUP);
+            return kill(1, SIGHUP);
 
         // Reboot
         case '6':
-            return kill_init(SIGINT);
+            return kill(1, SIGINT);
 
         // Halt
         case '7':
-            return kill_init(SIGUSR1);
+            return kill(1, SIGUSR1);
 
         // Fallback
         default:

@@ -182,5 +182,5 @@ int main(int argc, char *argv[])
     }
 
     // Send the correct signal to init
-    return kill_init(signal);
+    return kill(1, signal);
 }
