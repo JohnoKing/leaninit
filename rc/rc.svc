@@ -51,7 +51,11 @@ export YELLOW='\033[1;33m'
 export BLUE='\033[1;34m'
 export PURPLE='\033[1;35m'
 export CYAN='\033[1;36m'
-export WHITE='\033[1;37m'
+if [ "$TERM" = xterm ]; then
+    export RESET='\033[0m'
+else
+    export WHITE='\033[1;37m'
+fi
 
 # Return 0 if the given command is a shell function, otherwise return 1
 isfunc()
