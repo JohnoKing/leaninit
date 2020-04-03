@@ -65,6 +65,9 @@ if [ "$1" = "--status-all" ]; then
 #DEF FreeBSD
     printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
 #ENDEF
+#DEF NetBSD
+    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
+#ENDEF
 #DEF Linux
     printf "${WHITE}%s${RESET}\n" "$(column -ts '|' -o '|' "$__TMP" |  sort)"
 #ENDEF
