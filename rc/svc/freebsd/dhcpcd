@@ -1,0 +1,12 @@
+#!/bin/sh
+NAME="dhcpcd"
+
+main()
+{
+    waitfor networking
+    for n in $NDIS $WIRED $WIRELESS; do
+        fork dhcpcd -B "$n"
+    done
+}
+
+. /etc/leaninit/rc.svc

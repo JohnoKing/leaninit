@@ -1,10 +1,16 @@
 #!/bin/sh
-NAME="WPA Supplicant"
+NAME="Networking"
 TYPE="networking"
 
-# Run wpa_supplicant on all interfaces
+# Setup networking on NetBSD
 main()
 {
+    # dhcpcd
+    for n in $WIRED $WIRELESS; do
+        fork dhcpcd -B $n
+    done
+
+    # wpa_supplicant
     if [ "$WIRED" ]; then
         for n in $WIRED; do
             fork wpa_supplicant -s -Dwired "-i$n" -c/etc/wpa_supplicant.conf

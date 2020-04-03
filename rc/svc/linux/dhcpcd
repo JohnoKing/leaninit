@@ -1,0 +1,12 @@
+#!/bin/sh
+NAME="dhcpcd"
+
+main()
+{
+    waitfor networking
+    for n in $(ip -o link show | awk '{ gsub(":", ""); print $2 }'); do
+        fork dhcpcd -B $n
+    done
+}
+
+. /etc/leaninit/rc.svc
