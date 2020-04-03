@@ -18,14 +18,14 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 2, 2020
+.Dd April 3, 2020
 .Dt LEANINIT 8
 .Os
 .Sh NAME
 .Nm leaninit
 .Nd a fast init system
 .Sh SYNOPSIS
-.Nm init [ 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | S | s | Q | q ]
+.Nm init [ 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | S | s | Q | q ]
 .Nm init [ -s | single | silent | quiet silent ]
 .Nm init [ --version | --help ]
 .Sh DESCRIPTION
@@ -70,9 +70,6 @@ Kill all processes then reboot the system.
 
 .Nm 7
 Kill all processes then halt the system.
-
-.Nm 8
-Send the system into hibernation (Linux only).
 
 .Nm Q, q
 Reload the current runlevel.
