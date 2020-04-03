@@ -24,7 +24,7 @@ main()
     fi
 
     # Dependencies of the X Server
-    waitfor service dbus
+    waitfor service dbus optional
 #DEF Linux
     checkfor service udev
     waitfor login-daemon optional
