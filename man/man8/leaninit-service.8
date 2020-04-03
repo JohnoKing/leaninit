@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 13, 2020
+.Dd April 2, 2020
 .Dt SERVICE 8
 .Os
 .Sh NAME
@@ -58,9 +58,11 @@ This will reload services that support reloading and restart services that do no
 .Nm reload
 Reload a service without restarting it (the service must support reloading for this to work).
 
+#DEF FreeBSD
+#DEF NetBSD
 .Nm info
 Sends the SIGINFO signal to the service's process when applicable.
-This action is only available on FreeBSD.
+#ENDEF
 
 .Nm pause
 Sends the SIGSTOP signal to the service's process when applicable to pause it, then sets the service's status to 'Paused'.
@@ -102,6 +104,6 @@ service ntpd status
 Restart the X Server:
 service xdm restart
 .Sh SEE ALSO
-leaninit-rc(8), leaninit-rc.svc(8)
+leaninit-rc(8), leaninit-rc.svc(8), signal(7)
 .Sh AUTHOR
 Johnothan King

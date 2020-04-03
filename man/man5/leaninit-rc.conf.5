@@ -49,16 +49,18 @@ Changes the keyboard layout. Commented out by default.
 .Em CONSOLEFONT:
 Changes the console font on the ttys (Linux only). Commented out by default.
 
-.Em WIRED (FreeBSD):
+#DEF FreeBSD
+.Em WIRED:
 Sets the networking interface(s) to use with the wpa_supplicant wired driver.
 Set to eth0 by default.
 
-.Em WIRELESS (FreeBSD):
+.Em WIRELESS:
 Sets the networking interface(s) to use with the wpa_supplicant bsd driver.
 Set to wlan0 by default.
 
-.Em NDIS (FreeBSD):
+.Em NDIS:
 Sets the networking interface(s) to use with the wpa_supplicant ndis driver.
+#ENDEF
 
 .Em DELAY:
 Have
@@ -78,8 +80,11 @@ This setting should only be used for debugging.
 The following settings can be set in config files located in
 .Em /etc/leaninit/rc.conf.d:
 
-.Em NTPDATE (ntpd.conf, FreeBSD and NetBSD):
+#DEF FreeBSD
+#DEF NetBSD
+.Em NTPDATE:
 When this is set to true, the ntpd service will run ntpdate(8) during boot to update the system's clock.
+#ENDEF
 
 .Em XDM (xdm.conf):
 Sets the path to the executable of the Display Manager used by the xdm service.
@@ -97,7 +102,8 @@ at the cost of disabling the graphical shutdown option (desktop environments and
 are not affected).
 This setting has no effect if elogind is not installed, as there is no delay when using ConsoleKit.
 
-.Em DEVEXEC (udev.conf, Linux):
+#DEF Linux
+.Em DEVEXEC (udev.conf):
 Sets the location of either
 .Nm udev(7)
 or
@@ -106,18 +112,19 @@ Set to
 .Em /sbin/udevd
 for udev by default.
 
-.Em CRON (cron.conf, Linux)
+.Em CRON (cron.conf)
 Sets the executable name in
 .Em $PATH
 or the absolute path to the executable for
 .Nm cron(8).
 
-.Em CRONFLAGS (cron.conf, Linux)
+.Em CRONFLAGS (cron.conf)
 Sets the flags
 .Nm cron
 will be run with.
 .Nm Cron
 must be set to run in the foreground or else the cron service will fail.
+#ENDEF
 .Sh SEE ALSO
 leaninit-rc(8), leaninit-rc.svc(8), leaninit-ttys(5), halt(8)
 .Sh AUTHOR

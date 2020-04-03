@@ -39,10 +39,10 @@ all: clean
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
-		sed -i '' "/#DEF Linux/,/#ENDEF/d"  out/*/* ;\
-		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" out/*/* ;\
-		sed -i '' "/#DEF FreeBSD/d" out/*/* ;\
-		sed -i '' "/#ENDEF/d"       out/*/* ;\
+		sed -i '' "/#DEF Linux/,/#ENDEF/d"  out/*/* out/man/man*/* ;\
+		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" out/*/* out/man/man*/* ;\
+		sed -i '' "/#DEF FreeBSD/d" out/*/* out/man/man*/* ;\
+		sed -i '' "/#ENDEF/d"       out/*/* out/man/man*/* ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
@@ -52,10 +52,10 @@ all: clean
 	elif [ `uname` = NetBSD ]; then \
 		cp -r rc/svc/netbsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
-		sed -i "/#DEF Linux/,/#ENDEF/d"   out/*/* ;\
-		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
-		sed -i "/#DEF NetBSD/d" out/*/* ;\
-		sed -i "/#ENDEF/d"      out/*/* ;\
+		sed -i "/#DEF Linux/,/#ENDEF/d"   out/*/* out/man/man*/* ;\
+		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* out/man/man*/* ;\
+		sed -i "/#DEF NetBSD/d" out/*/* out/man/man*/* ;\
+		sed -i "/#ENDEF/d"      out/*/* out/man/man*/* ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
@@ -63,10 +63,10 @@ all: clean
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		rm -f out/rc.conf.d/ntpd.conf ;\
-		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
-		sed -i "/#DEF NetBSD/,/#ENDEF/d"  out/*/* ;\
-		sed -i "/#DEF Linux/d" out/*/* ;\
-		sed -i "/#ENDEF/d"     out/*/* ;\
+		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* out/man/man*/* ;\
+		sed -i "/#DEF NetBSD/,/#ENDEF/d"  out/*/* out/man/man*/* ;\
+		sed -i "/#DEF Linux/d" out/*/* out/man/man*/* ;\
+		sed -i "/#ENDEF/d"     out/*/* out/man/man*/* ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
@@ -74,7 +74,7 @@ all: clean
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
 	else \
-		echo "`uname` is not supported by LeanInit!" ;\
+		echo "LeanInit does not support `uname`!" ;\
 		false ;\
 	fi
 	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS) -lutil
