@@ -219,6 +219,13 @@ The main directory for the log files of all services on the system.
 Default location for
 .Nm LeanInit's
 .status and .pid files
+#DEF NetBSD
+.Sh BUGS
+When NetBSD is in single user mode, LeanInit is unable to receive signals from any application.
+If the user wishes to do any sort of runlevel change,
+.Nm halt
+should be used with the --force flag.
+#ENDEF
 .Sh SEE ALSO
 leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8), leaninit-rc.banner(8), leaninit-rc.svc(8), leaninit-rc.conf(5), leaninit-ttys(5), kill(1), signal(7)
 .Sh AUTHOR
