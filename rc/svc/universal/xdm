@@ -26,7 +26,7 @@ main()
     # Dependencies of the X Server
     waitfor service dbus optional
 #DEF NetBSD
-    waitfor settings
+    waitfor service settings
 #ENDEF
 #DEF Linux
     checkfor service udev
