@@ -21,6 +21,9 @@ main()
             fork wpa_supplicant -s -Dbsd "-i$n" -c/etc/wpa_supplicant.conf
         done
     fi
+
+    # Give the networking time to start
+    sleep 3
 }
 
 . /etc/leaninit/rc.svc
