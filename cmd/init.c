@@ -47,6 +47,20 @@ static int usage(int ret)
     return ret;
 }
 
+// Reboot the machine
+#ifdef NetBSD
+static inline int reboot_machine(__unused int action, __unused char *boot_string)
+#else
+static inline int reboot_machine(int action)
+#endif
+{
+#   ifdef NetBSD
+    exit(0);
+#   else
+    return reboot(action);
+#   endif
+}
+
 // Open the tty
 static int open_tty(const char *tty_path)
 {
@@ -340,12 +354,18 @@ int main(int argc, char *argv[])
             if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             kill(-1, SIGKILL);
 
+            // On NetBSD, also join with the zombie killer thread
+#           ifdef NetBSD
+            pthread_kill(loop, SIGKILL);
+            pthread_join(loop, NULL);
+#           endif
+
             // Handle the given signal properly
             switch(stored_signal) {
 
                 // Halt
                 case SIGUSR1:
-                    return reboot(SYS_HALT);
+                    return reboot_machine(SYS_HALT);
 
                 // Poweroff
                 case SIGFPE: // Delay
@@ -357,21 +377,29 @@ int main(int argc, char *argv[])
                     sleep(3);
                 /*FALLTHRU*/
                 case SIGUSR2:
-                    return reboot(SYS_POWEROFF);
+                    return reboot_machine(SYS_POWEROFF);
 
                 // Reboot
                 case SIGINT:
-                    return reboot(SYS_REBOOT);
+                    return reboot_machine(SYS_REBOOT);
 
                 // Switch to single user
                 case SIGTERM:
+#                   ifdef NetBSD
+                    return reboot_machine(RB_SINGLE, NULL);
+#                   else
                     single_user = 0;
                     break;
+#                   endif
 
                 // Switch to multi-user
                 case SIGILL:
+#                   ifdef NetBSD
+                    return reboot_machine(0, NULL);
+#                   else
                     single_user = 1;
                     break;
+#                   endif
             }
 
             // Reopen the console and reload the runlevel
