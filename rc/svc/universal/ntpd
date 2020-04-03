@@ -6,6 +6,10 @@ main()
 {
     waitfor networking
 #DEF FreeBSD
+    if [ "$NTPDATE" = "true" ]; then
+        ntpdate $(grep 'server' /etc/ntp.conf | grep -v '#' | awk '{ print $2 }')
+    fi
+#ENDEF
 #DEF NetBSD
     if [ "$NTPDATE" = "true" ]; then
         ntpdate $(grep 'server' /etc/ntp.conf | grep -v '#' | awk '{ print $2 }')

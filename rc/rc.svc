@@ -131,6 +131,8 @@ __usage()
     fi
     if __proccheck return; then
 #DEF FreeBSD
+        printf "|info|pause|cont"
+#ENDEF
 #DEF NetBSD
         printf "|info|pause|cont"
 #ENDEF
@@ -439,6 +441,15 @@ __run()
         status)
             __status ;;
 #DEF FreeBSD
+
+        info)
+            __proccheck
+            print "Sending SIGINFO to $NAME..." nolog "$PURPLE" "$WHITE"
+            for pid in $__svcpid; do
+                print "PID $pid:" nolog "$PURPLE" "$WHITE"
+                kill -INFO $pid
+            done ;;
+#ENDEF
 #DEF NetBSD
 
         info)

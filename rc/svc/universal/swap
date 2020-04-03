@@ -8,6 +8,8 @@ main()
     swapon -aL
 #ENDEF
 #DEF NetBSD
+    swapon -a
+#ENDEF
 #DEF Linux
     swapon -a
 #ENDEF
@@ -19,6 +21,8 @@ stop()
     swapoff -aL
 #ENDEF
 #DEF NetBSD
+    swapoff -a
+#ENDEF
 #DEF Linux
     swapoff -a
 #ENDEF
