@@ -38,7 +38,7 @@ all: clean
 	@rm -r out/rc/svc
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
-		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/ntp.conf out/rc.conf.d/udev.conf ;\
+		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
 		sed -i '' "/#DEF Linux/,/#ENDEF/d"  out/*/* ;\
 		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" out/*/* ;\
 		sed -i '' "/#DEF FreeBSD/d" out/*/* ;\
@@ -62,7 +62,7 @@ all: clean
 		sed -i "s/    /	/g" out/*/* ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
-		rm -f out/rc.conf.d/ntp.conf ;\
+		rm -f out/rc.conf.d/ntpd.conf ;\
 		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* ;\
 		sed -i "/#DEF NetBSD/,/#ENDEF/d"  out/*/* ;\
 		sed -i "/#DEF Linux/d" out/*/* ;\

@@ -78,6 +78,9 @@ This setting should only be used for debugging.
 The following settings can be set in config files located in
 .Em /etc/leaninit/rc.conf.d:
 
+.Em NTPDATE (ntpd.conf, FreeBSD and NetBSD):
+When this is set to true, the ntpd service will run ntpdate(8) during boot to update the system's clock.
+
 .Em XDM (xdm.conf):
 Sets the path to the executable of the Display Manager used by the xdm service.
 

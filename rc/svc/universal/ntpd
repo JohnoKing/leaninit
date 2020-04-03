@@ -1,10 +1,11 @@
 #!/bin/sh
-. /etc/leaninit/rc.conf.d/ntp.conf
+. /etc/leaninit/rc.conf.d/ntpd.conf
 NAME="ntpd"
 
 main()
 {
     waitfor networking
+#DEF FreeBSD
 #DEF NetBSD
     if [ "$NTPDATE" = "true" ]; then
         ntpdate $(grep 'server' /etc/ntp.conf | grep -v '#' | awk '{ print $2 }')
