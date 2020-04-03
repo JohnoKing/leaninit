@@ -23,7 +23,7 @@ main()
     fi
 
     # Give the networking time to start
-    sleep 3
+    sleep 2
 }
 
 . /etc/leaninit/rc.svc

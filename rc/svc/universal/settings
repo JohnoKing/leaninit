@@ -20,10 +20,8 @@ main()
     kbdcontrol -l "$KEYMAP"
 #ENDEF
 #DEF NetBSD
-    # Load settings in /etc/wscons.conf
-    for w in $(grep -v '#' /etc/wscons.conf | grep -v 'screen' | sed -e 's/ /=/g' -e 's/	/=/g'); do
-        wsconsctl -w $w
-    done
+    # Load wscons from rc.d
+    /etc/rc.d/wscons start
 #ENDEF
 #DEF Linux
     # Set the keyboard layout

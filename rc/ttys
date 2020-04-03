@@ -18,8 +18,8 @@
 #/usr/libexec/getty 3wire ttyv0:/dev/ttyv0
 #ENDEF
 #DEF NetBSD
-/usr/libexec/getty Pc constty:/dev/constty
-#/usr/libexec/getty Pc ttyE0:/dev/ttyE0
+#/usr/libexec/getty Pc constty:/dev/constty
+/usr/libexec/getty Pc ttyE0:/dev/ttyE0
 /usr/libexec/getty Pc ttyE1:/dev/ttyE1
 /usr/libexec/getty Pc ttyE2:/dev/ttyE2
 /usr/libexec/getty Pc ttyE3:/dev/ttyE3
