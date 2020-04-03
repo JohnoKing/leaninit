@@ -221,8 +221,8 @@ Default location for
 .status and .pid files
 #DEF NetBSD
 .Sh BUGS
-Switching runlevels with init usually does not work due to NetBSD lacking native support for runlevels.
-If the user wishes to do any sort of runlevel change (such as to power off the system),
+When NetBSD is in single user mode, LeanInit is unable to receive signals from any application.
+If the user wishes to do any sort of runlevel change,
 .Nm halt
 should be used with the --force flag.
 #ENDEF
