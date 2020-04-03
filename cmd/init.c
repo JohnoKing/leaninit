@@ -136,11 +136,15 @@ static void single(void)
             execve(shell, (char*[]){ shell, NULL }, environ);
             printf(RED "* Failed to run %s\n", shell);
             perror("* execve()" RESET);
+#           ifndef NetBSD
             kill(1, SIGFPE);
+#           endif
         } else if(sh == -1) {
             printf(RED "* Failed to run %s\n", shell);
             perror("* fork()" RESET);
+#           ifndef NetBSD
             kill(1, SIGFPE);
+#           endif
         }
 
         // When the shell is done, automatically reboot
@@ -151,7 +155,9 @@ static void single(void)
     } else if(child == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
+#       ifndef NetBSD
         kill(1, SIGFPE);
+#       endif
     }
 }
 
