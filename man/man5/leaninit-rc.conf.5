@@ -67,6 +67,16 @@ Set to wlan0 by default.
 Sets the networking interface(s) to use with the wpa_supplicant ndis driver.
 #ENDEF
 
+#DEF NetBSD
+.Em WIRED:
+Sets the networking interface(s) to use with the wpa_supplicant wired driver.
+Set to we0 by default.
+
+.Em WIRELESS:
+Sets the networking interface(s) to use with the wpa_supplicant bsd driver.
+Set to wlan0 by default.
+#ENDEF
+
 .Em DELAY:
 Have
 .Nm rc
