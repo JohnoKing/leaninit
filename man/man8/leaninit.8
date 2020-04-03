@@ -225,6 +225,10 @@ Switching runlevels with init usually does not work due to NetBSD lacking native
 If the user wishes to do any sort of runlevel change (such as to power off the system),
 .Nm halt
 should be used with the --force flag.
+Should the user insist on executing init directly for switching runlevels, an inconsistent workaround is available.
+Simply execute `kill -KILL 1` after telling init the desired runlevel, and about half of the time the runlevel will be changed successfully.
+The other half of the time a kernel panic will occur due to a bug in the NetBSD kernel.
+This is obviously not advised if you wish to maintain the data integrity of your file system.
 #ENDEF
 .Sh SEE ALSO
 leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8), leaninit-rc.banner(8), leaninit-rc.svc(8), leaninit-rc.conf(5), leaninit-ttys(5), kill(1), signal(7)
