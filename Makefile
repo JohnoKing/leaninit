@@ -104,10 +104,12 @@ install-rc: install-universal
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/devd" "$(DESTDIR)/var/lib/leaninit/svc/zfs" "$(DESTDIR)/var/lib/leaninit/svc/syslogd" \
 			"$(DESTDIR)/var/lib/leaninit/svc/powerd" "$(DESTDIR)/var/lib/leaninit/svc/wpa_supplicant" "$(DESTDIR)/var/lib/leaninit/svc/ntpd" ;\
+		echo "wpa_supplicant" > "$(DESTDIR)/var/lib/leaninit/types/networking.type" ;\
 	elif [ `uname` = NetBSD ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/syslogd" "$(DESTDIR)/var/lib/leaninit/svc/powerd" "$(DESTDIR)/var/lib/leaninit/svc/ntpd" \
 			"$(DESTDIR)/var/lib/leaninit/svc/networking" ;\
+		echo "networking" > "$(DESTDIR)/var/lib/leaninit/types/networking.type" ;\
 	elif [ `uname` = Linux ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" "$(DESTDIR)/var/lib/leaninit/svc/netface" \
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" \
