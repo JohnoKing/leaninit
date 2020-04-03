@@ -22,7 +22,7 @@
 
 /*
  * This is a wrapper function used for portability, as NetBSD has strange behavior.
- * If SIGKILL is not sent to init on NetBSD, nothing happens.
+ * If SIGKILL is not sent to init on NetBSD, nothing happens. This does not work when in single user mode.
  */
 
 #include <leaninit.h>
