@@ -60,7 +60,7 @@
 #elif NetBSD
 #define DEFAULT_TTY "/dev/constty"
 #define SYS_POWEROFF RB_POWERDOWN, NULL
-#define SYS_REBOOT   RB_AUTOBOOT, NULL
+#define SYS_REBOOT   null, NULL
 #define SYS_HALT     RB_HALT, NULL
 #endif
 
