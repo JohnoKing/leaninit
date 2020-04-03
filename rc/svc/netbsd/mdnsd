@@ -4,6 +4,7 @@ NAME="mdnsd"
 main()
 {
     mdnsd
+    pgrep -x mdnsd > "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

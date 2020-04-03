@@ -5,12 +5,12 @@ NAME="ntpd"
 main()
 {
     waitfor networking
-    ntpd -p "$__svcpidfile"
 #DEF NetBSD
     if [ "$NTPDATE" = "true" ]; then
-        ntpdate
+        ntpdate $(grep 'server' /etc/ntp.conf | grep -v '#' | awk '{ print $2 }')
     fi
 #ENDEF
+    ntpd -p "$__svcpidfile"
 }
 
 . /etc/leaninit/rc.svc

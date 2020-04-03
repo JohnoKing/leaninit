@@ -3,7 +3,7 @@ NAME="cron"
 
 main()
 {
-    fork cron -ns
+    fork cron -n
 }
 
 . /etc/leaninit/rc.svc

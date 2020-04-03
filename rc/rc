@@ -43,8 +43,8 @@ mount -a 2> /dev/null &
 #DEF Linux
 # Remount root (/) as read-write
 mount -o remount,rw,noatime $(lsblk -p -T TYPE | awk '{ print $1" "$7" " }' | grep '/ ') 2> /dev/null &
-#ENDEF
 
+#ENDEF
 #DEF FreeBSD
 # If ZFS is enabled, it MUST be run first
 if [ -x /var/lib/leaninit/svc/zfs ]; then

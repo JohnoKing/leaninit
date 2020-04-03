@@ -131,6 +131,7 @@ __usage()
     fi
     if __proccheck return; then
 #DEF FreeBSD
+#DEF NetBSD
         printf "|info|pause|cont"
 #ENDEF
 #DEF Linux
@@ -438,6 +439,7 @@ __run()
         status)
             __status ;;
 #DEF FreeBSD
+#DEF NetBSD
 
         info)
             __proccheck

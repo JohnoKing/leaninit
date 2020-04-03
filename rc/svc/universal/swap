@@ -7,6 +7,7 @@ main()
 #DEF FreeBSD
     swapon -aL
 #ENDEF
+#DEF NetBSD
 #DEF Linux
     swapon -a
 #ENDEF
@@ -17,6 +18,7 @@ stop()
 #DEF FreeBSD
     swapon -aL
 #ENDEF
+#DEF NetBSD
 #DEF Linux
     swapon -a
 #ENDEF

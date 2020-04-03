@@ -11,6 +11,7 @@ main()
         sysctl -p /etc/sysctl.conf >> "$__svclog"
 #ENDEF
 #DEF FreeBSD
+#DEF NetBSD
     for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
         sysctl -f /etc/sysctl.conf >> "$__svclog"
 #ENDEF

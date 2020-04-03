@@ -14,12 +14,14 @@ main()
         ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
     fi
 
+#DEF FreeBSD
     # Set the keyboard layout
     print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
-#DEF FreeBSD
     kbdcontrol -l "$KEYMAP"
 #ENDEF
 #DEF Linux
+    # Set the keyboard layout
+    print "Setting the keyboard layout to $KEYMAP..." log "$BLUE" "$WHITE"
     loadkeys "$KEYMAP"
 
     # Set the console font

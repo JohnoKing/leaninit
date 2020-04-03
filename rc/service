@@ -39,6 +39,7 @@ usage()
     echo "  force-reload"
     echo "  reload"
 #DEF FreeBSD
+#DEF NetBSD
     echo "  info"
 #ENDEF
     echo "  pause"
