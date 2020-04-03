@@ -95,6 +95,7 @@ Sets the name of the Display Manager used by the xdm service.
 .Em XDMPID (xdm.conf):
 Sets the path to the Display Manager's PID file for use by the xdm service (this setting is optional).
 
+#DEF Linux
 .Em FASTLOGIN (xdm.conf):
 If this is set to true, elogind's 0.3 second delay at startup is disabled to allow the display manager to start faster,
 at the cost of disabling the graphical shutdown option (desktop environments and
@@ -102,7 +103,6 @@ at the cost of disabling the graphical shutdown option (desktop environments and
 are not affected).
 This setting has no effect if elogind is not installed, as there is no delay when using ConsoleKit.
 
-#DEF Linux
 .Em DEVEXEC (udev.conf):
 Sets the location of either
 .Nm udev(7)

@@ -53,7 +53,7 @@ all: clean
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
 	elif [ `uname` = NetBSD ]; then \
 		cp -r rc/svc/netbsd/* out/svc ;\
-		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
+		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf out/rc.conf.d/xdm.conf ;\
 		sed -i "/#DEF Linux/,/#ENDEF/d"   $(OUT) ;\
 		sed -i "/#DEF FreeBSD/,/#ENDEF/d" $(OUT) ;\
 		sed -i "/#DEF NetBSD/d" $(OUT) ;\
