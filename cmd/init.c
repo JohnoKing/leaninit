@@ -136,29 +136,47 @@ static void single(void)
             execve(shell, (char*[]){ shell, NULL }, environ);
             printf(RED "* Failed to run %s\n", shell);
             perror("* execve()" RESET);
-#           ifndef NetBSD
+#           ifdef NetBSD
+            exit(1);
+#           else
             kill(1, SIGFPE);
 #           endif
         } else if(sh == -1) {
             printf(RED "* Failed to run %s\n", shell);
             perror("* fork()" RESET);
-#           ifndef NetBSD
+#           ifdef NetBSD
+            exit(1);
+#           else
             kill(1, SIGFPE);
 #           endif
         }
 
         // When the shell is done, automatically reboot
         waitpid(sh, NULL, 0);
+#       ifdef NetBSD
+        exit(0);
+#       else
         kill(1, SIGINT);
+#       endif
 
     // Extra error handling
     } else if(child == -1) {
         printf(RED "* Failed to run %s\n", shell);
         perror("* fork()" RESET);
-#       ifndef NetBSD
+#       ifdef NetBSD
+        pthread_exit(NULL);
+#       else
         kill(1, SIGFPE);
 #       endif
     }
+
+    /*
+     * On NetBSD, wait for the child process before exiting
+     * This allows a workaround for SIGKILL being ignored by PID 1
+     */
+    waitpid(child, NULL, 0);
+    printf(CYAN "* " WHITE "Rebooting the system..." RESET "\n");
+    pthread_exit(NULL);
 }
 
 // Execute rc(8) and getty(8) (multi-user)
@@ -337,8 +355,20 @@ int main(int argc, char *argv[])
 
             // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
             sync();
+#           ifndef NetBSD
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
+
+            // On NetBSD, reboot the system automatically in single user mode as part of a workaround.
+#           else
+            if(single_user != 0) {
+                pthread_kill(runlvl, SIGKILL);
+                pthread_join(runlvl, NULL);
+            } else {
+                pthread_join(runlvl, NULL); // Wait for the shell to exit
+                reboot(SYS_REBOOT);
+            }
+#           endif
 
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
