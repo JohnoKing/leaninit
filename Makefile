@@ -26,11 +26,13 @@ INCLUDE  := -I./include
 CPPFLAGS := -D_FORTIFY_SOURCE=2
 WFLAGS   := -Wall -Wextra -Wno-unused-result
 LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+OUT      := out/man/man*/* out/rc/* out/rc.conf.d/* out/svc/*
 #RCSHELL := /bin/dash
 
 # Compile LeanInit
 all: clean
 	@mkdir -p out
+	@cp -r man out
 	@cp -r rc out/rc
 	@mv out/rc/svc/universal out/svc
 	@mv out/rc/rc.conf.d out/rc.conf.d
@@ -39,38 +41,38 @@ all: clean
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
-		sed -i '' "/#DEF Linux/,/#ENDEF/d"  out/*/* out/man/man*/* ;\
-		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" out/*/* out/man/man*/* ;\
-		sed -i '' "/#DEF FreeBSD/d" out/*/* out/man/man*/* ;\
-		sed -i '' "/#ENDEF/d"       out/*/* out/man/man*/* ;\
+		sed -i '' "/#DEF Linux/,/#ENDEF/d"  $(OUT) ;\
+		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" $(OUT) ;\
+		sed -i '' "/#DEF FreeBSD/d" $(OUT) ;\
+		sed -i '' "/#ENDEF/d"       $(OUT) ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
-		sed -i '' "s/    /	/g" out/*/* ;\
+		sed -i '' "s/    /	/g" $(OUT) ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
 	elif [ `uname` = NetBSD ]; then \
 		cp -r rc/svc/netbsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
-		sed -i "/#DEF Linux/,/#ENDEF/d"   out/*/* out/man/man*/* ;\
-		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* out/man/man*/* ;\
-		sed -i "/#DEF NetBSD/d" out/*/* out/man/man*/* ;\
-		sed -i "/#ENDEF/d"      out/*/* out/man/man*/* ;\
+		sed -i "/#DEF Linux/,/#ENDEF/d"   $(OUT) ;\
+		sed -i "/#DEF FreeBSD/,/#ENDEF/d" $(OUT) ;\
+		sed -i "/#DEF NetBSD/d" $(OUT) ;\
+		sed -i "/#ENDEF/d"      $(OUT) ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
-		sed -i "s/    /	/g" out/*/* ;\
+		sed -i "s/    /	/g" $(OUT) ;\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		rm -f out/rc.conf.d/ntpd.conf ;\
-		sed -i "/#DEF FreeBSD/,/#ENDEF/d" out/*/* out/man/man*/* ;\
-		sed -i "/#DEF NetBSD/,/#ENDEF/d"  out/*/* out/man/man*/* ;\
-		sed -i "/#DEF Linux/d" out/*/* out/man/man*/* ;\
-		sed -i "/#ENDEF/d"     out/*/* out/man/man*/* ;\
+		sed -i "/#DEF FreeBSD/,/#ENDEF/d" $(OUT) ;\
+		sed -i "/#DEF NetBSD/,/#ENDEF/d"  $(OUT) ;\
+		sed -i "/#DEF Linux/d" $(OUT) ;\
+		sed -i "/#ENDEF/d"     $(OUT) ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
-		sed -i "s/    /	/g" out/*/* ;\
+		sed -i "s/    /	/g" $(OUT) ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
 	else \
@@ -80,7 +82,6 @@ all: clean
 	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS) -lutil
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt
-	@cp -r man out
 	@echo "Successfully built LeanInit!"
 
 # Install LeanInit's man pages and license

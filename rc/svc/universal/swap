@@ -16,11 +16,11 @@ main()
 stop()
 {
 #DEF FreeBSD
-    swapon -aL
+    swapoff -aL
 #ENDEF
 #DEF NetBSD
 #DEF Linux
-    swapon -a
+    swapoff -a
 #ENDEF
 }
 
