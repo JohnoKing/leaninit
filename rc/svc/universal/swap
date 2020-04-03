@@ -15,17 +15,17 @@ main()
 #ENDEF
 }
 
+#DEF FreeBSD
 stop()
 {
-#DEF FreeBSD
     swapoff -aL
-#ENDEF
-#DEF NetBSD
-    swapoff -a
+}
 #ENDEF
 #DEF Linux
-    swapoff -a
-#ENDEF
+stop()
+{
+    swapon -a
 }
+#ENDEF
 
 . /etc/leaninit/rc.svc
