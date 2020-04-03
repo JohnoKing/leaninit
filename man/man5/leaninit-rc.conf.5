@@ -43,13 +43,18 @@ Commented out by default.
 .Em TIMEZONE:
 Changes the timezone by forcefully making a symlink. Commented out by default.
 
+#DEF Linux
 .Em KEYMAP:
 Changes the keyboard layout. Commented out by default.
 
 .Em CONSOLEFONT:
 Changes the console font on the ttys (Linux only). Commented out by default.
+#ENDEF
 
 #DEF FreeBSD
+.Em KEYMAP:
+Changes the keyboard layout. Commented out by default.
+
 .Em WIRED:
 Sets the networking interface(s) to use with the wpa_supplicant wired driver.
 Set to eth0 by default.
