@@ -51,11 +51,12 @@ int main(int argc, char *argv[])
     // Int variables
 #   ifndef NetBSD
     unsigned int osin  = 1; // If this is 0, run os-indications(8) before rebooting
+    unsigned int force = 1; // If this is 0, skip sending a signal to init
     const char *opts  = "fFhlpqr?";
 #   else
     const char *opts  = "fhlpqr?";
+    unsigned int force = 0; // NetBSD lacks proper runlevel support
 #   endif
-    unsigned int force = 1; // If this is 0, skip sending a signal to init
     unsigned int wall  = 0; // Used for syslog(3) messages
     int signal;             // For signals that will be sent to init
 
@@ -134,8 +135,25 @@ int main(int argc, char *argv[])
         closelog();
     }
 
-    // Run os-indications if --firmware-setup was passed
-#   ifndef NetBSD
+    // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
+#   ifdef NetBSD
+    pid_t child = fork();
+    if(child == 0) {
+        sync();
+        return execve("/etc/leaninit/rc.shutdown", (char*[]){ "rc.shutdown", NULL }, environ);
+    } else if(child == -1) {
+        perror(RED "* fork() failed with" RESET);
+        printf(RED "* Issuing SIGCONT, SIGTERM and SIGKILL unsafely to all processes" RESET "\n");
+        kill(-1, SIGCONT);
+        kill(-1, SIGTERM);
+        sleep(1);
+        kill(-1, SIGKILL);
+    }
+
+    wait(NULL);
+
+    // Run os-indications if --firmware-setup was passed (Linux and FreeBSD only)
+#   else
     if(osin == 0) {
         pid_t child = fork();
         if(child == 0)
@@ -149,7 +167,7 @@ int main(int argc, char *argv[])
     }
 #   endif
 
-    // Skip init if force is true
+    // Skip init if force is true (default for NetBSD)
     if(force == 0) {
         sync(); // Always call sync(2)
 

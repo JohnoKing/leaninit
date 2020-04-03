@@ -98,20 +98,14 @@ or
 .Nm -?, --help
 Display usage information for
 .Nm halt.
-#DEF NetBSD
-.Sh BUGS
-.Nm Halt
-will not work on NetBSD if the operating system is in single user mode unless --force is passed to
-.Nm halt.
 .Sh SEE ALSO
-leaninit(8), reboot(2), sync(2)
-#ENDEF
 #DEF FreeBSD
-.Sh SEE ALSO
 leaninit(8), os-indications(8), reboot(2), sync(2)
 #ENDEF
+#DEF NetBSD
+leaninit(8), reboot(2), sync(2)
+#ENDEF
 #DEF Linux
-.Sh SEE ALSO
 leaninit(8), os-indications(8), reboot(2), sync(2)
 #ENDEF
 .Sh AUTHOR
