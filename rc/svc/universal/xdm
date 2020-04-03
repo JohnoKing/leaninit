@@ -7,7 +7,7 @@ NAME="$XDMNAME"
 #ENDEF
 #DEF NetBSD
 NAME="X Display Manager"
-XDM="/usr/X11R7/xdm"
+XDM="/usr/X11R7/bin/xdm"
 #ENDEF
 #DEF Linux
 . /etc/leaninit/rc.conf.d/xdm.conf
