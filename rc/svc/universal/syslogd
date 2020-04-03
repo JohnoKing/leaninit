@@ -3,6 +3,7 @@ NAME="SyslogD"
 
 main()
 {
+    touch "$__svcpidfile"
     syslogd -ss -P "$__svcpidfile"
 }
 
