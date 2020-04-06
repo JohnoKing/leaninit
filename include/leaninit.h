@@ -74,9 +74,6 @@
 #define CYAN   "\x1b[1;36m"
 #define WHITE  "\x1b[1;37m"
 
-// Shorten `__attribute((noreturn)) void` to `noreturn`
-#define noreturn __attribute((noreturn)) void
-
 // External char variables
 extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)

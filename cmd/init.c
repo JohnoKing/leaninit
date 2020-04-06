@@ -259,7 +259,7 @@ static void *chlvl(void *nullptr)
 }
 
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
-static noreturn *zloop(void *nullptr)
+__attribute((noreturn)) static void *zloop(void *nullptr)
 {
     for(;;) if(wait(nullptr) == -1) sleep(1);
 }
@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
 #                   endif
                     printf(CYAN "* " WHITE "Delaying shutdown for three seconds..." RESET "\n");
                     sleep(3);
-                /*FALLTHRU*/
+                // FALLTHRU
                 case SIGUSR2:
                     return reboot(SYS_POWEROFF);
 
