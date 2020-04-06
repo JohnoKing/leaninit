@@ -148,8 +148,10 @@ static void single(void)
         }
 
         // When the shell is done, automatically reboot
+#       ifndef NetBSD
         waitpid(sh, NULL, 0);
         kill(1, SIGINT);
+#       endif
 
     // Extra error handling
     } else if(child == -1) {
