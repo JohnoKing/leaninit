@@ -4,6 +4,12 @@ NAME="sysctl"
 main()
 {
 #DEF Linux
+    # Use util-linux sysctl if it is available
+    if sysctl --system 2> /dev/null; then
+        return 0
+    fi
+
+    # BusyBox sysctl
     if [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ]; then
         SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
     fi
