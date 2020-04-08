@@ -502,5 +502,6 @@ __run()
 }
 
 if [ "$NAME" ]; then
-    __run "$@"
+    __run "$@" &
+    wait # __run is a child process to prevent failure due to the X Server
 fi
