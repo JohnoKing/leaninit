@@ -22,11 +22,11 @@ main()
     mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,noatime -t tmpfs cgroup /sys/fs/cgroup
 
     # elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)
-    mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/unified
-    mountpoint -q /sys/fs/cgroup/openrc || mount -o nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
+    mkdir -p /sys/fs/cgroup/openrc /sys/fs/cgroup/controllers
+    mountpoint -q /sys/fs/cgroup/openrc || mount -o none,nosuid,nodev,noexec,noatime,name=openrc -t cgroup openrc /sys/fs/cgroup/openrc &
 
-    # Support for Cgroups v2
-    mountpoint -q /sys/fs/cgroup/unified || mount -o nosuid,nodev,noexec,noatime -t cgroup2 cgroup2 /sys/fs/cgroup/unified &
+    # The controllers cgroup is a simplified way of providing controllers through one cgroup instead of many
+    mountpoint -q /sys/fs/cgroup/controllers || mount -o nosuid,nodev,noexec,noatime -t cgroup controllers /sys/fs/cgroup/controllers &
 
     # Wait for all jobs to finish
     wait
