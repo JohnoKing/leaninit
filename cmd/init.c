@@ -57,7 +57,7 @@ static int open_tty(const char *tty_path)
 
     // Open the tty
     int tty = open(tty_path, O_RDWR | O_NOCTTY);
-    login_tty(tty);
+    setsid();
     dup2(tty, STDOUT_FILENO);
     dup2(tty, STDERR_FILENO);
     dup2(tty, STDIN_FILENO);  // This must be done last

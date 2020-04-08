@@ -5,6 +5,7 @@ NAME="ALSA"
 main()
 {
     waitfor service kmod optional
+    waitfor udev
     alsactl restore
 }
 

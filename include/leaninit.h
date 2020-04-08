@@ -36,11 +36,6 @@
 #include <unistd.h>
 #ifdef FreeBSD
 #include <efivar.h>
-#include <libutil.h>
-#elif NetBSD
-#include <util.h>
-#else
-#include <utmp.h>
 #endif
 
 // LeanInit's version number
