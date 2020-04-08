@@ -29,7 +29,7 @@ main()
     waitfor service settings
 #ENDEF
 #DEF Linux
-    checkfor service udev
+    waitfor service udev
     waitfor login-daemon optional
 #ENDEF
     install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
