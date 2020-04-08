@@ -79,7 +79,7 @@ all: clean
 		echo "LeanInit does not support `uname`!" ;\
 		false ;\
 	fi
-	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS) -lutil
+	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS)
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt
 	@echo "Successfully built LeanInit!"
