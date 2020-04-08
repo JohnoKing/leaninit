@@ -53,6 +53,7 @@ main()
 # Kill the X server manually
 stop()
 {
+    rm -f /var/run/leaninit/xdm* "/var/run/leaninit/$TYPE.type"
     pkill -x "$XDM"
     pkill -x Xorg
 }
