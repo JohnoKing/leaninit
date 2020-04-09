@@ -23,6 +23,11 @@ main()
 
     # Symlink the elogind PID file to the correct location
     ln -s /var/run/elogind.pid "$__svcpidfile"
+
+    # Wait for elogind to avoid issues if FASTLOGIN is not true
+    if [ "$FASTLOGIN" != "true" ]; then
+        sleep 0.3
+    fi
 }
 
 . /etc/leaninit/rc.svc
