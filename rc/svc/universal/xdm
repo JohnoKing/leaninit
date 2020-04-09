@@ -29,8 +29,13 @@ main()
     waitfor service settings
 #ENDEF
 #DEF Linux
-    checkfor service udev
-    waitfor login-daemon optional
+    # See the leaninit-rc.conf(5) man page for details about FASTLOGIN's downside
+    if [ "$FASTLOGIN" = true ]; then
+        checkfor udev
+    else
+        waitfor udev
+    fi
+    waitfor login-daemon optional # Support for elogind
 #ENDEF
     install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix # Required for GDM to function
 
