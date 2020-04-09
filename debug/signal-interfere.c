@@ -30,15 +30,15 @@
 static int usage(void)
 {
     printf("Usage: %s [-AIiRT012?]\n", __progname);
-    printf("  -A, --alarm            SIGALRM\n");
-    printf("  -I, --int              SIGINT\n");
-    printf("  -i, --ill              SIGILL\n");
-    printf("  -R, --hup              SIGHUP\n");
-    printf("  -T, --term             SIGTERM\n");
-    printf("  -0, --zero             kill(1, 0)\n");
-    printf("  -1, --usr1             SIGUSR1\n");
-    printf("  -2, --usr2             SIGUSR2\n");
-    printf("  -?, --help             Show this usage information\n");
+    printf("  -A, --alarm    SIGALRM\n");
+    printf("  -I, --int      SIGINT\n");
+    printf("  -i, --ill      SIGILL\n");
+    printf("  -R, --hup      SIGHUP\n");
+    printf("  -T, --term     SIGTERM\n");
+    printf("  -0, --zero     kill(1, 0)\n");
+    printf("  -1, --usr1     SIGUSR1\n");
+    printf("  -2, --usr2     SIGUSR2\n");
+    printf("  -?, --help     Show this usage information\n");
     return 1;
 }
 

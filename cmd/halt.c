@@ -82,15 +82,15 @@ int main(int argc, char *argv[])
             // Display usage info
             case '?':
                 printf("Usage: %s [-%s]\n", __progname, opts);
-                printf("  -f, -q, --force        Do not send a signal to init, call sync(2) reboot(2) directly\n");
+                printf("  -f, -q, --force       Do not send a signal to init, call sync(2) reboot(2) directly\n");
 #               ifndef NetBSD
-                printf("  -F, --firmware-setup   Reboot into the firmware setup\n");
+                printf("  -F, --firmware-setup  Reboot into the firmware setup\n");
 #               endif
-                printf("  -h, --halt             Force halt, even when called as poweroff or reboot\n");
-                printf("  -l, --no-wall          Turn off wall messages\n");
-                printf("  -p, --poweroff         Force poweroff, even when called as halt or reboot\n");
-                printf("  -r, --reboot           Force reboot, even when called as halt or poweroff\n");
-                printf("  -?, --help             Show this usage information\n");
+                printf("  -h, --halt            Force halt, even when called as poweroff or reboot\n");
+                printf("  -l, --no-wall         Turn off wall messages\n");
+                printf("  -p, --poweroff        Force poweroff, even when called as halt or reboot\n");
+                printf("  -r, --reboot          Force reboot, even when called as halt or poweroff\n");
+                printf("  -?, --help            Show this usage information\n");
                 return 1;
 
             // Skip sending a signal to init(8)
