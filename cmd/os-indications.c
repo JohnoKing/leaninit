@@ -69,9 +69,9 @@ int main(int argc, char *argv[])
             // Display usage info
             case '?':
                 printf("Usage: %s [-qu?]\n", __progname);
-                printf("  -q, --quiet    Disable output (unless there was an error)\n");
-                printf("  -u, --unset    Revert changes made by os-indications\n");
-                printf("  -?, --help     Show this usage information\n");
+                printf("  -q, --quiet   Disable output (unless there was an error)\n");
+                printf("  -u, --unset   Revert changes made by os-indications\n");
+                printf("  -?, --help    Show this usage information\n");
                 return 1;
 
             // Quiet mode

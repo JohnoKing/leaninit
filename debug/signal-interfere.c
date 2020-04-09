@@ -30,15 +30,14 @@
 static int usage(void)
 {
     printf("Usage: %s [-AIiRT012?]\n", __progname);
-    printf("  -A, --alarm    SIGALRM\n");
-    printf("  -I, --int      SIGINT\n");
-    printf("  -i, --ill      SIGILL\n");
-    printf("  -R, --hup      SIGHUP\n");
-    printf("  -T, --term     SIGTERM\n");
-    printf("  -0, --zero     kill(1, 0)\n");
-    printf("  -1, --usr1     SIGUSR1\n");
-    printf("  -2, --usr2     SIGUSR2\n");
-    printf("  -?, --help     Show this usage information\n");
+    printf("  -A, --alarm   SIGALRM\n");
+    printf("  -I, --int     SIGINT\n");
+    printf("  -i, --ill     SIGILL\n");
+    printf("  -R, --hup     SIGHUP\n");
+    printf("  -T, --term    SIGTERM\n");
+    printf("  -1, --usr1    SIGUSR1\n");
+    printf("  -2, --usr2    SIGUSR2\n");
+    printf("  -?, --help    Show this usage information\n");
     return 1;
 }
 
@@ -54,16 +53,15 @@ int main(int argc, char *argv[])
     // Long options struct
     struct option long_options[] = {
         { "delay", required_argument, 0, 'd' },
-        { "alarm", no_argument, 0, 'A' },
-        { "int",   no_argument, 0, 'I' },
-        { "ill",   no_argument, 0, 'i' },
-        { "hup",   no_argument, 0, 'R' },
-        { "term",  no_argument, 0, 'T' },
-        { "zero",  no_argument, 0, '0' },
-        { "usr1",  no_argument, 0, '1' },
-        { "usr2",  no_argument, 0, '2' },
-        { "help",  no_argument, 0, '?' },
-        {  0,                0, 0,  0  }
+        { "alarm", no_argument,       0, 'A' },
+        { "int",   no_argument,       0, 'I' },
+        { "ill",   no_argument,       0, 'i' },
+        { "hup",   no_argument,       0, 'R' },
+        { "term",  no_argument,       0, 'T' },
+        { "usr1",  no_argument,       0, '1' },
+        { "usr2",  no_argument,       0, '2' },
+        { "help",  no_argument,       0, '?' },
+        {  0,                0,       0,  0  }
     };
 
     // Get options
