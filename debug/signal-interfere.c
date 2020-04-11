@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     };
 
     // Get options
-    unsigned int delay = 0;
+    unsigned char delay = 0;
     int signal = 0;
     int args;
     while((args = getopt_long(argc, argv, "AIiRT012?", long_options, NULL)) != -1) {

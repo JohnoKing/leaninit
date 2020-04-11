@@ -27,9 +27,11 @@
 #include <leaninit.h>
 
 // Universal variables
-static unsigned int single_user = 1;
-static unsigned int verbose = 0;
-static int current_signal = 0;
+#define SINGLE_USER 1 << 0
+#define VERBOSE     1 << 1
+#define BANNER      1 << 2
+static unsigned char flags = 0;
+static int current_signal  = 0;
 
 // Shows usage for init
 static int usage(int ret)
@@ -73,8 +75,8 @@ static int sh(char *script)
     pid_t child = fork();
     if(child == 0) {
         setsid();
-        if(verbose == 0) execve(script, (char*[]){ script, "verbose", NULL }, environ);
-        else             execve(script, (char*[]){ script, "silent",  NULL }, environ);
+        if((flags & VERBOSE) == VERBOSE) execve(script, (char*[]){ script, "verbose", NULL }, environ);
+        else execve(script, (char*[]){ script, "silent",  NULL }, environ);
         printf(RED "* Failed to run %s\n", script);
         perror("* execve()" RESET);
         return 1;
@@ -170,15 +172,15 @@ static void multi(void)
     char *rc = get_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
     if(rc == NULL) {
         printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
-        single_user = 0;
+        flags ^= SINGLE_USER;
         return single();
     }
 
     // Run rc
-    if(verbose == 0) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
+    if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     if(sh(rc) != 0) {
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
-        single_user = 0;
+        flags ^= SINGLE_USER;
         return single();
     }
 
@@ -251,10 +253,10 @@ static void multi(void)
     }
 }
 
-// Run either single() or multi() depending on the value of single_user
+// Run either single() for single user and multi() for multi user
 static void *chlvl(void *nullptr)
 {
-    if(single_user == 0) single();
+    if((flags & SINGLE_USER) == SINGLE_USER) single();
     else multi();
 
     return nullptr;
@@ -284,12 +286,11 @@ int main(int argc, char *argv[])
         setenv("USER",    "root", 1);
 
         // Single user (argv = single/-s), silent mode (argv = silent) and rc.banner(8) support
-        unsigned int banner = 0;
         --argc;
         while(0 < argc) {
-            if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) single_user = 0;
-            else if(strcmp(argv[argc], "silent") == 0) verbose = 1;
-            else if(strcmp(argv[argc], "banner") == 0) banner  = 1;
+            if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) flags ^= SINGLE_USER;
+            else if(strcmp(argv[argc], "silent") == 0) flags ^= VERBOSE;
+            else if(strcmp(argv[argc], "banner") == 0) flags ^= BANNER;
             --argc;
         }
 
@@ -298,7 +299,7 @@ int main(int argc, char *argv[])
         pthread_create(&loop, NULL, zloop, NULL);
 
         // Run rc.banner if the banner argument was passed to LeanInit
-        if(banner != 0) {
+        if((flags & BANNER) == BANNER) {
             char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
             if(rc_banner != NULL)
                 sh(rc_banner);
@@ -307,7 +308,7 @@ int main(int argc, char *argv[])
         }
 
         // Print the current platform LeanInit is running on and start rc(8) (must be done in this order)
-        if(verbose == 0) {
+        if((flags & VERBOSE) == VERBOSE) {
             struct utsname uts;
             uname(&uts);
             printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
@@ -334,7 +335,7 @@ int main(int argc, char *argv[])
             int stored_signal = current_signal;
 
             // Cancel when the requested runlevel is already running
-            if((stored_signal == SIGILL && single_user != 0) || (stored_signal == SIGTERM && single_user == 0))
+            if((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER) || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
                 continue;
 
             // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
@@ -345,7 +346,7 @@ int main(int argc, char *argv[])
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) sh(rc_shutdown);
-            if(verbose == 0) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
+            if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             kill(-1, SIGKILL);
 
             // Handle the given signal properly
@@ -373,12 +374,12 @@ int main(int argc, char *argv[])
 
                 // Switch to single user
                 case SIGTERM:
-                    single_user = 0;
+                    flags ^= SINGLE_USER;
                     break;
 
                 // Switch to multi-user
                 case SIGILL:
-                    single_user = 1;
+                    flags ^= SINGLE_USER;
                     break;
             }
 

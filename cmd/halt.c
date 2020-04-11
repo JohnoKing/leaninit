@@ -26,6 +26,13 @@
 
 #include <leaninit.h>
 
+// Bitmask values
+#define FORCE_HALT    1 << 0 // Skip sending a signal to init (also runs rc.shutdown on NetBSD)
+#define WALL_MESSAGE  1 << 1 // Output a message to syslog(3)
+#ifndef NetBSD
+#define OsIndications 1 << 2 // Flag used to run os-indications(8) before rebooting
+#endif
+
 int main(int argc, char *argv[])
 {
     // Halt can only be run by root
@@ -49,16 +56,14 @@ int main(int argc, char *argv[])
     };
 
     // Int variables
-#   ifndef NetBSD
-    unsigned int osin  = 1; // If this is 0, run os-indications(8) before rebooting
-    unsigned int force = 1; // If this is 0, skip sending a signal to init
-    const char *opts  = "fFhlpqr?";
+    int signal; // Used for safely handling the signal sent to init
+#   ifdef NetBSD
+    unsigned char flags = FORCE_HALT | WALL_MESSAGE; // Runlevels on NetBSD are buggy
+    const char *opts    = "fhlpqr?";
 #   else
-    const char *opts  = "fhlpqr?";
-    unsigned int force = 0; // NetBSD lacks proper runlevel support
+    unsigned char flags = WALL_MESSAGE;
+    const char *opts    = "fFhlpqr?";
 #   endif
-    unsigned int wall  = 0; // Used for syslog(3) messages
-    int signal;             // For signals that will be sent to init
 
     // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
     if(strstr(__progname,      "halt")     != 0) // Halt
@@ -96,13 +101,15 @@ int main(int argc, char *argv[])
             // Skip sending a signal to init(8)
             case 'f':
             case 'q':
-                force = 0;
+#               ifndef NetBSD
+                flags ^= FORCE_HALT;
+#               endif
                 break;
 
             // Firmware setup
 #           ifndef NetBSD
             case 'F':
-                osin = 0;
+                flags ^= OsIndications;
                 break;
 #           endif
 
@@ -113,7 +120,7 @@ int main(int argc, char *argv[])
 
             // Turn off wall messages
             case 'l':
-                wall = 1;
+                flags ^= WALL_MESSAGE;
                 break;
 
             // Force poweroff
@@ -129,7 +136,7 @@ int main(int argc, char *argv[])
     }
 
     // Syslog
-    if(wall == 0) {
+    if((flags & WALL_MESSAGE) == WALL_MESSAGE) {
         openlog(__progname, LOG_CONS, LOG_AUTH);
         syslog(LOG_CRIT, "The system is going down NOW!");
         closelog();
@@ -154,7 +161,7 @@ int main(int argc, char *argv[])
 
     // Run os-indications if --firmware-setup was passed (Linux and FreeBSD only)
 #   else
-    if(osin == 0) {
+    if((flags & OsIndications) == OsIndications) {
         pid_t child = fork();
         if(child == 0)
             return execve("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL }, environ);
@@ -168,7 +175,7 @@ int main(int argc, char *argv[])
 #   endif
 
     // Skip init if force is true (default for NetBSD)
-    if(force == 0) {
+    if((flags & FORCE_HALT) == FORCE_HALT) {
         sync(); // Always call sync(2)
 
         switch(signal) {
