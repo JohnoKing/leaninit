@@ -115,7 +115,6 @@ install-rc: install-universal
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" \
 			"$(DESTDIR)/var/lib/leaninit/svc/alsa" ;\
 		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
-		install -Dm0755 out/rc/rc.banner "$(DESTDIR)/etc/leaninit" ;\
 	fi
 	@touch "$(DESTDIR)/var/lib/leaninit/install-flag"
 	@echo "Successfully installed LeanInit's RC system!"
@@ -152,7 +151,7 @@ uninstall:
 	@rm -rf "$(DESTDIR)/sbin/leaninit" "$(DESTDIR)/sbin/leaninit-halt" "$(DESTDIR)/sbin/leaninit-poweroff" "$(DESTDIR)/sbin/leaninit-reboot" "$(DESTDIR)/sbin/os-indications" \
 		"$(DESTDIR)/sbin/leaninit-service" "$(DESTDIR)/etc/leaninit" "$(DESTDIR)/var/log/leaninit*" "$(DESTDIR)/var/run/leaninit"  "$(DESTDIR)/usr/share/licenses/leaninit" \
 		"$(DESTDIR)/usr/share/man/man5/leaninit-rc.conf.5" "$(DESTDIR)/usr/share/man/man5/leaninit-ttys.5" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.svc.8" \
-		"$(DESTDIR)/usr/share/man/man8/leaninit.8" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.banner.8" \
+		"$(DESTDIR)/usr/share/man/man8/leaninit.8" "$(DESTDIR)/usr/share/man/man8/leaninit-halt.8" "$(DESTDIR)/usr/share/man/man8/leaninit-rc.8" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit-rc.shutdown.8" "$(DESTDIR)/usr/share/man/man8/leaninit-service.8" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8" "$(DESTDIR)/usr/share/man/man8/os-indications.8" "$(DESTDIR)/usr/share/man/man8/leaninit-poweroff.8" \
 		"$(DESTDIR)/usr/share/man/man8/leaninit-reboot.8" "$(DESTDIR)/var/lib/leaninit"

@@ -158,9 +158,6 @@ Secondary init script that is run if
 .Em /etc/leaninit/rc
 does not exist
 
-.Em /etc/leaninit/rc.banner
-Optional script that LeanInit will run before rc if passed the `banner` argument by the bootloader
-
 .Em /etc/leaninit/rc.conf
 Provides config settings for
 .Nm leaninit-rc
@@ -231,6 +228,6 @@ The other half of the time a kernel panic will occur due to a bug in the NetBSD 
 This is obviously not advised if you wish to maintain the data integrity of your file system.
 #ENDEF
 .Sh SEE ALSO
-leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8), leaninit-rc.banner(8), leaninit-rc.svc(8), leaninit-rc.conf(5), leaninit-ttys(5), kill(1), signal(7)
+leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8), leaninit-rc.svc(8), leaninit-rc.conf(5), leaninit-ttys(5), kill(1), signal(7)
 .Sh AUTHOR
 Johnothan King
