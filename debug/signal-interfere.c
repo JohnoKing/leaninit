@@ -29,7 +29,8 @@
 // Show usage information
 static int usage(void)
 {
-    printf("Usage: %s [-AIiRT012?]\n", __progname);
+    printf("Usage: %s [-dAIiRT012?]\n", __progname);
+    printf("  -d, --delay   Delay for up to 255 seconds\n");
     printf("  -A, --alarm   SIGALRM\n");
     printf("  -I, --int     SIGINT\n");
     printf("  -i, --ill     SIGILL\n");
@@ -68,7 +69,7 @@ int main(int argc, char *argv[])
     unsigned char delay = 0;
     int signal = 0;
     int args;
-    while((args = getopt_long(argc, argv, "AIiRT012?", long_options, NULL)) != -1) {
+    while((args = getopt_long(argc, argv, "dAIiRT012?", long_options, NULL)) != -1) {
         switch(args) {
 
             // Display usage info
