@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     if(stall_pid == 0) {
 
         // Ignore SIGTERM when stall is not in SIGSTOP mode
-        if(sigstop == false) {
+        if(!sigstop) {
             struct sigaction actor;
             memset(&actor, 0, sizeof(actor));
             actor.sa_handler = SIG_IGN;
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     }
 
     // Output info
-    if(sigstop == false) {
+    if(!sigstop) {
         printf(CYAN "* " WHITE "Stall is now running in the background with PID %d." RESET "\n", stall_pid);
         printf(CYAN "* " WHITE "Stall cannot be killed with SIGTERM (use SIGKILL instead)." RESET "\n");
         printf(CYAN "* " WHITE "To execute stall in SIGSTOP mode, pass --sigstop when executing stall." RESET "\n");
