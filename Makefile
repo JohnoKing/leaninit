@@ -115,7 +115,7 @@ install-rc: install-universal
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" \
 			"$(DESTDIR)/var/lib/leaninit/svc/alsa" ;\
 		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
-		install -Dm0755 out/rc/rc.banner "$(DESTDIR)/etc/leaninit" ;\
+		cp -i out/rc/rc.banner "$(DESTDIR)/etc/leaninit" ;\
 	fi
 	@touch "$(DESTDIR)/var/lib/leaninit/install-flag"
 	@echo "Successfully installed LeanInit's RC system!"
