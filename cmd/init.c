@@ -93,7 +93,7 @@ static int sh(char *script)
 }
 
 // Spawn a getty on the given tty then return its PID
-static pid_t spawn_getty(const char *restrict cmd, const char *restrict tty)
+static pid_t spawn_getty(const char *cmd, const char *tty)
 {
     pid_t getty = fork();
     if(getty == 0) {
