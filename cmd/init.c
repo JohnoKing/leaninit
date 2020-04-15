@@ -29,6 +29,7 @@
 // Universal variables
 #define SINGLE_USER 1 << 0
 #define VERBOSE     1 << 1
+#define BANNER      1 << 2
 static unsigned char flags = 0;
 static int current_signal  = 0;
 
@@ -284,17 +285,27 @@ int main(int argc, char *argv[])
         setenv("LOGNAME", "root", 1);
         setenv("USER",    "root", 1);
 
-        // Single user (argv = single/-s) and silent mode (argv = silent)
+        // Single user (argv = single/-s), silent mode (argv = silent) and rc.banner(8) support
         --argc;
         while(0 < argc) {
             if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) flags ^= SINGLE_USER;
             else if(strcmp(argv[argc], "silent") != 0) flags ^= VERBOSE;
+            else if(strcmp(argv[argc], "banner") == 0) flags ^= BANNER;
             --argc;
         }
 
         // Start the zombie killer thread
         pthread_t loop, runlvl;
         pthread_create(&loop, NULL, zloop, NULL);
+
+        // Run rc.banner if the banner argument was passed to LeanInit
+        if((flags & BANNER) == BANNER) {
+            char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
+            if(rc_banner != NULL)
+                sh(rc_banner);
+            else
+                printf(RED "* Could not find rc.banner(8)!" RESET "\n");
+        }
 
         // Print the current platform LeanInit is running on and start rc(8) (must be done in this order)
         if((flags & VERBOSE) == VERBOSE) {
