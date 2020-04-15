@@ -30,7 +30,7 @@
 #define SINGLE_USER 1 << 0
 #define VERBOSE     1 << 1
 #define BANNER      1 << 2
-static unsigned char flags = 0;
+static unsigned char flags = VERBOSE;
 static int current_signal  = 0;
 
 // Shows usage for init
@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
         --argc;
         while(0 < argc) {
             if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) flags ^= SINGLE_USER;
-            else if(strcmp(argv[argc], "silent") != 0) flags ^= VERBOSE;
+            else if(strcmp(argv[argc], "silent") == 0) flags ^= VERBOSE;
             else if(strcmp(argv[argc], "banner") == 0) flags ^= BANNER;
             --argc;
         }
