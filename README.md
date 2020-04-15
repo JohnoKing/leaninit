@@ -8,19 +8,25 @@ This is a speedy BSD-style init system for Linux, FreeBSD and (in the next relea
 ## Building and Installing
 ### Linux
 Run `make` will compile LeanInit (compiled files are placed in `./out`).
-Running `make install` as root will install
-LeanInit, without overriding other existing init systems.
+Running `make install` as root will install LeanInit, without overriding other existing init systems.
 You can change the destination LeanInit is installed to by using `$DESTDIR`.
 
-To boot into LeanInit, add `init=/sbin/leaninit` to your kernel command
-line. Make sure eudev and iproute2 are installed, as they are required on Linux.
+To boot into LeanInit, add `init=/sbin/leaninit` to your kernel command line.
+Make sure eudev and iproute2 are installed, as they are required on Linux.
 
 ### FreeBSD
-Follow the same steps as on Linux to build LeanInit. The Makefile
-is compatible with both GNU and BSD Make, so you don't need to install
-`gmake` as a separate build dependency.
-To boot from LeanInit, append the following line to `/boot/loader.conf`:
-`init_path="/sbin/leaninit"`
+Follow the same steps as on Linux to build LeanInit.
+The Makefileis compatible with both GNU and BSD Make, so you don't need to install `gmake` as a separate build dependency.
+To boot from LeanInit, append the following line to `/boot/loader.conf`: `init_path="/sbin/leaninit:/sbin/init"`.
+
+### NetBSD
+As stated above, LeanInit will compile with BSD make.
+However, the NetBSD boot loader does not support the `init_path` setting.
+As a workaround, you can turn `/sbin/init` into a symlink.
+*Only do this at your own risk, as you can only revert this with `chroot` on a resuce disk if something goes wrong.*
+If you are still willing to change the init system, the following set of commands will backup `/sbin/init` and change the init system to LeanInit:
+`mv /sbin/init /sbin/init.old`  
+`ln -s /sbin/leaninit /sbin/init`  
 
 ### init(8)-only installation
 To install only the implementations of init(8), halt(8), the man pages and the os-indications(8) program,
