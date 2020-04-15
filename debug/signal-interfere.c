@@ -29,8 +29,8 @@
 // Show usage information
 static int usage(void)
 {
-    printf("Usage: %s [-dAIiRT012?]\n", __progname);
-    printf("  -d, --delay   Delay for up to 255 seconds\n");
+    printf("Usage: %s [-dAIiRT012?] [delay] ...\n", __progname);
+    printf("  -d, --delay   Delay for up to x seconds (max 255)\n");
     printf("  -A, --alarm   SIGALRM\n");
     printf("  -I, --int     SIGINT\n");
     printf("  -i, --ill     SIGILL\n");
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
             // Set the number of seconds to delay sending the signal (--delay)
             case 'd':
-                delay = (unsigned int)atoi(optarg);
+                delay = (unsigned char)atoi(optarg);
                 break;
 
             case 'A':
