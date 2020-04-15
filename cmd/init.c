@@ -93,7 +93,7 @@ static int sh(char *script)
 }
 
 // Spawn a getty on the given tty then return its PID
-static pid_t spawn_getty(const char *cmd, const char *tty)
+static pid_t spawn_getty(const char *restrict cmd, const char *restrict tty)
 {
     pid_t getty = fork();
     if(getty == 0) {
@@ -105,7 +105,7 @@ static pid_t spawn_getty(const char *cmd, const char *tty)
 }
 
 // Return the accessible file path or NULL if neither are
-static char *get_file_path(char *primary, char *fallback, int amode)
+static char *get_file_path(char *restrict primary, char *restrict fallback, int amode)
 {
     if(access(primary, amode) == 0) return primary;
     else if(access(fallback, amode) == 0) return fallback;
@@ -345,8 +345,11 @@ int main(int argc, char *argv[])
 
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
-            if(rc_shutdown != NULL) sh(rc_shutdown);
-            if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
+            if(rc_shutdown != NULL) {
+                sh(rc_shutdown);
+                if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
+            } else
+                printf(RED "* Could not find rc.shutdown(8), killing all processes unsafely..." RESET "\n");
             kill(-1, SIGKILL);
 
             // Handle the given signal properly

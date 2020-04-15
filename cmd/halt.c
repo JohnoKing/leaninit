@@ -46,23 +46,23 @@ int main(int argc, char *argv[])
 #       ifndef NetBSD
         { "firmware-setup", no_argument, 0, 'F' },
 #       endif
-        { "force",          no_argument, 0, 'f' },
-        { "halt",           no_argument, 0, 'h' },
-        { "no-wall",        no_argument, 0, 'l' },
-        { "poweroff",       no_argument, 0, 'p' },
-        { "reboot",         no_argument, 0, 'r' },
-        { "help",           no_argument, 0, '?' },
-        {  0,                         0, 0,  0  }
+        { "force",    no_argument, 0, 'f' },
+        { "halt",     no_argument, 0, 'h' },
+        { "no-wall",  no_argument, 0, 'l' },
+        { "poweroff", no_argument, 0, 'p' },
+        { "reboot",   no_argument, 0, 'r' },
+        { "help",     no_argument, 0, '?' },
+        {  0,                   0, 0,  0  }
     };
 
     // General variables
     int signal; // Used for safely handling the signal sent to init
 #   ifdef NetBSD
     unsigned char flags = FORCE_HALT | WALL_MESSAGE; // Runlevels on NetBSD are buggy
-    const char *opts    = "fhlpqr?";
+    const char *opts = "fhlpqr?";
 #   else
     unsigned char flags = WALL_MESSAGE;
-    const char *opts    = "fFhlpqr?";
+    const char *opts = "fFhlpqr?";
 #   endif
 
     // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
