@@ -257,6 +257,7 @@ __start()
         echo "Failure" > "/var/run/leaninit/$__svcname.status"
     fi
 
+    sleep 0.001 # Wait for a little bit in case exec(1) was used to execute service
     return $RET
 }
 

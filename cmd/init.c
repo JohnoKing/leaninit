@@ -287,9 +287,9 @@ int main(int argc, char *argv[])
         bool banner = false;
         --argc;
         while(0 < argc) {
-            if(strcmp(argv[argc], "single") == 0 || strcmp(argv[argc], "-s") == 0) single_user = true;
-            else if(strcmp(argv[argc], "silent") == 0) verbose = false;
-            else if(strcmp(argv[argc], "banner") == 0) banner  = true;
+            if(strncmp(argv[argc], "single", 6) == 0 || strncmp(argv[argc], "-s", 2) == 0) single_user = true;
+            else if(strncmp(argv[argc], "silent", 6) == 0) verbose = false;
+            else if(strncmp(argv[argc], "banner", 6) == 0) banner  = true;
             --argc;
         }
 
