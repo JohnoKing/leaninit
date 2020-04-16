@@ -9,7 +9,8 @@ main()
 {
     waitfor service settings
     install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix
-    fork /usr/X11R7/bin/xdm -nodaemon -config /etc/X11/xdm/xdm-config
+    /usr/X11R7/bin/xdm -config /etc/X11/xdm/xdm-config
+    ln -s /var/run/xdm.pid "$__svcpidfile"
 }
 
 # Kill the X server manually
