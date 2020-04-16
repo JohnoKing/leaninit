@@ -43,9 +43,9 @@ int main(int argc, char *argv[])
 
     // Long options for halt
     struct option halt_long_options[] = {
-#       ifndef NetBSD
+#ifndef NetBSD
         { "firmware-setup", no_argument, 0, 'F' },
-#       endif
+#endif
         { "force",    no_argument, 0, 'f' },
         { "halt",     no_argument, 0, 'h' },
         { "no-wall",  no_argument, 0, 'l' },
@@ -57,13 +57,13 @@ int main(int argc, char *argv[])
 
     // General variables
     int signal; // Used for safely handling the signal sent to init
-#   ifdef NetBSD
+#ifdef NetBSD
     unsigned char flags = FORCE_HALT | WALL_MESSAGE; // Runlevels on NetBSD are buggy
     const char *opts = "fhlpqr?";
-#   else
+#else
     unsigned char flags = WALL_MESSAGE;
     const char *opts = "fFhlpqr?";
-#   endif
+#endif
 
     // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
     if(strstr(__progname,      "halt")     != 0) // Halt
@@ -88,9 +88,9 @@ int main(int argc, char *argv[])
             case '?':
                 printf("Usage: %s [-%s]\n", __progname, opts);
                 printf("  -f, -q, --force       Do not send a signal to init, call sync(2) reboot(2) directly\n");
-#               ifndef NetBSD
+#ifndef NetBSD
                 printf("  -F, --firmware-setup  Reboot into the firmware setup\n");
-#               endif
+#endif
                 printf("  -h, --halt            Force halt, even when called as poweroff or reboot\n");
                 printf("  -l, --no-wall         Turn off wall messages\n");
                 printf("  -p, --poweroff        Force poweroff, even when called as halt or reboot\n");
@@ -101,17 +101,17 @@ int main(int argc, char *argv[])
             // Skip sending a signal to init(8)
             case 'f':
             case 'q':
-#               ifndef NetBSD
+#ifndef NetBSD
                 flags ^= FORCE_HALT;
-#               endif
+#endif
                 break;
 
             // Firmware setup
-#           ifndef NetBSD
+#ifndef NetBSD
             case 'F':
                 flags ^= OsIndications;
                 break;
-#           endif
+#endif
 
             // Force halt
             case 'h':
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
     }
 
     // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
-#   ifdef NetBSD
+#ifdef NetBSD
     pid_t child = fork();
     if(child == 0) {
         sync();
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
     wait(NULL);
 
     // Run os-indications if --firmware-setup was passed (Linux and FreeBSD only)
-#   else
+#else
     if((flags & OsIndications) == OsIndications) {
         pid_t child = fork();
         if(child == 0)
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
 
         wait(NULL);
     }
-#   endif
+#endif
 
     // Skip init if force is true (default for NetBSD)
     if((flags & FORCE_HALT) == FORCE_HALT) {

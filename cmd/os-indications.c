@@ -38,19 +38,19 @@
 int main(int argc, char *argv[])
 {
     // GUID for OsIndications
-#   ifndef Linux
+#ifndef Linux
     efi_guid_t global_guid = EFI_GLOBAL_GUID;
-#   endif
+#endif
 
     // Error checks
     if(getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
-#   ifndef Linux
+#ifndef Linux
     } else if(efi_variables_supported() == 0) {
-#   else
+#else
     } else if(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
-#   endif
+#endif
         printf(RED "* This system does not support OsIndications!" RESET "\n");
         return 1;
     }
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     }
 
     // Write efi_data (Linux efivarfs API)
-#   ifdef Linux
+#ifdef Linux
     if((flags & UNSET) != UNSET) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
         unsigned char efi_data[2] = { 0x07, 0x01 };
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
         unlink("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c");
 
     // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
-#   else
+#else
     unsigned char efi_boot = 0x01;
     if((flags & UNSET) != UNSET)
         efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     // Delete OsIndications to unset it
     else
         efi_del_variable(global_guid, "OsIndications");
-#   endif
+#endif
 
     // Notify the user of the change if --quiet was not passed
     if((flags & VERBOSE) == VERBOSE) {

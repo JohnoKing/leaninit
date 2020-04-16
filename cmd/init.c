@@ -53,9 +53,9 @@ static int usage(int ret)
 static int open_tty(const char *tty_path)
 {
     // Revoke access to the tty if it is being used
-#   if defined (FreeBSD) || (NetBSD)
+#if defined (FreeBSD) || (NetBSD)
     revoke(tty_path);
-#   endif
+#endif
 
     // Open the tty
     int tty = open(tty_path, O_RDWR | O_NOCTTY);
@@ -223,9 +223,9 @@ static void multi(void)
 
             // Do not spam the tty if the getty failed
             if(WEXITSTATUS(status) != 0) {
-#               if defined (FreeBSD) || (NetBSD)
+#if defined (FreeBSD) || (NetBSD)
                 open_tty(getty[e].tty);
-#               endif
+#endif
                 printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", getty[e].tty, WEXITSTATUS(status));
                 getty[e].pid = 0;
                 break;
