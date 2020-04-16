@@ -29,7 +29,7 @@
 // Show usage information
 static int usage(void)
 {
-    printf("Usage: %s [-dAIiRT012?] [delay] ...\n", __progname);
+    printf("Usage: %s [-dAIiRT12?] [delay] ...\n", __progname);
     printf("  -d, --delay   Delay for up to x seconds (max 255)\n");
     printf("  -A, --alarm   SIGALRM\n");
     printf("  -I, --int     SIGINT\n");
