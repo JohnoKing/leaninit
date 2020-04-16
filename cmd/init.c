@@ -200,9 +200,8 @@ static void multi(void)
     } else if(child != 0) return;
 
     // Open the ttys file (max file size 8000 bytes with 60 entries)
-    char buffer[8001];
-    char *data = buffer;
-    unsigned int entry = 0;
+    char *data = malloc(8001);
+    unsigned char entry = 0;
     struct getty_t {
         const char *cmd;
         const char *tty;
