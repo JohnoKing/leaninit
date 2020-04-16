@@ -60,9 +60,9 @@ static int open_tty(const char *tty_path)
     // Open the tty
     int tty = open(tty_path, O_RDWR | O_NOCTTY);
     setsid();
-    dup2(tty, STDIN_FILENO);
     dup2(tty, STDOUT_FILENO);
     dup2(tty, STDERR_FILENO);
+    dup2(tty, STDIN_FILENO);
     ioctl(tty, TIOCSCTTY, 1);
 
     // Return the file descriptor of the tty
@@ -75,15 +75,10 @@ static int sh(char *script)
     pid_t child = fork();
     if(child == 0) {
         setsid();
-        if((flags & VERBOSE) == VERBOSE) execve(script, (char*[]){ script, "verbose", NULL }, environ);
-        else execve(script, (char*[]){ script, "silent",  NULL }, environ);
-        printf(RED "* Failed to run %s\n", script);
-        perror("* execve()" RESET);
-        return 1;
-    } else if(child == -1) {
-        printf(RED "* Failed to run %s\n", script);
-        perror("* fork()" RESET);
-        return 1;
+        if((flags & VERBOSE) == VERBOSE)
+            return execve(script, (char*[]){ script, "verbose", NULL }, environ);
+        else
+            return execve(script, (char*[]){ script, "silent",  NULL }, environ);
     }
 
     // Wait for the script to finish
@@ -115,54 +110,45 @@ static char *get_file_path(char *restrict primary, char *restrict fallback, int 
 // Single user mode
 static void single(void)
 {
-    // Use a shell of the user's choice
-    char buffer[101], shell[101];
+    // Ask the user for their desired shell
+    char *buffer = malloc(71);
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-    (void) fgets(buffer, 101, stdin);
+    (void) fgets(buffer, 71, stdin);
+
+    // Convert the input into a readable char
+    char *shell = malloc(71);
     sscanf(buffer, "%s", shell);
+    free(buffer); // The buffer is no longer needed
 
     // If the given shell is invalid, use /bin/sh instead
     if(access(shell, X_OK) != 0) {
         printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
-        memcpy(shell, "/bin/sh", 8);
+        memmove(shell, "/bin/sh", 8);
     }
 
-    // Fork the shell as the child of a managing child process (trying to use only one child process causes serious bugs)
+    /* Fork the shell as the child of a managing child process (trying to use only one child process causes serious bugs)
+       This is not done on NetBSD due to bugged runlevel functionality */
+#ifndef NetBSD
     pid_t child = fork();
     if(child == 0) {
+#endif
 
         // Actual shell
         pid_t sh = fork();
         if(sh == 0) {
             open_tty(DEFAULT_TTY);
             execve(shell, (char*[]){ shell, NULL }, environ);
-            printf(RED "* Failed to run %s\n", shell);
-            perror("* execve()" RESET);
-#           ifndef NetBSD
-            kill(1, SIGFPE);
-#           endif
-        } else if(sh == -1) {
-            printf(RED "* Failed to run %s\n", shell);
-            perror("* fork()" RESET);
-#           ifndef NetBSD
-            kill(1, SIGFPE);
-#           endif
         }
 
+#ifndef NetBSD
+        // Free memory of the previous input
+        free(shell);
+
         // When the shell is done, automatically reboot
-#       ifndef NetBSD
         waitpid(sh, NULL, 0);
         kill(1, SIGINT);
-#       endif
-
-    // Extra error handling
-    } else if(child == -1) {
-        printf(RED "* Failed to run %s\n", shell);
-        perror("* fork()" RESET);
-#       ifndef NetBSD
-        kill(1, SIGFPE);
-#       endif
     }
+#endif
 }
 
 // Execute rc(8) and getty(8) (multi-user)
@@ -279,7 +265,11 @@ int main(int argc, char *argv[])
     if(getpid() == 1) {
 
         // Open the console and login as root
+#ifdef Linux
+        open_tty(DEFAULT_TTY);
+#else
         int tty = open_tty(DEFAULT_TTY);
+#endif
         setenv("HOME",   "/root", 1);
         setenv("LOGNAME", "root", 1);
         setenv("USER",    "root", 1);
@@ -320,7 +310,6 @@ int main(int argc, char *argv[])
         actor.sa_flags   = 0;
         sigaction(SIGUSR1, &actor, NULL); // Halt
         sigaction(SIGUSR2, &actor, NULL); // Poweroff
-        sigaction(SIGFPE,  &actor, NULL); // Poweroff (delayed)
         sigaction(SIGTERM, &actor, NULL); // Single-user
         sigaction(SIGILL,  &actor, NULL); // Multi-user
         sigaction(SIGHUP,  &actor, NULL); // Reload everything
@@ -359,14 +348,6 @@ int main(int argc, char *argv[])
                     return reboot(SYS_HALT);
 
                 // Poweroff
-                case SIGFPE: // Delay
-#                   if defined (FreeBSD) || (NetBSD)
-                    close(tty);
-                    open_tty(DEFAULT_TTY);
-#                   endif
-                    printf(CYAN "* " WHITE "Delaying shutdown for three seconds..." RESET "\n");
-                    sleep(3);
-                // FALLTHRU
                 case SIGUSR2:
                     return reboot(SYS_POWEROFF);
 
@@ -385,9 +366,11 @@ int main(int argc, char *argv[])
                     break;
             }
 
-            // Reopen the console and reload the runlevel
+            // Reopen the console on *BSD and reload the runlevel
+#if defined (FreeBSD) || (NetBSD)
             close(tty);
             tty = open_tty(DEFAULT_TTY);
+#endif
             pthread_create(&runlvl, NULL, chlvl, NULL);
         }
     }
