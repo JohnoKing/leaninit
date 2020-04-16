@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
     }
+
     // SIGSTOP mode can be enabled by passing --sigstop to stall
     bool sigstop = false;
     if(argc > 2 && strstr(argv[1], "--sigstop") != 0)
