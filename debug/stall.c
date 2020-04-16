@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         // Ignore SIGTERM when stall is not in SIGSTOP mode
         if(!sigstop) {
             struct sigaction actor;
-            memset(&actor, 0, sizeof(actor));
+            actor.sa_flags = 0;
             actor.sa_handler = SIG_IGN;
             sigaction(SIGTERM, &actor, NULL);
         }

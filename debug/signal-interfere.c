@@ -115,8 +115,8 @@ int main(int argc, char *argv[])
     pid_t daemon = fork();
     if(daemon == 0) {
         struct sigaction actor;
-        memset(&actor, 0, sizeof(actor));
         actor.sa_handler = SIG_IGN;
+        actor.sa_flags   = 0;
         sigaction(SIGTERM, &actor, NULL);
         pause();
         if(delay != 0) sleep(delay);
