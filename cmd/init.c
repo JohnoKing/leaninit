@@ -232,7 +232,7 @@ static void multi(void)
         if(closed_pid == -1) return;
 
         // Match the closed PID to the getty in the index
-        for(unsigned int e = 1; e <= entry; e++) {
+        for(unsigned char e = 1; e <= entry; e++) {
             if(getty[e].pid != closed_pid) continue;
 
             // Do not spam the tty if the getty failed

@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 #   ifdef Linux
     if((flags & UNSET) != UNSET) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
-        unsigned int efi_data[2] = { 0x07, 0x01 };
+        unsigned char efi_data[2] = { 0x07, 0x01 };
         if(fwrite(efi_data, 2, 3, fd) == 0) {
             fclose(fd);
             printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
