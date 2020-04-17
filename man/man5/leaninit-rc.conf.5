@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 8, 2020
+.Dd April 17, 2020
 .Dt RC.CONF 5
 .Os
 .Sh NAME
@@ -35,49 +35,49 @@ script.
 .Em /etc/leaninit/rc.conf
 allows you to change the following settings:
 
-.Em HOSTNAME:
+.Em HOSTNAME :
 Changes the hostname using
-.Nm hostname(1).
+.Nm hostname(1) .
 Commented out by default.
 
-.Em TIMEZONE:
+.Em TIMEZONE :
 Changes the timezone by forcefully making a symlink. Commented out by default.
 
 #DEF Linux
-.Em KEYMAP:
+.Em KEYMAP :
 Changes the keyboard layout. Commented out by default.
 
-.Em CONSOLEFONT:
+.Em CONSOLEFONT :
 Changes the console font on the ttys (Linux only). Commented out by default.
 #ENDEF
 
 #DEF FreeBSD
-.Em KEYMAP:
+.Em KEYMAP :
 Changes the keyboard layout. Commented out by default.
 
-.Em WIRED:
+.Em WIRED :
 Sets the networking interface(s) to use with the wpa_supplicant wired driver.
 Set to eth0 by default.
 
-.Em WIRELESS:
+.Em WIRELESS :
 Sets the networking interface(s) to use with the wpa_supplicant bsd driver.
 Set to wlan0 by default.
 
-.Em NDIS:
+.Em NDIS :
 Sets the networking interface(s) to use with the wpa_supplicant ndis driver.
 #ENDEF
 
 #DEF NetBSD
-.Em WIRED:
+.Em WIRED :
 Sets the networking interface(s) to use with the wpa_supplicant wired driver.
 Set to we0 by default.
 
-.Em WIRELESS:
+.Em WIRELESS :
 Sets the networking interface(s) to use with the wpa_supplicant bsd driver.
 Set to wlan0 by default.
 #ENDEF
 
-.Em DELAY:
+.Em DELAY :
 Have
 .Nm rc
 wait for all services and
@@ -93,45 +93,52 @@ script fails to exit.
 This setting should only be used for debugging.
 .Sh ADDITIONAL OPTIONS
 The following settings can be set in config files located in
-.Em /etc/leaninit/rc.conf.d:
+.Em /etc/leaninit/rc.conf.d :
 
 #DEF FreeBSD
 #DEF NetBSD
-.Em NTPDATE:
+.Em NTPDATE :
 When this is set to true, the ntpd service will run ntpdate(8) during boot to update the system's clock.
 #ENDEF
 
-.Em XDM (xdm.conf):
+.Em XDM
+(xdm.conf):
 Sets the path to the executable of the Display Manager used by the xdm service.
 
-.Em XDMNAME (xdm.conf):
+.Em XDMNAME
+(xdm.conf):
 Sets the name of the Display Manager used by the xdm service.
 
-.Em XDMPID (xdm.conf):
+.Em XDMPID
+(xdm.conf):
 Sets the path to the Display Manager's PID file for use by the xdm service (this setting is optional).
 
 #DEF Linux
-.Em FASTLOGIN (xdm.conf):
+.Em FASTLOGIN
+(xdm.conf):
 If this is set to true, xdm will start in aggressive parallel alongside udev,
 which will temporarily disable the system's power button until the user logs in.
 As this feature does have a negative effect, it is disabled by default.
 
-.Em DEVEXEC (udev.conf):
+.Em DEVEXEC
+(udev.conf):
 Sets the location of either
 .Nm udev(7)
 or
-.Nm mdev.
+.Nm mdev .
 Set to
 .Em /sbin/udevd
 for udev by default.
 
-.Em CRON (cron.conf)
+.Em CRON
+(cron.conf)
 Sets the executable name in
 .Em $PATH
 or the absolute path to the executable for
-.Nm cron(8).
+.Nm cron(8) .
 
-.Em CRONFLAGS (cron.conf)
+.Em CRONFLAGS
+(cron.conf)
 Sets the flags
 .Nm cron
 will be run with.

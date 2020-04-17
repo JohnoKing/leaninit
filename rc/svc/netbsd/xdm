@@ -13,6 +13,12 @@ main()
     ln -s /var/run/xdm.pid "$__svcpidfile"
 }
 
+# Reload functionality
+reload()
+{
+    kill -HUP $__svcpid
+}
+
 # Kill the X server manually
 stop()
 {

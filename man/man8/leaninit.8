@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 3, 2020
+.Dd April 17, 2020
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -99,7 +99,7 @@ Enables Silent Mode in addition to the quiet flag, completely removing all unwan
 When
 .Nm LeanInit
 is sent a signal using
-.Nm kill(1),
+.Nm kill(1) ,
 it will act as follows:
 
 .Nm SIGHUP
@@ -117,35 +117,30 @@ Kill all processes then halt the system.
 .Nm SIGUSR2
 Kill all processes then power off the system.
 
-.Nm SIGFPE
-Same as SIGUSR2 (the system will turn off), but there will be a three second delay before reboot(2) is called.
-.Nm LeanInit
-uses this signal for handling critical errors in single user mode.
-
 .Nm SIGINT
 Kill all processes then reboot the system.
 .Sh OUTPUT
 .Nm LeanInit
 outputs text with the following color coding:
 
-.Nm Cyan star and White text:
+.Nm Cyan star and White text :
 A generic message sent from one of
 .Nm LeanInit's
 binaries.
 
-.Nm Purple star and White text:
+.Nm Purple star and White text :
 A generic message that is not logged.
 
-.Nm Blue star and White text:
+.Nm Blue star and White text :
 A generic message that is logged.
 
-.Nm Green star and White text:
+.Nm Green star and White text :
 A message that indicates a successful action.
 
-.Nm Purple star and Yellow text:
+.Nm Purple star and Yellow text :
 A warning message.
 
-.Nm Red star and Red text:
+.Nm Red star and Red text :
 An error message.
 .Pp
 .Sh FILES

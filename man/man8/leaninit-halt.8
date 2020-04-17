@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 3, 2020
+.Dd April 17, 2020
 .Dt HALT 8
 .Os
 .Sh NAME
@@ -49,7 +49,7 @@ Halt accepts the following flags:
 .Pp
 .Nm -f, -q, --force
 Do not send a signal to
-.Nm init(8),
+.Nm init(8) ,
 call
 .Nm sync(2)
 and
@@ -72,7 +72,7 @@ Forces halt, even when
 is called as
 .Nm poweroff
 or
-.Nm reboot.
+.Nm reboot .
 .Pp
 .Nm -l, --no-wall
 Do not send a message using
@@ -85,7 +85,7 @@ Forces poweroff, even when
 is called as
 .Nm
 or
-.Nm reboot.
+.Nm reboot .
 .Pp
 .Nm -r, --reboot
 Forces reboot, even when
@@ -93,11 +93,11 @@ Forces reboot, even when
 is called as
 .Nm
 or
-.Nm poweroff.
+.Nm poweroff .
 .Pp
 .Nm -?, --help
 Display usage information for
-.Nm halt.
+.Nm halt .
 .Sh SEE ALSO
 #DEF FreeBSD
 leaninit(8), os-indications(8), reboot(2), sync(2)
