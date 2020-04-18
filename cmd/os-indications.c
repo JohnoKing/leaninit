@@ -26,14 +26,10 @@
  * The libefivar API is used when compiled on FreeBSD, while the efivarfs and
  * C Standard APIs are used on Linux to avoid requiring an extra dependency.
  *
- * NetBSD is not supported by the os-indications utility.
+ * This small tool only supports Linux and FreeBSD at this point in time.
  */
 
 #include <leaninit.h>
-
-// Bitmask values
-#define VERBOSE 1 << 0
-#define UNSET   1 << 1
 
 int main(int argc, char *argv[])
 {
@@ -56,7 +52,8 @@ int main(int argc, char *argv[])
     }
 
     // Bitmask flags variable and long options
-    unsigned char flags = VERBOSE;
+    unsigned int verbose = 1;
+    unsigned int unset   = 0;
     struct option long_options[] = {
         { "quiet", no_argument, 0, 'q' },
         { "unset", no_argument, 0, 'u' },
@@ -79,19 +76,19 @@ int main(int argc, char *argv[])
 
             // Quiet mode
             case 'q':
-                flags ^= VERBOSE;
+                verbose = 0;
                 break;
 
             // Unset OsIndications
             case 'u':
-                flags ^= UNSET;
+                unset = 1;
                 break;
         }
     }
 
     // Write efi_data (Linux efivarfs API)
 #ifdef Linux
-    if((flags & UNSET) != UNSET) {
+    if(!unset) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
         unsigned char efi_data[2] = { 0x07, 0x01 };
         if(fwrite(efi_data, 2, 3, fd) == 0) {
@@ -108,7 +105,7 @@ int main(int argc, char *argv[])
     // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
 #else
     unsigned char efi_boot = 0x01;
-    if((flags & UNSET) != UNSET)
+    if(!unset)
         efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
 
     // Delete OsIndications to unset it
@@ -117,8 +114,8 @@ int main(int argc, char *argv[])
 #endif
 
     // Notify the user of the change if --quiet was not passed
-    if((flags & VERBOSE) == VERBOSE) {
-        if((flags & UNSET) == UNSET) {
+    if(verbose) {
+        if(unset) {
             printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
             printf(CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);
         } else {
