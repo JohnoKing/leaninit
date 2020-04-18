@@ -21,7 +21,7 @@
 
 # Variables (each one may be overridden)
 CC       := cc
-CFLAGS   := $(CFLAGS)   -O2 -ffast-math -fomit-frame-pointer -fpic -fno-plt -fdata-sections -ffunction-sections -pipe
+CFLAGS   := $(CFLAGS)   -Os -fomit-frame-pointer -fpic -fno-plt -fdata-sections -ffunction-sections -pipe
 INCLUDE  := $(INCLUDE)  -I./include
 CPPFLAGS := $(CPPFLAGS) -D_FORTIFY_SOURCE=2
 WFLAGS   := $(WFLAGS)   -Wall -Wextra -Wno-unused-result
