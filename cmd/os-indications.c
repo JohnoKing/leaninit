@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 
     // Notify the user of the change if --quiet was not passed
     if(verbose) {
-        if(unset) {
+        if(!unset) {
             printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
             printf(CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);
         } else {
