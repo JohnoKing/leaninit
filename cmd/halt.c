@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
     // Parse the given options
     int args;
-    while((args = getopt_long(argc, argv, opts, halt_long_options, NULL)) != -1) {
+    while((args = getopt_long(argc, argv, opts, halt_long_options, NULL)) != -1)
         switch(args) {
 
             // Display usage info
@@ -126,7 +126,6 @@ int main(int argc, char *argv[])
                 signal = SIGINT;
                 break;
         }
-    }
 
     // Syslog
     if(wall) {

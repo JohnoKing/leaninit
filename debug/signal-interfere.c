@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     unsigned char delay = 0;
     int signal = 0;
     int args;
-    while((args = getopt_long(argc, argv, "dAIiRT012?", long_options, NULL)) != -1) {
+    while((args = getopt_long(argc, argv, "dAIiRT012?", long_options, NULL)) != -1)
         switch(args) {
 
             // Display usage info
@@ -109,7 +109,6 @@ int main(int argc, char *argv[])
                 signal = SIGUSR2;
                 break;
         }
-    }
 
     // Create the signal-interfere daemon. The daemon will not send a signal to init(8) until it is sent SIGTERM.
     pid_t daemon = fork();

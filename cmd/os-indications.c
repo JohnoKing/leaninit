@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
     // Parse options
     int args;
-    while((args = getopt_long(argc, argv, "qu?", long_options, NULL)) != -1) {
+    while((args = getopt_long(argc, argv, "qu?", long_options, NULL)) != -1)
         switch(args) {
 
             // Display usage info
@@ -84,7 +84,6 @@ int main(int argc, char *argv[])
                 unset = 1;
                 break;
         }
-    }
 
     // Write efi_data (Linux efivarfs API)
 #ifdef Linux
