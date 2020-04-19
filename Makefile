@@ -27,7 +27,7 @@ CPPFLAGS := $(CPPFLAGS) -D_FORTIFY_SOURCE=2
 WFLAGS   := $(WFLAGS)   -Wall -Wextra -Wno-unused-result
 LDFLAGS  := $(LDFLAGS)  -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now,--gc-sections
 OUT      := out/man/man*/* out/rc/* out/rc.conf.d/* out/svc/*
-#RCSHELL = /bin/dash
+#RCSHELL := /bin/dash
 
 # Compile LeanInit
 all: clean
@@ -135,8 +135,7 @@ install-base: install-universal
 	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
 	@echo "Successfully installed the base of LeanInit!"
 
-
-# Install LeanInit (does not overwrite other init systems)
+# Install all of LeanInit (does not overwrite other init systems)
 install: install-rc install-base
 
 # Uninstall (only works with normal installations)
@@ -144,8 +143,7 @@ uninstall:
 	@if [ `id -u` -ne 0 ]; then \
 		echo "You must be root to uninstall LeanInit!" ;\
 		false ;\
-	fi
-	@if [ ! -x "$(DESTDIR)/sbin/leaninit" ]; then \
+	elif [ ! -x "$(DESTDIR)/sbin/leaninit" ]; then \
 		echo "Failed to detect an installation of LeanInit, exiting..." ;\
 		false ;\
 	fi
