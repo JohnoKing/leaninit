@@ -21,11 +21,11 @@
 
 # Variables (each one may be overridden)
 CC       := cc
-CFLAGS   := $(CFLAGS)   -Os -fomit-frame-pointer -fpic -fno-plt -fdata-sections -ffunction-sections -pipe
+CFLAGS   := $(CFLAGS)   -Os -fomit-frame-pointer -fpic -fno-plt -pipe
 INCLUDE  := $(INCLUDE)  -I./include
 CPPFLAGS := $(CPPFLAGS) -D_FORTIFY_SOURCE=2
 WFLAGS   := $(WFLAGS)   -Wall -Wextra -Wno-unused-result
-LDFLAGS  := $(LDFLAGS)  -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now,--gc-sections
+LDFLAGS  := $(LDFLAGS)  -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 OUT      := out/man/man*/* out/rc/* out/rc.conf.d/* out/svc/*
 #RCSHELL := /bin/dash
 
