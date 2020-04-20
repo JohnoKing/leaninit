@@ -47,15 +47,6 @@ mount -a 2> /dev/null &
 # Remount root (/) as read-write
 mount -o remount,rw,noatime $(lsblk -p -T TYPE | awk '{ print $1" "$7" " }' | grep '/ ') 2> /dev/null &
 
-#ENDEF
-#DEF FreeBSD
-# If ZFS is enabled, it MUST be run first
-if [ -x /var/lib/leaninit/svc/zfs ]; then
-    /etc/leaninit/svc/zfs start
-fi
-
-#ENDEF
-#DEF Linux
 # Mount primary pseudo file systems
 print "Mounting primary pseudo file systems..." nolog "$PURPLE" "$WHITE"
 rm -rf /tmp/*
@@ -66,14 +57,21 @@ mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /t
 mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
 
 #ENDEF
+#DEF BSD
+# If ZFS is enabled, it MUST be run first
+if [ -x /var/lib/leaninit/svc/zfs ]; then
+    /etc/leaninit/svc/zfs start
+fi
+
+#ENDEF
 # Start logging
 wait
 __svclog="/var/log/leaninit/rc.log"
 touch "$__svclog"
 mv "$__svclog" "$__svclog.old"
 echo "LeanInit RC has started logging on $(uname -srm)" > "$__svclog"
-print 'LeanInit RC has started logging!' nolog "$BLUE" "$WHITE"
 printf '%s\n' "Current Time: $(date)" >> "$__svclog"
+print 'LeanInit RC has started logging!' nolog "$BLUE" "$WHITE"
 
 # Remove nologin and reset /var/run/leaninit
 print "Removing any existing nologin files and resetting /var/run/leaninit..." log "$BLUE" "$WHITE"

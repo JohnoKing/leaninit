@@ -5,7 +5,7 @@ MSG="Mounting ZFS file systems"
 # Mount ZFS file systems
 main()
 {
-#DEF FreeBSD
+#DEF BSD
     # This is done in a for loop for compatibility with beadm(1)
     for z in $(df -PT 2> /dev/null | awk '/ zfs /{ print $1 }'); do
         zfs mount "$z"

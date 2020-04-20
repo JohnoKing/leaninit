@@ -38,10 +38,7 @@ usage()
     echo "  try-restart"
     echo "  force-reload"
     echo "  reload"
-#DEF FreeBSD
-    echo "  info"
-#ENDEF
-#DEF NetBSD
+#DEF BSD
     echo "  info"
 #ENDEF
     echo "  pause"
@@ -62,10 +59,7 @@ if [ "$1" = "--status-all" ]; then
         "$svc" status >> "$__TMP" &
     done
     wait
-#DEF FreeBSD
-    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
-#ENDEF
-#DEF NetBSD
+#DEF BSD
     printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
 #ENDEF
 #DEF Linux

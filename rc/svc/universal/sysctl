@@ -11,15 +11,12 @@ main()
         sysctl -p /etc/sysctl.conf >> "$__svclog"
     done
 #ENDEF
-#DEF NetBSD
+#DEF BSD
     for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
         sysctl -f /etc/sysctl.conf >> "$__svclog"
     done
 #ENDEF
 #DEF FreeBSD
-    for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
-        sysctl -f /etc/sysctl.conf >> "$__svclog"
-    done
 
     # If devd is disabled, disable devctl in the kernel
     if ! checkfor service devd; then

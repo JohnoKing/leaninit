@@ -24,7 +24,7 @@ stop()
 #DEF Linux
 stop()
 {
-    swapon -a
+    swapoff -a
 }
 #ENDEF
 

@@ -44,6 +44,7 @@ all: clean
 		sed -i '' "/#DEF Linux/,/#ENDEF/d"  $(OUT) ;\
 		sed -i '' "/#DEF NetBSD/,/#ENDEF/d" $(OUT) ;\
 		sed -i '' "/#DEF FreeBSD/d" $(OUT) ;\
+		sed -i '' "/#DEF BSD/d"     $(OUT) ;\
 		sed -i '' "/#ENDEF/d"       $(OUT) ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
@@ -57,6 +58,7 @@ all: clean
 		sed -i "/#DEF Linux/,/#ENDEF/d"   $(OUT) ;\
 		sed -i "/#DEF FreeBSD/,/#ENDEF/d" $(OUT) ;\
 		sed -i "/#DEF NetBSD/d" $(OUT) ;\
+		sed -i "/#DEF BSD/d"    $(OUT) ;\
 		sed -i "/#ENDEF/d"      $(OUT) ;\
 		if [ "$(RCSHELL)" ]; then \
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
@@ -67,6 +69,7 @@ all: clean
 		rm -f out/rc.conf.d/ntpd.conf ;\
 		sed -i "/#DEF FreeBSD/,/#ENDEF/d" $(OUT) ;\
 		sed -i "/#DEF NetBSD/,/#ENDEF/d"  $(OUT) ;\
+		sed -i "/#DEF BSD/,/#ENDEF/d"     $(OUT) ;\
 		sed -i "/#DEF Linux/d" $(OUT) ;\
 		sed -i "/#ENDEF/d"     $(OUT) ;\
 		if [ "$(RCSHELL)" ]; then \
