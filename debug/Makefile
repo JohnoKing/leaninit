@@ -20,12 +20,12 @@
 #
 
 # Variables (each one may be overridden)
-CC       := cc
-CFLAGS   := $(CFLAGS)   -O2 -ffast-math -fomit-frame-pointer -fpic -fno-plt -fdata-sections -ffunction-sections -pipe
-CPPFLAGS := $(CPPFLAGS) -D_FORTIFY_SOURCE=2
-INCLUDE  := $(INCLUDE)  -I../include
-WFLAGS   := $(WFLAGS)   -Wall -Wextra -Wpedantic
-LDFLAGS  := $(LDFLAGS)  -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now,--gc-sections
+CC       = cc
+CFLAGS   = -Os -fomit-frame-pointer -fpic -fno-plt -pipe
+CPPFLAGS = -D_FORTIFY_SOURCE=2
+INCLUDE  = -I../include
+WFLAGS   = -Wall -Wextra -Wpedantic
+LDFLAGS  = -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 
 # Compile stall
 all: clean
