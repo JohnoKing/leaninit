@@ -57,13 +57,18 @@ mountpoint -q /tmp  || mount -o nosuid,nodev,noatime,mode=1777 -t tmpfs tmpfs /t
 mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
 
 #ENDEF
-#DEF BSD
 # If ZFS is enabled, it MUST be run first
 if [ -e /var/lib/leaninit/svc/zfs ]; then
+
+    # Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
+    for z in $(zpool list -Ho name); do
+        print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
+        zfs readonly=off "$z"
+    done
+
     /etc/leaninit/svc/zfs start silent
 fi
 
-#ENDEF
 # Start logging
 wait
 __svclog="/var/log/leaninit/rc.log"

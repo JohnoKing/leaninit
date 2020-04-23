@@ -15,12 +15,6 @@ main()
     # mount -a equivalent (includes NFS)
     zfs mount -a
     zfs share -a
-
-    # Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
-    for z in $(zpool list -Ho name); do
-        print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
-        zfs readonly=off "$z"
-    done
 }
 
 # Unmount ZFS file systems when this service stops
