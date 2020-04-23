@@ -35,6 +35,7 @@ export DELAY
 export WIRED
 export WIRELESS
 export NDIS
+export KEYMAP
 #ENDEF
 #DEF Linux
 export KEYMAP
