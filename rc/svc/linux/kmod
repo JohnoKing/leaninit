@@ -6,8 +6,9 @@ main()
 {
     if [ "$(ls /etc/modules-load.d 2> /dev/null)" ]; then
         modprobe -a $(cat /etc/modules-load.d/* | grep -v '#') $(cat /etc/modules 2> /dev/null)
-    else
-        return 0
+    fi
+    if [ "$(cat /etc/modules 2> /dev/null)" ]; then
+        modprobe -a $(cat /etc/modules)
     fi
 }
 
