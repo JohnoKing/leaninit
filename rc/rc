@@ -59,7 +59,7 @@ mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
 #ENDEF
 #DEF BSD
 # If ZFS is enabled, it MUST be run first
-if [ -x /var/lib/leaninit/svc/zfs ]; then
+if [ -e /var/lib/leaninit/svc/zfs ]; then
     /etc/leaninit/svc/zfs start
 fi
 
