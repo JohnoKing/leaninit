@@ -173,7 +173,7 @@ static void multi(void)
     // Locate ttys(5)
     const char *ttys_file_path = get_file_path("/etc/leaninit/ttys", "/etc/ttys", R_OK);
     if(ttys_file_path == NULL) {
-        printf(RED "* Could not find either /etc/leaninit/ttys or /etc/ttys" RESET "\n");
+        printf(RED "* Could not execute either /etc/leaninit/ttys or /etc/ttys" RESET "\n");
         return;
     }
 
@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
             if(rc_banner != NULL)
                 sh(rc_banner);
             else
-                printf(RED "* Could not find rc.banner(8)!" RESET "\n");
+                printf(RED "* Could not execute rc.banner(8)!" RESET "\n");
         }
 
         // Print the current platform LeanInit is running on and start rc(8) (must be done in this order)
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
                 sh(rc_shutdown);
                 if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             } else
-                printf(RED "* Could not find rc.shutdown(8), killing all processes unsafely..." RESET "\n");
+                printf(RED "* Could not execute rc.shutdown(8), killing all processes unsafely..." RESET "\n");
             kill(-1, SIGKILL);
 
             // Handle the given signal properly
