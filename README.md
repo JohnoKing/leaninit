@@ -18,7 +18,6 @@ Make sure eudev and iproute2 are installed, as they are required on Linux.
 Follow the same steps as on Linux to build LeanInit.
 The Makefileis compatible with both GNU and BSD Make, so you don't need to install `gmake` as a separate build dependency.
 To boot from LeanInit, append the following line to `/boot/loader.conf`: `init_path="/sbin/leaninit:/sbin/init"`.  
-If you wish use LeanInit with `rc.d`, make /etc/rc and /etc/rc.shutdown executable (`chmod +x /etc/rc /etc/rc.shutdown`) and install the base of LeanInit with `make install-base`.
 
 ### NetBSD
 As stated above, LeanInit will compile with BSD make.
