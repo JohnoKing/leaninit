@@ -79,7 +79,8 @@ static int sh(char *script)
             return execve(script, (char*[]){ script, "verbose", NULL }, environ);
         else
             return execve(script, (char*[]){ script, "silent",  NULL }, environ);
-    }
+    } else if(child == -1)
+        return -1;
 
     // Wait for the script to finish
     int status;
