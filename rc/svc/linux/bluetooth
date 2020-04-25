@@ -2,8 +2,7 @@
 NAME="Bluetooth daemon"
 TYPE="bluetooth"
 
-main()
-{
+main() {
     waitfor service dbus
     if [ -x /usr/lib/bluetooth/bluetoothd ]; then
         fork /usr/lib/bluetooth/bluetoothd

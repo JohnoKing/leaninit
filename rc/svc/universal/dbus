@@ -1,20 +1,16 @@
 #!/bin/sh
 NAME="D-Bus"
 
-main()
-{
+main() {
     mkdir -p /run/dbus /var/run/dbus
     rm -f /run/dbus/pid /var/run/dbus/pid
     dbus-daemon --fork --system --print-pid > "$__svcpidfile"
-    if [ ! -f /etc/machine-id ]; then
-        dbus-uuidgen > /etc/machine-id
-    fi
+    [ ! -f /etc/machine-id ] && dbus-uuidgen > /etc/machine-id
     sleep 0.3
 }
 
 # This causes D-Bus to partially reload
-reload()
-{
+reload() {
     kill -HUP $__svcpid
 }
 

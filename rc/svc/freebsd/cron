@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="cron"
 
-main()
-{
+main() {
     fork cron -ns
 }
 

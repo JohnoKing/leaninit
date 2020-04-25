@@ -1,14 +1,12 @@
 #!/bin/sh
 NAME="Linux Monitoring Sensors"
 
-main()
-{
+main() {
     waitfor service kmod optional
     sensors -s
 }
 
-reload()
-{
+reload() {
     sensors -s
 }
 

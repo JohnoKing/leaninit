@@ -1,13 +1,11 @@
 #!/bin/sh
 NAME="SMART Disk Monitoring Daemon"
 
-main()
-{
+main() {
     smartd "--pidfile=$__svcpidfile"
 }
 
-reload()
-{
+reload() {
     kill -HUP $__svcpid
 }
 

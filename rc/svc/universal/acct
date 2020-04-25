@@ -2,14 +2,12 @@
 # NOTE: Process accounting will use up a considerable amount of disk space
 NAME="Process Accounting"
 
-main()
-{
+main() {
     touch /var/log/account/pacct
     accton /var/log/account/pacct
 }
 
-stop()
-{
+stop() {
     accton off
 }
 

@@ -1,12 +1,9 @@
 #!/bin/sh
 NAME="LeanInit Settings"
 
-main()
-{
+main() {
     # Set the machine's hostname
-    if [ "$HOSTNAME" ]; then
-        hostname "$HOSTNAME"
-    fi
+    [ "$HOSTNAME" ] && hostname "$HOSTNAME"
 
     # Set the timezone
     if [ "$TIMEZONE" ]; then

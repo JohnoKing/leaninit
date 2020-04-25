@@ -2,15 +2,13 @@
 NAME="ALSA"
 
 # Load ALSA's last state
-main()
-{
+main() {
     waitfor service kmod optional
     waitfor udev
     alsactl restore
 }
 
-stop()
-{
+stop() {
     # If /var/lock is not a directory (Artix Linux), make it one to prevent an error
     if [ ! -d /var/lock ]; then
         rm -rf /var/lock

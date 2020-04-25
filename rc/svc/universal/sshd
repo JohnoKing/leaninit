@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="SSH"
 
-main()
-{
+main() {
     # Wait for internet services
     waitfor networking
 
@@ -11,8 +10,7 @@ main()
     fork "$(command -v sshd)" -D
 }
 
-reload()
-{
+reload() {
     kill -HUP $__svcpid
 }
 

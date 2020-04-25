@@ -1,20 +1,17 @@
 #!/bin/sh
 NAME="Apache Web Server"
 
-main()
-{
+main() {
     waitfor networking
     mkdir -p /run/httpd /var/run/httpd
     fork httpd -k start -DFOREGROUND
 }
 
-stop()
-{
+stop() {
     httpd -k graceful-stop
 }
 
-reload()
-{
+reload() {
     kill -HUP $__svcpid
 }
 

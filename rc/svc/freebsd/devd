@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="devd"
 
-main()
-{
+main() {
     vidcontrol -m on  # This is required for moused to function
     devd -n
 }

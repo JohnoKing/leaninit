@@ -2,8 +2,7 @@
 NAME="CUPS"
 TYPE="printing-daemon"
 
-main()
-{
+main() {
     waitfor service avahi
     cupsd
     ln -s /var/run/cups/cupsd.pid "$__svcpidfile"

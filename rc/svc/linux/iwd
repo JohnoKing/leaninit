@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="iNet Wireless Daemon"
 
-main()
-{
+main() {
     waitfor service netface
     waitfor service dbus
     waitfor networking optional

@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="syslog-ng"
 
-main()
-{
+main() {
     syslog-ng -p "$__svcpidfile"
 }
 

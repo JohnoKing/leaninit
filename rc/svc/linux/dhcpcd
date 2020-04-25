@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="dhcpcd"
 
-main()
-{
+main() {
     waitfor networking
     for n in $(ip -o link show | awk '{ gsub(":", ""); print $2 }'); do
         fork dhcpcd -B $n

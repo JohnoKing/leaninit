@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="mdnsd"
 
-main()
-{
+main() {
     waitfor networking
     mdnsd
     pgrep -x mdnsd > "$__svcpidfile"

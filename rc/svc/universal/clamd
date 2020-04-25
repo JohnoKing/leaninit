@@ -1,15 +1,12 @@
 #!/bin/sh
 NAME="ClamAV"
 
-main()
-{
+main() {
     mkdir -p /run/clamav
     chown clamav:root /run/clamav
     clamd || return 1
     ln -sf /run/clamav/clamd.pid "$__svcpidfile"
-    if waitfor networking optional; then
-        freshclam
-    fi
+    waitfor networking optional && freshclam
 }
 
 . /etc/leaninit/rc.svc

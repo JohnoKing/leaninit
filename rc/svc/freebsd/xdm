@@ -6,8 +6,7 @@ NAME="$XDMNAME"
 TYPE="display-manager"
 
 # The main function
-main()
-{
+main() {
     if [ ! "$XDM" ] || [ ! -x "$(command -v $XDM)" ]; then
         print 'The xdm service failed to start due to $XDM being invalid!' log "$RED"
         return 1
@@ -29,8 +28,7 @@ main()
 }
 
 # Kill the X server manually
-stop()
-{
+stop() {
     rm -f /var/run/leaninit/xdm* "/var/run/leaninit/$TYPE.type"
     pkill -x "$XDM"
     pkill -x Xorg

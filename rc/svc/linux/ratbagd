@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="ratbagd"
 
-main()
-{
+main() {
     waitfor service elogind
     fork ratbagd
 }

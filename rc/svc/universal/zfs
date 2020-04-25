@@ -3,8 +3,7 @@ NAME="ZFS"
 MSG="Mounting ZFS file systems"
 
 # Mount ZFS file systems
-main()
-{
+main() {
 #DEF BSD
     # This for loop is for compatibility with beadm(1)
     for z in $(df -PT | sed 's:/: :g' | awk '/ zfs /{ print $1 }'); do
@@ -18,8 +17,7 @@ main()
 }
 
 # Unmount ZFS file systems when this service stops
-stop()
-{
+stop() {
     zfs unmount -a
     zfs unshare -a
 }

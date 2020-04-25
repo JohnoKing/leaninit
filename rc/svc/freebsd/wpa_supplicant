@@ -3,8 +3,7 @@ NAME="WPA Supplicant"
 TYPE="networking"
 
 # Run wpa_supplicant on all interfaces
-restart()
-{
+restart() {
     if [ "$WIRED" ]; then
         for n in $WIRED; do
             fork wpa_supplicant -s -Dwired "-i$n" -c/etc/wpa_supplicant.conf
@@ -23,8 +22,7 @@ restart()
 }
 
 # The main function
-main()
-{
+main() {
     waitfor service devd
     for n in $WIRELESS $NDIS; do
         waitfor file "/var/run/wpa_supplicant/$n"

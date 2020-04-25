@@ -3,8 +3,7 @@
 NAME="BusyBox mdev"
 TYPE="udev"
 
-main()
-{
+main() {
     echo $DEVEXEC > /proc/sys/kernel/hotplug # The kernel must be built with hotplug support for this to work
     $DEVEXEC -s
     chmod 0666 /dev/stdout /dev/null

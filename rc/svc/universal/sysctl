@@ -1,27 +1,22 @@
 #!/bin/sh
 NAME="sysctl"
 
-main()
-{
+main() {
 #DEF Linux
-    if [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ]; then
-        SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
-    fi
+    [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ] && SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
     for s in /etc/sysctl.conf /etc/sysctl.conf.local $SYSCTLD; do
-        sysctl -p /etc/sysctl.conf >> "$__svclog"
+        sysctl -p "$s" >> "$__svclog"
     done
 #ENDEF
 #DEF BSD
     for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
-        sysctl -f /etc/sysctl.conf >> "$__svclog"
+        sysctl -f "$s" >> "$__svclog"
     done
 #ENDEF
 #DEF FreeBSD
 
     # If devd is disabled, disable devctl in the kernel
-    if ! checkfor service devd; then
-        sysctl hw.bus.devctl_queue=0
-    fi
+    ! checkfor service devd && sysctl hw.bus.devctl_queue=0
 #ENDEF
 }
 

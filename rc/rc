@@ -92,18 +92,14 @@ done
 
 # Run rc.local (when present)
 for rc in /etc/leaninit/rc.local /etc/rc.local; do
-    if [ -x "$rc" ]; then
-        "$rc" &
-    fi
+    [ -x "$rc" ] && rc &
 done
 
 # RC will wait for the settings service to give getty the correct hostname
 waitfor service settings optional
 
 # Delay transition back to init by waiting for all services to start (optional, may break getty(8))
-if [ "$DELAY" = "true" ]; then
-    wait
-fi
+[ "$DELAY" = "true" ] && wait
 
 # Return to init
 exit 0

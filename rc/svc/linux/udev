@@ -3,22 +3,19 @@
 NAME="udev"
 TYPE="udev"
 
-main()
-{
+main() {
     "$DEVEXEC" --daemon
     udevadm info --cleanup-db
     udevadm trigger --action=add
     udevadm settle
 }
 
-reload()
-{
+reload() {
     udevadm control --reload-rules
     udevadm trigger
 }
 
-stop()
-{
+stop() {
     udevadm control --exit
 }
 

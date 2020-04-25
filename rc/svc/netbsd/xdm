@@ -5,8 +5,7 @@ NAME="X Display Manager"
 TYPE="display-manager"
 
 # The main function
-main()
-{
+main() {
     waitfor service settings
     install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix
     /usr/X11R7/bin/xdm -config /etc/X11/xdm/xdm-config
@@ -14,14 +13,12 @@ main()
 }
 
 # Reload functionality
-reload()
-{
+reload() {
     kill -HUP $__svcpid
 }
 
 # Kill the X server manually
-stop()
-{
+stop() {
     rm -f /var/run/leaninit/xdm* "/var/run/leaninit/$TYPE.type"
     pkill -x xdm
     pkill -x Xorg

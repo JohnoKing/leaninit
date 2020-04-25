@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="PowerD"
 
-main()
-{
+main() {
     powerd -P "$__svcpidfile"
 }
 

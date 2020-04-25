@@ -3,8 +3,7 @@ NAME="Networking"
 TYPE="networking"
 
 # Setup networking on NetBSD
-main()
-{
+main() {
     # dhcpcd
     for n in $WIRED $WIRELESS; do
         fork dhcpcd -B $n

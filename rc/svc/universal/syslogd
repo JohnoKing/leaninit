@@ -1,14 +1,12 @@
 #!/bin/sh
 NAME="SyslogD"
 
-main()
-{
+main() {
     touch "$__svcpidfile"
     syslogd -ss -P "$__svcpidfile"
 }
 
-reload()
-{
+reload() {
     kill -HUP $__svcpid
 }
 

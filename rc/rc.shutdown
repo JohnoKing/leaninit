@@ -30,9 +30,7 @@ export OUTPUT_MODE="$1"
 # Stop all currently running services
 cd /etc/leaninit/svc || exit 1
 for svc in *; do
-    if [ -f "/var/run/leaninit/$svc.status" ]; then
-        "./$svc" stop &
-    fi
+    [ -f "/var/run/leaninit/$svc.status" ] && "./$svc" stop &
 done
 
 # After all services have stopped, run kill(1) to kill all processes

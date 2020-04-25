@@ -1,16 +1,14 @@
 #!/bin/sh
 NAME="Avahi"
 
-main()
-{
+main() {
     waitfor networking
     waitfor service dbus
     avahi-daemon -D
     ln -s /var/run/avahi-daemon/pid "$__svcpidfile"
 }
 
-reload()
-{
+reload() {
     avahi-daemon --reload
 }
 

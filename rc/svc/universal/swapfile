@@ -1,8 +1,7 @@
 #!/bin/sh
 NAME="Swapfile"
 
-main()
-{
+main() {
     if [ ! -f /swapfile ]; then
         print 'Please create a swapfile at /swapfile!' "$RED"
         __fail 1
@@ -11,8 +10,7 @@ main()
     swapon /swapfile
 }
 
-stop()
-{
+stop() {
     swapoff /swapfile
 }
 

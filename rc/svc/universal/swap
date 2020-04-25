@@ -2,8 +2,7 @@
 NAME="swap"
 MSG="Turning on all swap partitions"
 
-main()
-{
+main() {
 #DEF FreeBSD
     swapon -aL
 #ENDEF
@@ -16,14 +15,12 @@ main()
 }
 
 #DEF FreeBSD
-stop()
-{
+stop() {
     swapoff -aL
 }
 #ENDEF
 #DEF Linux
-stop()
-{
+stop() {
     swapoff -a
 }
 #ENDEF

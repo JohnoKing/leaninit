@@ -2,8 +2,7 @@
 NAME="Wicd"
 TYPE="networking"
 
-main()
-{
+main() {
     waitfor service netface
     waitfor service dbus
     wicd
@@ -11,8 +10,7 @@ main()
 }
 
 # The PID file must be removed manually
-stop()
-{
+stop() {
     rm -f /var/run/wicd/wicd.pid
 }
 

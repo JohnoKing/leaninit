@@ -3,8 +3,7 @@ NAME="Pseudo File Systems"
 MSG="Mounting secondary pseudo file systems"
 
 # Mount pseudo file systems in parallel
-main()
-{
+main() {
     # Make the required directories
     mkdir -p /dev/mqueue /dev/shm /dev/pts /run/shm /sys/fs/cgroup /sys/fs/pstore /sys/kernel/security
 

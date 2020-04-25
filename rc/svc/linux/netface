@@ -2,8 +2,7 @@
 NAME="Network Interfaces"
 MSG="Detecting network interfaces"
 
-main()
-{
+main() {
     # udev is required for setting up network interfaces
     waitfor udev
 

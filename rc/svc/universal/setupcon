@@ -1,13 +1,11 @@
 #!/bin/sh
 NAME="Console Setup"
 
-main()
-{
+main() {
     setupcon
 }
 
-reload()
-{
+reload() {
     setupcon
 }
 

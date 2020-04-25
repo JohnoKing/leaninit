@@ -2,8 +2,7 @@
 . /etc/leaninit/rc.conf.d/cron.conf
 NAME="cron"
 
-main()
-{
+main() {
     fork "$CRON" $CRONFLAGS
 }
 

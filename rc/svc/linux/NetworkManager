@@ -2,8 +2,7 @@
 NAME="NetworkManager"
 TYPE="networking"
 
-main()
-{
+main() {
     waitfor service netface
     waitfor service dbus
     NetworkManager --pid-file="$__svcpidfile"

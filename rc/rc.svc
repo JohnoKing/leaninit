@@ -71,12 +71,8 @@ isfunc()
 # Print formatted output to stdout and unformatted output to a log file (use this instead of echo)
 print()
 {
-    if [ "$OUTPUT_MODE" != "silent" ]; then
-        printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
-    fi
-    if [ "$2" = "log" ]; then
-        echo "$1" >> "$__svclog"
-    fi
+    [ "$OUTPUT_MODE" != "silent" ] && printf "${3}%s ${4}%s${RESET}\n" "*" "${1}"
+    [ "$2" = "log" ] && echo "$1" >> "$__svclog"
 }
 
 # Fork the given command into a separate process and put the PID into $__svcpidfile
@@ -90,9 +86,7 @@ fork()
 __svccheck()
 {
     if [ ! -f "/var/run/leaninit/$__svcname.status" ]; then
-        if [ "$1" = "return" ]; then
-            return 7
-        fi
+        [ "$1" = "return" ] && return 7
         print "$NAME is not running!" nolog "$RED"
         exit 7
     fi
@@ -108,9 +102,7 @@ __svccheck()
 __proccheck()
 {
     if [ ! "$__svcpid" ]; then
-        if [ "$1" = "return" ]; then
-            return 3
-        fi
+        [ "$1" = "return" ] && return 3
         print "$NAME does not have a process to send a signal to!" nolog "$RED"
         exit 3
     fi
@@ -130,9 +122,7 @@ __usage()
     printf "%s" "Usage: $0 enable|disable|start|stop|restart"
     if __svccheck return; then
         printf "|try-restart|force-reload"
-        if isfunc reload; then
-            printf "|reload"
-        fi
+        isfunc reload && printf "|reload"
     fi
     if __proccheck return; then
 #DEF BSD
@@ -200,19 +190,13 @@ checkfor()
 {
     case "$1" in
         file)
-            if [ ! -e "$2" ]; then
-                return 1
-            fi
+            [ ! -e "$2" ] && return 1
             ;;
         service)
-            if [ ! -f "/var/lib/leaninit/svc/$2" ]; then
-                return 1
-            fi
+            [ ! -f "/var/lib/leaninit/svc/$2" ] && return 1
             ;;
         *)
-            if [ ! -f "/var/lib/leaninit/types/$1.type" ]; then
-                return 1
-            fi
+            [ ! -f "/var/lib/leaninit/types/$1.type" ] && return 1
             ;;
     esac
 }
@@ -283,10 +267,8 @@ __stop()
         return 0
     fi
 
-    # Execute stop()
-    if isfunc stop; then
-        stop
-    fi
+    # Execute stop() if it is a function
+    isfunc stop && stop
 
     # Stop the specified PIDs in the .pid file (if there are any)
     if [ "$__svcpid" ]; then
@@ -369,9 +351,7 @@ __run()
     __svcpidfile="/var/run/leaninit/$__svcname.pid"
     __svclog="/var/log/leaninit/$__svcname.log"
     printf '\n\n%s\n' "Logging to $NAME on $(date):" >> "$__svclog"
-    if [ -f "$__svcpidfile" ]; then
-        __svcpid="$(cat "$__svcpidfile")"
-    fi
+    [ -f "$__svcpidfile" ] && __svcpid="$(cat "$__svcpidfile")"
 
     # Check the service
     __svccheck return
@@ -392,9 +372,8 @@ __run()
                 echo "$__svcname" > "/var/lib/leaninit/types/$TYPE.type"
             fi
             print "$NAME has been enabled!" log "$GREEN" "$WHITE"
-            if isfunc enable; then
-                enable
-            fi ;;
+            isfunc enable && enable
+            ;;
 
         disable)
             if [ ! -f "/var/lib/leaninit/svc/$__svcname" ]; then
@@ -402,13 +381,10 @@ __run()
                 exit 0
             fi
             rm "/var/lib/leaninit/svc/$__svcname"
-            if [ "$TYPE" ]; then
-                rm -f "/var/lib/leaninit/types/$TYPE.type"
-            fi
+            [ "$TYPE" ] && rm -f "/var/lib/leaninit/types/$TYPE.type"
             print "$NAME has been disabled!" log "$GREEN" "$WHITE"
-            if isfunc disable; then
-                disable
-            fi ;;
+            isfunc disable && disable
+            ;;
 
         start)
             __start Start ;;
@@ -490,6 +466,4 @@ __run()
     esac
 }
 
-if [ "$NAME" ]; then
-    __run "$@"
-fi
+[ "$NAME" ] && __run "$@"

@@ -2,8 +2,7 @@
 NAME="elogind"
 TYPE="login-daemon"
 
-main()
-{
+main() {
     # elogind requires Cgroups and D-Bus
     waitfor service mountpfs
     waitfor service dbus
