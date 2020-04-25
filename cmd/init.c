@@ -303,7 +303,7 @@ int main(int argc, char *argv[])
         // Start both threads now
         pthread_t loop, runlvl;
         pthread_create(&runlvl, NULL, chlvl, NULL); // Create the runlevel in a separate thread
-        pthread_create(&loop, NULL, zloop, NULL);   // Start the zombie killer
+        pthread_create(&loop,   NULL, zloop, NULL); // Start the zombie killer
 
         // Handle all relevant signals
         struct sigaction actor;

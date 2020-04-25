@@ -7,9 +7,9 @@ main()
 {
 #DEF BSD
     # This for loop is for compatibility with beadm(1)
-    for z in $(df -PT 2> /dev/null | sed 's:/: :g' | awk '/ zfs /{ print $1 }'); do
+    for z in $(df -PT | sed 's:/: :g' | awk '/ zfs /{ print $1 }'); do
         zfs mount "$z"
-    done
+    done 2> /dev/null
 #ENDEF
 
     # mount -a equivalent (includes NFS)

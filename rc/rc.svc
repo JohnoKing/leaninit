@@ -263,9 +263,9 @@ __start()
 __stop_pid()
 {
     ENDTIME=$(( `date +%s` + 7 ))
-    until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 "$1" 2> /dev/null; do
+    until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 "$1"; do
         sleep 0.1
-    done
+    done 2> /dev/null
 
     # SIGKILL is sent like this to be verbose
     if kill -0 "$1" 2> /dev/null; then
