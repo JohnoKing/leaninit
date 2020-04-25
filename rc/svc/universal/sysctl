@@ -5,13 +5,13 @@ main() {
 #DEF Linux
     [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ] && SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
     for s in /etc/sysctl.conf /etc/sysctl.conf.local $SYSCTLD; do
-        sysctl -p "$s" >> "$__svclog"
-    done
+        sysctl -p "$s"
+    done >> "$__svclog"
 #ENDEF
 #DEF BSD
     for s in /etc/sysctl.conf /etc/sysctl.conf.local; do
-        sysctl -f "$s" >> "$__svclog"
-    done
+        sysctl -f "$s"
+    done >> "$__svclog"
 #ENDEF
 #DEF FreeBSD
 
