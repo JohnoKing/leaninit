@@ -21,7 +21,7 @@
  */
 
 /*
- * leaninit - A fast init system
+ * leaninit -- A fast init system
  */
 
 #include <leaninit.h>

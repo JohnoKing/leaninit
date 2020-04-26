@@ -21,7 +21,7 @@
  */
 
 /*
- * stall - This program is used to bug test LeanInit's runlevel switching and shutdown functionality
+ * stall -- This program is used to bug test LeanInit's runlevel switching and shutdown functionality
  */
 
 #include <leaninit.h>

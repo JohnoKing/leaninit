@@ -21,7 +21,7 @@
  */
 
 /*
- * halt - Shutdown, reboot or halt the system
+ * halt -- Shutdown, reboot or halt the system
  */
 
 #include <leaninit.h>

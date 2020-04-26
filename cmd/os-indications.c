@@ -21,7 +21,7 @@
  */
 
 /*
- * os-indications - This program sets OsIndications for booting into firmware setup.
+ * os-indications -- Set OsIndications for booting into firmware setup.
  *
  * The libefivar API is used when compiled on FreeBSD, while the efivarfs and
  * C Standard APIs are used on Linux to avoid requiring an extra dependency.
