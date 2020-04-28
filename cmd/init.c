@@ -70,7 +70,7 @@ static int open_tty(const char *tty_path)
 }
 
 // Execute the given script
-static int sh(char *script)
+static int sh(char *script, bool will_wait)
 {
     pid_t child = fork();
     if(child == 0) {
@@ -83,9 +83,12 @@ static int sh(char *script)
         return -1;
 
     // Wait for the script to finish
-    int status;
-    waitpid(child, &status, 0);
-    return WEXITSTATUS(status);
+    if(will_wait) {
+        int status;
+        waitpid(child, &status, 0);
+        return WEXITSTATUS(status);
+    } else
+        return 0;
 }
 
 // Spawn a getty on the given tty then return its PID
@@ -168,7 +171,11 @@ static void multi(void)
 
     // Run rc
     if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
-    if(sh(rc) != 0) {
+#ifdef FreeBSD
+    if(sh(rc, false) != 0) { // FreeBSD's implementation of rc will stall forever otherwise
+#else
+    if(sh(rc, true) != 0) {
+#endif
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
         flags ^= SINGLE_USER;
         return single();
@@ -299,7 +306,7 @@ int main(int argc, char *argv[])
         if((flags & BANNER) == BANNER) {
             char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
             if(rc_banner != NULL)
-                sh(rc_banner);
+                sh(rc_banner, true);
             else
                 printf(RED "* Could not execute rc.banner(8)!" RESET "\n");
         }
@@ -346,7 +353,7 @@ int main(int argc, char *argv[])
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) {
-                sh(rc_shutdown);
+                sh(rc_shutdown, true);
                 if((flags & VERBOSE) == VERBOSE)
                     printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             } else
