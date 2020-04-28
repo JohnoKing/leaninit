@@ -40,7 +40,7 @@ all: clean
 	@rm -r out/rc/svc
 	@
 	@# The point of using a custom preprocessor for shell scripts is to increase performance by
-	@# avoiding unecessary if statements such as `if [ $(uname) = Linux ]`
+	@# avoiding unnecessary if statements such as `if [ $(uname) = Linux ]`
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
