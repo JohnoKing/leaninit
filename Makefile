@@ -102,6 +102,21 @@ install-universal:
 	@cp -r out/man "$(DESTDIR)/usr/share"
 	@install -Dm0644 LICENSE "$(DESTDIR)/usr/share/licenses/leaninit/MIT"
 
+# Install only the base of LeanInit (init, halt and os-indications)
+# cd is used with ln(1) for POSIX-compliant relative symlinks (many ln implementations do not have -r)
+install-base: install-universal
+	@mkdir -p "$(DESTDIR)/sbin"
+	@cd "$(DESTDIR)/usr/share/man/man8" ;\
+	[ -f leaninit-poweroff.8 ] || ln -sf leaninit-halt.8 leaninit-poweroff.8 ;\
+	[ -f leaninit-reboot.8 ] || ln -sf leaninit-halt.8 leaninit-reboot.8
+	@install -Dm0755 out/leaninit out/leaninit-halt "$(DESTDIR)/sbin"
+	@if [ `uname` = Linux ] || [ `uname` = FreeBSD ]; then \
+		install -Dm0755 out/os-indications "$(DESTDIR)/sbin" ;\
+	fi
+	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
+	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
+	@echo "Successfully installed the base of LeanInit!"
+
 # Install LeanInit RC for use with other init systems (symlink /etc/leaninit/rc to /etc/rc for this to take effect)
 install-rc: install-universal
 	@mkdir -p "$(DESTDIR)/sbin" "$(DESTDIR)/etc/leaninit/rc.conf.d" "$(DESTDIR)/var/log/leaninit" \
@@ -137,21 +152,6 @@ install-rc: install-universal
 	@# Finish by creating the install-flag for updates
 	@touch "$(DESTDIR)/var/lib/leaninit/install-flag"
 	@echo "Successfully installed LeanInit's RC system!"
-
-# Install only the base of LeanInit (init, halt and os-indications)
-# cd is used with ln(1) for POSIX-compliant relative symlinks (many ln implementations do not have -r)
-install-base: install-universal
-	@mkdir -p "$(DESTDIR)/sbin"
-	@cd "$(DESTDIR)/usr/share/man/man8" ;\
-	[ -f leaninit-poweroff.8 ] || ln -sf leaninit-halt.8 leaninit-poweroff.8 ;\
-	[ -f leaninit-reboot.8 ] || ln -sf leaninit-halt.8 leaninit-reboot.8
-	@install -Dm0755 out/leaninit out/leaninit-halt "$(DESTDIR)/sbin"
-	@if [ `uname` = Linux ] || [ `uname` = FreeBSD ]; then \
-		install -Dm0755 out/os-indications "$(DESTDIR)/sbin" ;\
-	fi
-	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-poweroff
-	@cd "$(DESTDIR)/sbin"; ln -sf leaninit-halt leaninit-reboot
-	@echo "Successfully installed the base of LeanInit!"
 
 # Install all of LeanInit (does not overwrite other init systems)
 install: install-rc install-base
