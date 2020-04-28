@@ -27,7 +27,7 @@ INCLUDE  = -I../include
 WFLAGS   = -Wall -Wextra -Wpedantic
 LDFLAGS  = -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 
-# Compile stall
+# Compile signal-interfere and stall
 all: clean
 	@mkdir -p out
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -o out/signal-interfere signal-interfere.c $(LDFLAGS)
@@ -35,7 +35,7 @@ all: clean
 	@strip --strip-unneeded -R .comment -R .gnu.version out/*
 	@echo "Successfully built the LeanInit debugging tools!"
 
-# Clean this directory
+# Only clean this directory
 clean:
 	@rm -rf out
 

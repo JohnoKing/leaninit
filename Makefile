@@ -38,6 +38,9 @@ all: clean
 	@mv out/rc/rc.conf.d out/rc.conf.d
 	@cp rc/service out/rc/leaninit-service
 	@rm -r out/rc/svc
+	@
+	@# The point of using a custom preprocessor for shell scripts is to increase performance by
+	@# avoiding unecessary if statements such as `if [ $(uname) = Linux ]`
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
@@ -52,6 +55,7 @@ all: clean
 		sed -i '' "s/    /	/g" $(OUT) ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
+	\
 	elif [ `uname` = NetBSD ]; then \
 		cp -r rc/svc/netbsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf out/rc.conf.d/xdm.conf ;\
@@ -64,6 +68,7 @@ all: clean
 			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		fi ;\
 		sed -i "s/    /	/g" $(OUT) ;\
+	\
 	elif [ `uname` = Linux ]; then \
 		cp -r rc/svc/linux/* out/svc ;\
 		rm -f out/rc.conf.d/ntpd.conf ;\
@@ -78,10 +83,13 @@ all: clean
 		sed -i "s/    /	/g" $(OUT) ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
+	\
 	else \
 		echo "LeanInit does not support `uname`!" ;\
 		false ;\
 	fi
+	@
+	@# Compile LeanInit, -pthread is used selectively to increase the performance of halt(1)
 	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS)
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt
@@ -103,17 +111,21 @@ install-rc: install-universal
 	@cp -i out/rc/rc.conf out/rc/ttys "$(DESTDIR)/etc/leaninit" || true
 	@install -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
 	@install -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
+	@
+	@# Enable the default services depending on whether /etc/install-flag exists
 	@if [ `uname` = FreeBSD ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/devd" "$(DESTDIR)/var/lib/leaninit/svc/zfs" "$(DESTDIR)/var/lib/leaninit/svc/syslogd" \
 			"$(DESTDIR)/var/lib/leaninit/svc/powerd" "$(DESTDIR)/var/lib/leaninit/svc/wpa_supplicant" "$(DESTDIR)/var/lib/leaninit/svc/ntpd" ;\
 			"$(DESTDIR)/var/lib/leaninit/svc/cron" ;\
 		echo "wpa_supplicant" > "$(DESTDIR)/var/lib/leaninit/types/networking.type" ;\
+	\
 	elif [ `uname` = NetBSD ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/powerd" "$(DESTDIR)/var/lib/leaninit/svc/ntpd" \
 			"$(DESTDIR)/var/lib/leaninit/svc/networking" "$(DESTDIR)/var/lib/leaninit/svc/cron" ;\
 		echo "networking" > "$(DESTDIR)/var/lib/leaninit/types/networking.type" ;\
+	\
 	elif [ `uname` = Linux ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/mountpfs" "$(DESTDIR)/var/lib/leaninit/svc/netface" \
 			"$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" "$(DESTDIR)/var/lib/leaninit/svc/udev" \
@@ -121,11 +133,13 @@ install-rc: install-universal
 		echo "udev" > "$(DESTDIR)/var/lib/leaninit/types/udev.type" ;\
 		cp -i out/rc/rc.banner "$(DESTDIR)/etc/leaninit" ;\
 	fi
+	@
+	@# Finish by creating the install-flag for updates
 	@touch "$(DESTDIR)/var/lib/leaninit/install-flag"
 	@echo "Successfully installed LeanInit's RC system!"
 
 # Install only the base of LeanInit (init, halt and os-indications)
-# cd is used with ln(1) for POSIX-compliant relative symlinks
+# cd is used with ln(1) for POSIX-compliant relative symlinks (many ln implementations do not have -r)
 install-base: install-universal
 	@mkdir -p "$(DESTDIR)/sbin"
 	@cd "$(DESTDIR)/usr/share/man/man8" ;\
@@ -161,13 +175,13 @@ uninstall:
 	@echo "Successfully uninstalled LeanInit!"
 	@echo "Please make sure you remove LeanInit from your bootloader!"
 
-# Clean the directory
+# Clean the repo
 clean:
 	@rm -rf out
 	@git gc 2> /dev/null
 	@git repack >> /dev/null 2> /dev/null
 
-# Calls clean, then resets the git repo
+# Call clean, then reset the git repo
 clobber: clean
 	git reset --hard
 

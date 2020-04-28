@@ -62,14 +62,14 @@ static int open_tty(const char *tty_path)
     setsid();
     dup2(tty, STDOUT_FILENO);
     dup2(tty, STDERR_FILENO);
-    dup2(tty, STDIN_FILENO);
+    dup2(tty, STDIN_FILENO);  // This must be done last due to a bug on AMD GPUs
     ioctl(tty, TIOCSCTTY, 1);
 
     // Return the file descriptor of the tty
     return tty;
 }
 
-// Execute a script
+// Execute the given script
 static int sh(char *script)
 {
     pid_t child = fork();
@@ -103,9 +103,12 @@ static pid_t spawn_getty(const char *cmd, const char *tty)
 // Return the accessible file path or NULL if neither are
 static char *get_file_path(char *restrict primary, char *restrict fallback, int amode)
 {
-    if(access(primary, amode) == 0) return primary;
-    else if(access(fallback, amode) == 0) return fallback;
-    else return NULL;
+    if(access(primary, amode) == 0)
+        return primary;
+    else if(access(fallback, amode) == 0)
+        return fallback;
+    else
+        return NULL;
 }
 
 // Single user mode
@@ -114,7 +117,7 @@ static void single(void)
     // Ask the user for their desired shell
     char *buffer = malloc(71);
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-    (void) fgets(buffer, 71, stdin);
+    (void) fgets(buffer, 71, stdin); // GCC will still ignore void, so -Wno-unused-result is in the Makefile
 
     // Convert the input into a readable char
     char *shell = malloc(71);
@@ -134,17 +137,17 @@ static void single(void)
     if(child == 0) {
 #endif
 
-        // Actual shell
+        // The actual shell
         pid_t sh = fork();
         if(sh == 0) {
             open_tty(DEFAULT_TTY);
             execve(shell, (char*[]){ shell, NULL }, environ);
         }
 
-#ifndef NetBSD
         // Free memory of the previous input
         free(shell);
 
+#ifndef NetBSD
         // When the shell is done, automatically reboot
         waitpid(sh, NULL, 0);
         kill(1, SIGINT);
@@ -242,8 +245,10 @@ static void multi(void)
 // Run either single() for single user and multi() for multi user
 static void *chlvl(void *nullptr)
 {
-    if((flags & SINGLE_USER) == SINGLE_USER) single();
-    else multi();
+    if((flags & SINGLE_USER) == SINGLE_USER)
+        single();
+    else
+        multi();
 
     return nullptr;
 }
@@ -251,7 +256,9 @@ static void *chlvl(void *nullptr)
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
 __attribute((noreturn)) static void *zloop(void *nullptr)
 {
-    for(;;) if(wait(nullptr) == -1) sleep(1);
+    for(;;)
+        if(wait(nullptr) == -1)
+            sleep(1);
 }
 
 // Set current_signal to the signal sent to PID 1
@@ -278,9 +285,13 @@ int main(int argc, char *argv[])
         // Single user (argv = single/-s), silent mode (argv = silent) and rc.banner(8) support
         --argc;
         while(0 < argc) {
-            if(strncmp(argv[argc], "single", 6) == 0 || strncmp(argv[argc], "-s", 2) == 0) flags ^= SINGLE_USER;
-            else if(strncmp(argv[argc], "silent", 6) == 0) flags ^= VERBOSE;
-            else if(strncmp(argv[argc], "banner", 6) == 0) flags ^= BANNER;
+            if(strncmp(argv[argc], "single", 6) == 0 || strncmp(argv[argc], "-s", 2) == 0)
+                flags ^= SINGLE_USER;
+            else if(strncmp(argv[argc], "silent", 6) == 0)
+                flags ^= VERBOSE;
+            else if(strncmp(argv[argc], "banner", 6) == 0)
+                flags ^= BANNER;
+
             --argc;
         }
 
@@ -336,7 +347,8 @@ int main(int argc, char *argv[])
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if(rc_shutdown != NULL) {
                 sh(rc_shutdown);
-                if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
+                if((flags & VERBOSE) == VERBOSE)
+                    printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             } else
                 printf(RED "* Could not execute rc.shutdown(8), killing all processes unsafely..." RESET "\n");
             kill(-1, SIGKILL);
