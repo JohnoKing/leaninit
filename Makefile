@@ -49,9 +49,7 @@ all: clean
 		sed -i '' "/#DEF FreeBSD/d" $(OUT) ;\
 		sed -i '' "/#DEF BSD/d"     $(OUT) ;\
 		sed -i '' "/#ENDEF/d"       $(OUT) ;\
-		if [ "$(RCSHELL)" ]; then \
-			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
-		fi ;\
+		[ "$(RCSHELL)" ] && sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		sed -i '' "s/    /	/g" $(OUT) ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
@@ -64,9 +62,7 @@ all: clean
 		sed -i "/#DEF NetBSD/d" $(OUT) ;\
 		sed -i "/#DEF BSD/d"    $(OUT) ;\
 		sed -i "/#ENDEF/d"      $(OUT) ;\
-		if [ "$(RCSHELL)" ]; then \
-			sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
-		fi ;\
+		[ "$(RCSHELL)" ] && sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		sed -i "s/    /	/g" $(OUT) ;\
 	\
 	elif [ `uname` = Linux ]; then \
@@ -77,9 +73,7 @@ all: clean
 		sed -i "/#DEF BSD/,/#ENDEF/d"     $(OUT) ;\
 		sed -i "/#DEF Linux/d" $(OUT) ;\
 		sed -i "/#ENDEF/d"     $(OUT) ;\
-		if [ "$(RCSHELL)" ]; then \
-			sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
-		fi ;\
+		[ "$(RCSHELL)" ] && sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		sed -i "s/    /	/g" $(OUT) ;\
 		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
