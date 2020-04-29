@@ -216,7 +216,7 @@ static void multi(void)
     fclose(ttys_file);
 
     // Start the loop
-    for(;;) {
+    while(true) {
         int status;
         pid_t closed_pid = wait(&status);
         if(closed_pid == -1) return;
@@ -254,9 +254,9 @@ static void *chlvl(void *nullptr)
 }
 
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
-__attribute((noreturn)) static void *zloop(void *nullptr)
+_Noreturn static void *zloop(void *nullptr)
 {
-    for(;;)
+    while(true)
         if(wait(nullptr) == -1)
             sleep(1);
 }
@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
         sigaction(SIGINT,  &actor, NULL); // Reboot
 
         // Signal handling loop
-        for(;;) {
+        while(true) {
 
             // Wait for a signal, then store it in stored_signal to prevent race conditions
             pause();

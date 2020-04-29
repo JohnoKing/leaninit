@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         }
 
         // Eternal loop
-        for(;;)
+        while(true)
             sleep(100);
 
     } else if(stall_pid == -1) {
