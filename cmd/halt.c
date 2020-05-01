@@ -99,8 +99,8 @@ int main(int argc, char *argv[])
                 force = 1;
                 break;
 
-            // Firmware setup
 #ifndef NetBSD
+            // Firmware setup
             case 'F':
                 osin = 1;
                 break;
@@ -134,8 +134,8 @@ int main(int argc, char *argv[])
         closelog();
     }
 
-    // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
 #ifdef NetBSD
+    // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
     pid_t child = fork();
     if(child == 0) {
         sync();
@@ -151,8 +151,8 @@ int main(int argc, char *argv[])
 
     wait(NULL);
 
-    // Run os-indications if --firmware-setup was passed (Linux and FreeBSD only)
 #else
+    // Run os-indications if --firmware-setup was passed (Linux and FreeBSD only)
     if(osin) {
         pid_t child = fork();
         if(child == 0)

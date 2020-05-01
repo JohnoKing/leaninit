@@ -33,7 +33,7 @@
 static unsigned char flags = VERBOSE;
 static int current_signal  = 0;
 
-// Shows usage for init
+// Show usage for init
 static int usage(int ret)
 {
     printf("Usage: %s [runlevel]...\n", __progname);
@@ -50,10 +50,14 @@ static int usage(int ret)
 }
 
 // Open the tty
+#ifdef Linux
+static void open_tty(const char *tty_path)
+#else
 static int open_tty(const char *tty_path)
+#endif
 {
-    // Revoke access to the tty if it is being used
 #if defined(FreeBSD) || defined(NetBSD)
+    // Revoke access to the tty if it is being used
     revoke(tty_path);
 #endif
 
@@ -65,8 +69,10 @@ static int open_tty(const char *tty_path)
     dup2(tty, STDIN_FILENO);  // This must be done last due to a bug on AMD GPUs
     ioctl(tty, TIOCSCTTY, 1);
 
+#ifndef Linux
     // Return the file descriptor of the tty
     return tty;
+#endif
 }
 
 // Execute the given script
@@ -130,9 +136,9 @@ static void single(void)
         memmove(shell, "/bin/sh", 8);
     }
 
+#ifndef NetBSD
     /* Fork the shell as the child of a managing child process (trying to use only one child process causes serious bugs)
        This is not done on NetBSD due to bugged runlevel functionality */
-#ifndef NetBSD
     pid_t child = fork();
     if(child == 0) {
 #endif
@@ -282,14 +288,23 @@ int main(int argc, char *argv[])
         setenv("LOGNAME", "root", 1);
         setenv("USER",    "root", 1);
 
-        // Single user (argv = single/-s), silent mode (argv = silent) and rc.banner(8) support
+        // Micro-optimized argument parsing
         --argc;
         while(0 < argc) {
-            if(strncmp(argv[argc], "single", 6) == 0 || strncmp(argv[argc], "-s", 2) == 0)
+
+            // Single user mode (accepts 'single' and '-s')
+            if((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g' \
+                    && argv[argc][4] == 'l' && argv[argc][5] == 'e') || (argv[argc][0] == '-' && argv[argc][1] == 's'))
                 flags ^= SINGLE_USER;
-            else if(strncmp(argv[argc], "silent", 6) == 0)
+
+            // Silent mode (accepts 'silent')
+            if(argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'l' && argv[argc][3] == 'e' \
+                    && argv[argc][4] == 'n' && argv[argc][5] == 't')
                 flags ^= VERBOSE;
-            else if(strncmp(argv[argc], "banner", 6) == 0)
+
+            // Run rc.banner (accepts 'banner')
+            if(argv[argc][0] == 'b' && argv[argc][1] == 'a' && argv[argc][2] == 'n' && argv[argc][3] == 'n' \
+                    && argv[argc][4] == 'e' && argv[argc][5] == 'r')
                 flags ^= BANNER;
 
             --argc;
@@ -379,8 +394,8 @@ int main(int argc, char *argv[])
                     break;
             }
 
-            // Reopen the console on *BSD and reload the runlevel
 #if defined(FreeBSD) || defined(NetBSD)
+            // Reopen the console on *BSD and reload the runlevel
             close(tty);
             tty = open_tty(DEFAULT_TTY);
 #endif
@@ -392,11 +407,13 @@ int main(int argc, char *argv[])
     if(argc < 2)
         return usage(1);
 
-    // Check for --version and --help
-    if(strcmp(argv[1], "--version") == 0) {
+    // Handle --version and --help (micro-optimized)
+    if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r' \
+        && argv[1][5] == 's' && argv[1][6] == 'i' && argv[1][7] == 'o' && argv[1][8] == 'n') {
         printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
         return 0;
-    } else if(strcmp(argv[1], "--help") == 0)
+    } else if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l' \
+        && argv[1][5] == 'p')
         return usage(0);
 
     // Only root can send signals to LeanInit

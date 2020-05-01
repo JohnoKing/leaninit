@@ -33,8 +33,8 @@
 
 int main(int argc, char *argv[])
 {
-    // GUID for OsIndications
 #ifndef Linux
+    // GUID for OsIndications
     efi_guid_t global_guid = EFI_GLOBAL_GUID;
 #endif
 
@@ -85,8 +85,8 @@ int main(int argc, char *argv[])
                 break;
         }
 
-    // Write efi_data (Linux efivarfs API)
 #ifdef Linux
+    // Write efi_data (Linux efivarfs API)
     if(!unset) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
         unsigned int efi_data[2] = { 0x07, 0x01 };
@@ -101,8 +101,8 @@ int main(int argc, char *argv[])
     } else
         unlink("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c");
 
-    // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
 #else
+    // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
     unsigned char efi_boot = 0x01;
     if(!unset)
         efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
