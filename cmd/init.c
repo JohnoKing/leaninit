@@ -242,7 +242,7 @@ static void multi(void)
     }
 }
 
-// Run either single() for single user and multi() for multi user
+// Run either single() for single user or multi() for multi user
 static void *chlvl(void *nullptr)
 {
     if((flags & SINGLE_USER) == SINGLE_USER)
