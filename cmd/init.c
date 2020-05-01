@@ -50,15 +50,14 @@ static int usage(int ret)
 }
 
 // Open the tty
-#ifdef Linux
-static void open_tty(const char *tty_path)
-#else
-static int open_tty(const char *tty_path)
-#endif
-{
 #if defined(FreeBSD) || defined(NetBSD)
+static int open_tty(const char *tty_path)
+{
     // Revoke access to the tty if it is being used
     revoke(tty_path);
+#else
+static void open_tty(const char *tty_path)
+{
 #endif
 
     // Open the tty
