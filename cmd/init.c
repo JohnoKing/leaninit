@@ -124,7 +124,7 @@ static void single(void)
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
     (void) fgets(buffer, 71, stdin); // GCC will still ignore void, so -Wno-unused-result is in the Makefile
 
-    // Convert the input into a readable char
+    // Convert the input into a readable file path
     char *shell = malloc(71);
     sscanf(buffer, "%s", shell);
     free(buffer); // The buffer is no longer needed
