@@ -29,16 +29,16 @@
 // Show usage information
 static int usage(void)
 {
-    printf("Usage: %s [-dAIiRT12?] [delay] ...\n", __progname);
-    printf("  -d, --delay   Delay for up to x seconds (max 255)\n");
-    printf("  -A, --alarm   SIGALRM\n");
-    printf("  -I, --int     SIGINT\n");
-    printf("  -i, --ill     SIGILL\n");
-    printf("  -R, --hup     SIGHUP\n");
-    printf("  -T, --term    SIGTERM\n");
-    printf("  -1, --usr1    SIGUSR1\n");
-    printf("  -2, --usr2    SIGUSR2\n");
-    printf("  -?, --help    Show this usage information\n");
+    printf("Usage: %s [-dAIiRT12?] [delay] ...\n"
+           "  -d, --delay   Delay for up to x seconds (max 255)\n"
+           "  -A, --alarm   SIGALRM\n"
+           "  -I, --int     SIGINT\n"
+           "  -i, --ill     SIGILL\n"
+           "  -R, --hup     SIGHUP\n"
+           "  -T, --term    SIGTERM\n"
+           "  -1, --usr1    SIGUSR1\n"
+           "  -2, --usr2    SIGUSR2\n"
+           "  -?, --help    Show this usage information\n", __progname);
     return 1;
 }
 

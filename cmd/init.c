@@ -36,16 +36,16 @@ static int current_signal  = 0;
 // Show usage for init
 static int usage(int ret)
 {
-    printf("Usage: %s [runlevel]...\n", __progname);
-    printf("    or %s --[opt]   ...\n", __progname);
-    printf("  0           Poweroff\n");
-    printf("  1, S, s     Switch to single user mode\n");
-    printf("  2, 3, 4, 5  Switch to multi-user mode\n");
-    printf("  6           Reboot\n");
-    printf("  7           Halt\n");
-    printf("  Q, q        Reload the current runlevel\n");
-    printf("  --version   Show LeanInit's version number\n");
-    printf("  --help      Show this usage information\n");
+    printf("Usage: %s [runlevel]...\n"
+           "    or %s --[opt]   ...\n"
+           "  0           Poweroff\n"
+           "  1, S, s     Switch to single user mode\n"
+           "  2, 3, 4, 5  Switch to multi-user mode\n"
+           "  6           Reboot\n"
+           "  7           Halt\n"
+           "  Q, q        Reload the current runlevel\n"
+           "  --version   Show LeanInit's version number\n"
+           "  --help      Show this usage information\n", __progname, __progname);
     return ret;
 }
 

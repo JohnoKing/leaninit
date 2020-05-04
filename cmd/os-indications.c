@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
 
             // Display usage info
             case '?':
-                printf("Usage: %s [-qu?]\n", __progname);
-                printf("  -q, --quiet   Disable output (unless there was an error)\n");
-                printf("  -u, --unset   Revert changes made by os-indications\n");
-                printf("  -?, --help    Show this usage information\n");
+                printf("Usage: %s [-qu?]\n"
+                       "  -q, --quiet   Disable output (unless there was an error)\n"
+                       "  -u, --unset   Revert changes made by os-indications\n"
+                       "  -?, --help    Show this usage information\n", __progname);
                 return 1;
 
             // Quiet mode
@@ -115,11 +115,11 @@ int main(int argc, char *argv[])
     // Notify the user of the change if --quiet was not passed
     if(verbose) {
         if(!unset) {
-            printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots." RESET "\n");
-            printf(CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);
+            printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots.\n"
+                   CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);
         } else {
-            printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots." RESET "\n");
-            printf(CYAN "* " WHITE "Any prior changes made by %s have been reverted." RESET "\n", __progname);
+            printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots.\n"
+                   CYAN "* " WHITE "Any prior changes made by %s have been reverted." RESET "\n", __progname);
         }
     }
 
