@@ -20,14 +20,14 @@
 #
 
 # Variables (each one may be overridden)
-CC       = cc
-CFLAGS   = -Os -fomit-frame-pointer -fpic -fno-plt -pipe
-INCLUDE  = -I./include
-CPPFLAGS = -D_FORTIFY_SOURCE=2
-WFLAGS   = -Wall -Wextra -Wno-unused-result
-LDFLAGS  = -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
-OUT      = out/man/man*/* out/rc/* out/rc.conf.d/* out/svc/*
-#RCSHELL = /bin/dash
+CC       := cc
+CFLAGS   := -Os -fomit-frame-pointer -fpic -fno-plt -pipe
+INCLUDE  := -I./include
+CPPFLAGS := -D_FORTIFY_SOURCE=2
+WFLAGS   := -Wall -Wextra -Wno-unused-result
+LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+OUT      := out/man/man*/* out/rc/* out/rc.conf.d/* out/svc/*
+#RCSHELL := /bin/dash
 
 # Compile LeanInit
 all: clean
