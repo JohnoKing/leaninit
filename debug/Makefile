@@ -22,7 +22,7 @@
 # Variables (each one may be overridden)
 CC       := cc
 CFLAGS   := -Os -fomit-frame-pointer -fpic -fno-plt -pipe
-CPPFLAGS ;= -D_FORTIFY_SOURCE=2
+CPPFLAGS := -D_FORTIFY_SOURCE=2
 INCLUDE  := -I../include
 WFLAGS   := -Wall -Wextra -Wpedantic
 LDFLAGS  := -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
