@@ -153,7 +153,7 @@ __waitfor_loop_file()
     fi
 }
 
-# Wait for either a file, pid or service for up to seven seconds
+# Wait for either a file, PID or service for up to seven seconds
 waitfor()
 {
     case "$1" in
@@ -185,7 +185,7 @@ waitfor()
     esac
 }
 
-# Only checks for a type or service, does not wait.
+# Only checks for a type or service, does not wait
 checkfor()
 {
     case "$1" in
