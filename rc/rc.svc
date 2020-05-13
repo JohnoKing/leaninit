@@ -53,7 +53,7 @@ export BLUE='\033[1;34m'
 export PURPLE='\033[1;35m'
 export CYAN='\033[1;36m'
 if [ "$TERM" = "xterm" ]; then
-    export RESET='\033[0m'
+    export WHITE='\033[0m'
 else
     export WHITE='\033[1;37m'
 fi
