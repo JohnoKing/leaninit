@@ -382,12 +382,8 @@ int main(int argc, char *argv[])
                 case SIGINT:
                     return reboot(SYS_REBOOT);
 
-                // Switch to single user
+                // Flip the bitmask value to set single user or multi-user
                 case SIGTERM:
-                    flags ^= SINGLE_USER;
-                    break;
-
-                // Switch to multi-user
                 case SIGILL:
                     flags ^= SINGLE_USER;
                     break;
