@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# /etc/leaninit/rc.svc - Functions and variables for execution of LeanInit scrips
+# /etc/leaninit/rc.svc - Functions and variables for execution of LeanInit scripts
 #
 
 # Load /etc/profile and /etc/leaninit/rc.conf
