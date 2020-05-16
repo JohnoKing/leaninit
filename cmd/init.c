@@ -68,7 +68,7 @@ static void open_tty(const char *tty_path)
     dup2(tty, STDIN_FILENO);  // This must be done last due to a bug on AMD GPUs
     ioctl(tty, TIOCSCTTY, 1);
 
-#ifndef Linux
+#if defined(FreeBSD) || defined(NetBSD)
     // Return the file descriptor of the tty
     return tty;
 #endif
