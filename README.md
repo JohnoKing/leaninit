@@ -45,7 +45,7 @@ and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanI
 ### Optimization
 The shell LeanInit RC's scripts run under (defined at the start of each script) can be changed with the `$RCSHELL` environment variable.
 To compile with BusyBox ash as the default shell (to increase performance), build with the following command:
-`make RCSHELL='/bin/busybox ash'`
+`make RCSHELL='/bin/busybox ash'`  
 LeanInit will also net slightly better performance on Linux if statically compiled with musl libc.
 
 ## Usage
