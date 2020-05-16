@@ -39,6 +39,8 @@ kill -CONT -1
 kill -TERM -1
 
 # Use a short loop to wait for all processes to stop
+# It would be better if `(( expr ))` was standardized as it is faster,
+# but for portability we must use the slower `$((expr))`
 ENDTIME=$(( `date +%s` + 1 ))
 until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 -1; do
     sleep 0.1
