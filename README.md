@@ -16,7 +16,7 @@ Make sure eudev and iproute2 are installed, as they are required on Linux.
 
 ### FreeBSD
 Follow the same steps as on Linux to build LeanInit.
-The Makefileis compatible with both GNU and BSD Make, so you don't need to install `gmake` as a separate build dependency.
+The Makefile is compatible with both GNU and BSD Make, so you don't need to install `gmake` as a separate build dependency.  
 To boot from LeanInit, append the following line to `/boot/loader.conf`: `init_path="/sbin/leaninit:/sbin/init"`.  
 
 ### NetBSD
@@ -24,9 +24,11 @@ As stated above, LeanInit will compile with BSD make.
 However, the NetBSD boot loader does not support the `init_path` setting.
 As a workaround, you can turn `/sbin/init` into a symlink.
 *Only do this at your own risk, as you can only revert this with `chroot` on a resuce disk if something goes wrong.*
-If you are still willing to change the init system, the following set of commands will backup `/sbin/init` and change the init system to LeanInit:
-`mv /sbin/init /sbin/init.old`  
-`ln -s /sbin/leaninit /sbin/init`  
+If you are still willing to change the init system, the following set of commands will backup `/sbin/init` and change the init system to LeanInit:  
+``
+mv /sbin/init /sbin/init.old
+ln -s /sbin/leaninit /sbin/init
+``
 
 ### init(8)-only installation
 To install only the implementations of init(8), halt(8), the man pages and the os-indications(8) program,
@@ -37,7 +39,7 @@ Keep in mind that this will not install LeanInit RC, so you must use a different
 To install only the init scripts LeanInit uses for use with other BSD-style init systems,
 build LeanInit then run `make install-rc`.
 For LeanInit RC to be used by init on the next boot, backup the system's current `/etc/rc`
-and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanInit's RC scripts to `/etc`:
+and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanInit's RC scripts to `/etc`:  
 `ln -s /etc/leaninit/rc /etc/rc && ln -s /etc/leaninit/rc.shutdown /etc/rc.shutdown`.
 
 ### Optimization
