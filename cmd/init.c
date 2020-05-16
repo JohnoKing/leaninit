@@ -49,18 +49,18 @@ static int usage(int ret)
     return ret;
 }
 
-// Open the tty
+// Open the TTY
 #if defined(FreeBSD) || defined(NetBSD)
 static int open_tty(const char *tty_path)
 {
-    // Revoke access to the tty if it is being used
+    // Revoke access to the TTY if it is being used
     revoke(tty_path);
 #else
 static void open_tty(const char *tty_path)
 {
 #endif
 
-    // Open the tty
+    // Open the TTY
     int tty = open(tty_path, O_RDWR | O_NOCTTY);
     setsid();
     dup2(tty, STDOUT_FILENO);
@@ -69,7 +69,7 @@ static void open_tty(const char *tty_path)
     ioctl(tty, TIOCSCTTY, 1);
 
 #if defined(FreeBSD) || defined(NetBSD)
-    // Return the file descriptor of the tty
+    // Return the file descriptor of the TTY
     return tty;
 #endif
 }
@@ -93,7 +93,7 @@ static int sh(char *script)
     return WEXITSTATUS(status);
 }
 
-// Spawn a getty on the given tty then return its PID
+// Spawn a getty on the given TTY then return its PID
 static pid_t spawn_getty(const char *cmd, const char *tty)
 {
     pid_t getty = fork();
@@ -230,7 +230,7 @@ static void multi(void)
         for(unsigned char e = 1; e <= entry; e++) {
             if(getty[e].pid != closed_pid) continue;
 
-            // Do not spam the tty if the getty failed
+            // Do not spam the TTY if the getty failed
             if(WEXITSTATUS(status) != 0) {
 #if defined(FreeBSD) || defined(NetBSD)
                 open_tty(getty[e].tty);
@@ -390,10 +390,11 @@ int main(int argc, char *argv[])
             }
 
 #if defined(FreeBSD) || defined(NetBSD)
-            // Reopen the console on *BSD and reload the runlevel
+            // Reopen the console on *BSD
             close(tty);
             tty = open_tty(DEFAULT_TTY);
 #endif
+            // Reload the runlevel
             pthread_create(&runlvl, NULL, chlvl, NULL);
         }
     }
@@ -402,7 +403,7 @@ int main(int argc, char *argv[])
     if(argc < 2)
         return usage(1);
 
-    // Handle --version and --help (micro-optimized)
+    // Handle --version and --help (micro-optimized for no good reason)
     if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r' \
         && argv[1][5] == 's' && argv[1][6] == 'i' && argv[1][7] == 'o' && argv[1][8] == 'n') {
         printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");

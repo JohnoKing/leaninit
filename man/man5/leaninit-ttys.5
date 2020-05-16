@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 13, 2020
+.Dd May 15, 2020
 .Dt TTYS 5
 .Os
 .Sh NAME
@@ -27,7 +27,7 @@
 .Em /etc/leaninit/ttys
 is the file the
 .Nm LeanInit
-reads from for the list of ttys to launch
+reads from for the list of TTYs to launch
 .Nm getty(8)
 on.
 Each line should consist of two arguments separated by the ':' delimiter.
@@ -37,7 +37,7 @@ must specify the file path to
 as the
 .Em $PATH
 variable is not used).
-The second argument should have the path to the tty that the
+The second argument should have the path to the TTY that the
 .Nm getty
 will run on.
 The

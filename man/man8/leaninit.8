@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 17, 2020
+.Dd May 15, 2020
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -42,7 +42,7 @@ If it is
 .Nm PID
 1,
 .Nm LeanInit
-will open the console using
+will open the console with a custom version of
 .Nm login_tty(3)
 then launch two threads, one to kill all zombie processes, the other to run
 .Nm rc(8)
@@ -200,7 +200,7 @@ and can be safely removed with `rm /var/lib/leaninit/install-flag` as this file 
 only read by LeanInit's Makefile for `make install`.
 
 .Em /etc/leaninit/ttys
-LeanInit will read from this file for a list of ttys to launch the specified getty on
+LeanInit will read from this file for a list of TTYs to launch the specified getty on
 
 .Em /etc/ttys
 Alternate file LeanInit will read from if
