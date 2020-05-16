@@ -248,21 +248,21 @@ static void multi(void)
 }
 
 // Run either single() for single user or multi() for multi user
-static void *chlvl(void *nullptr)
+static void *chlvl(__attribute((unused)) void *unused)
 {
     if((flags & SINGLE_USER) == SINGLE_USER)
         single();
     else
         multi();
 
-    return nullptr;
+    return NULL;
 }
 
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
-_Noreturn static void *zloop(void *nullptr)
+_Noreturn static void *zloop(__attribute((unused)) void *unused)
 {
     while(true)
-        if(wait(nullptr) == -1)
+        if(wait(NULL) == -1)
             sleep(1);
 }
 
