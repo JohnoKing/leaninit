@@ -23,7 +23,7 @@ To boot from LeanInit, append the following line to `/boot/loader.conf`: `init_p
 As stated above, LeanInit will compile with BSD make.
 However, the NetBSD boot loader does not support the `init_path` setting.
 As a workaround, you can turn `/sbin/init` into a symlink.
-*Only do this at your own risk, as you can only revert this with `chroot` on a resuce disk if something goes wrong.*
+*Only do this at your own risk, as you can only revert this with `chroot` on a rescue disk if something goes wrong.*
 If you are still willing to change the init system, the following set of commands will backup `/sbin/init` and change the init system to LeanInit:  
 ``
 mv /sbin/init /sbin/init.old
