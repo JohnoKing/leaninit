@@ -342,11 +342,12 @@ int main(int argc, char *argv[])
         sigaction(SIGINT,  &actor, NULL); // Reboot
 
         // Signal handling loop
+        int stored_signal;
         while(true) {
 
             // Wait for a signal, then store it in stored_signal to prevent race conditions
             pause();
-            int stored_signal = current_signal;
+            stored_signal = current_signal;
 
             // Cancel when the requested runlevel is already running
             if((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER) || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
