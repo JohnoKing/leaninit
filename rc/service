@@ -27,8 +27,8 @@
 . /etc/leaninit/rc.svc
 usage()
 {
-    print "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
-    print "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
+    println "Usage: $0 service-name action ..." nolog "$PURPLE" "$WHITE"
+    println "  or $0 --status-all ..." nolog "$PURPLE" "$WHITE"
     echo "Potential actions:"
     echo "  enable"
     echo "  disable"
@@ -51,7 +51,7 @@ usage()
 # Show the statuses of all services when passed --status-all
 if [ "$1" = "--status-all" ]; then
     if [ $(id -u) -ne 0 ]; then
-        print 'This must be run as root!' nolog "$RED"
+        println 'This must be run as root!' nolog "$RED"
         exit 4
     fi
     __TMP=$(mktemp)
@@ -73,7 +73,7 @@ fi
 if [ ! "$2" ]; then
     usage
 elif [ ! -x "/etc/leaninit/svc/$1" ]; then
-    print "The service '$1' does not exist or could not be executed!" nolog "$RED"
+    println "The service '$1' does not exist or could not be executed!" nolog "$RED"
     usage
 fi
 

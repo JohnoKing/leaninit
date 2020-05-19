@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 17, 2020
+.Dd April 19, 2020
 .Dt RC.SVC 8
 .Os
 .Sh NAME
@@ -81,11 +81,11 @@ This function will return 0 if the given command is a shell function, otherwise 
 
 
 
-.Nm print "msg" log_argument star_color [message_color] ...
+.Nm println "msg" log_argument star_color [message_color] ...
 
 This function prints formatted output to
 .Em stdout.
-If $2 is set to 'log', then the output from print will be logged to the service's log file.
+If $2 is set to 'log', then the output from println will be logged to the service's log file.
 $3 defines the ANSI color of at least the star and $4 (if set) defines the color of the text.
 
 The following color variables (in bold form) are provided by
@@ -178,7 +178,7 @@ Print colored output with a blue star and white text to
 .Em /dev/tty
 and the log file:
 
-.Nm print "General informative message..." log "$BLUE" "$WHITE"
+.Nm println "General informative message..." log "$BLUE" "$WHITE"
 .Sh SEE ALSO
 leaninit(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-rc.conf(5)
 .Sh AUTHOR

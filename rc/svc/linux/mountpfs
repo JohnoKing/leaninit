@@ -17,7 +17,7 @@ main() {
     mount --bind /run/shm /dev/shm &
 
     # Mount a tmpfs at /sys/fs/cgroup (Cgroups support)
-    print "Mounting cgroups..." log "$BLUE" "$WHITE"
+    println "Mounting cgroups..." log "$BLUE" "$WHITE"
     mountpoint -q /sys/fs/cgroup || mount -o nosuid,nodev,noexec,noatime -t tmpfs cgroup /sys/fs/cgroup
 
     # elogind assumes the openrc cgroup is present (other cgroups, such as a 'leaninit' cgroup, don't work here)

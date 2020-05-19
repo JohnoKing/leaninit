@@ -41,18 +41,18 @@ main() {
     # the child process to the file pointed to by $__svcpidfile
     fork /bin/sleep 100
 
-    # The print command will print formatted colored output to the console, then unformatted output
+    # The println command will print formatted colored output to the console, then unformatted output
     # to the log file defined in rc.conf if the second argument is 'log'. The third argument defines
     # the color of either the entire message, or if the fourth argument is used the the third argument
     # will only color the star. The fourth argument will then define the color for the rest of the
     # message. The default color variables are bold, although custom colors can be used as well.
     # The following example will print the string 'EXAMPLE OUTPUT' in bold white with a star colored
     # #005FFF to stdout and no log file.
-    print "EXAMPLE OUTPUT" nolog "\033[38;5;27m" "$WHITE"
+    println "EXAMPLE OUTPUT" nolog "\033[38;5;27m" "$WHITE"
 
     # Similarly, isfunc will return 0 if the given command is a shell function
     if isfunc example_function; then
-        print "The example function exists" nolog "$BLACK" "$GREEN" # Be warned that black text is invisible on black console backgrounds.
+        println "The example function exists" nolog "$BLACK" "$GREEN" # Be warned that black text is invisible on black console backgrounds.
     fi
 }
 
@@ -69,24 +69,24 @@ reload() {
 # This function will be run when an init script stops.
 stop() {
     # $__svcname is the name of the init script in /etc/leaninit/svc
-    print "$__svcname is currently stopping" nolog "$RED" "$YELLOW"
+    println "$__svcname is currently stopping" nolog "$RED" "$YELLOW"
 }
 
 
 # This function will run instead of main when the init script is restarted.
 restart() {
-    print 'Restarting the example script!' log "$YELLOW" # This message is logged and printed only in bold yellow.
+    println 'Restarting the example script!' log "$YELLOW" # This message is logged and printed only in bold yellow.
 }
 
 # This function is run when the init script is enabled.
 # It will override the `enable` command when run under bash.
 enable() {
-    print 'Running the enable function!' nolog "$PURPLE" "$WHITE" # Purple and white are the standard colors for messages that are not logged.
+    println 'Running the enable function!' nolog "$PURPLE" "$WHITE" # Purple and white are the standard colors for messages that are not logged.
 }
 
 # This function is run when the init script is disabled.
 disable() {
-    print 'Running the disable function!' log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
+    println 'Running the disable function!' log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
 }
 
 # Every script must source rc.svc with `.` to function (source does not work as rc.svc must be executed)

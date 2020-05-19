@@ -28,7 +28,7 @@
 export OUTPUT_MODE="$1"
 
 # Check all file systems for data corruption
-print "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE"
+println "Checking all file systems for data corruption..." nolog "$PURPLE" "$WHITE"
 #DEF Linux
 fsck -AP
 #ENDEF
@@ -40,7 +40,7 @@ fsck -CF
 #ENDEF
 
 # Mount all drives specified in /etc/fstab
-print "Mounting all drives..." nolog "$PURPLE" "$WHITE"
+println "Mounting all drives..." nolog "$PURPLE" "$WHITE"
 mount -a 2> /dev/null &
 
 #DEF Linux
@@ -48,7 +48,7 @@ mount -a 2> /dev/null &
 mount -o remount,rw,noatime / 2> /dev/null &
 
 # Mount primary pseudo file systems
-print "Mounting primary pseudo file systems..." nolog "$PURPLE" "$WHITE"
+println "Mounting primary pseudo file systems..." nolog "$PURPLE" "$WHITE"
 rm -rf /tmp/*
 mountpoint -q /dev  || mount -o nosuid,noatime -t devtmpfs dev /dev &
 mountpoint -q /proc || mount -o nosuid,nodev,noexec,noatime -t proc proc /proc &
@@ -62,7 +62,7 @@ if [ -e /var/lib/leaninit/svc/zfs ]; then
 
     # Make ZFS datasets read-write (used in case root is a read-only ZFS dataset)
     for z in $(zpool list -Ho name); do
-        print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
+        println "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
         zfs readonly=off "$z"
     done
 
@@ -76,16 +76,16 @@ touch "$__svclog"
 mv "$__svclog" "$__svclog.old"
 echo "LeanInit RC has started logging on $(uname -srm)" > "$__svclog"
 printf '%s\n' "Current Time: $(date)" >> "$__svclog"
-print 'LeanInit RC has started logging!' nolog "$BLUE" "$WHITE"
+println 'LeanInit RC has started logging!' nolog "$BLUE" "$WHITE"
 
 # Remove nologin and reset /var/run/leaninit
-print "Removing any existing nologin files and resetting /var/run/leaninit..." log "$BLUE" "$WHITE"
+println "Removing any existing nologin files and resetting /var/run/leaninit..." log "$BLUE" "$WHITE"
 rm -rf /etc/nologin /run/nologin /var/run/nologin /var/run/leaninit
 mkdir -p /var/run/leaninit
 
 # Start all enabled services
 cd /var/lib/leaninit/svc || exit 1
-print "Starting all enabled services listed in /var/lib/leaninit/svc..." log "$BLUE" "$WHITE"
+println "Starting all enabled services listed in /var/lib/leaninit/svc..." log "$BLUE" "$WHITE"
 for sv in *; do
     "/etc/leaninit/svc/$sv" start &
 done

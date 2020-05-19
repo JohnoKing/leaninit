@@ -8,7 +8,7 @@ main() {
 
     # Set up network interfaces
     for n in $(ip -o link show | awk '{ gsub(":", ""); print $2 }'); do
-        print "Setting up $n for networking..." log "$BLUE" "$WHITE"
+        println "Setting up $n for networking..." log "$BLUE" "$WHITE"
         ip link set up dev "$n" &
     done
     wait
