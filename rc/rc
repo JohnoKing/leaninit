@@ -45,7 +45,7 @@ mount -a 2> /dev/null &
 
 #DEF Linux
 # Remount root (/) as read-write
-mount -o remount,rw,noatime $(lsblk -p -T TYPE | awk '{ print $1" "$7" " }' | grep '/ ') 2> /dev/null &
+mount -o remount,rw,noatime / 2> /dev/null &
 
 # Mount primary pseudo file systems
 print "Mounting primary pseudo file systems..." nolog "$PURPLE" "$WHITE"
