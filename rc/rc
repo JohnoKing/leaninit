@@ -60,7 +60,7 @@ mountpoint -q /run  || mount -o nosuid,nodev,noatime -t tmpfs tmpfs /run &
 # If ZFS is enabled, it MUST be run first
 if [ -e /var/lib/leaninit/svc/zfs ]; then
 
-    # Make ZFS datasets read-write (used in case root (/) is a read-only ZFS dataset)
+    # Make ZFS datasets read-write (used in case root is a read-only ZFS dataset)
     for z in $(zpool list -Ho name); do
         print "Turning readonly off for dataset $z..." nolog "$PURPLE" "$WHITE"
         zfs readonly=off "$z"
