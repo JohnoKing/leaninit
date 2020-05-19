@@ -136,8 +136,8 @@ __usage()
     exit $1
 }
 
-# Wait for a file using a loop that checks for it every tenth of a second (until loops are too slow)
-# It would be better if `(( expr ))` was standardized as it is faster,
+# Wait for a file using a loop that checks for it every tenth of a second
+# It would be better if `for (( expr ))` was standardized as it is faster,
 # but for portability we must use the slower `$((expr))`
 __waitfor_loop_file()
 {
