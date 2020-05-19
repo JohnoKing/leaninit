@@ -132,7 +132,7 @@ static void single(void)
     // If the given shell is invalid, use /bin/sh instead
     if(access(shell, X_OK) != 0) {
         printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
-        memmove(shell, "/bin/sh", 8);
+        memcpy(shell, "/bin/sh", 8);
     }
 
 #ifndef NetBSD
