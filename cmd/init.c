@@ -136,8 +136,10 @@ static void single(void)
     }
 
 #ifndef NetBSD
-    /* Fork the shell as the child of a managing child process (trying to use only one child process causes serious bugs)
-       This is not done on NetBSD due to bugged runlevel functionality */
+    /* Fork the shell as the child of a managing child process (trying
+     * to use only one child process causes serious bugs).
+     * This is not done on NetBSD due to bugged runlevel functionality.
+     */
     pid_t child = fork();
     if(child == 0) {
 #endif
@@ -235,7 +237,8 @@ static void multi(void)
 #if defined(FreeBSD) || defined(NetBSD)
                 open_tty(getty[e].tty);
 #endif
-                printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", getty[e].tty, WEXITSTATUS(status));
+                printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n",
+                    getty[e].tty, WEXITSTATUS(status));
                 getty[e].pid = 0;
                 break;
             }
@@ -259,11 +262,12 @@ static void *chlvl(__attribute((unused)) void *unused)
 }
 
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
-_Noreturn static void *zloop(__attribute((unused)) void *unused)
+noreturn static void *zloop(__attribute((unused)) void *unused)
 {
-    while(true)
+    while(true) {
         if(wait(NULL) == -1)
             sleep(1);
+    }
 }
 
 // Set current_signal to the signal sent to PID 1
@@ -292,17 +296,17 @@ int main(int argc, char *argv[])
         while(0 < argc) {
 
             // Single user mode (accepts 'single' and '-s')
-            if((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g' \
+            if((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g'
                     && argv[argc][4] == 'l' && argv[argc][5] == 'e') || (argv[argc][0] == '-' && argv[argc][1] == 's'))
                 flags ^= SINGLE_USER;
 
             // Silent mode (accepts 'silent')
-            if(argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'l' && argv[argc][3] == 'e' \
+            if(argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'l' && argv[argc][3] == 'e'
                     && argv[argc][4] == 'n' && argv[argc][5] == 't')
                 flags ^= VERBOSE;
 
             // Run rc.banner (accepts 'banner')
-            if(argv[argc][0] == 'b' && argv[argc][1] == 'a' && argv[argc][2] == 'n' && argv[argc][3] == 'n' \
+            if(argv[argc][0] == 'b' && argv[argc][1] == 'a' && argv[argc][2] == 'n' && argv[argc][3] == 'n'
                     && argv[argc][4] == 'e' && argv[argc][5] == 'r')
                 flags ^= BANNER;
 
@@ -322,7 +326,8 @@ int main(int argc, char *argv[])
         if((flags & VERBOSE) == VERBOSE) {
             struct utsname uts;
             uname(&uts);
-            printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n", uts.sysname, uts.release, uts.machine);
+            printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s"
+                RESET "\n", uts.sysname, uts.release, uts.machine);
         }
 
         // Start both threads now
@@ -350,7 +355,8 @@ int main(int argc, char *argv[])
             stored_signal = current_signal;
 
             // Cancel when the requested runlevel is already running
-            if((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER) || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
+            if((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER)
+                || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
                 continue;
 
             // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
@@ -405,11 +411,11 @@ int main(int argc, char *argv[])
         return usage(1);
 
     // Handle --version and --help (micro-optimized for no good reason)
-    if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r' \
+    if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r'
         && argv[1][5] == 's' && argv[1][6] == 'i' && argv[1][7] == 'o' && argv[1][8] == 'n') {
         printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
         return 0;
-    } else if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l' \
+    } else if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l'
         && argv[1][5] == 'p')
         return usage(0);
 
