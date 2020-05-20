@@ -27,7 +27,7 @@
 #include <leaninit.h>
 
 // Show usage information
-static int usage(void)
+static noreturn void usage(void)
 {
     printf("Usage: %s [-dAIiRT12?] [delay] ...\n"
            "  -d, --delay   Delay for up to x seconds (max 255)\n"
@@ -39,7 +39,7 @@ static int usage(void)
            "  -1, --usr1    SIGUSR1\n"
            "  -2, --usr2    SIGUSR2\n"
            "  -?, --help    Show this usage information\n", __progname);
-    return 1;
+    exit(1);
 }
 
 int main(int argc, char *argv[])
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
     } else if(argc < 2)
-        return usage();
+        usage();
 
     // Long options struct
     struct option long_options[] = {
@@ -71,10 +71,6 @@ int main(int argc, char *argv[])
     int args;
     while((args = getopt_long(argc, argv, "dAIiRT012?", long_options, NULL)) != -1)
         switch(args) {
-
-            // Display usage info
-            case '?':
-                return usage();
 
             // Set the number of seconds to delay sending the signal (--delay)
             case 'd':
@@ -108,6 +104,10 @@ int main(int argc, char *argv[])
             case '2':
                 signal = SIGUSR2;
                 break;
+
+            // Display usage info
+            case '?':
+                usage();
         }
 
     // Create the signal-interfere daemon. The daemon will not send a signal to init(8) until it is sent SIGTERM.
