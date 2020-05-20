@@ -34,7 +34,7 @@ static unsigned char flags = VERBOSE;
 static int current_signal  = 0;
 
 // Show usage for init
-static int usage(int ret)
+static noreturn void usage(int ret)
 {
     printf("Usage: %s [runlevel]...\n"
            "    or %s --[opt]   ...\n"
@@ -46,7 +46,7 @@ static int usage(int ret)
            "  Q, q        Reload the current runlevel\n"
            "  --version   Show LeanInit's version number\n"
            "  --help      Show this usage information\n", __progname, __progname);
-    return ret;
+    exit(ret);
 }
 
 // Open the TTY
@@ -408,7 +408,7 @@ int main(int argc, char *argv[])
 
     // Parse CLI arguments
     if(argc < 2)
-        return usage(1);
+        usage(1);
 
     // Handle --version and --help (micro-optimized for no good reason)
     if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r'
@@ -417,7 +417,7 @@ int main(int argc, char *argv[])
         return 0;
     } else if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l'
         && argv[1][5] == 'p')
-        return usage(0);
+        usage(0);
 
     // Only root can send signals to LeanInit
     if(getuid() != 0) {
@@ -460,6 +460,6 @@ int main(int argc, char *argv[])
 
         // Fallback
         default:
-            return usage(1);
+            usage(1);
     }
 }
