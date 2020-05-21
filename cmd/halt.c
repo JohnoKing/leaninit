@@ -148,10 +148,9 @@ int main(int argc, char *argv[])
         sleep(1);
         kill(-1, SIGKILL);
     }
-    wait(NULL);
 
-    // NOTREACHED
-    return 0;
+    wait(NULL);
+    __builtin_unreachable();
 
 #else
     // Run os-indications if --firmware-setup was passed
