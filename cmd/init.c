@@ -264,10 +264,9 @@ static void *chlvl(unused void *notused)
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
 static noreturn void *zloop(unused void *notused)
 {
-    while(true) {
+    while(true)
         if(unlikely(wait(NULL) == -1))
             sleep(1);
-    }
 }
 
 // Set current_signal to the signal sent to PID 1
