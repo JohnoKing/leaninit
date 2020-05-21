@@ -53,16 +53,16 @@ int main(int argc, char *argv[])
 
     // Long options struct
     struct option long_options[] = {
-        { "delay", required_argument, 0, 'd' },
-        { "alarm", no_argument,       0, 'A' },
-        { "int",   no_argument,       0, 'I' },
-        { "ill",   no_argument,       0, 'i' },
-        { "hup",   no_argument,       0, 'R' },
-        { "term",  no_argument,       0, 'T' },
-        { "usr1",  no_argument,       0, '1' },
-        { "usr2",  no_argument,       0, '2' },
-        { "help",  no_argument,       0, '?' },
-        {  0,                0,       0,  0  }
+        { "delay", required_argument, NULL, 'd' },
+        { "alarm", no_argument,       NULL, 'A' },
+        { "int",   no_argument,       NULL, 'I' },
+        { "ill",   no_argument,       NULL, 'i' },
+        { "hup",   no_argument,       NULL, 'R' },
+        { "term",  no_argument,       NULL, 'T' },
+        { "usr1",  no_argument,       NULL, '1' },
+        { "usr2",  no_argument,       NULL, '2' },
+        { "help",  no_argument,       NULL, '?' },
+        {  NULL,             0,       NULL,  0  }
     };
 
     // Get options

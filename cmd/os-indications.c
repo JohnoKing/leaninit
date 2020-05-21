@@ -55,10 +55,10 @@ int main(int argc, char *argv[])
     bool verbose = true;
     bool unset   = false;
     struct option long_options[] = {
-        { "quiet", no_argument, 0, 'q' },
-        { "unset", no_argument, 0, 'u' },
-        { "help",  no_argument, 0, '?' },
-        {  0,                0, 0,  0  }
+        { "quiet", no_argument, NULL, 'q' },
+        { "unset", no_argument, NULL, 'u' },
+        { "help",  no_argument, NULL, '?' },
+        {  NULL,             0, NULL,  0  }
     };
 
     // Parse options

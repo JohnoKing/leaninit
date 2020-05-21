@@ -37,15 +37,15 @@ int main(int argc, char *argv[])
     // Long options for halt
     struct option halt_long_options[] = {
 #ifndef NetBSD
-        { "firmware-setup", no_argument, 0, 'F' },
+        { "firmware-setup", no_argument, NULL, 'F' },
 #endif
-        { "force",          no_argument, 0, 'f' },
-        { "halt",           no_argument, 0, 'h' },
-        { "no-wall",        no_argument, 0, 'l' },
-        { "poweroff",       no_argument, 0, 'p' },
-        { "reboot",         no_argument, 0, 'r' },
-        { "help",           no_argument, 0, '?' },
-        {  0,                         0, 0,  0  }
+        { "force",          no_argument, NULL, 'f' },
+        { "halt",           no_argument, NULL, 'h' },
+        { "no-wall",        no_argument, NULL, 'l' },
+        { "poweroff",       no_argument, NULL, 'p' },
+        { "reboot",         no_argument, NULL, 'r' },
+        { "help",           no_argument, NULL, '?' },
+        {  NULL,                      0, NULL,  0  }
     };
 
     // Variables
@@ -82,10 +82,10 @@ int main(int argc, char *argv[])
             // Display usage info
             case '?':
                 printf("Usage: %s [-%s]\n"
-                       "  -f, -q, --force       Do not send a signal to init, call sync(2) reboot(2) directly\n"
 #ifndef NetBSD
                        "  -F, --firmware-setup  Reboot into the firmware setup\n"
 #endif
+                       "  -f, -q, --force       Do not send a signal to init, call sync(2) reboot(2) directly\n"
                        "  -h, --halt            Force halt, even when called as poweroff or reboot\n"
                        "  -l, --no-wall         Turn off wall messages\n"
                        "  -p, --poweroff        Force poweroff, even when called as halt or reboot\n"
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 #ifdef NetBSD
     // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
     sync();
-    pid_t child = vfork();
+    pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
     if(child == 0)
         return execve("/etc/leaninit/rc.shutdown", (char *[]){ "rc.shutdown", NULL }, environ);
     else if(child == -1) {
@@ -152,9 +152,9 @@ int main(int argc, char *argv[])
     wait(NULL);
 
 #else
-    // Run os-indications if --firmware-setup was passed (Linux and FreeBSD only)
+    // Run os-indications if --firmware-setup was passed
     if(osin) {
-        pid_t child = vfork();
+        pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
         if(child == 0)
             return execve("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL }, environ);
         else if(child == -1) {
