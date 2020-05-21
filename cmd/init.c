@@ -34,7 +34,7 @@ static unsigned char flags = VERBOSE;
 static int current_signal  = 0;
 
 // Show usage for init
-static noreturn void usage(int ret)
+noreturn static void usage(int ret)
 {
     printf("Usage: %s [runlevel]...\n"
            "    or %s --[opt]   ...\n"
@@ -124,7 +124,7 @@ static void single(void)
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
     (void) fgets(buffer, 71, stdin); // GCC will still ignore void, so -Wno-unused-result is in the Makefile
 
-    // Convert the input into a readable file path
+    // Convert the input into a readable file path (stupid, but it works)
     char *shell = malloc(71);
     sscanf(buffer, "%s", shell);
     free(buffer); // The buffer is no longer needed
@@ -148,7 +148,7 @@ static void single(void)
         pid_t sh = fork();
         if(sh == 0) {
             open_tty(DEFAULT_TTY);
-            execve(shell, (char*[]){ shell, NULL }, environ);
+            execve(shell, (char *[]){ shell, NULL }, environ);
         }
 
         // Free memory of the previous input

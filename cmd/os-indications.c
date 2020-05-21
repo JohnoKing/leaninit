@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
     }
 
     // Bitmask flags variable and long options
-    unsigned int verbose = 1;
-    unsigned int unset   = 0;
+    bool verbose = true;
+    bool unset   = false;
     struct option long_options[] = {
         { "quiet", no_argument, 0, 'q' },
         { "unset", no_argument, 0, 'u' },
@@ -76,12 +76,12 @@ int main(int argc, char *argv[])
 
             // Quiet mode
             case 'q':
-                verbose = 0;
+                verbose = false;
                 break;
 
             // Unset OsIndications
             case 'u':
-                unset = 1;
+                unset = true;
                 break;
         }
 

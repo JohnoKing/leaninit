@@ -49,15 +49,15 @@ int main(int argc, char *argv[])
     };
 
     // Variables
-    unsigned int wall = 1;
-    unsigned int osin = 0;
     int signal; // Used for safely handling the signal sent to init
+    bool wall = true;
+    bool osin = false;
 #ifdef NetBSD
     const char *opts = "fhlpqr?";
-    unsigned int force = 1; // Runlevels on NetBSD are buggy
+    bool force = true; // Runlevels on NetBSD are buggy
 #else
     const char *opts = "fFhlpqr?";
-    unsigned int force = 0;
+    bool force = false;
 #endif
 
     // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
@@ -96,13 +96,13 @@ int main(int argc, char *argv[])
             // Skip sending a signal to init(8)
             case 'f':
             case 'q':
-                force = 1;
+                force = true;
                 break;
 
 #ifndef NetBSD
             // Firmware setup
             case 'F':
-                osin = 1;
+                osin = true;
                 break;
 #endif
 
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 
             // Turn off wall messages
             case 'l':
-                wall = 0;
+                wall = false;
                 break;
 
             // Force poweroff
@@ -136,11 +136,11 @@ int main(int argc, char *argv[])
 
 #ifdef NetBSD
     // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
-    pid_t child = fork();
-    if(child == 0) {
-        sync();
-        return execve("/etc/leaninit/rc.shutdown", (char*[]){ "rc.shutdown", NULL }, environ);
-    } else if(child == -1) {
+    sync();
+    pid_t child = vfork();
+    if(child == 0)
+        return execve("/etc/leaninit/rc.shutdown", (char *[]){ "rc.shutdown", NULL }, environ);
+    else if(child == -1) {
         perror(RED "* fork() failed with" RESET);
         printf(RED "* Issuing SIGCONT, SIGTERM and SIGKILL unsafely to all processes" RESET "\n");
         kill(-1, SIGCONT);
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 #else
     // Run os-indications if --firmware-setup was passed (Linux and FreeBSD only)
     if(osin) {
-        pid_t child = fork();
+        pid_t child = vfork();
         if(child == 0)
             return execve("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL }, environ);
         else if(child == -1) {
