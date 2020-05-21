@@ -298,17 +298,17 @@ int main(int argc, char *argv[])
             // Single user mode (accepts 'single' and '-s')
             if((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g'
                     && argv[argc][4] == 'l' && argv[argc][5] == 'e') || (argv[argc][0] == '-' && argv[argc][1] == 's'))
-                flags ^= SINGLE_USER;
+                flags |= SINGLE_USER;
 
             // Silent mode (accepts 'silent')
             if(argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'l' && argv[argc][3] == 'e'
                     && argv[argc][4] == 'n' && argv[argc][5] == 't')
-                flags ^= VERBOSE;
+                flags &= ~(VERBOSE);
 
             // Run rc.banner (accepts 'banner')
             if(argv[argc][0] == 'b' && argv[argc][1] == 'a' && argv[argc][2] == 'n' && argv[argc][3] == 'n'
                     && argv[argc][4] == 'e' && argv[argc][5] == 'r')
-                flags ^= BANNER;
+                flags |= BANNER;
 
             --argc;
         }
