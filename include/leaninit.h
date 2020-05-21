@@ -74,3 +74,6 @@
 // External char variables
 extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)
+
+// Unused attribute
+#define unused __attribute__((__unused__))

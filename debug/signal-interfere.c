@@ -27,7 +27,7 @@
 #include <leaninit.h>
 
 // Show usage information
-noreturn static void usage(void)
+static noreturn void usage(void)
 {
     printf("Usage: %s [-dAIiRT12?] [delay] ...\n"
            "  -d, --delay   Delay for up to x seconds (max 255)\n"

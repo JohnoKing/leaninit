@@ -34,7 +34,7 @@ static unsigned char flags = VERBOSE;
 static int current_signal  = 0;
 
 // Show usage for init
-noreturn static void usage(int ret)
+static noreturn void usage(int ret)
 {
     printf("Usage: %s [runlevel]...\n"
            "    or %s --[opt]   ...\n"
@@ -251,7 +251,7 @@ static void multi(void)
 }
 
 // Run either single() for single user or multi() for multi user
-static void *chlvl(__attribute((unused)) void *unused)
+static void *chlvl(unused void *notused)
 {
     if((flags & SINGLE_USER) == SINGLE_USER)
         single();
@@ -262,7 +262,7 @@ static void *chlvl(__attribute((unused)) void *unused)
 }
 
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
-noreturn static void *zloop(__attribute((unused)) void *unused)
+static noreturn void *zloop(unused void *notused)
 {
     while(true) {
         if(wait(NULL) == -1)
