@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 17, 2020
+.Dd May 21, 2020
 .Dt HALT 8
 .Os
 .Sh NAME
@@ -27,13 +27,13 @@
 .Sh SYNOPSIS
 .Nm
 #DEF FreeBSD
-.Op Fl fFhlpqr?
+.Op Fl Ffhlpqr?
 #ENDEF
 #DEF NetBSD
 .Op Fl fhlpqr?
 #ENDEF
 #DEF Linux
-.Op Fl fFhlpqr?
+.Op Fl Ffhlpqr?
 #ENDEF
 .Sh DESCRIPTION
 .Nm Halt
@@ -46,15 +46,6 @@ Poweroff: SIGUSR2
 Reboot: SIGINT
 .Pp
 Halt accepts the following flags:
-.Pp
-.Nm -f, -q, --force
-Do not send a signal to
-.Nm init(8) ,
-call
-.Nm sync(2)
-and
-.Nm reboot(2)
-directly instead.
 #DEF FreeBSD
 .Pp
 .Nm -F, --firmware-setup
@@ -65,6 +56,15 @@ Reboot into the system firmware's UI (only supported on UEFI systems).
 .Nm -F, --firmware-setup
 Reboot into the system firmware's UI (only supported on UEFI systems).
 #ENDEF
+.Pp
+.Nm -f, -q, --force
+Do not send a signal to
+.Nm init(8) ,
+call
+.Nm sync(2)
+and
+.Nm reboot(2)
+directly instead.
 .Pp
 .Nm -h, --halt
 Forces halt, even when

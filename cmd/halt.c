@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     const char *opts = "fhlpqr?";
     bool force = true; // Runlevels on NetBSD are buggy
 #else
-    const char *opts = "fFhlpqr?";
+    const char *opts = "Ffhlpqr?";
     bool force = false;
 #endif
 
