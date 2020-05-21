@@ -29,7 +29,7 @@
 int main(int argc, char *argv[])
 {
     // Halt can only be run by root
-    if(getuid() != 0) {
+    if(unlikely(getuid() != 0)) {
         printf(RED "* Permission denied" RESET "\n");
         return 1;
     }
@@ -61,11 +61,11 @@ int main(int argc, char *argv[])
 #endif
 
     // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
-    if(strstr(__progname,      "halt")     != 0) // Halt
+    if(unlikely(strstr(__progname, "halt") != 0))        // Halt
         signal = SIGUSR1;
-    else if(strstr(__progname, "poweroff") != 0) // Poweroff
+    else if(likely(strstr(__progname, "poweroff") != 0)) // Poweroff
         signal = SIGUSR2;
-    else if(strstr(__progname, "reboot")   != 0) // Reboot
+    else if(likely(strstr(__progname, "reboot") != 0))   // Reboot
         signal = SIGINT;
 
     // __progname is not valid
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         }
 
     // Syslog
-    if(wall) {
+    if(likely(wall)) {
         openlog(__progname, LOG_CONS, LOG_AUTH);
         syslog(LOG_CRIT, "The system is going down NOW!");
         closelog();
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
     pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
     if(child == 0)
         return execve("/etc/leaninit/rc.shutdown", (char *[]){ "rc.shutdown", NULL }, environ);
-    else if(child == -1) {
+    else if(unlikely(child == -1, false)) {
         perror(RED "* fork() failed with" RESET);
         printf(RED "* Issuing SIGCONT, SIGTERM and SIGKILL unsafely to all processes" RESET "\n");
         kill(-1, SIGCONT);
@@ -148,8 +148,10 @@ int main(int argc, char *argv[])
         sleep(1);
         kill(-1, SIGKILL);
     }
-
     wait(NULL);
+
+    // NOTREACHED
+    return 0;
 
 #else
     // Run os-indications if --firmware-setup was passed
@@ -157,7 +159,7 @@ int main(int argc, char *argv[])
         pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
         if(child == 0)
             return execve("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL }, environ);
-        else if(child == -1) {
+        else if(unlikely(child == -1)) {
             perror(RED "* fork() failed with" RESET);
             printf(RED "* OsIndications will not be set" RESET "\n");
         }

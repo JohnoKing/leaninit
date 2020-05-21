@@ -75,5 +75,7 @@
 extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)
 
-// Unused attribute
+// Macros for compiler optimization
 #define unused __attribute__((__unused__))
+#define likely(x) __builtin_expect((x), true)
+#define unlikely(x) __builtin_expect((x), false)
