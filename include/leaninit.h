@@ -78,4 +78,10 @@ extern char **environ;   // This is used with execve(2)
 // Macros for compiler optimization
 #define unused __attribute__((__unused__))
 #define likely(x) (__builtin_expect((x), true))
+#if __has_builtin(__builtin_expect_with_probability)
+#define unlikely(x) (__builtin_expect_with_probability((x), false, 0.2))
+#define very_unlikely(x) (__builtin_expect_with_probability((x), false, 0.1))
+#else
 #define unlikely(x) (__builtin_expect((x), false))
+#define very_unlikely(x) (__builtin_expect((x), false))
+#endif

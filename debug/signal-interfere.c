@@ -45,7 +45,7 @@ static noreturn void usage(void)
 int main(int argc, char *argv[])
 {
     // This program must be run as root and requires an argument
-    if unlikely(getuid() != 0) {
+    if very_unlikely(getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
     } else if unlikely(argc < 2) {

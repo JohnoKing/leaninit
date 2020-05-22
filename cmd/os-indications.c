@@ -43,9 +43,9 @@ int main(int argc, char *argv[])
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
 #ifndef Linux
-    } else if unlikely(efi_variables_supported() == 0) {
+    } else if very_unlikely(efi_variables_supported() == 0) {
 #else
-    } else if unlikely(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
+    } else if very_unlikely(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
 #endif
         printf(RED "* This system does not support OsIndications!" RESET "\n");
         return 1;
