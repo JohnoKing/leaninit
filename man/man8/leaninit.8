@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd May 15, 2020
+.Dd May 22, 2020
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -145,51 +145,51 @@ An error message.
 .Pp
 .Sh FILES
 .Em /etc/leaninit/rc
-Primary init script run by
-.Nm LeanInit
+This is the primary init script run by
+.Nm LeanInit .
 
 .Em /etc/rc
 Secondary init script that is run if
 .Em /etc/leaninit/rc
-does not exist
+does not exist.
 
 .Em /etc/leaninit/rc.banner
-Optional script that LeanInit will run before rc if passed the `banner` argument by the bootloader
+Optional script that LeanInit will run before rc if passed the `banner` argument by the bootloader.
 
 .Em /etc/leaninit/rc.conf
 Provides config settings for
 .Nm leaninit-rc
 and
 .Nm LeanInit
-scripts
+scripts.
 
 .Em /etc/leaninit/rc.conf.d
 This folder contains config files for service specific settings (such as xdm.conf for the
 .Nm xdm
-service)
+service).
 
 .Em /etc/leaninit/rc.svc
 Provides variables and functions for
 .Nm LeanInit
-scripts
+scripts.
 
 .Em /etc/leaninit/rc.shutdown
 Stops all processes and unmounts
-all file systems before reboot
+all file systems before reboot.
 
 .Em /etc/rc.shutdown
 Secondary shutdown script that is run if
 .Em /etc/leaninit/rc.shutdown
-does not exist
+does not exist.
 
 .Em /etc/leaninit/svc
-Folder containing scripts for starting various services (such as D-Bus)
+Folder containing scripts for starting various services (such as D-Bus).
 
 .Em /var/lib/leaninit/svc
-Location of all files used to determine which services are enabled
+Location of all files used to determine which services are enabled.
 
 .Em /var/lib/leaninit/types
-Location of all files used to determine the different types each enabled service uses
+Location of all files used to determine the different types each enabled service uses.
 
 .Em /var/lib/leaninit/install-flag
 This file is used by LeanInit when running `make install` to determine if the essential
@@ -200,7 +200,7 @@ and can be safely removed with `rm /var/lib/leaninit/install-flag` as this file 
 only read by LeanInit's Makefile for `make install`.
 
 .Em /etc/leaninit/ttys
-LeanInit will read from this file for a list of TTYs to launch the specified getty on
+LeanInit will read from this file for a list of TTYs to launch the specified getty on.
 
 .Em /etc/ttys
 Alternate file LeanInit will read from if
@@ -211,9 +211,9 @@ does not exist.
 The main directory for the log files of all services on the system.
 
 .Em /var/run/leaninit
-Default location for
+This is the default location for
 .Nm LeanInit's
-.status and .pid files
+status and PID files.
 #DEF NetBSD
 .Sh BUGS
 Switching runlevels with init usually does not work due to NetBSD lacking native support for runlevels.
