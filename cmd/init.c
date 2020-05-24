@@ -84,7 +84,7 @@ static int sh(char *script)
             return execve(script, (char*[]){ script, "verbose", NULL }, environ);
         else
             return execve(script, (char*[]){ script, "silent",  NULL }, environ);
-    } else if unlikely(child == -1)
+    } else if (child == -1)
         return -1;
 
     // Wait for the script to finish
@@ -110,7 +110,7 @@ static char *get_file_path(char *restrict primary, char *restrict fallback, int 
 {
     if(access(primary, amode) == 0)
         return primary;
-    else if(access(fallback, amode) == 0) // Using unlikely() here is a bad idea
+    else if(access(fallback, amode) == 0) // Using () here is a bad idea
         return fallback;
     else
         return NULL;
@@ -167,7 +167,7 @@ static void multi(void)
 {
     // Locate rc
     char *rc = get_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
-    if unlikely(rc == NULL) {
+    if (rc == NULL) {
         printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
         flags &= ~(SINGLE_USER);
         return single();
@@ -175,7 +175,7 @@ static void multi(void)
 
     // Run rc
     if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
-    if unlikely(sh(rc) != 0) {
+    if (sh(rc) != 0) {
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
         flags &= ~(SINGLE_USER);
         return single();
@@ -183,14 +183,14 @@ static void multi(void)
 
     // Locate ttys(5)
     const char *ttys_file_path = get_file_path("/etc/leaninit/ttys", "/etc/ttys", R_OK);
-    if unlikely(ttys_file_path == NULL) {
+    if (ttys_file_path == NULL) {
         printf(RED "* Could not execute either /etc/leaninit/ttys or /etc/ttys" RESET "\n");
         return;
     }
 
     // Start a child process (for managing getty with plain wait(2))
     pid_t child = fork();
-    if unlikely(child == -1) {
+    if (child == -1) {
         printf(RED "* The child process for managing getty could not be created" RESET "\n");
         perror(RED "* fork()");
         return;
@@ -228,7 +228,7 @@ static void multi(void)
     while(true) {
         int status;
         pid_t closed_pid = wait(&status);
-        if unlikely(closed_pid == -1)
+        if (closed_pid == -1)
             return;
 
         // Match the closed PID to the getty in the index
@@ -237,7 +237,7 @@ static void multi(void)
                 continue;
 
             // Do not spam the TTY if the getty failed
-            if unlikely(WEXITSTATUS(status) != 0) {
+            if (WEXITSTATUS(status) != 0) {
 #if defined(FreeBSD) || defined(NetBSD)
                 open_tty(getty[e].tty);
 #endif
@@ -257,7 +257,7 @@ static void multi(void)
 // Run either single() for single user or multi() for multi user
 static void *chlvl(unused void *notused)
 {
-    if unlikely((flags & SINGLE_USER) == SINGLE_USER) // Most people boot into multi-user
+    if ((flags & SINGLE_USER) == SINGLE_USER) // Most people boot into multi-user
         single();
     else
         multi();
@@ -269,7 +269,7 @@ static void *chlvl(unused void *notused)
 static noreturn void *zloop(unused void *notused)
 {
     while(true)
-        if unlikely(wait(NULL) == -1)
+        if (wait(NULL) == -1)
             sleep(1);
 }
 
@@ -299,12 +299,12 @@ int main(int argc, char *argv[])
         while(0 < argc) {
 
             // Single user mode (accepts 'single' and '-s')
-            if unlikely((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g'
+            if ((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g'
                     && argv[argc][4] == 'l' && argv[argc][5] == 'e') || (argv[argc][0] == '-' && argv[argc][1] == 's'))
                 flags |= SINGLE_USER;
 
             // Silent mode (accepts 'silent')
-            else if likely(argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'l' && argv[argc][3] == 'e'
+            else if (argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'l' && argv[argc][3] == 'e'
                     && argv[argc][4] == 'n' && argv[argc][5] == 't')
                 flags &= ~(VERBOSE);
 
@@ -319,7 +319,7 @@ int main(int argc, char *argv[])
         // Run rc.banner if the banner argument was passed to LeanInit
         if((flags & BANNER) == BANNER) {
             char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
-            if likely(rc_banner != NULL)
+            if (rc_banner != NULL)
                 sh(rc_banner);
             else
                 printf(RED "* Could not execute rc.banner(8)!" RESET "\n");
@@ -358,7 +358,7 @@ int main(int argc, char *argv[])
             stored_signal = current_signal;
 
             // Cancel when the requested runlevel is already running
-            if unlikely((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER)
+            if ((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER)
                 || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
                 continue;
 
@@ -369,7 +369,7 @@ int main(int argc, char *argv[])
 
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
-            if likely(rc_shutdown != NULL) {
+            if (rc_shutdown != NULL) {
                 sh(rc_shutdown);
                 if((flags & VERBOSE) == VERBOSE)
                     printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
     }
 
     // Parse CLI arguments
-    if unlikely(argc < 2) {
+    if (argc < 2) {
         usage(1);
         __builtin_unreachable();
     }
@@ -427,7 +427,7 @@ int main(int argc, char *argv[])
     }
 
     // Only root can send signals to LeanInit
-    if unlikely(getuid() != 0) {
+    if (getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
     }

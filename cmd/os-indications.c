@@ -39,13 +39,13 @@ int main(int argc, char *argv[])
 #endif
 
     // Error checks
-    if unlikely(getuid() != 0) {
+    if (getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
 #ifndef Linux
-    } else if very_unlikely(efi_variables_supported() == 0) {
+    } else if (efi_variables_supported() == 0) {
 #else
-    } else if very_unlikely(access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
+    } else if (access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
 #endif
         printf(RED "* This system does not support OsIndications!" RESET "\n");
         return 1;
@@ -87,10 +87,10 @@ int main(int argc, char *argv[])
 
 #ifdef Linux
     // Write efi_data (Linux efivarfs API)
-    if likely(!unset) {
+    if (!unset) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
         unsigned int efi_data[2] = { 0x07, 0x01 };
-        if unlikely(fwrite(efi_data, 2, 3, fd) == 0) {
+        if (fwrite(efi_data, 2, 3, fd) == 0) {
             fclose(fd);
             printf(RED "* Failed to write the changes to OsIndications!" RESET "\n");
             return 1;
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 #else
     // Set OsIndications for booting into firmware setup (FreeBSD libefivar API)
     unsigned char efi_boot = 0x01;
-    if likely(!unset)
+    if (!unset)
         efi_set_variable(global_guid, "OsIndications", &efi_boot, 1, 0x07);
 
     // Delete OsIndications to unset it
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 
     // Notify the user of the change if --quiet was not passed
     if(verbose) {
-        if likely(!unset) {
+        if (!unset) {
             printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots.\n"
                    CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);
         } else {

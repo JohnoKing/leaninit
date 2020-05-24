@@ -45,10 +45,10 @@ static noreturn void usage(void)
 int main(int argc, char *argv[])
 {
     // This program must be run as root and requires an argument
-    if very_unlikely(getuid() != 0) {
+    if (getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
-    } else if unlikely(argc < 2) {
+    } else if (argc < 2) {
         usage();
         __builtin_unreachable();
     }
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
         pause();
         if(delay != 0) sleep(delay);
         return kill(1, signal);
-    } else if unlikely(daemon == -1) {
+    } else if (daemon == -1) {
         perror(RED "* fork() failed with" RESET);
         return 1;
     }

@@ -29,7 +29,7 @@
 int main(int argc, char *argv[])
 {
     // This program must be run as root
-    if unlikely(getuid() != 0) {
+    if (getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
     }
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
         while(true)
             sleep(100);
 
-    } else if unlikely(stall_pid == -1) {
+    } else if (stall_pid == -1) {
         perror(RED "* fork() failed with" RESET);
         return 1;
     }
