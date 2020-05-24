@@ -36,15 +36,15 @@ int main(int argc, char *argv[])
 
     // SIGSTOP mode can be enabled by passing --sigstop to stall
     bool sigstop = false;
-    if(argc > 2 && strstr(argv[1], "--sigstop") != 0)
+    if (argc > 2 && strstr(argv[1], "--sigstop") != 0)
         sigstop = true;
 
     // Create the stall process itself
     pid_t stall_pid = fork();
-    if(stall_pid == 0) {
+    if (stall_pid == 0) {
 
         // Ignore SIGTERM when stall is not in SIGSTOP mode
-        if(!sigstop) {
+        if (!sigstop) {
             struct sigaction actor;
             actor.sa_flags = 0;
             actor.sa_handler = SIG_IGN;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         }
 
         // Eternal loop
-        while(true)
+        while (true)
             sleep(100);
 
     } else if (stall_pid == -1) {
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     }
 
     // Output info
-    if(!sigstop) {
+    if (!sigstop) {
         printf(CYAN "* " WHITE "Stall is now running in the background with PID %d.\n"
                CYAN "* " WHITE "Stall cannot be killed with SIGTERM (use SIGKILL instead).\n"
                CYAN "* " WHITE "To execute stall in SIGSTOP mode, pass --sigstop when executing stall." RESET "\n", stall_pid);

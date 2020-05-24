@@ -78,9 +78,9 @@ static void open_tty(const char *tty_path)
 static int sh(char *script)
 {
     pid_t child = fork();
-    if(child == 0) {
+    if (child == 0) {
         setsid();
-        if((flags & VERBOSE) == VERBOSE)
+        if ((flags & VERBOSE) == VERBOSE)
             return execve(script, (char*[]){ script, "verbose", NULL }, environ);
         else
             return execve(script, (char*[]){ script, "silent",  NULL }, environ);
@@ -97,7 +97,7 @@ static int sh(char *script)
 static pid_t spawn_getty(const char *cmd, const char *tty)
 {
     pid_t getty = fork();
-    if(getty == 0) {
+    if (getty == 0) {
         open_tty(tty);
         return execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
     }
@@ -108,9 +108,9 @@ static pid_t spawn_getty(const char *cmd, const char *tty)
 // Return the accessible file path or NULL if neither are
 static char *get_file_path(char *restrict primary, char *restrict fallback, int amode)
 {
-    if(access(primary, amode) == 0)
+    if (access(primary, amode) == 0)
         return primary;
-    else if(access(fallback, amode) == 0) // Using () here is a bad idea
+    else if (access(fallback, amode) == 0) // Using () here is a bad idea
         return fallback;
     else
         return NULL;
@@ -130,7 +130,7 @@ static void single(void)
     free(buffer); // The buffer is no longer needed
 
     // If the given shell is invalid, use /bin/sh instead
-    if(access(shell, X_OK) != 0) {
+    if (access(shell, X_OK) != 0) {
         printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
         memcpy(shell, "/bin/sh", 8);
     }
@@ -141,12 +141,12 @@ static void single(void)
      * This is not done on NetBSD due to bugged runlevel functionality.
      */
     pid_t child = fork();
-    if(child == 0) {
+    if (child == 0) {
 #endif
 
         // The actual shell
         pid_t sh = fork();
-        if(sh == 0) {
+        if (sh == 0) {
             open_tty(DEFAULT_TTY);
             execve(shell, (char *[]){ shell, NULL }, environ);
         }
@@ -174,7 +174,7 @@ static void multi(void)
     }
 
     // Run rc
-    if((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
+    if ((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     if (sh(rc) != 0) {
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
         flags &= ~(SINGLE_USER);
@@ -194,7 +194,7 @@ static void multi(void)
         printf(RED "* The child process for managing getty could not be created" RESET "\n");
         perror(RED "* fork()");
         return;
-    } else if(child != 0) return;
+    } else if (child != 0) return;
 
     // Open the ttys file (max file size 8000 bytes with 60 entries)
     char *data = malloc(8001);
@@ -205,13 +205,13 @@ static void multi(void)
         pid_t pid;
     } getty[60];
     FILE *ttys_file = fopen(ttys_file_path, "r");
-    while(fgets(data, 8001, ttys_file) && entry != 60) {
+    while (fgets(data, 8001, ttys_file) && entry != 60) {
 
         // Error checking
-        if(strlen(data) < 2 || strchr(data, '#') != NULL)
+        if (strlen(data) < 2 || strchr(data, '#') != NULL)
             continue;
         const char *cmd = strsep(&data, ":");
-        if(strlen(cmd) < 2 || strlen(data) < 2)
+        if (strlen(cmd) < 2 || strlen(data) < 2)
             continue;
 
         // Spawn a getty
@@ -225,15 +225,15 @@ static void multi(void)
     fclose(ttys_file);
 
     // Start the loop
-    while(true) {
+    while (true) {
         int status;
         pid_t closed_pid = wait(&status);
         if (closed_pid == -1)
             return;
 
         // Match the closed PID to the getty in the index
-        for(unsigned char e = 1; e <= entry; e++) {
-            if(getty[e].pid != closed_pid)
+        for (unsigned char e = 1; e <= entry; e++) {
+            if (getty[e].pid != closed_pid)
                 continue;
 
             // Do not spam the TTY if the getty failed
@@ -268,7 +268,7 @@ static void *chlvl(unused void *notused)
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
 static noreturn void *zloop(unused void *notused)
 {
-    while(true)
+    while (true)
         if (wait(NULL) == -1)
             sleep(1);
 }
@@ -282,7 +282,7 @@ static void sighandle(int signal)
 int main(int argc, char *argv[])
 {
     // PID 1
-    if(getpid() == 1) {
+    if (getpid() == 1) {
 
         // Open the console and login as root
 #ifdef Linux
@@ -296,7 +296,7 @@ int main(int argc, char *argv[])
 
         // Micro-optimized argument parsing
         --argc;
-        while(0 < argc) {
+        while (0 < argc) {
 
             // Single user mode (accepts 'single' and '-s')
             if ((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g'
@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
                 flags &= ~(VERBOSE);
 
             // Run rc.banner (accepts 'banner')
-            else if(argv[argc][0] == 'b' && argv[argc][1] == 'a' && argv[argc][2] == 'n' && argv[argc][3] == 'n'
+            else if (argv[argc][0] == 'b' && argv[argc][1] == 'a' && argv[argc][2] == 'n' && argv[argc][3] == 'n'
                     && argv[argc][4] == 'e' && argv[argc][5] == 'r')
                 flags |= BANNER;
 
@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
         }
 
         // Run rc.banner if the banner argument was passed to LeanInit
-        if((flags & BANNER) == BANNER) {
+        if ((flags & BANNER) == BANNER) {
             char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
             if (rc_banner != NULL)
                 sh(rc_banner);
@@ -326,7 +326,7 @@ int main(int argc, char *argv[])
         }
 
         // Print the current platform LeanInit is running on and start rc(8) (must be done in this order)
-        if((flags & VERBOSE) == VERBOSE) {
+        if ((flags & VERBOSE) == VERBOSE) {
             struct utsname uts;
             uname(&uts);
             printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s"
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
 
         // Signal handling loop
         int stored_signal;
-        while(true) {
+        while (true) {
 
             // Wait for a signal, then store it to prevent race conditions
             pause();
@@ -371,14 +371,14 @@ int main(int argc, char *argv[])
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if (rc_shutdown != NULL) {
                 sh(rc_shutdown);
-                if((flags & VERBOSE) == VERBOSE)
+                if ((flags & VERBOSE) == VERBOSE)
                     printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             } else
                 printf(RED "* Could not execute rc.shutdown(8), killing all processes unsafely..." RESET "\n");
             kill(-1, SIGKILL);
 
             // Handle the given signal properly
-            switch(stored_signal) {
+            switch (stored_signal) {
 
                 // Halt
                 case SIGUSR1:
@@ -416,11 +416,11 @@ int main(int argc, char *argv[])
     }
 
     // Handle --version and --help (micro-optimized for no good reason)
-    if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r'
+    if (argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r'
         && argv[1][5] == 's' && argv[1][6] == 'i' && argv[1][7] == 'o' && argv[1][8] == 'n') {
         printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
         return 0;
-    } else if(argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l'
+    } else if (argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l'
         && argv[1][5] == 'p') {
         usage(0);
         __builtin_unreachable();
@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
     }
 
     // Switch runlevels by sending LeanInit the correct signal
-    switch(*argv[1]) {
+    switch (*argv[1]) {
 
         // Poweroff
         case '0':

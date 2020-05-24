@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
 
     // Parse the given options
     int args;
-    while((args = getopt_long(argc, argv, opts, halt_long_options, NULL)) != -1)
-        switch(args) {
+    while ((args = getopt_long(argc, argv, opts, halt_long_options, NULL)) != -1)
+        switch (args) {
 
             // Display usage info
             case '?':
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
     sync();
     pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
-    if(child == 0)
+    if (child == 0)
         return execve("/etc/leaninit/rc.shutdown", (char *[]){ "rc.shutdown", NULL }, environ);
     else if (child == -1, false) {
         perror(RED "* fork() failed with" RESET);
@@ -154,9 +154,9 @@ int main(int argc, char *argv[])
 
 #else
     // Run os-indications if --firmware-setup was passed
-    if(osin) {
+    if (osin) {
         pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
-        if(child == 0)
+        if (child == 0)
             return execve("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL }, environ);
         else if (child == -1) {
             perror(RED "* fork() failed with" RESET);
@@ -168,10 +168,10 @@ int main(int argc, char *argv[])
 #endif
 
     // Skip init if force is true (default for NetBSD)
-    if(force) {
+    if (force) {
         sync(); // Always call sync(2)
 
-        switch(signal) {
+        switch (signal) {
             case SIGUSR1: // Halt
                 return reboot(SYS_HALT);
             case SIGUSR2: // Poweroff

@@ -63,8 +63,8 @@ int main(int argc, char *argv[])
 
     // Parse options
     int args;
-    while((args = getopt_long(argc, argv, "qu?", long_options, NULL)) != -1)
-        switch(args) {
+    while ((args = getopt_long(argc, argv, "qu?", long_options, NULL)) != -1)
+        switch (args) {
 
             // Display usage info
             case '?':
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 #endif
 
     // Notify the user of the change if --quiet was not passed
-    if(verbose) {
+    if (verbose) {
         if (!unset) {
             printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots.\n"
                    CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);

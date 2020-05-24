@@ -71,8 +71,8 @@ int main(int argc, char *argv[])
     unsigned char delay = 0;
     int signal = 0;
     int args;
-    while((args = getopt_long(argc, argv, "dAIiRT012?", long_options, NULL)) != -1)
-        switch(args) {
+    while ((args = getopt_long(argc, argv, "dAIiRT012?", long_options, NULL)) != -1)
+        switch (args) {
 
             // Set the number of seconds to delay sending the signal (--delay)
             case 'd':
@@ -115,13 +115,13 @@ int main(int argc, char *argv[])
 
     // Create the signal-interfere daemon. The daemon will not send a signal to init(8) until it is sent SIGTERM.
     pid_t daemon = fork();
-    if(daemon == 0) {
+    if (daemon == 0) {
         struct sigaction actor;
         actor.sa_handler = SIG_IGN;
         actor.sa_flags   = 0;
         sigaction(SIGTERM, &actor, NULL);
         pause();
-        if(delay != 0) sleep(delay);
+        if (delay != 0) sleep(delay);
         return kill(1, signal);
     } else if (daemon == -1) {
         perror(RED "* fork() failed with" RESET);
