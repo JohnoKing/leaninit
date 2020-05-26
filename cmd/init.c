@@ -27,9 +27,9 @@
 #include <leaninit.h>
 
 // Universal variables
-#define SINGLE_USER 1 << 0
-#define VERBOSE     1 << 1
-#define BANNER      1 << 2
+#define SINGLE_USER (1 << 0)
+#define VERBOSE     (1 << 1)
+#define BANNER      (1 << 2)
 static unsigned char flags = VERBOSE;
 static int current_signal  = 0;
 
