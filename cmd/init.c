@@ -84,7 +84,7 @@ static int sh(char *script)
             return execve(script, (char*[]){ script, "verbose", NULL }, environ);
         else
             return execve(script, (char*[]){ script, "silent",  NULL }, environ);
-    } else if unlikely(child == -1)
+    } else if unlikely (child == -1)
         return -1;
 
     // Wait for the script to finish
@@ -190,7 +190,7 @@ static void multi(void)
 
     // Start a child process (for managing getty with plain wait(2))
     pid_t child = fork();
-    if unlikely(child == -1) {
+    if unlikely (child == -1) {
         printf(RED "* The child process for managing getty could not be created" RESET "\n");
         perror(RED "* fork()");
         return;
@@ -228,7 +228,7 @@ static void multi(void)
     while (true) {
         int status;
         pid_t closed_pid = wait(&status);
-        if unlikely(closed_pid == -1)
+        if unlikely (closed_pid == -1)
             return;
 
         // Match the closed PID to the getty in the index
@@ -237,7 +237,7 @@ static void multi(void)
                 continue;
 
             // Do not spam the TTY if the getty failed
-            if unlikely(WEXITSTATUS(status) != 0) {
+            if unlikely (WEXITSTATUS(status) != 0) {
 #if defined(FreeBSD) || defined(NetBSD)
                 open_tty(getty[e].tty);
 #endif
@@ -257,7 +257,7 @@ static void multi(void)
 // Run either single() for single user or multi() for multi user
 static void *chlvl(unused void *notused)
 {
-    if unlikely((flags & SINGLE_USER) == SINGLE_USER) // Most people boot into multi-user
+    if unlikely ((flags & SINGLE_USER) == SINGLE_USER) // Most people boot into multi-user
         single();
     else
         multi();
@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
             stored_signal = current_signal;
 
             // Cancel when the requested runlevel is already running
-            if unlikely((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER)
+            if unlikely ((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER)
                 || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
                 continue;
 
@@ -409,7 +409,7 @@ int main(int argc, char *argv[])
     }
 
     // Parse CLI arguments
-    if unlikely(argc < 2) {
+    if unlikely (argc < 2) {
         usage(1);
         __builtin_unreachable();
     }
@@ -426,7 +426,7 @@ int main(int argc, char *argv[])
     }
 
     // Only root can send signals to LeanInit
-    if unlikely(getuid() != 0) {
+    if unlikely (getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
     }
