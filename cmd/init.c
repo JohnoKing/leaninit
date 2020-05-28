@@ -295,7 +295,7 @@ int main(int argc, char *argv[])
         setenv("USER",    "root", 1);
 
         // Over-optimized argument parsing
-        char *mode;
+        const char *mode;
         argv += 1;
         while ((mode = *argv++)) {
 
