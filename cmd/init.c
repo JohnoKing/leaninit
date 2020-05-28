@@ -169,7 +169,7 @@ static void multi(void)
     char *rc = get_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
     if unlikely (!rc) {
         printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
-        flags &= ~(SINGLE_USER);
+        flags |= SINGLE_USER;
         return single();
     }
 
@@ -177,7 +177,7 @@ static void multi(void)
     if ((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     if unlikely (sh(rc) != 0) {
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
-        flags &= ~(SINGLE_USER);
+        flags |= SINGLE_USER;
         return single();
     }
 
