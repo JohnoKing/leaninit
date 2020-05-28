@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
     pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
     if (child == 0)
         return execve("/etc/leaninit/rc.shutdown", (char *[]){ "rc.shutdown", NULL }, environ);
-    else if unlikely (child == -1, false) {
+    else if unlikely (child == -1) {
         perror(RED "* fork() failed with" RESET);
         printf(RED "* Issuing SIGCONT, SIGTERM and SIGKILL unsafely to all processes" RESET "\n");
         kill(-1, SIGCONT);
