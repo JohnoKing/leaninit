@@ -167,7 +167,7 @@ static void multi(void)
 {
     // Locate rc
     char *rc = get_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
-    if (rc == NULL) {
+    if (!rc) {
         printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
         flags &= ~(SINGLE_USER);
         return single();
@@ -183,7 +183,7 @@ static void multi(void)
 
     // Locate ttys(5)
     const char *ttys_file_path = get_file_path("/etc/leaninit/ttys", "/etc/ttys", R_OK);
-    if (ttys_file_path == NULL) {
+    if (!ttys_file_path) {
         printf(RED "* Could not execute either /etc/leaninit/ttys or /etc/ttys" RESET "\n");
         return;
     }
@@ -294,32 +294,31 @@ int main(int argc, char *argv[])
         setenv("LOGNAME", "root", 1);
         setenv("USER",    "root", 1);
 
-        // Micro-optimized argument parsing
-        --argc;
-        while (0 < argc) {
+        // Over-optimized argument parsing
+        char *mode;
+        argv += 1;
+        while ((mode = *argv++)) {
 
             // Single user mode (accepts 'single' and '-s')
-            if ((argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'n' && argv[argc][3] == 'g'
-                    && argv[argc][4] == 'l' && argv[argc][5] == 'e') || (argv[argc][0] == '-' && argv[argc][1] == 's'))
+            if ((mode[0] == 's' && mode[1] == 'i' && mode[2] == 'n' && mode[3] == 'g' && mode[4] == 'l'
+                && mode[5] == 'e') || (mode[0] == '-' && mode[1] == 's'))
                 flags |= SINGLE_USER;
 
             // Silent mode (accepts 'silent')
-            else if (argv[argc][0] == 's' && argv[argc][1] == 'i' && argv[argc][2] == 'l' && argv[argc][3] == 'e'
-                    && argv[argc][4] == 'n' && argv[argc][5] == 't')
+            else if (mode[0] == 's' && mode[1] == 'i' && mode[2] == 'l' && mode[3] == 'e'
+                    && mode[4] == 'n' && mode[5] == 't')
                 flags &= ~(VERBOSE);
 
             // Run rc.banner (accepts 'banner')
-            else if (argv[argc][0] == 'b' && argv[argc][1] == 'a' && argv[argc][2] == 'n' && argv[argc][3] == 'n'
-                    && argv[argc][4] == 'e' && argv[argc][5] == 'r')
+            else if (mode[0] == 'b' && mode[1] == 'a' && mode[2] == 'n' && mode[3] == 'n'
+                    && mode[4] == 'e' && mode[5] == 'r')
                 flags |= BANNER;
-
-            --argc;
         }
 
         // Run rc.banner if the banner argument was passed to LeanInit
         if ((flags & BANNER) == BANNER) {
             char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
-            if (rc_banner != NULL)
+            if (rc_banner)
                 sh(rc_banner);
             else
                 printf(RED "* Could not execute rc.banner(8)!" RESET "\n");
@@ -369,7 +368,7 @@ int main(int argc, char *argv[])
 
             // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
-            if (rc_shutdown != NULL) {
+            if (rc_shutdown) {
                 sh(rc_shutdown);
                 if ((flags & VERBOSE) == VERBOSE)
                     printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
