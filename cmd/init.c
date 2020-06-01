@@ -111,7 +111,7 @@ static char *get_file_path(char *restrict primary, char *restrict fallback, int 
 {
     if likely (access(primary, amode) == 0)
         return primary;
-    else if likely (access(fallback, amode) == 0) // Using unlikely() here is a bad idea
+    else if less_likely (access(fallback, amode) == 0) // Using unlikely() here is a bad idea
         return fallback;
     else // Bottom priority
         return NULL;
