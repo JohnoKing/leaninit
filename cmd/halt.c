@@ -39,13 +39,13 @@ int main(int argc, char *argv[])
 #ifndef NetBSD
         { "firmware-setup", no_argument, NULL, 'F' },
 #endif
-        { "force",          no_argument, NULL, 'f' },
-        { "halt",           no_argument, NULL, 'h' },
-        { "no-wall",        no_argument, NULL, 'l' },
-        { "poweroff",       no_argument, NULL, 'p' },
-        { "reboot",         no_argument, NULL, 'r' },
-        { "help",           no_argument, NULL, '?' },
-        {  NULL,                      0, NULL,  0  }
+        { "force", no_argument, NULL, 'f' },
+        { "halt", no_argument, NULL, 'h' },
+        { "no-wall", no_argument, NULL, 'l' },
+        { "poweroff", no_argument, NULL, 'p' },
+        { "reboot", no_argument, NULL, 'r' },
+        { "help", no_argument, NULL, '?' },
+        { NULL, 0, NULL, 0 }
     };
 
     // Variables
@@ -61,11 +61,11 @@ int main(int argc, char *argv[])
 #endif
 
     // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
-    if unlikely (strstr(__progname, "halt") != 0)        // Halt
+    if unlikely (strstr(__progname, "halt") != 0) // Halt
         signal = SIGUSR1;
     else if likely (strstr(__progname, "poweroff") != 0) // Poweroff
         signal = SIGUSR2;
-    else if likely (strstr(__progname, "reboot") != 0)   // Reboot
+    else if likely (strstr(__progname, "reboot") != 0) // Reboot
         signal = SIGINT;
 
     // __progname is not valid
@@ -90,7 +90,8 @@ int main(int argc, char *argv[])
                        "  -l, --no-wall         Turn off wall messages\n"
                        "  -p, --poweroff        Force poweroff, even when called as halt or reboot\n"
                        "  -r, --reboot          Force reboot, even when called as halt or poweroff\n"
-                       "  -?, --help            Show this usage information\n", __progname, opts);
+                       "  -?, --help            Show this usage information\n",
+                       __progname, opts);
                 return 1;
 
             // Skip sending a signal to init(8)
@@ -139,7 +140,7 @@ int main(int argc, char *argv[])
     sync();
     pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
     if (child == 0)
-        return execve("/etc/leaninit/rc.shutdown", (char *[]){ "rc.shutdown", NULL }, environ);
+        return execve("/etc/leaninit/rc.shutdown", (char *[]) { "rc.shutdown", NULL }, environ);
     else if unlikely (child == -1) {
         perror(RED "* fork() failed with" RESET);
         printf(RED "* Issuing SIGCONT, SIGTERM and SIGKILL unsafely to all processes" RESET "\n");
@@ -157,7 +158,7 @@ int main(int argc, char *argv[])
     if (osin) {
         pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
         if (child == 0)
-            return execve("/sbin/os-indications", (char*[]){ "os-indications", "-q", NULL }, environ);
+            return execve("/sbin/os-indications", (char *[]) { "os-indications", "-q", NULL }, environ);
         else if unlikely (child == -1) {
             perror(RED "* fork() failed with" RESET);
             printf(RED "* OsIndications will not be set" RESET "\n");
@@ -176,7 +177,7 @@ int main(int argc, char *argv[])
                 return reboot(SYS_HALT);
             case SIGUSR2: // Poweroff
                 return reboot(SYS_POWEROFF);
-            case SIGINT:  // Reboot
+            case SIGINT: // Reboot
                 return reboot(SYS_REBOOT);
         }
     }

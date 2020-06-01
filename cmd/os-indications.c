@@ -45,7 +45,8 @@ int main(int argc, char *argv[])
 #ifndef Linux
     } else if very_unlikely (efi_variables_supported() == 0) {
 #else
-    } else if very_unlikely (access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
+    } else if very_unlikely (
+        access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
 #endif
         printf(RED "* This system does not support OsIndications!" RESET "\n");
         return 1;
@@ -53,13 +54,11 @@ int main(int argc, char *argv[])
 
     // Bitmask flags variable and long options
     bool verbose = true;
-    bool unset   = false;
-    struct option long_options[] = {
-        { "quiet", no_argument, NULL, 'q' },
-        { "unset", no_argument, NULL, 'u' },
-        { "help",  no_argument, NULL, '?' },
-        {  NULL,             0, NULL,  0  }
-    };
+    bool unset = false;
+    struct option long_options[] = { { "quiet", no_argument, NULL, 'q' },
+                                     { "unset", no_argument, NULL, 'u' },
+                                     { "help", no_argument, NULL, '?' },
+                                     { NULL, 0, NULL, 0 } };
 
     // Parse options
     int args;
@@ -71,7 +70,8 @@ int main(int argc, char *argv[])
                 printf("Usage: %s [-qu?]\n"
                        "  -q, --quiet   Disable output (unless there was an error)\n"
                        "  -u, --unset   Revert changes made by os-indications\n"
-                       "  -?, --help    Show this usage information\n", __progname);
+                       "  -?, --help    Show this usage information\n",
+                       __progname);
                 return 1;
 
             // Quiet mode
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
         }
         fclose(fd);
 
-    // Delete OsIndications to unset it
+        // Delete OsIndications to unset it
     } else
         unlink("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c");
 
@@ -115,11 +115,13 @@ int main(int argc, char *argv[])
     // Notify the user of the change if --quiet was not passed
     if (verbose) {
         if likely (!unset) {
-            printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots.\n"
-                   CYAN "* " WHITE "Run `%s --unset` to revert this change." RESET "\n", __progname);
+            printf(CYAN "* " WHITE "This system will now boot into the firmware's UI the next time it boots.\n" CYAN
+                        "* " WHITE "Run `%s --unset` to revert this change." RESET "\n",
+                   __progname);
         } else {
-            printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots.\n"
-                   CYAN "* " WHITE "Any prior changes made by %s have been reverted." RESET "\n", __progname);
+            printf(CYAN "* " WHITE "This system will NOT boot into the firmware's UI the next time it boots.\n" CYAN
+                        "* " WHITE "Any prior changes made by %s have been reverted." RESET "\n",
+                   __progname);
         }
     }
 

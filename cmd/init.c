@@ -31,7 +31,7 @@
 #define VERBOSE     (1 << 1)
 #define BANNER      (1 << 2)
 static unsigned char flags = VERBOSE;
-static int current_signal  = 0;
+static int current_signal = 0;
 
 // Show usage for init
 static cold noreturn void usage(int ret)
@@ -45,7 +45,8 @@ static cold noreturn void usage(int ret)
            "  7           Halt\n"
            "  Q, q        Reload the current runlevel\n"
            "  --version   Show LeanInit's version number\n"
-           "  --help      Show this usage information\n", __progname, __progname);
+           "  --help      Show this usage information\n",
+           __progname, __progname);
     exit(ret);
 }
 
@@ -65,7 +66,7 @@ static void open_tty(const char *tty_path)
     setsid();
     dup2(tty, STDOUT_FILENO);
     dup2(tty, STDERR_FILENO);
-    dup2(tty, STDIN_FILENO);  // This must be done last due to a bug on AMD GPUs
+    dup2(tty, STDIN_FILENO); // This must be done last due to a bug on AMD GPUs
     ioctl(tty, TIOCSCTTY, 1);
 
 #if defined(FreeBSD) || defined(NetBSD)
@@ -81,9 +82,9 @@ static int sh(char *script)
     if (child == 0) {
         setsid();
         if ((flags & VERBOSE) == VERBOSE)
-            return execve(script, (char*[]){ script, "verbose", NULL }, environ);
+            return execve(script, (char *[]) { script, "verbose", NULL }, environ);
         else
-            return execve(script, (char*[]){ script, "silent",  NULL }, environ);
+            return execve(script, (char *[]) { script, "silent", NULL }, environ);
     } else if unlikely (child == -1)
         return -1;
 
@@ -122,7 +123,7 @@ static cold void single(void)
     // Ask the user for their desired shell
     char *buffer = malloc(71);
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-    (void) fgets(buffer, 71, stdin); // GCC will still ignore void, so -Wno-unused-result is in the Makefile
+    (void)fgets(buffer, 71, stdin); // GCC will still ignore void, so -Wno-unused-result is in the Makefile
 
     // Convert the input into a readable file path (stupid, but it works)
     char *shell = malloc(71);
@@ -148,7 +149,7 @@ static cold void single(void)
         pid_t sh = fork();
         if (sh == 0) {
             open_tty(DEFAULT_TTY);
-            execve(shell, (char *[]){ shell, NULL }, environ);
+            execve(shell, (char *[]) { shell, NULL }, environ);
         }
 
         // Free memory of the previous input
@@ -168,13 +169,16 @@ static void multi(void)
     // Locate rc
     char *rc = get_file_path("/etc/leaninit/rc", "/etc/rc", X_OK);
     if unlikely (!rc) {
-        printf(PURPLE "* " YELLOW "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET "\n");
+        printf(PURPLE "* " YELLOW
+                      "Neither /etc/rc or /etc/leaninit/rc could be found, falling back to single user mode..." RESET
+                      "\n");
         flags ^= SINGLE_USER;
         return single();
     }
 
     // Run rc
-    if ((flags & VERBOSE) == VERBOSE) printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
+    if ((flags & VERBOSE) == VERBOSE)
+        printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     if unlikely (sh(rc) != 0) {
         printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
         flags ^= SINGLE_USER;
@@ -194,7 +198,8 @@ static void multi(void)
         printf(RED "* The child process for managing getty could not be created" RESET "\n");
         perror(RED "* fork()");
         return;
-    } else if (child != 0) return;
+    } else if (child != 0)
+        return;
 
     // Open the ttys file (max file size 8000 bytes with 60 entries)
     char *data = malloc(8001);
@@ -241,8 +246,8 @@ static void multi(void)
 #if defined(FreeBSD) || defined(NetBSD)
                 open_tty(getty[e].tty);
 #endif
-                printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n",
-                    getty[e].tty, WEXITSTATUS(status));
+                printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", getty[e].tty,
+                       WEXITSTATUS(status));
                 getty[e].pid = 0;
                 break;
             }
@@ -274,10 +279,7 @@ static noreturn void *zloop(unused void *notused)
 }
 
 // Set current_signal to the signal sent to PID 1
-static void sighandle(int signal)
-{
-    current_signal = signal;
-}
+static void sighandle(int signal) { current_signal = signal; }
 
 int main(int argc, char *argv[])
 {
@@ -290,9 +292,9 @@ int main(int argc, char *argv[])
 #else
         int tty = open_tty(DEFAULT_TTY);
 #endif
-        setenv("HOME",   "/root", 1);
+        setenv("HOME", "/root", 1);
         setenv("LOGNAME", "root", 1);
-        setenv("USER",    "root", 1);
+        setenv("USER", "root", 1);
 
         // Over-optimized argument parsing
         const char *mode;
@@ -301,17 +303,18 @@ int main(int argc, char *argv[])
 
             // Single user mode (accepts 'single' and '-s')
             if unlikely ((mode[0] == 's' && mode[1] == 'i' && mode[2] == 'n' && mode[3] == 'g' && mode[4] == 'l'
-                && mode[5] == 'e') || (mode[0] == '-' && mode[1] == 's'))
+                          && mode[5] == 'e')
+                         || (mode[0] == '-' && mode[1] == 's'))
                 flags |= SINGLE_USER;
 
             // Silent mode (accepts 'silent')
-            else if (mode[0] == 's' && mode[1] == 'i' && mode[2] == 'l' && mode[3] == 'e'
-                    && mode[4] == 'n' && mode[5] == 't')
+            else if (mode[0] == 's' && mode[1] == 'i' && mode[2] == 'l' && mode[3] == 'e' && mode[4] == 'n'
+                     && mode[5] == 't')
                 flags &= ~(VERBOSE);
 
             // Run rc.banner (accepts 'banner')
-            else if (mode[0] == 'b' && mode[1] == 'a' && mode[2] == 'n' && mode[3] == 'n'
-                    && mode[4] == 'e' && mode[5] == 'r')
+            else if (mode[0] == 'b' && mode[1] == 'a' && mode[2] == 'n' && mode[3] == 'n' && mode[4] == 'e'
+                     && mode[5] == 'r')
                 flags |= BANNER;
         }
 
@@ -328,25 +331,25 @@ int main(int argc, char *argv[])
         if ((flags & VERBOSE) == VERBOSE) {
             struct utsname uts;
             uname(&uts);
-            printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s"
-                RESET "\n", uts.sysname, uts.release, uts.machine);
+            printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER WHITE " is running on %s %s %s" RESET "\n",
+                   uts.sysname, uts.release, uts.machine);
         }
 
         // Start both threads now
         pthread_t loop, runlvl;
         pthread_create(&runlvl, NULL, chlvl, NULL); // Create the runlevel in a separate thread
-        pthread_create(&loop,   NULL, zloop, NULL); // Start the zombie killer
+        pthread_create(&loop, NULL, zloop, NULL);   // Start the zombie killer
 
         // Handle all relevant signals
         struct sigaction actor;
         actor.sa_handler = sighandle; // Set the handler to sighandle()
-        actor.sa_flags   = 0;
+        actor.sa_flags = 0;
         sigaction(SIGUSR1, &actor, NULL); // Halt
         sigaction(SIGUSR2, &actor, NULL); // Poweroff
         sigaction(SIGTERM, &actor, NULL); // Single-user
-        sigaction(SIGILL,  &actor, NULL); // Multi-user
-        sigaction(SIGHUP,  &actor, NULL); // Reload everything
-        sigaction(SIGINT,  &actor, NULL); // Reboot
+        sigaction(SIGILL, &actor, NULL);  // Multi-user
+        sigaction(SIGHUP, &actor, NULL);  // Reload everything
+        sigaction(SIGINT, &actor, NULL);  // Reboot
 
         // Signal handling loop
         int stored_signal;
@@ -358,10 +361,11 @@ int main(int argc, char *argv[])
 
             // Cancel when the requested runlevel is already running
             if unlikely ((stored_signal == SIGILL && (flags & SINGLE_USER) != SINGLE_USER)
-                || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
+                         || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
                 continue;
 
-            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel thread
+            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel
+            // thread
             sync();
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
@@ -420,7 +424,7 @@ int main(int argc, char *argv[])
         printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
         return 0;
     } else if (argv[1][0] == '-' && argv[1][1] == '-' && argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l'
-        && argv[1][5] == 'p') {
+               && argv[1][5] == 'p') {
         usage(0);
         __builtin_unreachable();
     }

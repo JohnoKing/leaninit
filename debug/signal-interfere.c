@@ -38,7 +38,8 @@ static cold noreturn void usage(void)
            "  -T, --term    SIGTERM\n"
            "  -1, --usr1    SIGUSR1\n"
            "  -2, --usr2    SIGUSR2\n"
-           "  -?, --help    Show this usage information\n", __progname);
+           "  -?, --help    Show this usage information\n",
+           __progname);
     exit(1);
 }
 
@@ -54,18 +55,11 @@ int main(int argc, char *argv[])
     }
 
     // Long options struct
-    struct option long_options[] = {
-        { "delay", required_argument, NULL, 'd' },
-        { "alarm", no_argument,       NULL, 'A' },
-        { "int",   no_argument,       NULL, 'I' },
-        { "ill",   no_argument,       NULL, 'i' },
-        { "hup",   no_argument,       NULL, 'R' },
-        { "term",  no_argument,       NULL, 'T' },
-        { "usr1",  no_argument,       NULL, '1' },
-        { "usr2",  no_argument,       NULL, '2' },
-        { "help",  no_argument,       NULL, '?' },
-        {  NULL,             0,       NULL,  0  }
-    };
+    struct option long_options[] = { { "delay", required_argument, NULL, 'd' }, { "alarm", no_argument, NULL, 'A' },
+                                     { "int", no_argument, NULL, 'I' },         { "ill", no_argument, NULL, 'i' },
+                                     { "hup", no_argument, NULL, 'R' },         { "term", no_argument, NULL, 'T' },
+                                     { "usr1", no_argument, NULL, '1' },        { "usr2", no_argument, NULL, '2' },
+                                     { "help", no_argument, NULL, '?' },        { NULL, 0, NULL, 0 } };
 
     // Get options
     unsigned char delay = 0;
@@ -118,10 +112,11 @@ int main(int argc, char *argv[])
     if (daemon == 0) {
         struct sigaction actor;
         actor.sa_handler = SIG_IGN;
-        actor.sa_flags   = 0;
+        actor.sa_flags = 0;
         sigaction(SIGTERM, &actor, NULL);
         pause();
-        if (delay != 0) sleep(delay);
+        if (delay != 0)
+            sleep(delay);
         return kill(1, signal);
     } else if unlikely (daemon == -1) {
         perror(RED "* fork() failed with" RESET);

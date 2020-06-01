@@ -21,10 +21,6 @@
  */
 
 // Include files
-#include <sys/ioctl.h>
-#include <sys/reboot.h>
-#include <sys/utsname.h>
-#include <sys/wait.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <pthread.h>
@@ -34,6 +30,10 @@
 #include <stdlib.h>
 #include <stdnoreturn.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <sys/reboot.h>
+#include <sys/utsname.h>
+#include <sys/wait.h>
 #include <syslog.h>
 #include <unistd.h>
 #ifdef FreeBSD
@@ -45,17 +45,17 @@
 
 // OS specific macros
 #ifdef Linux
-#define DEFAULT_TTY "/dev/tty1"
+#define DEFAULT_TTY  "/dev/tty1"
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_REBOOT   RB_AUTOBOOT
 #define SYS_HALT     RB_HALT_SYSTEM
 #elif FreeBSD
-#define DEFAULT_TTY "/dev/ttyv0"
+#define DEFAULT_TTY  "/dev/ttyv0"
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_REBOOT   RB_AUTOBOOT
 #define SYS_HALT     RB_HALT
 #elif NetBSD
-#define DEFAULT_TTY "/dev/constty"
+#define DEFAULT_TTY  "/dev/constty"
 #define SYS_POWEROFF RB_POWERDOWN, NULL
 #define SYS_REBOOT   RB_AUTOBOOT, NULL
 #define SYS_HALT     RB_HALT, NULL
@@ -76,13 +76,13 @@ extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)
 
 // Macros for compiler optimization
-#define cold __attribute__((__cold__))
-#define unused __attribute__((__unused__))
+#define cold      __attribute__((__cold__))
+#define unused    __attribute__((__unused__))
 #define likely(x) (__builtin_expect((x), 1))
 #if __has_builtin(__builtin_expect_with_probability)
-#define unlikely(x) (__builtin_expect_with_probability((x), 0, 0.8))
+#define unlikely(x)      (__builtin_expect_with_probability((x), 0, 0.8))
 #define very_unlikely(x) (__builtin_expect_with_probability((x), 0, 0.9))
 #else
-#define unlikely(x) (__builtin_expect((x), 0))
+#define unlikely(x)      (__builtin_expect((x), 0))
 #define very_unlikely(x) (__builtin_expect((x), 0))
 #endif
