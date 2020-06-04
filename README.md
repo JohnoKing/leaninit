@@ -5,6 +5,8 @@ _A fast init system_
 ## What is this
 This is a speedy BSD-style init system for Linux, FreeBSD and (still a WIP) NetBSD.
 
+LeanInit primarily developed on Gitlab at [https://gitlab.com/JohnoKing/leaninit](https://gitlab.com/JohnoKing/leaninit).
+
 ## Building and Installing
 ### Linux
 Run `make` will compile LeanInit (compiled files are placed in `./out`).
