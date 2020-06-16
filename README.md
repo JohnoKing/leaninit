@@ -3,9 +3,8 @@ LeanInit
 _A fast init system_
 
 ## What is this
-This is a speedy BSD-style init system for Linux, FreeBSD and (still a WIP) NetBSD.
-
-LeanInit primarily developed on Gitlab at [https://gitlab.com/JohnoKing/leaninit](https://gitlab.com/JohnoKing/leaninit).
+This is a speedy BSD-style init system for Linux, FreeBSD and NetBSD.
+This is just a small project I work on, it isn't intended to be a competitor to systemd or OpenRC.
 
 ## Building and Installing
 ### Linux
@@ -27,10 +26,10 @@ However, the NetBSD boot loader does not support the `init_path` setting.
 As a workaround, you can turn `/sbin/init` into a symlink.
 *Only do this at your own risk, as you can only revert this with `chroot` on a rescue disk if something goes wrong.*
 If you are still willing to change the init system, the following set of commands will backup `/sbin/init` and change the init system to LeanInit:  
-``
+```bash
 mv /sbin/init /sbin/init.old
 ln -s /sbin/leaninit /sbin/init
-``
+```
 
 ### init(8)-only installation
 To install only the implementations of init(8), halt(8), the man pages and the os-indications(8) program,

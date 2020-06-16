@@ -25,6 +25,7 @@
 #include <getopt.h>
 #include <pthread.h>
 #include <signal.h>
+#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,7 +76,8 @@
 extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)
 
-// Macros for compiler optimization
+/* These are macros used for compiler optimization. Note
+   that `__has_builtin` only works in Clang and GCC 10+. */
 #define cold      __attribute__((__cold__))
 #define unused    __attribute__((__unused__))
 #if __has_builtin(__builtin_expect_with_probability)
