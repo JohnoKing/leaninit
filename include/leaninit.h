@@ -77,10 +77,10 @@
 extern char *__progname; // argv[0] is not sufficient
 extern char **environ;   // This is used with execve(2)
 
-/* These are macros used for compiler optimization. Note
+/* These are attributes and macros used for compiler optimization. Note
    that `__has_builtin` only works in Clang and GCC 10+. */
-#define cold      __attribute__((__cold__))
-#define unused    __attribute__((__unused__))
+#define cold   __attribute__((__cold__))
+#define unused __attribute__((__unused__))
 #if __has_builtin(__builtin_expect_with_probability)
 #define likely(x)        (__builtin_expect_with_probability((x), 1, 0.9))
 #define less_likely(x)   (__builtin_expect_with_probability((x), 1, 0.8))
