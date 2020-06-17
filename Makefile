@@ -21,7 +21,7 @@
 
 # Variables (each one may be overridden)
 CC       := cc
-CFLAGS   := -Os -fomit-frame-pointer -fpic -fno-plt -pipe
+CFLAGS   := -Os -fomit-frame-pointer -fpic -fno-math-errno -fno-plt -pipe
 INCLUDE  := -I./include
 CPPFLAGS := -D_FORTIFY_SOURCE=2
 WFLAGS   := -Wall -Wextra -Wno-unused-result
