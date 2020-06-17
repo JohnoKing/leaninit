@@ -202,7 +202,9 @@ static void multi(void)
         return;
 
     // Open the ttys file (max file size 8000 bytes with 60 entries)
-    char *data = malloc(8001);
+    char *tofree, *data, *cmd;
+    tofree = data = malloc(8001);
+    assert(data != NULL);
     unsigned char entry = 0;
     struct getty_t {
         const char *cmd;
@@ -215,7 +217,7 @@ static void multi(void)
         // Error checking
         if (strlen(data) < 2 || strchr(data, '#') != NULL)
             continue;
-        const char *cmd = strsep(&data, ":");
+        cmd = strsep(&data, ":");
         if (strlen(cmd) < 2 || strlen(data) < 2)
             continue;
 
@@ -226,8 +228,9 @@ static void multi(void)
         getty[entry].tty = data;
     }
 
-    // Close the ttys file
+    // Close the ttys file and free the buffer from memory
     fclose(ttys_file);
+    free(tofree);
 
     // Start the loop
     while (true) {

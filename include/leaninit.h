@@ -21,6 +21,7 @@
  */
 
 // Include files
+#include <assert.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <pthread.h>
