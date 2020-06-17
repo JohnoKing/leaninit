@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Bitmask flags variable and long options
+    // Boolean variables and long options
     bool verbose = true;
     bool unset = false;
     struct option long_options[] = { { "quiet", no_argument, NULL, 'q' },
