@@ -79,6 +79,9 @@ extern char **environ;   // This is used with execve(2)
 
 /* These are attributes and macros used for compiler optimization. Note
    that `__has_builtin` only works in Clang and GCC 10+. */
+#if !__has_builtin
+#define __has_builtin(x) 0
+#endif
 #define cold   __attribute__((__cold__))
 #define unused __attribute__((__unused__))
 #if __has_builtin(__builtin_expect_with_probability)
