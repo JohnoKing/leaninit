@@ -40,7 +40,8 @@ all: clean
 	@rm -r out/rc/svc
 	@
 	@# The point of using a custom preprocessor for shell scripts is to increase performance by
-	@# avoiding unnecessary if statements such as `if [ $(uname) = Linux ]`
+	@# avoiding unnecessary if statements such as `if [ $(uname) = Linux ]`.
+	@# This will also build os-indications(8) if the operating system supports the APIs it depends on.
 	@if [ `uname` = FreeBSD ]; then \
 		cp -r rc/svc/freebsd/* out/svc ;\
 		rm -f out/rc.conf.d/cron.conf out/rc.conf.d/udev.conf ;\
@@ -121,7 +122,7 @@ install-rc: install-universal
 	@install -Dm0755 out/rc/rc out/rc/rc.svc out/rc/rc.shutdown "$(DESTDIR)/etc/leaninit"
 	@install -Dm0755 out/rc/leaninit-service "$(DESTDIR)/sbin"
 	@
-	@# Enable the default services depending on whether /etc/install-flag exists
+	@# Enable the default services depending on if the install-flag exists
 	@if [ `uname` = FreeBSD ] && [ ! -f "$(DESTDIR)/var/lib/leaninit/install-flag" ]; then \
 		touch "$(DESTDIR)/var/lib/leaninit/svc/settings" "$(DESTDIR)/var/lib/leaninit/svc/swap" "$(DESTDIR)/var/lib/leaninit/svc/sysctl" \
 			"$(DESTDIR)/var/lib/leaninit/svc/devd" "$(DESTDIR)/var/lib/leaninit/svc/zfs" "$(DESTDIR)/var/lib/leaninit/svc/syslogd" \
