@@ -86,12 +86,10 @@ extern char **environ;   // This is used with execve(2)
 #define unused __attribute__((__unused__))
 #if __has_builtin(__builtin_expect_with_probability)
 #define likely(x)        (__builtin_expect_with_probability((x), 1, 0.9))
-#define less_likely(x)   (__builtin_expect_with_probability((x), 1, 0.8))
 #define unlikely(x)      (__builtin_expect_with_probability((x), 0, 0.8))
 #define very_unlikely(x) (__builtin_expect_with_probability((x), 0, 0.9))
 #else
 #define likely(x)        (__builtin_expect((x), 1))
-#define less_likely(x)   (__builtin_expect((x), 1))
 #define unlikely(x)      (__builtin_expect((x), 0))
 #define very_unlikely(x) (__builtin_expect((x), 0))
 #endif
