@@ -31,7 +31,7 @@
 #define VERBOSE     (1 << 1)
 #define BANNER      (1 << 2)
 static atomic_uchar flags = VERBOSE;
-static atomic_int current_signal = 0;
+static int current_signal = 0;
 
 // Show usage for init
 static cold noreturn void usage(int ret)
