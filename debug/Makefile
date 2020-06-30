@@ -19,7 +19,7 @@
 # SOFTWARE.
 #
 
-# Variables (each one may be overridden)
+# Variables
 CC       := cc
 CFLAGS   := -Os -fomit-frame-pointer -fpic -fno-plt -pipe
 CPPFLAGS := -D_FORTIFY_SOURCE=2

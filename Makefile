@@ -19,7 +19,7 @@
 # SOFTWARE.
 #
 
-# Variables (each one may be overridden)
+# Variables
 CC       := cc
 CFLAGS   := -Os -fomit-frame-pointer -fpic -fno-math-errno -fno-plt -pipe
 INCLUDE  := -I./include
