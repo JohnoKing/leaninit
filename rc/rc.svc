@@ -349,6 +349,12 @@ __run()
         exit 4
     fi
 
+    # Enable relevant builtins in ksh for better performance
+    # Note that uname is used for logging on every single boot
+    if [ "$KSH_VERSION" ]; then
+        builtin basename cat chmod cmp cut dirname head logname mkdir sync uname wc
+    fi 2> /dev/null
+
     # Set $__svc variables
     __svcname="$(basename "$0")"
     __svcpidfile="/var/run/leaninit/$__svcname.pid"
@@ -431,8 +437,8 @@ __run()
                 println "PID $pid:" nolog "$PURPLE" "$WHITE"
                 if [ "$KSH_VERSION" ]; then
                     # -INFO is broken in ksh93u+, so use the external kill command instead
-                    builtin -d kill 2> /dev/null # Redirect stderr for mksh
-                fi
+                    builtin -d kill
+                fi 2> /dev/null # Redirect stderr for mksh
                 kill -INFO $pid
             done ;;
 #ENDEF
