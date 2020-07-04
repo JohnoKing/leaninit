@@ -246,7 +246,7 @@ __start()
 }
 
 # Stop the given PID
-# `$((expr))` must be used for portability (even though `(( expr ))` is faster)
+# `$((expr))` must be used for portability even though `(( expr ))` is faster
 __stop_pid()
 {
     ENDTIME=$(( `date +%s` + 7 ))
