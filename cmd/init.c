@@ -204,7 +204,6 @@ static void multi(void)
     // Open the ttys file (max file size 8000 bytes with 60 entries)
     char *tofree, *data, *cmd;
     tofree = data = malloc(8001);
-    assert(data != NULL);
     unsigned char entry = 0;
     struct getty_t {
         const char *cmd;
