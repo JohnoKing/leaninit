@@ -367,8 +367,8 @@ int main(int argc, char *argv[])
                          || (stored_signal == SIGTERM && (flags & SINGLE_USER) == SINGLE_USER))
                 continue;
 
-            // Finish any I/O operations before executing rc.shutdown by calling sync(2), then join with the runlevel
-            // thread
+            /* Finish any I/O operations before executing rc.shutdown by calling sync(2),
+               then join with the runlevel thread */
             sync();
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
