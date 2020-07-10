@@ -178,6 +178,7 @@ int main(int argc, char *argv[])
             case SIGINT: // Reboot
                 return reboot(SYS_REBOOT);
         }
+        __builtin_unreachable(); // reboot(2) never returns
     }
 
     // Send the correct signal to init
