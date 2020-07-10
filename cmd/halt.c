@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
     if (child == 0)
         return execve("/etc/leaninit/rc.shutdown", (char *[]) { "rc.shutdown", NULL }, environ);
     else if unlikely (child == -1) {
-        perror(RED "* fork() failed with" RESET);
+        perror(RED "* vfork() failed with" RESET);
         printf(RED "* Issuing SIGCONT, SIGTERM and SIGKILL unsafely to all processes" RESET "\n");
         kill(-1, SIGCONT);
         kill(-1, SIGTERM);
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
         if (child == 0)
             return execve("/sbin/os-indications", (char *[]) { "os-indications", "-q", NULL }, environ);
         else if unlikely (child == -1) {
-            perror(RED "* fork() failed with" RESET);
+            perror(RED "* vfork() failed with" RESET);
             printf(RED "* OsIndications will not be set" RESET "\n");
         }
 
