@@ -26,7 +26,7 @@ However, the NetBSD boot loader does not support the `init_path` setting.
 As a workaround, you can turn `/sbin/init` into a symlink.
 **Only do this at your own risk, as you can only revert this with `chroot` on a rescue disk if something goes wrong.**
 If you are still willing to change the init system, the following set of commands will backup `/sbin/init` and change the init system to LeanInit:  
-```bash
+```sh
 mv /sbin/init /sbin/init.old
 ln -s /sbin/leaninit /sbin/init
 ```
