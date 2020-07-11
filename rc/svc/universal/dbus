@@ -6,7 +6,7 @@ main() {
     rm -f /run/dbus/pid /var/run/dbus/pid
     dbus-daemon --fork --system --print-pid > "$__svcpidfile"
     [ ! -f /etc/machine-id ] && dbus-uuidgen > /etc/machine-id
-    sleep 0.3
+    sleep .3
 }
 
 # This causes D-Bus to partially reload

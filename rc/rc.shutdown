@@ -43,7 +43,7 @@ kill -TERM -1
 # but for portability we must use the slower `$((expr))`
 ENDTIME=$(( `date +%s` + 1 ))
 until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 -1; do
-    sleep 0.1
+    sleep .1
 done 2> /dev/null
 
 # Remount root as read-only and unmount all other file systems, then exit

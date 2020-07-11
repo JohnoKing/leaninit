@@ -147,7 +147,7 @@ __waitfor_loop_file()
 {
     ENDTIME=$(( `date +%s` + 7 ))
     until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || [ -e "$1" ]; do
-        sleep 0.1
+        sleep .1
     done
     if [ ! -e "$1" ]; then
         if [ "$3" != "optional" ]; then
@@ -245,7 +245,7 @@ __start()
         echo "Failure" > "/var/run/leaninit/$__svcname.status"
     fi
 
-    sleep 0.001 # Wait for a little bit in case exec(1) was used
+    sleep .001 # Wait for a little bit in case exec(1) was used
     return $RET
 }
 
@@ -255,7 +255,7 @@ __stop_pid()
 {
     ENDTIME=$(( `date +%s` + 7 ))
     until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 "$1"; do
-        sleep 0.1
+        sleep .1
     done 2> /dev/null
 
     # SIGKILL is sent like this to be verbose

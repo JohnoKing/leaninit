@@ -30,7 +30,7 @@ main() {
     done
     sleep 2
     pkill -KILL -x wpa_supplicant
-    sleep 0.2
+    sleep .2
     restart  # Run wpa_supplicant
 }
 
