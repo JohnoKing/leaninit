@@ -288,10 +288,8 @@ __stop()
         wait
     fi
 
-    # Remove the .status, .pid and .type files for the service
+    # Finish by removing the .status, .pid and .type files
     rm -f "/var/run/leaninit/$__svcname.status" "/var/run/leaninit/$TYPE.type" "$__svcpidfile"
-
-    # Finish
     println "Stopped $NAME successfully!" log "$GREEN" "$WHITE"
 }
 
