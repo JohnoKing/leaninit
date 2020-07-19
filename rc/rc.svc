@@ -120,7 +120,7 @@ __fail()
     exit $1
 }
 
-# Show init script usage info dynamically
+# Show init script usage info selectively
 __usage()
 {
     printf "%s" "Usage: $0 enable|disable|start|stop|restart"
