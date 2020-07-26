@@ -1,18 +1,12 @@
 #!/bin/sh
-#DEF FreeBSD
-. /etc/leaninit/rc.conf.d/ntpd.conf
-#ENDEF
-#DEF NetBSD
+#DEF BSD
 . /etc/leaninit/rc.conf.d/ntpd.conf
 #ENDEF
 NAME="ntpd"
 
 main() {
     waitfor networking
-#DEF FreeBSD
-    [ "$NTPDATE" = "true" ] && ntpdate $(grep 'server' /etc/ntp.conf | grep -v '#' | awk '{ print $2 }')
-#ENDEF
-#DEF NetBSD
+#DEF BSD
     [ "$NTPDATE" = "true" ] && ntpdate $(grep 'server' /etc/ntp.conf | grep -v '#' | awk '{ print $2 }')
 #ENDEF
     ntpd -p "$__svcpidfile"

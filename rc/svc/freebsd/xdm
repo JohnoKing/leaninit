@@ -5,7 +5,6 @@
 NAME="$XDMNAME"
 TYPE="display-manager"
 
-# The main function
 main() {
     if [ ! "$XDM" ] || [ ! -x "$(command -v $XDM)" ]; then
         println 'The xdm service failed to start due to $XDM being invalid!' log "$RED"

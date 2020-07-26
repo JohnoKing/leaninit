@@ -4,7 +4,6 @@
 NAME="X Display Manager"
 TYPE="display-manager"
 
-# The main function
 main() {
     waitfor service settings
     install -dm1777 /tmp/.X11-unix /tmp/.ICE-unix
