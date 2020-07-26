@@ -89,5 +89,5 @@ disable() {
     println 'Running the disable function!' log "$BLUE" "$WHITE" # Blue and white are the standard colors for messages that are logged.
 }
 
-# Every script must source rc.svc with `.` to function (source does not work as rc.svc must be executed)
+# Every script must source rc.svc to function
 . /etc/leaninit/rc.svc
