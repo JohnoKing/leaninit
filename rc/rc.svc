@@ -141,14 +141,16 @@ __usage()
 }
 
 # Wait for a file using a loop that checks for it every tenth of a second
-# It would be better if `for (( expr ))` was standardized as it is faster,
-# but for portability we must use the slower `$((expr))`
+# For portability we must use `$((expr))` even though it's slower than `(( expr ))`
 __waitfor_loop_file()
 {
-    ENDTIME=$(( `date +%s` + 7 ))
-    until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || [ -e "$1" ]; do
+    CURTIME=0
+    ENDTIME=$(( CURTIME + 70 ))
+    until [ $(( CURTIME != ENDTIME )) -ne 0 ] || [ -e "$1" ]; do
         sleep .1
+		CURTIME=$(( CURTIME + 1 ))
     done
+
     if [ ! -e "$1" ]; then
         if [ "$3" != "optional" ]; then
             println "$2" log "$RED"
@@ -253,9 +255,11 @@ __start()
 # `$((expr))` must be used for portability even though `(( expr ))` is faster
 __stop_pid()
 {
-    ENDTIME=$(( `date +%s` + 7 ))
-    until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 "$1"; do
+    CURTIME=0
+    ENDTIME=$(( CURTIME + 70 ))
+    until [ $(( CURTIME != ENDTIME )) -ne 0 ] || ! kill -0 "$1"; do
         sleep .1
+		CURTIME=$(( CURTIME + 1 ))
     done 2> /dev/null
 
     # SIGKILL is sent like this to be verbose

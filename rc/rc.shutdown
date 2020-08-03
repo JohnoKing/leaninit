@@ -39,11 +39,12 @@ kill -CONT -1
 kill -TERM -1
 
 # Use a short loop to wait for all processes to stop
-# It would be better if `(( expr ))` was standardized as it is faster,
-# but for portability we must use the slower `$((expr))`
-ENDTIME=$(( `date +%s` + 1 ))
-until [ $(( `date +%s` > ENDTIME )) -ne 0 ] || ! kill -0 -1; do
+# For portability we must use `$((expr))` even though it's slower than `(( expr ))`
+CURTIME=0
+ENDTIME=$(( CURTIME + 70 ))
+until [ $(( CURTIME != ENDTIME )) -ne 0 ] || ! kill -0 "$1"; do
     sleep .1
+    CURTIME=$(( CURTIME + 1 ))
 done 2> /dev/null
 
 # Remount root as read-only and unmount all other file systems, then exit
