@@ -38,20 +38,6 @@ int main(int argc, char *argv[])
     efi_guid_t global_guid = EFI_GLOBAL_GUID;
 #endif
 
-    // Error checks
-    if unlikely (getuid() != 0) {
-        printf(RED "* Permission denied!" RESET "\n");
-        return 1;
-#ifndef Linux
-    } else if very_unlikely (efi_variables_supported() == 0) {
-#else
-    } else if very_unlikely (
-        access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
-#endif
-        printf(RED "* This system does not support OsIndications!" RESET "\n");
-        return 1;
-    }
-
     // Boolean variables and long options
     bool verbose = true;
     bool unset = false;
@@ -84,6 +70,20 @@ int main(int argc, char *argv[])
                 unset = true;
                 break;
         }
+
+    // Error checks
+    if unlikely (getuid() != 0) {
+        printf(RED "* Permission denied!" RESET "\n");
+        return 1;
+#ifndef Linux
+    } else if very_unlikely (efi_variables_supported() == 0) {
+#else
+    } else if very_unlikely (
+        access("/sys/firmware/efi/efivars/OsIndicationsSupported-8be4df61-93ca-11d2-aa0d-00e098032b8c", R_OK) != 0) {
+#endif
+        printf(RED "* This system does not support OsIndications!" RESET "\n");
+        return 1;
+    }
 
 #ifdef Linux
     // Write efi_data (Linux efivarfs API)

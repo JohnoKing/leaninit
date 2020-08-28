@@ -28,9 +28,18 @@
 
 int main(int argc, char *argv[])
 {
-    // Halt can only be run by root
-    if unlikely (getuid() != 0) {
-        printf(RED "* Permission denied" RESET "\n");
+    // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
+    int signal;
+    if unlikely (strstr(__progname, "halt") != 0) // Halt
+        signal = SIGUSR1;
+    else if likely (strstr(__progname, "poweroff") != 0) // Poweroff
+        signal = SIGUSR2;
+    else if likely (strstr(__progname, "reboot") != 0) // Reboot
+        signal = SIGINT;
+
+    // __progname is not valid
+    else {
+        printf(RED "* You cannot run halt as %s" RESET "\n", __progname);
         return 1;
     }
 
@@ -48,8 +57,7 @@ int main(int argc, char *argv[])
         { NULL, 0, NULL, 0 }
     };
 
-    // Variables
-    int signal; // Used for safely handling the signal sent to init
+    // Variables used for options
     bool wall = true;
     bool osin = false;
 #ifdef NetBSD
@@ -59,20 +67,6 @@ int main(int argc, char *argv[])
     const char *opts = "Ffhlpqr?";
     bool force = false;
 #endif
-
-    // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
-    if unlikely (strstr(__progname, "halt") != 0) // Halt
-        signal = SIGUSR1;
-    else if likely (strstr(__progname, "poweroff") != 0) // Poweroff
-        signal = SIGUSR2;
-    else if likely (strstr(__progname, "reboot") != 0) // Reboot
-        signal = SIGINT;
-
-    // __progname is not valid
-    else {
-        printf(RED "* You cannot run halt as %s" RESET "\n", __progname);
-        return 1;
-    }
 
     // Parse the given options
     int args;
@@ -127,6 +121,12 @@ int main(int argc, char *argv[])
                 signal = SIGINT;
                 break;
         }
+
+    // Halt can only be run by root
+    if unlikely (getuid() != 0) {
+        printf(RED "* Permission denied" RESET "\n");
+        return 1;
+    }
 
     // Syslog
     if likely (wall) {
