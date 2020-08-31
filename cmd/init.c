@@ -423,11 +423,11 @@ int main(int argc, char *argv[])
     // Handle --version and --help (micro-optimized for no good reason)
     if (argv[1][0] == '-' && argv[1][1] == '-') { // `--`
         if (argv[1][2] == 'v' && argv[1][3] == 'e' && argv[1][4] == 'r' && argv[1][5] == 's' && argv[1][6] == 'i'
-            && argv[1][7] == 'o' && argv[1][8] == 'n') {
+            && argv[1][7] == 'o' && argv[1][8] == 'n' && !argv[1][9]) {
             // --version
             printf(CYAN "* " WHITE "LeanInit " CYAN VERSION_NUMBER RESET "\n");
             return 0;
-        } else if (argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l' && argv[1][5] == 'p') {
+        } else if (argv[1][2] == 'h' && argv[1][3] == 'e' && argv[1][4] == 'l' && argv[1][5] == 'p' && !argv[1][6]) {
             // --help
             usage(0);
             __builtin_unreachable();
