@@ -305,18 +305,18 @@ int main(int argc, char *argv[])
 
             // Single user mode (accepts 'single' and '-s')
             if unlikely ((mode[0] == 's' && mode[1] == 'i' && mode[2] == 'n' && mode[3] == 'g' && mode[4] == 'l'
-                          && mode[5] == 'e')
+                          && mode[5] == 'e' && !mode[6])
                          || (mode[0] == '-' && mode[1] == 's'))
                 flags |= SINGLE_USER;
 
             // Silent mode (accepts 'silent')
             else if (mode[0] == 's' && mode[1] == 'i' && mode[2] == 'l' && mode[3] == 'e' && mode[4] == 'n'
-                     && mode[5] == 't')
+                     && mode[5] == 't' && !mode[6])
                 flags &= ~(VERBOSE);
 
             // Run rc.banner (accepts 'banner')
             else if (mode[0] == 'b' && mode[1] == 'a' && mode[2] == 'n' && mode[3] == 'n' && mode[4] == 'e'
-                     && mode[5] == 'r')
+                     && mode[5] == 'r' && !mode[6])
                 flags |= BANNER;
         }
 
