@@ -169,13 +169,14 @@ waitfor()
             __waitfor_loop_file "$2" "$NAME failed to start because the file $2 was not created!" "$3"
             ;;
         service)
-            if [ ! -f "/var/lib/leaninit/svc/$2" ] || [ "$(cat "$1" 2> /dev/null)" = "Failure" ]; then
-                if [ "$3" = "optional" ]; then
-                    return 1
-                else
-                    println "$NAME failed to start because the service $2 either is not enabled or failed to start!" log "$RED"
-                    __fail 1
-                fi
+            if [ ! -f "/var/lib/leaninit/svc/$2" ]; then
+                [ "$3" = "optional" ] && return 1
+                println "$NAME failed to start because the service $2 is not enabled!" log "$RED"
+                __fail 1
+            elif [ "$(cat "$1" 2> /dev/null)" = "Failure" ]; then
+                [ "$3" = "optional" ] && return 1
+                println "$NAME failed to start because the service $2 failed to start!" log "$RED"
+                __fail 1
             fi
             __waitfor_loop_file "/var/run/leaninit/$2.status" "$NAME failed to start because the service $2 failed to start!" "$3"
             ;;
