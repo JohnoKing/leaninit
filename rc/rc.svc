@@ -145,10 +145,10 @@ __usage()
 __waitfor_loop_file()
 {
     CURTIME=0
-    ENDTIME=$(( CURTIME + 70 ))
-    until [ $(( CURTIME != ENDTIME )) -ne 0 ] || [ -e "$1" ]; do
+    ENDTIME=70
+    until [ $CURTIME = $ENDTIME ] || [ -e "$1" ]; do
         sleep .1
-		CURTIME=$(( CURTIME + 1 ))
+        CURTIME=$(( CURTIME + 1 ))
     done
 
     if [ ! -e "$1" ]; then
@@ -256,10 +256,10 @@ __start()
 __stop_pid()
 {
     CURTIME=0
-    ENDTIME=$(( CURTIME + 70 ))
-    until [ $(( CURTIME != ENDTIME )) -ne 0 ] || ! kill -0 "$1"; do
+    ENDTIME=70
+    until [ $CURTIME = $ENDTIME ] || ! kill -0 "$1"; do
         sleep .1
-		CURTIME=$(( CURTIME + 1 ))
+        CURTIME=$(( CURTIME + 1 ))
     done 2> /dev/null
 
     # SIGKILL is sent like this to be verbose

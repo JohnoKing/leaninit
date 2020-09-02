@@ -41,8 +41,8 @@ kill -TERM -1
 # Use a short loop to wait for all processes to stop
 # For portability we must use `$((expr))` even though it's slower than `(( expr ))`
 CURTIME=0
-ENDTIME=$(( CURTIME + 70 ))
-until [ $(( CURTIME != ENDTIME )) -ne 0 ] || ! kill -0 -1; do
+ENDTIME=70
+until [ $CURTIME = $ENDTIME ] || ! kill -0 -1; do
     sleep .1
     CURTIME=$(( CURTIME + 1 ))
 done 2> /dev/null
