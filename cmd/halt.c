@@ -28,7 +28,7 @@
 
 int main(int argc, char *argv[])
 {
-    // Set the signal to send to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
+    // Set the signal sent to init(8) using __progname, while also allowing prefixed names (e.g. leaninit-reboot)
     int signal;
     if unlikely (strstr(__progname, "halt") != 0) // Halt
         signal = SIGUSR1;
@@ -77,9 +77,9 @@ int main(int argc, char *argv[])
             case '?':
                 printf("Usage: %s [-%s]\n"
 #ifndef NetBSD
-                       "  -F, --firmware-setup  Reboot into the firmware setup\n"
+                       "  -F, --firmware-setup  Reboot into firmware setup\n"
 #endif
-                       "  -f, -q, --force       Do not send a signal to init, call sync(2) reboot(2) directly\n"
+                       "  -f, -q, --force       Do not send a signal to init, call sync(2) and reboot(2) directly\n"
                        "  -h, --halt            Force halt, even when called as poweroff or reboot\n"
                        "  -l, --no-wall         Turn off wall messages\n"
                        "  -p, --poweroff        Force poweroff, even when called as halt or reboot\n"
