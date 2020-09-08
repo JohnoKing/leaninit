@@ -60,10 +60,10 @@ if [ "$1" = "--status-all" ]; then
     done
     wait
 #DEF BSD
-    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" |  sort)"
+    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' "$__TMP" | sort)"
 #ENDEF
 #DEF Linux
-    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' -o '|' "$__TMP" |  sort)"
+    printf "${WHITE}%s${RESET}\n" "$(column -ts '|' -o '|' "$__TMP" | sort)"
 #ENDEF
     rm -f "$__TMP"
     exit 0
