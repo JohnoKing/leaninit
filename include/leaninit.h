@@ -21,7 +21,7 @@
  */
 
 #if defined(__TINYC__)
-#undef _FORTIFY_SOURCE /* silence a warning */
+#undef _FORTIFY_SOURCE // Silence warnings
 #endif
 
 // Include files
@@ -91,7 +91,7 @@ extern char **environ;   // This is used with execve(2)
 #define unlikely(x)      (__builtin_expect_with_probability((x), 0, 0.8))
 #define very_unlikely(x) (__builtin_expect_with_probability((x), 0, 0.9))
 #elif defined(__TINYC__)
-/* tcc doesn't have many of the GCC builtins */
+// tcc doesn't have many of the GCC builtins
 #define likely(x)        (x)
 #define unlikely(x)      (x)
 #define very_unlikely(x) (x)
