@@ -20,12 +20,15 @@
  * SOFTWARE.
  */
 
+#if defined(__TINYC__)
+#undef _FORTIFY_SOURCE /* silence a warning */
+#endif
+
 // Include files
 #include <fcntl.h>
 #include <getopt.h>
 #include <pthread.h>
 #include <signal.h>
-#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -87,6 +90,12 @@ extern char **environ;   // This is used with execve(2)
 #define likely(x)        (__builtin_expect_with_probability((x), 1, 0.9))
 #define unlikely(x)      (__builtin_expect_with_probability((x), 0, 0.8))
 #define very_unlikely(x) (__builtin_expect_with_probability((x), 0, 0.9))
+#elif defined(__TINYC__)
+/* tcc doesn't have many of the GCC builtins */
+#define likely(x)        (x)
+#define unlikely(x)      (x)
+#define very_unlikely(x) (x)
+#define __builtin_unreachable(x)
 #else
 #define likely(x)        (__builtin_expect((x), 1))
 #define unlikely(x)      (__builtin_expect((x), 0))
