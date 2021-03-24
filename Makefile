@@ -174,7 +174,7 @@ uninstall:
 clean:
 	@rm -rf out
 	@git gc 2> /dev/null
-	@git repack >> /dev/null 2> /dev/null
+	@git repack > /dev/null 2>&1
 
 # Call clean, then reset the git repo
 clobber: clean

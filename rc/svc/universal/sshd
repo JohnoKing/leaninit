@@ -6,7 +6,7 @@ main() {
     waitfor networking
 
     # sshd must be executed with the full path to the executable
-    ssh-keygen -A >> /dev/null
+    ssh-keygen -A > /dev/null
     fork "$(command -v sshd)" -D
 }
 
