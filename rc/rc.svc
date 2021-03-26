@@ -440,12 +440,12 @@ __run()
         info)
             __proccheck
             println "Sending SIGINFO to $NAME..." nolog "$PURPLE" "$WHITE"
+            if [ "$KSH_VERSION" ]; then
+                # -INFO is broken in ksh93u+, so use the external kill command instead
+                builtin -d kill
+            fi 2> /dev/null # Redirect stderr for mksh
             for pid in $__svcpid; do
                 println "PID $pid:" nolog "$PURPLE" "$WHITE"
-                if [ "$KSH_VERSION" ]; then
-                    # -INFO is broken in ksh93u+, so use the external kill command instead
-                    builtin -d kill
-                fi 2> /dev/null # Redirect stderr for mksh
                 kill -INFO $pid
             done ;;
 #ENDEF
