@@ -136,31 +136,19 @@ static cold void single(void)
         memcpy(shell, "/bin/sh", 8);
     }
 
-#ifndef NetBSD
-    /* Fork the shell as the child of a managing child process (trying
-     * to use only one child process causes serious bugs).
-     * This is not done on NetBSD due to bugged runlevel functionality.
-     */
-    pid_t child = fork();
-    if (child == 0) {
-#endif
-
-        // The actual shell
-        pid_t sh = fork();
-        if (sh == 0) {
-            open_tty(DEFAULT_TTY);
-            execve(shell, (char *[]) { shell, NULL }, environ);
-        }
-
-        // Free memory of the previous input
-        free(shell);
-
-#ifndef NetBSD
-        // When the shell is done, automatically reboot
-        waitpid(sh, NULL, 0);
-        kill(1, SIGINT);
+    // The actual shell
+    pid_t sh = fork();
+    if (sh == 0) {
+        open_tty(DEFAULT_TTY);
+        execve(shell, (char *[]) { shell, NULL }, environ);
     }
-#endif
+
+    // Free memory of the previous input
+    free(shell);
+
+    // When the shell is done, automatically reboot
+    waitpid(sh, NULL, 0);
+    kill(1, SIGINT);
 }
 
 // Execute rc(8) and getty(8) (multi-user)
