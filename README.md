@@ -41,7 +41,10 @@ To install only the init scripts LeanInit uses for use with other BSD-style init
 build LeanInit then run `make install-rc`.
 For LeanInit RC to be used by init on the next boot, backup the system's current `/etc/rc`
 and `/etc/rc.shutdown` scripts, then run the following commands to symlink LeanInit's RC scripts to `/etc`:  
-`ln -s /etc/leaninit/rc /etc/rc && ln -s /etc/leaninit/rc.shutdown /etc/rc.shutdown`.
+```sh
+ln -s /etc/leaninit/rc /etc/rc
+ln -s /etc/leaninit/rc.shutdown /etc/rc.shutdown
+```
 
 ### Optimization
 The shell LeanInit RC's scripts run under (defined at the start of each script) can be changed with the `$RCSHELL` environment variable.
