@@ -120,18 +120,17 @@ static char *get_file_path(char *restrict primary, char *restrict fallback, int 
 // Single user mode (marked with cold as this is unlikely to be run during normal usage)
 static cold void single(void)
 {
-    // Ask the user for their desired shell
-    char *buffer = malloc(71);
+    // Get the user's shell (the pathname can be rather long)
+    char *shell = malloc(PATH_MAX);
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-    (void)fgets(buffer, 71, stdin); // GCC will still ignore void, so -Wno-unused-result is in the Makefile
-
-    // Convert the input into a readable file path (stupid, but it works)
-    char *shell = malloc(71);
-    sscanf(buffer, "%s", shell);
-    free(buffer); // The buffer is no longer needed
-
-    // If the given shell is invalid, use /bin/sh instead
-    if (access(shell, X_OK) != 0) {
+    if(fgets(shell, PATH_MAX, stdin) != NULL) {
+        shell[strcspn(shell, "\n")] = 0; // We don't want the newline
+        if(access(shell, X_OK) != 0) {
+            printf(PURPLE "* " YELLOW "Shell '%s' is invalid, defaulting to /bin/sh..." RESET "\n", shell);
+            memcpy(shell, "/bin/sh", 8);
+        }
+    } else {
+        // Ctrl + D
         printf(PURPLE "\n* " YELLOW "Defaulting to /bin/sh..." RESET "\n");
         memcpy(shell, "/bin/sh", 8);
     }
