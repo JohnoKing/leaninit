@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
                                      { "help", no_argument, NULL, '?' },        { NULL, 0, NULL, 0 } };
 
     // Get options
-    unsigned char delay = 0;
+    unsigned int delay = 0;
     int signal = 0;
     int args;
     while ((args = getopt_long(argc, argv, "dAIiRT012?", long_options, NULL)) != -1)
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
             // Set the number of seconds to delay sending the signal (--delay)
             case 'd':
-                delay = (unsigned char)atoi(optarg);
+                delay = (unsigned int)atoi(optarg);
                 break;
 
             case 'A':
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
         actor.sa_flags = 0;
         sigaction(SIGTERM, &actor, NULL);
         pause();
-        if (delay != 0)
+        if (delay)
             sleep(delay);
         return kill(1, signal);
     } else if unlikely (daemon == -1) {
