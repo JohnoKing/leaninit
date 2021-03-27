@@ -313,6 +313,10 @@ int main(int argc, char *argv[])
                    uts.sysname, uts.release, uts.machine);
         }
 
+        // Set a default PATH
+        if(!getenv("PATH"))
+            putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin");
+
         // Start both threads now
         pthread_t loop, runlvl;
         pthread_create(&runlvl, NULL, chlvl, NULL); // Create the runlevel in a separate thread
@@ -380,7 +384,7 @@ int main(int argc, char *argv[])
                     break;
             }
 
-            // Set the PATH if it's not set (some shells fail to set PATH correctly)
+            // Set the PATH if it's not set
             if(!getenv("PATH"))
                 putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin");
 
