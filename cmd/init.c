@@ -51,14 +51,11 @@ static cold noreturn void usage(int ret)
 }
 
 // Open the TTY
-#if defined(FreeBSD) || defined(NetBSD)
 static int open_tty(const char *tty_path)
 {
     // Revoke access to the TTY if it is being used
+#if !defined(Linux)
     revoke(tty_path);
-#else
-static void open_tty(const char *tty_path)
-{
 #endif
 
     // Open the TTY
@@ -69,10 +66,8 @@ static void open_tty(const char *tty_path)
     dup2(tty, STDIN_FILENO); // This must be done last due to a bug on AMD GPUs
     ioctl(tty, TIOCSCTTY, 1);
 
-#if defined(FreeBSD) || defined(NetBSD)
     // Return the file descriptor of the TTY
     return tty;
-#endif
 }
 
 // Execute the given script
@@ -232,9 +227,7 @@ static void multi(void)
 
             // Do not spam the TTY if the getty failed
             if unlikely (WEXITSTATUS(status) != 0) {
-#if defined(FreeBSD) || defined(NetBSD)
                 open_tty(getty[e].tty);
-#endif
                 printf(RED "* The getty on %s has exited with a return status of %d" RESET "\n", getty[e].tty,
                        WEXITSTATUS(status));
                 getty[e].pid = 0;
@@ -276,11 +269,7 @@ int main(int argc, char *argv[])
     if (getpid() == 1) {
 
         // Open the console and login as root
-#ifdef Linux
-        open_tty(DEFAULT_TTY);
-#else
         int tty = open_tty(DEFAULT_TTY);
-#endif
         setenv("HOME", "/root", 1);
         setenv("LOGNAME", "root", 1);
         setenv("USER", "root", 1);
@@ -391,11 +380,14 @@ int main(int argc, char *argv[])
                     break;
             }
 
-#if defined(FreeBSD) || defined(NetBSD)
+            // Set the PATH if it's not set (some shells fail to set PATH correctly)
+            if(!getenv("PATH"))
+                putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin");
+
             // Reopen the console on *BSD
             close(tty);
             tty = open_tty(DEFAULT_TTY);
-#endif
+
             // Reload the runlevel
             pthread_create(&runlvl, NULL, chlvl, NULL);
         }
