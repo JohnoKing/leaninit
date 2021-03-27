@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
     // Long options for halt
     struct option halt_long_options[] = {
-#ifndef NetBSD
+#if !defined(__NetBSD__)
         { "firmware-setup", no_argument, NULL, 'F' },
 #endif
         { "force", no_argument, NULL, 'f' },
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     // Variables used for options
     bool wall = true;
     bool osin = false;
-#ifdef NetBSD
+#if defined(__NetBSD__)
     const char *opts = "fhlpqr?";
     bool force = true; // Runlevels on NetBSD are buggy
 #else
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
             // Display usage info
             case '?':
                 printf("Usage: %s [-%s]\n"
-#ifndef NetBSD
+#if !defined(__NetBSD__)
                        "  -F, --firmware-setup  Reboot into firmware setup\n"
 #endif
                        "  -f, -q, --force       Do not send a signal to init, call sync(2) and reboot(2) directly\n"
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
                 force = true;
                 break;
 
-#ifndef NetBSD
+#if !defined(__NetBSD__)
             // Firmware setup
             case 'F':
                 osin = true;
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
         closelog();
     }
 
-#ifdef NetBSD
+#if defined(__NetBSD__)
     // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
     sync();
     pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)

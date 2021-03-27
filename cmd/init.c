@@ -54,7 +54,7 @@ static cold noreturn void usage(int ret)
 static int open_tty(const char *tty_path)
 {
     // Revoke access to the TTY if it is being used
-#if !defined(Linux)
+#if !defined(__linux__)
     revoke(tty_path);
 #endif
 

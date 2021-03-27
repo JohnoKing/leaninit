@@ -52,7 +52,7 @@ all: clean
 		sed -i '' "/#ENDEF/d"       $(OUT) ;\
 		[ "$(RCSHELL)" ] && sed -i '' "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		sed -i '' "s/    /	/g" $(OUT) ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -o out/os-indications cmd/os-indications.c $(LDFLAGS) -lefivar -lgeom ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
 	\
 	elif [ `uname` = NetBSD ]; then \
@@ -76,7 +76,7 @@ all: clean
 		sed -i "/#ENDEF/d"     $(OUT) ;\
 		[ "$(RCSHELL)" ] && sed -i "s:#!/bin/sh:#!$(RCSHELL):g" out/rc/* out/svc/* ;\
 		sed -i "s/    /	/g" $(OUT) ;\
-		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
+		$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -o out/os-indications cmd/os-indications.c $(LDFLAGS) ;\
 		strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/os-indications ;\
 	\
 	else \
@@ -84,9 +84,9 @@ all: clean
 		false ;\
 	fi
 	@
-	@# Compile LeanInit, -pthread is used selectively to increase the performance of halt(1)
-	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit cmd/init.c $(LDFLAGS)
-	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -D`uname` -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
+	@# Compile LeanInit, -pthread is used selectively to slightly increase the performance of halt(1)
+	@$(CC) $(CFLAGS) -pthread $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -o out/leaninit cmd/init.c $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(WFLAGS) $(INCLUDE) -o out/leaninit-halt cmd/halt.c $(LDFLAGS)
 	@strip --strip-unneeded -R .comment -R .gnu.version -R .GCC.command.line -R .note.gnu.gold-version out/leaninit out/leaninit-halt
 	@echo "Successfully built LeanInit!"
 

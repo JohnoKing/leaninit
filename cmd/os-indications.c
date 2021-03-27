@@ -33,7 +33,7 @@
 
 int main(int argc, char *argv[])
 {
-#ifndef Linux
+#if !defined(__linux__)
     // GUID for OsIndications
     efi_guid_t global_guid = EFI_GLOBAL_GUID;
 #endif
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     if unlikely (getuid() != 0) {
         printf(RED "* Permission denied!" RESET "\n");
         return 1;
-#ifndef Linux
+#if !defined(__linux__)
     } else if very_unlikely (efi_variables_supported() == 0) {
 #else
     } else if very_unlikely (
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-#ifdef Linux
+#if defined(__linux__)
     // Write efi_data (Linux efivarfs API)
     if likely (!unset) {
         FILE *fd = fopen("/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c", "w+");
