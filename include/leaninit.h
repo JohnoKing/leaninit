@@ -49,17 +49,17 @@
 #define VERSION_NUMBER "v8.0.1"
 
 // OS specific macros
-#ifdef Linux
+#if defined(Linux)
 #define DEFAULT_TTY  "/dev/tty1"
 #define SYS_POWEROFF RB_POWER_OFF
 #define SYS_REBOOT   RB_AUTOBOOT
 #define SYS_HALT     RB_HALT_SYSTEM
-#elif FreeBSD
+#elif defined(FreeBSD)
 #define DEFAULT_TTY  "/dev/ttyv0"
 #define SYS_POWEROFF RB_POWEROFF
 #define SYS_REBOOT   RB_AUTOBOOT
 #define SYS_HALT     RB_HALT
-#elif NetBSD
+#elif defined(NetBSD)
 #define DEFAULT_TTY  "/dev/constty"
 #define SYS_POWEROFF RB_POWERDOWN, NULL
 #define SYS_REBOOT   RB_AUTOBOOT, NULL
