@@ -31,7 +31,7 @@
 #define VERBOSE     (1 << 1)
 #define BANNER      (1 << 2)
 static unsigned char flags = VERBOSE;
-static int current_signal  = 0;
+static int current_signal = 0;
 
 // Show usage for init
 static cold noreturn void usage(int ret)
@@ -118,9 +118,9 @@ static cold void single(void)
     // Get the user's shell (the pathname can be rather long)
     char *shell = malloc(PATH_MAX);
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
-    if(fgets(shell, PATH_MAX, stdin) != NULL) {
+    if (fgets(shell, PATH_MAX, stdin) != NULL) {
         shell[strcspn(shell, "\n")] = 0; // We don't want the newline
-        if(access(shell, X_OK) != 0) {
+        if (access(shell, X_OK) != 0) {
             printf(PURPLE "* " YELLOW "Shell '%s' is invalid, defaulting to /bin/sh..." RESET "\n", shell);
             memcpy(shell, "/bin/sh", 8);
         }
@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
         }
 
         // Set a default PATH
-        if(!getenv("PATH"))
+        if (!getenv("PATH"))
             putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin");
 
         // Start both threads now
@@ -385,7 +385,7 @@ int main(int argc, char *argv[])
             }
 
             // Set the PATH if it's not set
-            if(!getenv("PATH"))
+            if (!getenv("PATH"))
                 putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin");
 
             // Reopen the console on *BSD
