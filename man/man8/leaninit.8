@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd May 22, 2020
+.Dd March 28, 2021
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -36,9 +36,7 @@ When
 .Nm LeanInit
 is executed, it will detect if it is running as
 .Nm PID
-1.
-.Pp
-If it is
+1. If it's
 .Nm PID
 1,
 .Nm LeanInit
@@ -49,8 +47,7 @@ then launch two threads, one to kill all zombie processes, the other to run
 and
 .Nm getty(8)
 in multi-user mode or a shell of the user's choice in single user mode.
-.Pp
-If it is not
+If it's not
 .Nm PID
 1,
 .Nm LeanInit
@@ -195,7 +192,7 @@ Location of all files used to determine the different types each enabled service
 This file is used by LeanInit when running `make install` to determine if the essential
 services have been enabled at least once.
 If this file exists, LeanInit will not make any changes to the enabled services when `make install` is run.
-This file is useless if LeanInit is installed exclusively with a package manager,
+This file has no effect if LeanInit isn't installed with make (i.e., when installed with a package manager),
 and can be safely removed with `rm /var/lib/leaninit/install-flag` as this file is
 only read by LeanInit's Makefile for `make install`.
 
