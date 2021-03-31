@@ -134,7 +134,9 @@ static cold void single(void)
     pid_t sh = fork();
     if (sh == 0) {
         open_tty(DEFAULT_TTY);
-        execve(shell, (char *[]) { shell, NULL }, environ);
+        execve(shell, (char *[]) { shell, "-l", NULL }, environ);
+        printf(RED "* Failed to launch %s" RESET "\n", shell);
+        perror(RED "* execve()");
     }
 
     // Free memory of the previous input
@@ -162,7 +164,8 @@ static void multi(void)
     if ((flags & VERBOSE) == VERBOSE)
         printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     if unlikely (sh(rc) != 0) {
-        printf(PURPLE "* " YELLOW "%s has failed, falling back to single user mode..." RESET "\n", rc);
+        printf(RED "* %s has failed, falling back to single user mode..." RESET "\n", rc);
+        perror(RED "* execve()");
         flags ^= SINGLE_USER;
         return single();
     }
@@ -313,10 +316,6 @@ int main(int argc, char *argv[])
                    uts.sysname, uts.release, uts.machine);
         }
 
-        // Set a default PATH
-        if (!getenv("PATH"))
-            putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin");
-
         // Start both threads now
         pthread_t loop, runlvl;
         pthread_create(&runlvl, NULL, chlvl, NULL); // Create the runlevel in a separate thread
@@ -383,10 +382,6 @@ int main(int argc, char *argv[])
                     flags ^= SINGLE_USER;
                     break;
             }
-
-            // Set the PATH if it's not set
-            if (!getenv("PATH"))
-                putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin");
 
             // Reopen the console on *BSD
             close(tty);
