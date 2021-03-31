@@ -64,7 +64,7 @@ isfunc()
     if [ "$BASH_VERSION" ]; then # The bash mode in ksh93v- has 'type -t', so no additional check is necessary
         [ "$(type -t "$1" 2> /dev/null)" = "function" ]; return
     else
-        __isfunc="$(command -V "$1" 2> /dev/null)"
+        __isfunc=$(command -V "$1" 2> /dev/null)
         if [ "$__isfunc" = "$1 is a shell function" ] || [ "$__isfunc" = "$1 is a function" ] || [ "$__isfunc" = "$1: a function" ]; then
             return 0
         fi
@@ -334,7 +334,7 @@ __status()
     if [ ! -f "/var/run/leaninit/$__svcname.status" ]; then
         __STATUS="Not Running"
     else
-        __STATUS="$(cat "/var/run/leaninit/$__svcname.status")"
+        __STATUS=$(cat "/var/run/leaninit/$__svcname.status")
     fi
 
     # Print the result
@@ -363,11 +363,11 @@ __run()
     fi 2> /dev/null
 
     # Set $__svc variables
-    __svcname="$(basename "$0")"
+    __svcname=$(basename "$0")
     __svcpidfile="/var/run/leaninit/$__svcname.pid"
     __svclog="/var/log/leaninit/$__svcname.log"
     printf '\n\n%s\n' "Logging to $NAME on $(date):" >> "$__svclog"
-    [ -f "$__svcpidfile" ] && __svcpid="$(cat "$__svcpidfile")"
+    [ -f "$__svcpidfile" ] && __svcpid=$(cat "$__svcpidfile")
 
     # Check the service
     __svccheck return

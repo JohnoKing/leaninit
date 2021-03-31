@@ -3,7 +3,7 @@ NAME="sysctl"
 
 main() {
 #DEF Linux
-    [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ] && SYSCTLD="$(echo /usr/lib/sysctl.d/*)"
+    [ -d /usr/lib/sysctl.d ] && [ "$(ls /usr/lib/sysctl.d)" ] && SYSCTLD=$(echo /usr/lib/sysctl.d/*)
     for s in /etc/sysctl.conf /etc/sysctl.conf.local $SYSCTLD; do
         sysctl -p "$s"
     done >> "$__svclog"

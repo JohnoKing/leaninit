@@ -2,7 +2,7 @@
 
 # Service for X Server Display Managers
 . /etc/leaninit/rc.conf.d/xdm.conf
-NAME="$XDMNAME"
+NAME=$XDMNAME
 TYPE="display-manager"
 
 main() {
