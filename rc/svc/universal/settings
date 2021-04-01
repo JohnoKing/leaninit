@@ -27,7 +27,7 @@ main() {
 
     # Set the console font
     if [ "$CONSOLEFONT" ]; then
-        println "Setting the console font to $CONSOLEFONT" log "$BLUE" "WHITE"
+        println "Setting the console font to $CONSOLEFONT" log "$BLUE" "$WHITE"
         setfont "$CONSOLEFONT"
     fi
 #ENDEF
