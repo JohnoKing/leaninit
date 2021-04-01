@@ -142,8 +142,16 @@ static cold void single(void)
     // Free memory of the previous input
     free(shell);
 
-    // When the shell is done, automatically reboot
+    /*
+     * When the shell has finished running, automatically reboot. The small delay
+     * is to make sure the SIGINT signal sent by this thread doesn't conflict with
+     * a possible `exec leaninit 5`.
+     */
+    struct timespec delay = { 0 };
+    delay.tv_nsec = 50000000;
     waitpid(sh, NULL, 0);
+    while (nanosleep(&delay, &delay) != 0)
+        ;
     kill(1, SIGINT);
 }
 
