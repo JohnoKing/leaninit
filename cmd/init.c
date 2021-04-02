@@ -150,7 +150,7 @@ static cold void single(void)
     struct timespec delay = { 0 };
     delay.tv_nsec = 50000000;
     waitpid(sh, NULL, 0);
-    while (nanosleep(&delay, &delay) != 0)
+    while (nanosleep(&delay, &delay) != 0 && errno == EINTR)
         ;
     kill(1, SIGINT);
 }

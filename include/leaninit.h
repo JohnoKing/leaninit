@@ -25,6 +25,7 @@
 #endif
 
 // Include files
+#include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <limits.h>
