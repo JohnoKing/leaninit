@@ -229,10 +229,10 @@ __start()
         println "${MSG}..." log "$BLUE" "$WHITE"
     fi
     if [ "$1" = "Restart" ] && isfunc restart; then
-        restart >> "$__svclog" 2>&1
+        restart
     else
-        main >> "$__svclog" 2>&1
-    fi
+        main
+    fi >> "$__svclog" 2>&1
 
     # Finish by creating the service's .status and .type files
     RET=$?
