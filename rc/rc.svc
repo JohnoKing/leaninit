@@ -62,7 +62,7 @@ fi
 isfunc()
 {
     if [ "$BASH_VERSION" ]; then # The bash mode in ksh93v- has 'type -t', so no additional check is necessary
-        [ "$(type -t "$1" 2> /dev/null)" = "function" ]; return
+        [ "$(type -t "$1")" = "function" ]; return
     else
         __isfunc=$(command -V "$1" 2> /dev/null)
         if [ "$__isfunc" = "$1 is a shell function" ] || [ "$__isfunc" = "$1 is a function" ] || [ "$__isfunc" = "$1: a function" ]; then
