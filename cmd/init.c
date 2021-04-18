@@ -394,9 +394,15 @@ int main(int argc, char *argv[])
                 sh(rc_shutdown);
                 if ((flags & VERBOSE) == VERBOSE)
                     printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
-            } else
-                printf(RED "* Could not execute rc.shutdown(8), killing all processes unsafely..." RESET "\n");
-            kill(-1, SIGKILL);
+            } else {
+                printf(PURPLE "* " YELLOW
+                              "Could not execute rc.shutdown(8), sending SIGCONT and SIGTERM to all processes..." RESET
+                              "\n");
+                kill(-1, SIGCONT);
+                kill(-1, SIGTERM);
+                sleep(1);
+                kill(-1, SIGKILL);
+            }
 
             // Handle the given signal properly
             switch (stored_signal) {

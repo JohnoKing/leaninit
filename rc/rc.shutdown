@@ -33,19 +33,13 @@ for svc in *; do
     [ -f "/var/run/leaninit/$svc.status" ] && "./$svc" stop &
 done
 
-# After all services have stopped, run kill(1) to kill all processes
+# After all services have stopped, run kill(1) to kill all processes.
+# To prevent hanging, issue SIGKILL after one second.
 wait
 kill -CONT -1
 kill -TERM -1
-
-# Use a short loop to wait for all processes to stop
-# For portability we must use `$((expr))` even though it's slower than `(( expr ))`
-CURTIME=0
-ENDTIME=70
-until [ $CURTIME = $ENDTIME ] || ! kill -0 -1; do
-    sleep .1
-    CURTIME=$(( CURTIME + 1 ))
-done 2> /dev/null
+sleep 1
+kill -KILL -1
 
 # Remount root as read-only and unmount all other file systems, then exit
 sync
