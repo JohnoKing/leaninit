@@ -388,13 +388,14 @@ int main(int argc, char *argv[])
             pthread_kill(runlvl, SIGKILL);
             pthread_join(runlvl, NULL);
 
-            // Run rc.shutdown (which should handle sync), then kill all remaining processes with SIGKILL
+            // Run rc.shutdown (which should handle sync)
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if likely (rc_shutdown != NULL) {
                 sh(rc_shutdown);
                 if ((flags & VERBOSE) == VERBOSE)
                     printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
             } else {
+                // If rc.shutdown doesn't exist, kill all processes
                 printf(PURPLE "* " YELLOW
                               "Could not execute rc.shutdown(8), sending SIGCONT and SIGTERM to all processes..." RESET
                               "\n");
