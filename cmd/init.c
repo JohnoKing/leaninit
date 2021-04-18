@@ -82,13 +82,13 @@ static int sh(char *script)
 #if defined(POSIX_SPAWN_SETSID)
     // Run the command using posix_spawn(3) (if supported)
     posix_spawnattr_t attr;
-    err = posix_spawnattr_init(&attr) != 0;
+    err = posix_spawnattr_init(&attr);
     if unlikely (err != 0)
         return -1;
-    err = posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETSID) != 0;
+    err = posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETSID);
     if unlikely (err != 0)
         return -1;
-    err = posix_spawnp(&child, script_argv[0], NULL, &attr, script_argv, environ) != 0;
+    err = posix_spawnp(&child, script_argv[0], NULL, &attr, script_argv, environ);
     if unlikely (err != 0)
         return -1;
 #else
