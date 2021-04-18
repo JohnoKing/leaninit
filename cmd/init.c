@@ -73,17 +73,23 @@ static int open_tty(const char *tty_path)
 // Execute the given script
 static int sh(char *script)
 {
+    int err;
     pid_t child;
     char *script_argv[] = { script, "silent", NULL };
-    if((flags & VERBOSE) == VERBOSE)
+    if ((flags & VERBOSE) == VERBOSE)
         script_argv[1] = "verbose";
 
 #if defined(POSIX_SPAWN_SETSID)
     // Run the command using posix_spawn(3) (if supported)
     posix_spawnattr_t attr;
-    posix_spawnattr_init(&attr);
-    posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETSID);
-    if(posix_spawnp(&child, script_argv[0], NULL, &attr, script_argv, environ) != 0)
+    err = posix_spawnattr_init(&attr) != 0;
+    if unlikely (err != 0)
+        return -1;
+    err = posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETSID) != 0;
+    if unlikely (err != 0)
+        return -1;
+    err = posix_spawnp(&child, script_argv[0], NULL, &attr, script_argv, environ) != 0;
+    if unlikely (err != 0)
         return -1;
 #else
     // If POSIX_SPAWN_SETSID is unsupported, use fork(2) instead
@@ -129,6 +135,12 @@ static cold void single(void)
 {
     // Get the user's shell (the pathname can be rather long)
     char *shell = malloc(PATH_MAX);
+    struct timespec delay = { 0 };
+    if unlikely (shell == NULL) {
+        printf(RED "* Memory allocation failed");
+        perror(RED "* malloc()");
+        goto reboot;
+    }
     printf(CYAN "* " WHITE "Shell to use for single user (defaults to /bin/sh):" RESET " ");
     if (fgets(shell, PATH_MAX, stdin) != NULL) {
         shell[strcspn(shell, "\n")] = 0; // We don't want the newline
@@ -159,9 +171,9 @@ static cold void single(void)
      * is to make sure the SIGINT signal sent by this thread doesn't conflict with
      * a possible `exec leaninit 5`.
      */
-    struct timespec delay = { 0 };
-    delay.tv_nsec = 50000000;
     waitpid(sh, NULL, 0);
+reboot:
+    delay.tv_nsec = 50000000;
     while (nanosleep(&delay, &delay) != 0 && errno == EINTR)
         ;
     kill(1, SIGINT);
@@ -209,6 +221,11 @@ static void multi(void)
     // Open the ttys file (max file size 8000 bytes with 60 entries)
     char *tofree, *data, *cmd;
     tofree = data = malloc(8001);
+    if unlikely (data == NULL) {
+        printf(RED "* Memory allocation failed");
+        perror(RED "* malloc()");
+        return;
+    }
     unsigned char entry = 0;
     struct getty_t {
         const char *cmd;
