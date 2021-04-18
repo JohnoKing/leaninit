@@ -402,6 +402,7 @@ int main(int argc, char *argv[])
                 kill(-1, SIGCONT);
                 kill(-1, SIGTERM);
                 sleep(1);
+                printf(CYAN "* " WHITE "Sending SIGKILL to all processes..." RESET "\n");
                 kill(-1, SIGKILL);
             }
 
