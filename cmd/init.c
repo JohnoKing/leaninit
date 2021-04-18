@@ -137,7 +137,7 @@ static cold void single(void)
     char *shell = malloc(PATH_MAX);
     struct timespec delay = { 0 };
     if unlikely (shell == NULL) {
-        printf(RED "* Memory allocation failed");
+        printf(RED "* Memory allocation failed" RESET "\n");
         perror(RED "* malloc()");
         goto reboot;
     }
@@ -222,7 +222,7 @@ static void multi(void)
     char *tofree, *data, *cmd;
     tofree = data = malloc(8001);
     if unlikely (data == NULL) {
-        printf(RED "* Memory allocation failed");
+        printf(RED "* Memory allocation failed" RESET "\n");
         perror(RED "* malloc()");
         return;
     }
