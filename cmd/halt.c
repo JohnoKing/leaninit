@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 #if defined(__NetBSD__)
     // As signaling init will not work reliably on NetBSD, run rc.shutdown NOW
     sync();
-    pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
+    pid_t child = vfork(); // vfork(2) is faster than fork(2)
     if (child == 0)
         return execve("/etc/leaninit/rc.shutdown", (char *[]) { "rc.shutdown", NULL }, environ);
     else if unlikely (child == -1) {
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 #else
     // Run os-indications if --firmware-setup was passed
     if (osin) {
-        pid_t child = vfork(); // vfork(2) is faster than fork(2) and posix_spawn(3)
+        pid_t child = vfork(); // vfork(2) is faster than fork(2)
         if (child == 0)
             return execve("/sbin/os-indications", (char *[]) { "os-indications", "-q", NULL }, environ);
         else if unlikely (child == -1) {

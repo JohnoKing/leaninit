@@ -24,6 +24,11 @@
 #undef _FORTIFY_SOURCE // Silence warnings
 #endif
 
+// To get POSIX_SPAWN_SETSID on Linux, define _GNU_SOURCE
+#if defined(__linux__) && !defined(_GNU_SOURCE)
+#define _GNU_SOURCE
+#endif
+
 // Include files
 #include <errno.h>
 #include <fcntl.h>
@@ -31,6 +36,7 @@
 #include <limits.h>
 #include <pthread.h>
 #include <signal.h>
+#include <spawn.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>

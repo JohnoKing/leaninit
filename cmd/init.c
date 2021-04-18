@@ -73,15 +73,27 @@ static int open_tty(const char *tty_path)
 // Execute the given script
 static int sh(char *script)
 {
-    pid_t child = fork();
+    pid_t child;
+    char *script_argv[] = { script, "silent", NULL };
+    if((flags & VERBOSE) == VERBOSE)
+        script_argv[1] = "verbose";
+
+#if defined(POSIX_SPAWN_SETSID)
+    // Run the command using posix_spawn(3) (if supported)
+    posix_spawnattr_t attr;
+    posix_spawnattr_init(&attr);
+    posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETSID);
+    if(posix_spawnp(&child, script_argv[0], NULL, &attr, script_argv, environ) != 0)
+        return -1;
+#else
+    // If POSIX_SPAWN_SETSID is unsupported, use fork(2) instead
+    child = fork();
     if (child == 0) {
         setsid();
-        if ((flags & VERBOSE) == VERBOSE)
-            return execve(script, (char *[]) { script, "verbose", NULL }, environ);
-        else
-            return execve(script, (char *[]) { script, "silent", NULL }, environ);
+        return execve(script, script_argv, environ);
     } else if unlikely (child == -1)
         return -1;
+#endif
 
     // Wait for the script to finish
     int status;
