@@ -2,10 +2,9 @@
 NAME="Kernel Modules"
 MSG="Loading kernel modules"
 
-# cat(1) must be piped to grep in the first command for the correct output
 main() {
-    [ "$(ls /etc/modules-load.d 2> /dev/null)" ] && module_list=$(cat /etc/modules-load.d/* | grep -v '#')
-    [ "$(cat /etc/modules 2> /dev/null)" ] && module_list="$module_list $(grep -v '#' /etc/modules)"
+    [ "$(ls /etc/modules-load.d 2> /dev/null)" ] && module_list=$(awk 'NF && !/^[:space:]*#/' /etc/modules-load.d/*)
+    [ "$(cat /etc/modules 2> /dev/null)" ] && module_list="$module_list $(awk 'NF && !/^[:space:]*#/' /etc/modules)"
     for module in $module_list; do
         modprobe $module
     done

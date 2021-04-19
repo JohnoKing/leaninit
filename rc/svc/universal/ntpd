@@ -7,7 +7,7 @@ NAME="ntpd"
 main() {
     waitfor networking
 #DEF BSD
-    [ "$NTPDATE" = "true" ] && ntpdate $(grep 'server' /etc/ntp.conf | grep -v '#' | awk '{ print $2 }')
+    [ "$NTPDATE" = "true" ] && ntpdate $(awk 'NF && !/^[:space:]*#/ && /server/ { print $2 }' /etc/ntp.conf)
 #ENDEF
     ntpd -p "$__svcpidfile"
 }
