@@ -197,7 +197,7 @@ static void multi(void)
         printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
     if unlikely (sh(rc) != 0) {
         printf(RED "* %s has failed, falling back to single user mode..." RESET "\n", rc);
-        perror(RED "* execve()");
+        perror(RED "* sh()");
         flags ^= SINGLE_USER;
         return single();
     }
@@ -292,6 +292,21 @@ static void *chlvl(unused void *notused)
     return NULL;
 }
 
+// This fallback is used if rc.shutdown(8) fails to run
+static cold void shutdown_fallback(bool panic_err)
+{
+    if (panic_err) {
+        printf(RED "* rc.shutdown(8) failed, sending SIGCONT and SIGTERM to all processes..." RESET "\n");
+        perror(RED "sh()");
+    } else
+        printf(PURPLE "* " YELLOW "rc.shutdown(8) failed, sending SIGCONT and SIGTERM to all processes..." RESET "\n");
+    kill(-1, SIGCONT);
+    kill(-1, SIGTERM);
+    sleep(1);
+    printf(CYAN "* " WHITE "Sending SIGKILL to all processes..." RESET "\n");
+    kill(-1, SIGKILL);
+}
+
 // This perpetual loop kills all zombie processes without blowing out CPU usage when there are none
 static noreturn void *zloop(unused void *notused)
 {
@@ -339,10 +354,13 @@ int main(int argc, char *argv[])
         // Run rc.banner if the banner argument was passed to LeanInit
         if ((flags & BANNER) == BANNER) {
             char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
-            if likely (rc_banner != NULL)
-                sh(rc_banner);
-            else
-                printf(RED "* Could not execute rc.banner(8)!" RESET "\n");
+            if likely (rc_banner != NULL) {
+                if unlikely (sh(rc_banner) != 0) {
+                    printf(RED "* rc.banner(8) failed!" RESET "\n");
+                    perror(RED "* sh()");
+                }
+            } else
+                printf(RED "* Could not find or execute rc.banner(8)!" RESET "\n");
         }
 
         // Print the current platform LeanInit is running on and start rc(8) (must be done in this order)
@@ -391,20 +409,10 @@ int main(int argc, char *argv[])
             // Run rc.shutdown (which should handle sync)
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if likely (rc_shutdown != NULL) {
-                sh(rc_shutdown);
-                if ((flags & VERBOSE) == VERBOSE)
-                    printf(CYAN "* " WHITE "Killing all remaining processes that are still running..." RESET "\n");
-            } else {
-                // If rc.shutdown doesn't exist, kill all processes
-                printf(PURPLE "* " YELLOW
-                              "Could not execute rc.shutdown(8), sending SIGCONT and SIGTERM to all processes..." RESET
-                              "\n");
-                kill(-1, SIGCONT);
-                kill(-1, SIGTERM);
-                sleep(1);
-                printf(CYAN "* " WHITE "Sending SIGKILL to all processes..." RESET "\n");
-                kill(-1, SIGKILL);
-            }
+                if unlikely (sh(rc_shutdown) != 0)
+                    shutdown_fallback(true);
+            } else
+                shutdown_fallback(false);
 
             // Handle the given signal properly
             switch (stored_signal) {
