@@ -292,7 +292,7 @@ static void *chlvl(unused void *notused)
     return NULL;
 }
 
-// This fallback is used if rc.shutdown(8) fails to run
+// This fallback is used if rc.shutdown(8) fails
 static cold void shutdown_fallback(bool panic_err)
 {
     if (panic_err) {
