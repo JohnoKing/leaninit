@@ -133,9 +133,10 @@ static char *get_file_path(char *restrict primary, char *restrict fallback, int 
 // Single user mode (marked with cold as this is unlikely to be run during normal usage)
 static cold void single(void)
 {
-    // Get the user's shell (the pathname can be rather long)
-    char *shell = malloc(PATH_MAX);
     struct timespec delay = { 0 };
+
+    // Get the user's shell
+    char *shell = malloc(PATH_MAX);
     if unlikely (shell == NULL) {
         printf(RED "* Memory allocation failed" RESET "\n");
         perror(RED "* malloc()");
