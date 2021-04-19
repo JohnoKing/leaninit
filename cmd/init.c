@@ -437,7 +437,7 @@ int main(int argc, char *argv[])
                     break;
             }
 
-            // Reopen the console on *BSD
+            // Reopen the console
             close(tty);
             tty = open_tty(DEFAULT_TTY);
 
