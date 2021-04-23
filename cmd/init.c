@@ -196,9 +196,9 @@ static void multi(void)
     // Run rc
     if ((flags & VERBOSE) == VERBOSE)
         printf(CYAN "* " WHITE "Executing %s..." RESET "\n", rc);
-    if unlikely (sh(rc) != 0) {
-        printf(RED "* %s has failed, falling back to single user mode..." RESET "\n", rc);
-        perror(RED "* sh()");
+    int exit_status = sh(rc);
+    if unlikely (exit_status != 0) {
+        printf(RED "* %s has failed (status %d), falling back to single user mode..." RESET "\n", rc, exit_status);
         flags ^= SINGLE_USER;
         return single();
     }
@@ -294,12 +294,12 @@ static void *chlvl(unused void *notused)
 }
 
 // This fallback is used if rc.shutdown(8) fails
-static cold void shutdown_fallback(bool panic_err)
+static cold void shutdown_fallback(int exit_status)
 {
-    if (panic_err) {
-        printf(RED "* rc.shutdown(8) failed, sending SIGCONT and SIGTERM to all processes..." RESET "\n");
-        perror(RED "sh()");
-    } else
+    if (exit_status != 0)
+        printf(RED "* rc.shutdown(8) failed (status %d), sending SIGCONT and SIGTERM to all processes..." RESET "\n",
+               exit_status);
+    else
         printf(PURPLE "* " YELLOW "rc.shutdown(8) failed, sending SIGCONT and SIGTERM to all processes..." RESET "\n");
     kill(-1, SIGCONT);
     kill(-1, SIGTERM);
@@ -356,10 +356,9 @@ int main(int argc, char *argv[])
         if ((flags & BANNER) == BANNER) {
             char *rc_banner = get_file_path("/etc/leaninit/rc.banner", "/etc/rc.banner", X_OK);
             if likely (rc_banner != NULL) {
-                if unlikely (sh(rc_banner) != 0) {
-                    printf(RED "* rc.banner(8) failed!" RESET "\n");
-                    perror(RED "* sh()");
-                }
+                int banner_exit_status = sh(rc_banner);
+                if unlikely (banner_exit_status != 0)
+                    printf(RED "* rc.banner(8) failed (status %d)!" RESET "\n", banner_exit_status);
             } else
                 printf(RED "* Could not find or execute rc.banner(8)!" RESET "\n");
         }
@@ -389,7 +388,7 @@ int main(int argc, char *argv[])
         sigaction(SIGINT, &actor, NULL);  // Reboot
 
         // Signal handling loop
-        int stored_signal;
+        int stored_signal, shutdown_exit_status;
         while (true) {
 
             // Wait for a signal, then store it to prevent race conditions
@@ -410,10 +409,11 @@ int main(int argc, char *argv[])
             // Run rc.shutdown (which should handle sync)
             char *rc_shutdown = get_file_path("/etc/leaninit/rc.shutdown", "/etc/rc.shutdown", X_OK);
             if likely (rc_shutdown != NULL) {
-                if unlikely (sh(rc_shutdown) != 0)
-                    shutdown_fallback(true);
+                shutdown_exit_status = sh(rc_shutdown);
+                if unlikely (shutdown_exit_status != 0)
+                    shutdown_fallback(shutdown_exit_status);
             } else
-                shutdown_fallback(false);
+                shutdown_fallback(0);
 
             // Handle the given signal properly
             switch (stored_signal) {
