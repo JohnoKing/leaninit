@@ -1,6 +1,7 @@
 #!/bin/sh
 NAME="Networking"
 TYPE="networking"
+__svcname=$(basename "$0")
 
 # Setup networking on NetBSD
 main() {

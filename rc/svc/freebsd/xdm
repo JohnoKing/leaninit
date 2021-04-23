@@ -4,6 +4,7 @@
 . /etc/leaninit/rc.conf.d/xdm.conf
 NAME=$XDMNAME
 TYPE="display-manager"
+__svcname=$(basename "$0")
 
 main() {
     if [ ! "$XDM" ] || [ ! -x "$(command -v $XDM)" ]; then

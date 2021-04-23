@@ -23,6 +23,9 @@
 # /etc/leaninit/rc.svc - Functions and variables for execution of LeanInit scripts
 #
 
+# If zsh is running this script, avoid incompatible behavior
+[ "$ZSH_VERSION" ] && emulate sh
+
 # Load /etc/profile and /etc/leaninit/rc.conf
 . /etc/profile
 . /etc/leaninit/rc.conf
@@ -63,8 +66,10 @@ isfunc()
 {
     if [ "$BASH_VERSION" ]; then # The bash mode in ksh93v- has 'type -t', so no additional check is necessary
         [ "$(type -t "$1")" = "function" ]; return
+    elif [ "$ZSH_VERSION" ]; then
+        [ "$(whence -w "$1")" = "$1: function" ]; return
     else
-        __isfunc=$(command -V "$1" 2> /dev/null)
+        __isfunc=$(type "$1" 2> /dev/null)
         if [ "$__isfunc" = "$1 is a shell function" ] || [ "$__isfunc" = "$1 is a function" ] || [ "$__isfunc" = "$1: a function" ]; then
             return 0
         fi
@@ -363,7 +368,7 @@ __run()
     fi 2> /dev/null
 
     # Set $__svc variables
-    __svcname=$(basename "$0")
+    [ ! "$__svcname" ] && __svcname=$(basename "$0")
     __svcpidfile="/var/run/leaninit/$__svcname.pid"
     __svclog="/var/log/leaninit/$__svcname.log"
     printf '\n\n%s\n' "Logging to $NAME on $(date):" >> "$__svclog"

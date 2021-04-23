@@ -1,5 +1,6 @@
 #!/bin/sh
 NAME="ALSA"
+__svcname=$(basename "$0")
 
 # Load ALSA's last state
 main() {

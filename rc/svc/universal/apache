@@ -1,5 +1,6 @@
 #!/bin/sh
 NAME="Apache Web Server"
+__svcname=$(basename "$0")
 
 main() {
     waitfor networking

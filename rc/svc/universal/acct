@@ -1,6 +1,7 @@
 #!/bin/sh
 # NOTE: Process accounting will use up a considerable amount of disk space
 NAME="Process Accounting"
+__svcname=$(basename "$0")
 
 main() {
     touch /var/log/account/pacct

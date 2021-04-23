@@ -1,5 +1,6 @@
 #!/bin/sh
 NAME="SMART Disk Monitoring Daemon"
+__svcname=$(basename "$0")
 
 main() {
     smartd "--pidfile=$__svcpidfile"

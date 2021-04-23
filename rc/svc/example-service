@@ -8,6 +8,10 @@
 NAME=ExampleService
 
 
+# For compatibility with zsh, $__svcname should be set in the service's script.
+__svcname=$(basename "$0")
+
+
 # The optional $TYPE variable defines the type of service the init script is. This variable is
 # used exclusively for dependency management in conjunction with the waitfor function. LeanInit's
 # main init scripts currently recognize the following types: networking, login-daemon, display-manager, bluetooth

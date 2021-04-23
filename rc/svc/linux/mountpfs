@@ -1,6 +1,7 @@
 #!/bin/sh
 NAME="Pseudo File Systems"
 MSG="Mounting secondary pseudo file systems"
+__svcname=$(basename "$0")
 
 # Mount pseudo file systems in parallel
 main() {

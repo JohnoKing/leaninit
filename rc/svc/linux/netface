@@ -1,6 +1,7 @@
 #!/bin/sh
 NAME="Network Interfaces"
 MSG="Detecting network interfaces"
+__svcname=$(basename "$0")
 
 main() {
     # udev is required for setting up network interfaces

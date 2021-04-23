@@ -1,6 +1,7 @@
 #!/bin/sh
 . /etc/leaninit/rc.conf.d/cron.conf
 NAME="cron"
+__svcname=$(basename "$0")
 
 main() {
     fork "$CRON" $CRONFLAGS
