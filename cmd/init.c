@@ -107,7 +107,7 @@ static int sh(char *script)
     return WEXITSTATUS(status);
 }
 
-// Spawn a getty on the given TTY then return its PID
+// Spawn a getty on the given TTY, then return its PID
 static pid_t spawn_getty(const char *cmd, const char *tty)
 {
     pid_t getty = fork();
