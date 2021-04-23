@@ -232,7 +232,7 @@ __start()
         restart
     else
         main
-    fi >> "$__svclog" 2>&1
+    fi 2>> "$__svclog"
 
     # Finish by creating the service's .status and .type files
     RET=$?
