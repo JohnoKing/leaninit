@@ -69,7 +69,7 @@ isfunc()
     elif [ "$ZSH_VERSION" ]; then
         [ "$(whence -w "$1")" = "$1: function" ]; return
     else
-        __isfunc=$(type "$1" 2> /dev/null)
+        __isfunc=$(LC_ALL=C type "$1" 2> /dev/null)
         if [ "$__isfunc" = "$1 is a shell function" ] || [ "$__isfunc" = "$1 is a function" ] || [ "$__isfunc" = "$1: a function" ]; then
             return 0
         fi
