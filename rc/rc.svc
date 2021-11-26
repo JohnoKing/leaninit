@@ -364,7 +364,7 @@ __run()
     # Enable relevant builtins in ksh for better performance
     # Note that uname is used for logging on every single boot
     if [ "$KSH_VERSION" ]; then
-        builtin basename cat chmod cmp cut dirname head logname mkdir sync uname wc
+        builtin basename cat chmod cmp cut dirname head tail mkdir sync uname wc
     fi 2> /dev/null
 
     # Set $__svc variables
