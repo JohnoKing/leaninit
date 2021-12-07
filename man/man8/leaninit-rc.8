@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 26, 2020
+.Dd December 7, 2021
 .Dt RC 8
 .Os
 .Sh NAME
@@ -27,7 +27,8 @@
 .Sh DESCRIPTION
 The
 .Nm
-script is responsible for mounting all primary file systems and starting all services listed in
+script is responsible for mounting all primary file systems
+and starting all services listed in
 .Em /var/lib/leaninit/svc
 concurrently.
 If either
@@ -47,18 +48,18 @@ by default.
 Optional script run by
 .Nm
 if it exists.
-
+.sp
 .Em /etc/leaninit/rc.svc
 Provides variables and functions to
 .Nm
-
+.sp
 .Em /etc/leaninit/rc.conf
 Config file for
 .Nm
 and
 .Nm LeanInit
 services
-
+.sp
 .Em /var/log/leaninit.log
 Default log file for
 .Nm LeanInit

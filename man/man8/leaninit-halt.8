@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd May 21, 2020
+.Dd December 7, 2021
 .Dt HALT 8
 .Os
 .Sh NAME
@@ -37,12 +37,13 @@
 #ENDEF
 .Sh DESCRIPTION
 .Nm Halt
-will poweroff, reboot or halt the system when executed by sending the following signals to init:
-
+will poweroff, reboot or halt the system when executed by sending
+the following signals to init:
+.sp
 Halt: SIGUSR1
-
+.sp
 Poweroff: SIGUSR2
-
+.sp
 Reboot: SIGINT
 .Pp
 Halt accepts the following flags:
@@ -89,7 +90,7 @@ or
 .Pp
 .Nm -r, --reboot
 Forces reboot, even when
-.Nm 
+.Nm
 is called as
 .Nm
 or

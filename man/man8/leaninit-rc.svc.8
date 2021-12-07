@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 19, 2020
+.Dd December 7, 2021
 .Dt RC.SVC 8
 .Os
 .Sh NAME
@@ -38,88 +38,94 @@ various scripts, including
 .Nm leaninit-rc(8), leaninit-rc.shutdown(8)
 and all services located in
 .Em /etc/leaninit/svc
-
-
+.sp
+.sp
 The following functions and variables are provided by
 .Nm rc.svc :
-
+.sp
 .Em $PATH
 .Nm
 will set the default path to
 .Em /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin ,
 then load
 .Em /etc/profile
-
-
-
+.sp
+.sp
+.sp
 .Em $__svcname
-This variable provides services with their basename by running `$(basename "$0")`.
-
-
-
+This variable provides services with their basename by
+running `$(basename "$0")`.
+.sp
+.sp
+.sp
 .Em $__svcpidfile
 .Nm
-provides services with a preconfigured path for a PID file that may contain either one single PID or multiple PIDs.
-
-
-
+provides services with a preconfigured path for a PID file that may
+contain either one single PID or multiple PIDs.
+.sp
+.sp
+.sp
 .Em $__svcpid
-This variable provides services with their PID(s) by running `$(cat $__svcpidfile)`.
-
-
-
+This variable provides services with their PID(s) by
+running `$(cat $__svcpidfile)`.
+.sp
+.sp
+.sp
 .Em $__svclog
 This variable provides services with a path to the log file
 .Nm
 will write to.
-
-
-
+.sp
+.sp
+.sp
 .Nm isfunc command ...
-
-This function will return 0 if the given command is a shell function, otherwise it will return 1.
-
-
-
+.sp
+This function will return 0 if the given command is a shell
+function, otherwise it will return 1.
+.sp
+.sp
+.sp
 .Nm println "msg" log_argument star_color [message_color] ...
-
+.sp
 This function prints formatted output to
-.Em stdout.
-If $2 is set to 'log', then the output from println will be logged to the service's log file.
-$3 defines the ANSI color of at least the star and $4 (if set) defines the color of the text.
-
+.Em stdout .
+If $2 is set to 'log', then the output from println will be
+logged to the service's log file.
+$3 defines the ANSI color of at least the star and $4 (if set)
+defines the color of the text.
+.sp
 The following color variables (in bold form) are provided by
-.Nm rc.svc:
-
+.Nm rc.svc :
+.sp
 .Em $RESET
 Resets the text format (advised when using custom colors)
-
+.sp
 .Em $RED
-
+.sp
 .Em $BLUE
-
+.sp
 .Em $YELLOW
-
+.sp
 .Em $GREEN
-
+.sp
 .Em $PURPLE
-
+.sp
 .Em $CYAN
-
+.sp
 .Em $WHITE
-
-
-
+.sp
+.sp
+.sp
 .Nm fork command ...
-
+.sp
 This function will fork the command given to it and then write
 the resulting PID(s) to
-.Em $__svcpidfile.
-
-
-
+.Em $__svcpidfile .
+.sp
+.sp
+.sp
 .Nm waitfor type name [optional]...
-
+.sp
 This function allows scripts to have dependency management
 by letting them wait for a specified 'type' before proceeding.
 .Nm Waitfor
@@ -128,30 +134,37 @@ and will stop when the required condition is true.
 If a full seven seconds have elapsed,
 .Nm waitfor
 will cause the running script to exit with a return status of one.
-Appending 'optional' as a third argument will cause waitfor to simply return if the type does not exist.
-
+Appending 'optional' as a third argument will cause waitfor to
+simply return if the type does not exist.
+.sp
 .Nm file
-This type will wait for the specified file or directory to be created.
-
+This type will wait for the specified file or directory
+to be created.
+.sp
 .Nm service
 This type will wait for the specified service to start.
-
+.sp
 .Nm other
-Other types will cause waitfor to look for '/var/run/leaninit/TYPENAME.type', in a similar manner to the 'file' and 'service' types.
-
-
-
+Other types will cause waitfor to look
+for '/var/run/leaninit/TYPENAME.type', in a similar manner to
+the 'file' and 'service' types.
+.sp
+.sp
+.sp
 .Nm checkfor type name ...
-This function is similar to waitfor, but it will only check for the given type without waiting.
-
+This function is similar to waitfor, but it will only check for
+the given type without waiting.
+.sp
 .Nm file
-This type will check for a file or directory, and if it does not exist then it will cause the service to fail.
-
+This type will check for a file or directory, and if it does
+not exist then it will cause the service to fail.
+.sp
 .Nm service
-This type will check for if the specified service is enabled, and if it is not enabled
+This type will check for if the specified service is enabled,
+and if it is not enabled
 .Nm Checkfor
 returns 1.
-
+.sp
 .Nm other
 Other types will be checked, and if it is not fulfilled
 .Nm Checkfor
@@ -165,19 +178,19 @@ and
 scripts.
 .Sh EXAMPLES
 Wait for HALD to launch:
-
+.sp
 .Nm waitfor service hald
-
-
+.sp
+.sp
 Wait for a networking service to launch:
-
+.sp
 .Nm waitfor networking
-
-
+.sp
+.sp
 Print colored output with a blue star and white text to
 .Em /dev/tty
 and the log file:
-
+.sp
 .Nm println "General informative message..." log "$BLUE" "$WHITE"
 .Sh SEE ALSO
 leaninit(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-rc.conf(5)

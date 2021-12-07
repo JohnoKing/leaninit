@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 26, 2020
+.Dd December 7, 2021
 .Dt RC.BANNER 8
 .Os
 .Sh NAME
@@ -27,9 +27,11 @@
 .Sh DESCRIPTION
 The
 .Nm
-script will run before rc(8) at system startup if the banner argument is passed to LeanInit by a bootloader,
+script will run before rc(8) at system startup if the banner
+argument is passed to LeanInit by a bootloader,
 with the intended use being to run a program such as banner.
-This is not the same as the standard splash argument, as it will not trigger plymouth.
+This is not the same as the standard splash argument, as
+it will not trigger plymouth.
 .Sh SEE ALSO
 leaninit(8), leaninit-rc(8), banner(1), screenfetch(1), neofetch(1)
 .Sh AUTHOR

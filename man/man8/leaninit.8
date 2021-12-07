@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd March 28, 2021
+.Dd December 7, 2021
 .Dt LEANINIT 8
 .Os
 .Sh NAME
@@ -55,174 +55,189 @@ will instead read argv and do the following for each option:
 .Pp
 .Nm 0
 Kill all processes then power off the system.
-
+.sp
 .Nm 1, S, s
 Switch the runlevel to single user mode.
-
+.sp
 .Nm 2, 3, 4, 5
 Switch the runlevel to multi-user mode.
-
+.sp
 .Nm 6
 Kill all processes then reboot the system.
-
+.sp
 .Nm 7
 Kill all processes then halt the system.
-
+.sp
 .Nm Q, q
 Reload the current runlevel.
-
+.sp
 .Nm --version
 Displays
 .Nm LeanInit's
 version number to the user.
-
+.sp
 .Nm --help
 Displays
 .Nm LeanInit's
 usage information to the user.
+.sp
 .Pp
 .Nm LeanInit
 accepts the following arguments before booting:
-
+.sp
 .Nm -s, single
 Start the system in single user mode.
-
+.sp
 .Nm silent
 Enables Silent Mode, which turns off verbose output during boot.
-
+.sp
 .Nm quiet silent
-Enables Silent Mode in addition to the quiet flag, completely removing all unwanted verbose output during boot.
+Enables Silent Mode in addition to the quiet flag, completely removing
+all unwanted verbose output during boot.
 .Sh SIGNALS
 When
 .Nm LeanInit
 is sent a signal using
 .Nm kill(1) ,
 it will act as follows:
-
+.sp
 .Nm SIGHUP
 Restart the current runlevel.
-
+.sp
 .Nm SIGTERM
 Send the system into single user mode.
-
+.sp
 .Nm SIGILL
 Send the system into multi-user mode.
-
+.sp
 .Nm SIGUSR1
 Kill all processes then halt the system.
-
+.sp
 .Nm SIGUSR2
 Kill all processes then power off the system.
-
+.sp
 .Nm SIGINT
 Kill all processes then reboot the system.
 .Sh OUTPUT
 .Nm LeanInit
 outputs text with the following color coding:
-
+.sp
 .Nm Cyan star and White text :
 A generic message sent from one of
 .Nm LeanInit's
 binaries.
-
+.sp
 .Nm Purple star and White text :
 A generic message that is not logged.
-
+.sp
 .Nm Blue star and White text :
 A generic message that is logged.
-
+.sp
 .Nm Green star and White text :
 A message that indicates a successful action.
-
+.sp
 .Nm Purple star and Yellow text :
 A warning message.
-
+.sp
 .Nm Red star and Red text :
 An error message.
-.Pp
 .Sh FILES
 .Em /etc/leaninit/rc
 This is the primary init script run by
 .Nm LeanInit .
-
+.sp
 .Em /etc/rc
 Secondary init script that is run if
 .Em /etc/leaninit/rc
 does not exist.
-
+.sp
 .Em /etc/leaninit/rc.banner
-Optional script that LeanInit will run before rc if passed the `banner` argument by the bootloader.
-
+Optional script that LeanInit will run before rc if passed the `banner` argument
+by the bootloader.
+.sp
 .Em /etc/leaninit/rc.conf
 Provides config settings for
 .Nm leaninit-rc
 and
 .Nm LeanInit
 scripts.
-
+.sp
 .Em /etc/leaninit/rc.conf.d
-This folder contains config files for service specific settings (such as xdm.conf for the
+This folder contains config files for service specific settings (such
+as xdm.conf for the
 .Nm xdm
 service).
-
+.sp
 .Em /etc/leaninit/rc.svc
 Provides variables and functions for
 .Nm LeanInit
 scripts.
-
+.sp
 .Em /etc/leaninit/rc.shutdown
 Stops all processes and unmounts
 all file systems before reboot.
-
+.sp
 .Em /etc/rc.shutdown
 Secondary shutdown script that is run if
 .Em /etc/leaninit/rc.shutdown
 does not exist.
-
+.sp
 .Em /etc/leaninit/svc
 Folder containing scripts for starting various services (such as D-Bus).
-
+.sp
 .Em /var/lib/leaninit/svc
 Location of all files used to determine which services are enabled.
-
+.sp
 .Em /var/lib/leaninit/types
-Location of all files used to determine the different types each enabled service uses.
-
+Location of all files used to determine the different types each enabled
+service uses.
+.sp
 .Em /var/lib/leaninit/install-flag
-This file is used by LeanInit when running `make install` to determine if the essential
-services have been enabled at least once.
-If this file exists, LeanInit will not make any changes to the enabled services when `make install` is run.
-This file has no effect if LeanInit isn't installed with make (i.e., when installed with a package manager),
-and can be safely removed with `rm /var/lib/leaninit/install-flag` as this file is
-only read by LeanInit's Makefile for `make install`.
-
+This file is used by LeanInit when running `make install` to determine
+if the essential services have been enabled at least once.
+If this file exists, LeanInit will not make any changes to the enabled services
+when `make install` is run.
+This file has no effect if LeanInit isn't installed with make (i.e.,
+when installed with a package manager),
+and can be safely removed with `rm /var/lib/leaninit/install-flag` as
+this file is only read by LeanInit's Makefile for `make install`.
+.sp
 .Em /etc/leaninit/ttys
-LeanInit will read from this file for a list of TTYs to launch the specified getty on.
-
+LeanInit will read from this file for a list of TTYs to launch the specified
+getty on.
+.sp
 .Em /etc/ttys
 Alternate file LeanInit will read from if
 .Em /etc/leaninit/ttys
 does not exist.
-
+.sp
 .Em /var/log/leaninit
 The main directory for the log files of all services on the system.
-
+.sp
 .Em /var/run/leaninit
 This is the default location for
 .Nm LeanInit's
 status and PID files.
 #DEF NetBSD
 .Sh BUGS
-Switching runlevels with init usually does not work due to NetBSD lacking native support for runlevels.
-If the user wishes to do any sort of runlevel change (such as to power off the system),
+Switching runlevels with init usually does not work due to NetBSD lacking
+native support for runlevels.
+If the user wishes to do any sort of runlevel change (such as to power
+off the system),
 .Nm halt
 should be used with the --force flag.
-Should the user insist on executing init directly for switching runlevels, an inconsistent workaround is available.
-Simply execute `kill -KILL 1` after telling init the desired runlevel, and about half of the time the runlevel will be changed successfully.
-The other half of the time a kernel panic will occur due to a bug in the NetBSD kernel.
-This is obviously not advised if you wish to maintain the data integrity of your file system.
+Should the user insist on executing init directly for switching runlevels,
+an inconsistent workaround is available.
+Simply execute `kill -KILL 1` after telling init the desired runlevel,
+and about half of the time the runlevel will be changed successfully.
+The other half of the time a kernel panic will occur due to a bug in
+the NetBSD kernel.
+This is obviously not advised if you wish to maintain
+the data integrity of your file system.
 #ENDEF
 .Sh SEE ALSO
-leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8), leaninit-rc.banner(8), leaninit-rc.svc(8), leaninit-rc.conf(5), leaninit-ttys(5), kill(1), signal(7)
+leaninit-halt(8), leaninit-rc(8), leaninit-rc.shutdown(8), leaninit-service(8),
+leaninit-rc.banner(8), leaninit-rc.svc(8), leaninit-rc.conf(5),
+leaninit-ttys(5), kill(1), signal(7)
 .Sh AUTHOR
 Johnothan King

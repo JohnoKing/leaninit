@@ -18,7 +18,7 @@
 .\" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 .\" SOFTWARE.
 .\"
-.Dd April 17, 2020
+.Dd December 7, 2021
 .Dt RC.CONF 5
 .Os
 .Sh NAME
@@ -34,49 +34,53 @@ script.
 .Sh OPTIONS
 .Em /etc/leaninit/rc.conf
 allows you to change the following settings:
-
+.sp
 .Em HOSTNAME :
 Changes the hostname using
 .Nm hostname(1) .
 Commented out by default.
-
+.sp
 .Em TIMEZONE :
-Changes the timezone by forcefully making a symlink. Commented out by default.
-
+Changes the timezone by forcefully making a symlink.
+Commented out by default.
 #DEF Linux
+.sp
 .Em KEYMAP :
-Changes the keyboard layout. Commented out by default.
-
+Changes the keyboard layout.
+Commented out by default.
+.sp
 .Em CONSOLEFONT :
-Changes the console font on the ttys (Linux only). Commented out by default.
+Changes the console font on the ttys (Linux only).
+Commented out by default.
 #ENDEF
-
 #DEF FreeBSD
+.sp
 .Em KEYMAP :
-Changes the keyboard layout. Commented out by default.
-
+Changes the keyboard layout.
+Commented out by default.
+.sp
 .Em WIRED :
 Sets the networking interface(s) to use with the wpa_supplicant wired driver.
 Set to eth0 by default.
-
+.sp
 .Em WIRELESS :
 Sets the networking interface(s) to use with the wpa_supplicant bsd driver.
 Set to wlan0 by default.
-
+.sp
 .Em NDIS :
 Sets the networking interface(s) to use with the wpa_supplicant ndis driver.
 #ENDEF
-
 #DEF NetBSD
+.sp
 .Em WIRED :
 Sets the networking interface(s) to use with the wpa_supplicant wired driver.
 Set to we0 by default.
-
+.sp
 .Em WIRELESS :
 Sets the networking interface(s) to use with the wpa_supplicant bsd driver.
 Set to wlan0 by default.
 #ENDEF
-
+.sp
 .Em DELAY :
 Have
 .Nm rc
@@ -94,32 +98,34 @@ This setting should only be used for debugging.
 .Sh ADDITIONAL OPTIONS
 The following settings can be set in config files located in
 .Em /etc/leaninit/rc.conf.d :
-
 #DEF FreeBSD
 #DEF NetBSD
+.sp
 .Em NTPDATE :
-When this is set to true, the ntpd service will run ntpdate(8) during boot to update the system's clock.
+When this is set to true, the ntpd service will run ntpdate(8)
+during boot to update the system's clock.
 #ENDEF
-
+.sp
 .Em XDM
 (xdm.conf):
 Sets the path to the executable of the Display Manager used by the xdm service.
-
+.sp
 .Em XDMNAME
 (xdm.conf):
 Sets the name of the Display Manager used by the xdm service.
-
+.sp
 .Em XDMPID
 (xdm.conf):
-Sets the path to the Display Manager's PID file for use by the xdm service (this setting is optional).
-
+Sets the path to the Display Manager's PID file for use by the
+xdm service (this setting is optional).
 #DEF Linux
+.sp
 .Em FASTLOGIN
 (xdm.conf):
 If this is set to true, xdm will start in aggressive parallel alongside udev,
 which will temporarily disable the system's power button until the user logs in.
 As this feature does have a negative effect, it is disabled by default.
-
+.sp
 .Em DEVEXEC
 (udev.conf):
 Sets the location of either
@@ -129,14 +135,14 @@ or
 Set to
 .Em /sbin/udevd
 for udev by default.
-
+.sp
 .Em CRON
 (cron.conf)
 Sets the executable name in
 .Em $PATH
 or the absolute path to the executable for
 .Nm cron(8) .
-
+.sp
 .Em CRONFLAGS
 (cron.conf)
 Sets the flags
